@@ -1,0 +1,200 @@
+// The MIT License (MIT)
+// Copyright © 2015 AppsLandia. All rights reserved.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package com.appslandia.plum.results;
+
+import org.junit.Assert;
+import org.junit.Test;
+
+import com.appslandia.plum.base.ActionResult;
+import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.base.Controller;
+import com.appslandia.plum.base.HttpGet;
+import com.appslandia.plum.base.MockTestBase;
+
+/**
+ *
+ * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
+ *
+ */
+public class RedirectResultNoSessionTest extends MockTestBase {
+
+	@Override
+	protected void initialize() {
+		container.register(TestController.class, TestController.class);
+
+		container.getAppConfig().set(AppConfig.CONFIG_ENABLE_SESSION, false);
+	}
+
+	@Test
+	public void test_testAction() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "/app/testController/");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void test_testAction_params() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/testAction_params");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "/app/testController/?p1=v1");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void test_redirectToInternal() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/redirectToInternal");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "/app/testController/index");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void test_redirectToInternal_params() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/redirectToInternal_params");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "/app/testController/index?p1=v1");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void test_redirectToExternal() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/redirectToExternal");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "http://server/app/index");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void test_redirectToExternal_params() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/redirectToExternal_params");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "http://server/app/index?p1=v1");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Test
+	public void test_redirectToRoot() {
+		try {
+			executeCurrent("GET", "http://localhost/app/testController/redirectToRoot");
+
+			Assert.assertEquals(getCurrentResponse().getStatus(), 302);
+
+			String location = getCurrentResponse().getHeader("Location");
+			Assert.assertNotNull(location);
+			Assert.assertEquals(location, "/app");
+
+		} catch (Exception ex) {
+			Assert.fail(ex.getMessage());
+		}
+	}
+
+	@Controller("testController")
+	public static class TestController {
+
+		@HttpGet
+		public void index() throws Exception {
+		}
+
+		@HttpGet
+		public ActionResult testAction() throws Exception {
+			return new RedirectResult("index", null);
+		}
+
+		@HttpGet
+		public ActionResult testAction_params() throws Exception {
+			return new RedirectResult("index", null).query("p1", "v1");
+		}
+
+		@HttpGet
+		public ActionResult redirectToInternal() throws Exception {
+			return new RedirectResult().location("/app/testController/index");
+		}
+
+		@HttpGet
+		public ActionResult redirectToInternal_params() throws Exception {
+			return new RedirectResult().location("/app/testController/index").query("p1", "v1");
+		}
+
+		@HttpGet
+		public ActionResult redirectToExternal() throws Exception {
+			return new RedirectResult().externalUrl("http://server/app/index");
+		}
+
+		@HttpGet
+		public ActionResult redirectToExternal_params() throws Exception {
+			return new RedirectResult().externalUrl("http://server/app/index").query("p1", "v1");
+		}
+
+		@HttpGet
+		public ActionResult redirectToRoot() throws Exception {
+			return RedirectResult.ROOT;
+		}
+	}
+}

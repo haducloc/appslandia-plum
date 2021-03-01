@@ -1,0 +1,62 @@
+// The MIT License (MIT)
+// Copyright © 2015 AppsLandia. All rights reserved.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package com.appslandia.plum.base;
+
+import com.appslandia.common.jwt.JwtToken;
+import com.appslandia.common.utils.AssertUtils;
+
+/**
+ *
+ * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
+ *
+ */
+public class JwtPrincipal extends UserPrincipal {
+
+	public static final String KEY_USER_ID = "user_id";
+	public static final String KEY_USER_NAME = "user_name";
+	public static final String KEY_DISPLAY_NAME = "disp_name";
+	public static final String KEY_USER_ROLES = "user_roles";
+
+	final JwtToken token;
+
+	public JwtPrincipal(JwtToken token) {
+		super((String) token.getPayload().get(KEY_USER_NAME));
+		this.token = token;
+	}
+
+	@Override
+	public int getUserId() {
+		Number uid = (Number) this.token.getPayload().get((KEY_USER_ID));
+		AssertUtils.assertStateNotNull(uid, "uid is required.");
+
+		return uid.intValue();
+	}
+
+	@Override
+	public String getDisplayName() {
+		String displayName = (String) this.token.getPayload().get(KEY_DISPLAY_NAME);
+		return (displayName != null) ? displayName : getName();
+	}
+
+	public JwtToken getToken() {
+		return this.token;
+	}
+}

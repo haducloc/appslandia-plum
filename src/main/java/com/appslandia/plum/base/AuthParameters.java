@@ -1,0 +1,65 @@
+// The MIT License (MIT)
+// Copyright © 2015 AppsLandia. All rights reserved.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package com.appslandia.plum.base;
+
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
+import javax.security.enterprise.credential.Credential;
+
+/**
+ *
+ * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
+ *
+ */
+public class AuthParameters extends AuthenticationParameters {
+
+	private boolean reauthentication;
+
+	public boolean isReauthentication() {
+		return this.reauthentication;
+	}
+
+	public void setReauthentication(boolean reauthentication) {
+		this.reauthentication = reauthentication;
+	}
+
+	public AuthParameters reauthentication(boolean reauthentication) {
+		setReauthentication(reauthentication);
+		return this;
+	}
+
+	@Override
+	public AuthParameters credential(Credential credential) {
+		super.setCredential(credential);
+		return this;
+	}
+
+	@Override
+	public AuthParameters newAuthentication(boolean newAuthentication) {
+		super.setNewAuthentication(newAuthentication);
+		return this;
+	}
+
+	@Override
+	public AuthParameters rememberMe(boolean rememberMe) {
+		super.setRememberMe(rememberMe);
+		return this;
+	}
+}
