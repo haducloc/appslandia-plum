@@ -25,9 +25,9 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 import javax.servlet.jsp.JspException;
 
@@ -99,15 +99,15 @@ public class FmtDateTag extends TagBase {
 			throw new JspException("Invalid input type.");
 		}
 
-		Period diff = Period.between(ld, now);
+		int days = (int) ChronoUnit.DAYS.between(ld, now);
 
-		if (diff.getDays() < 7) {
-			String key = String.format("datetime.%d_days_ago", diff.getDays());
+		if (days < 7) {
+			String key = String.format("datetime.%d_days_ago", days);
 			XmlEscaper.escapeXml(this.pageContext.getOut(), this.getRequestContext().res(key));
 
 		} else {
-			int weeks = diff.getDays() / 7;
-			if (weeks <= 5 && diff.getDays() % 7 == 0) {
+			int weeks = days / 7;
+			if (weeks <= 5 && days % 7 == 0) {
 
 				String key = String.format("datetime.%d_weeks_ago", weeks);
 				XmlEscaper.escapeXml(this.pageContext.getOut(), this.getRequestContext().res(key));
