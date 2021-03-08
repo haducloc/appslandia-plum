@@ -148,6 +148,7 @@ public class DebugUtils {
 		PrintWriter out = response.getWriter();
 
 		out.append("ZoneId.systemDefault(): ").append(ZoneId.systemDefault().toString());
+		out.println();
 		out.append("OffsetTime.now().getOffset().getId(): ").append(OffsetTime.now().getOffset().getId());
 
 		out.println();
