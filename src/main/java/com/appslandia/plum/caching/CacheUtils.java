@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.caching;
 
-import com.appslandia.common.utils.NumberUtils;
+import com.appslandia.common.utils.ParseUtils;
 import com.appslandia.common.utils.StringFormat;
 
 /**
@@ -34,7 +34,7 @@ public class CacheUtils {
 
 		return StringFormat.format(cacheKey, (pname, expr) -> {
 
-			int index = NumberUtils.parseInt(pname, -1);
+			int index = ParseUtils.parseInt(pname, -1);
 
 			if (index < 0 || index >= keyParams.length) {
 				throw new IllegalStateException("parameter index is invalid.");
