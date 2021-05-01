@@ -51,7 +51,7 @@ public class ManageSqlModel {
 	private boolean resultFile;
 
 	@NotNull
-	@MaxLength(8000)
+	@MaxLength(20000)
 	private String sqlText;
 
 	@NotBind
