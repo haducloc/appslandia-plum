@@ -110,28 +110,13 @@ public class ActionParser {
 		}
 
 		RequestContext requestContext = ServletUtils.getRequestContext(request);
-		StringBuilder url = new StringBuilder(controller.length() + action.length() + 6 + ((parameters != null) ? 16 * parameters.size() : 0));
+		StringBuilder url = null;
 
-		// protocol://serverName:serverPort
 		if (absoluteUrl) {
-
-			// serverName
-			String serverName = (parameters != null) ? (String) parameters.get(ServletUtils.PARAM_SERVER_NAME) : request.getServerName();
-			if (serverName == null) {
-				serverName = request.getServerName();
-			}
-
-			if (this.appConfig.isEnableHttps()) {
-				url.append("https://").append(serverName);
-				if (this.appConfig.getHttpsPort() != 443) {
-					url.append(':').append(this.appConfig.getHttpsPort());
-				}
-			} else {
-				url.append("http://").append(serverName);
-				if (this.appConfig.getHttpPort() != 80) {
-					url.append(':').append(this.appConfig.getHttpPort());
-				}
-			}
+			String serverName = (parameters != null) ? (String) parameters.get(ServletUtils.PARAM_SERVER_NAME) : null;
+			url = ServletUtils.absUrlBase(request, serverName);
+		} else {
+			url = ServletUtils.newUrlBuilder();
 		}
 
 		// Context path

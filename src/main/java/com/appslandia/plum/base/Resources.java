@@ -47,6 +47,7 @@ public class Resources implements MapAccessor<String, String> {
 
 	public static final String ERROR_NOT_FOUND = "errors.not_found";
 	public static final String ERROR_FORBIDDEN = "errors.forbidden";
+	public static final String ERROR_FORBIDDEN_CORS = "errors.forbidden_cors";
 
 	public static final String ERROR_INTERNAL_SERVER_ERROR = "errors.internal_server_error";
 	public static final String ERROR_PRECONDITION_FAILED = "errors.precondition_failed";

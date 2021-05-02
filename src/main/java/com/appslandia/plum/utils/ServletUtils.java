@@ -71,6 +71,7 @@ import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.ValueUtils;
 import com.appslandia.plum.base.ActionDesc;
 import com.appslandia.plum.base.ActionDescProvider;
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.BeanInstanceContextListener;
 import com.appslandia.plum.base.Messages;
 import com.appslandia.plum.base.ModelState;
@@ -128,30 +129,26 @@ public class ServletUtils {
 		return url;
 	}
 
-	public static String getSecureUrl(HttpServletRequest request, int httpsPort) {
+	public static StringBuilder absUrlBase(HttpServletRequest request, String serverName) {
+		AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
 		StringBuilder url = newUrlBuilder();
 
-		// https://{serverName}:{httpsPort}
-		url.append("https://").append(request.getServerName());
-
-		if (httpsPort != 443) {
-			url.append(':').append(httpsPort);
+		if (appConfig.isEnableHttps()) {
+			url.append("https://").append(serverName != null ? serverName : request.getServerName());
+			if (appConfig.getHttpsPort() != 443) {
+				url.append(':').append(appConfig.getHttpsPort());
+			}
+		} else {
+			url.append("http://").append(serverName != null ? serverName : request.getServerName());
+			if (appConfig.getHttpPort() != 80) {
+				url.append(':').append(appConfig.getHttpPort());
+			}
 		}
-
-		// URI & QueryString
-		appendUriQuery(request, url);
-		return url.toString();
+		return url;
 	}
 
 	public static String getRequestUrl(HttpServletRequest request) {
-		StringBuilder url = newUrlBuilder();
-
-		// {scheme}://{serverName}:{serverPort}
-		url.append(request.getScheme()).append("://").append(request.getServerName());
-
-		if ((request.getServerPort() != 80) && (request.getServerPort() != 443)) {
-			url.append(':').append(request.getServerPort());
-		}
+		StringBuilder url = absUrlBase(request, null);
 
 		// URI & QueryString
 		appendUriQuery(request, url);
@@ -159,14 +156,8 @@ public class ServletUtils {
 	}
 
 	public static String getRequestUrl(HttpServletRequest request, String pathLang) {
-		StringBuilder url = newUrlBuilder();
+		StringBuilder url = absUrlBase(request, null);
 
-		// {scheme}://{serverName}:{serverPort}
-		url.append(request.getScheme()).append("://").append(request.getServerName());
-
-		if ((request.getServerPort() != 80) && (request.getServerPort() != 443)) {
-			url.append(':').append(request.getServerPort());
-		}
 		// ContextPath
 		url.append(request.getServletContext().getContextPath());
 

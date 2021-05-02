@@ -88,14 +88,6 @@ public class InitializerHandler extends HttpFilter {
 		}
 	}
 
-	protected void redirectHttps(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-		int status = this.appConfig.getRequiredBool(AppConfig.CONFIG_HTTPS_REDIRECT_PERMANENTLY) ? HttpServletResponse.SC_MOVED_PERMANENTLY
-				: HttpServletResponse.SC_MOVED_TEMPORARILY;
-
-		String url = ServletUtils.getSecureUrl(request, this.appConfig.getHttpsPort());
-		ServletUtils.sendRedirect(response, this.appConfig.isEnableSession() ? response.encodeRedirectURL(url) : url, status);
-	}
-
 	protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
 		int status = HttpServletResponse.SC_MOVED_TEMPORARILY;
 
@@ -108,16 +100,8 @@ public class InitializerHandler extends HttpFilter {
 		if (origin == null) {
 			return null;
 		}
-		StringBuilder url = new StringBuilder(request.getScheme()).append("://").append(request.getServerName());
-		if (request.isSecure()) {
-			if (this.appConfig.getHttpsPort() != 443) {
-				url.append(':').append(this.appConfig.getHttpsPort());
-			}
-		} else {
-			if (this.appConfig.getHttpPort() != 80) {
-				url.append(':').append(this.appConfig.getHttpPort());
-			}
-		}
+		StringBuilder url = ServletUtils.absUrlBase(request, null);
+
 		if (origin.equals(url.toString())) {
 			return null;
 		}
@@ -151,15 +135,6 @@ public class InitializerHandler extends HttpFilter {
 					throw new HttpException(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, requestContext.res(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE))
 							.setTitleKey(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE);
 				}
-			}
-
-			// HTTPS
-			if (this.appConfig.isEnableHttps() && !request.isSecure()) {
-				if (!requestContext.isGetOrHead()) {
-					throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
-				}
-				redirectHttps(request, response, requestContext);
-				return;
 			}
 
 			// Language
@@ -197,13 +172,13 @@ public class InitializerHandler extends HttpFilter {
 
 				// Not @EnableCors
 				if (requestContext.getActionDesc().getEnableCors() == null) {
-					throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN, origin));
+					throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, "No @EnableCors"));
 				}
 				CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
 				CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, corsPolicy);
 
 				if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
-					throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN, origin));
+					throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
 				}
 			}
 
@@ -279,7 +254,7 @@ public class InitializerHandler extends HttpFilter {
 		CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handlePreflight(request, response, corsPolicy);
 
 		if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
-			throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN, origin));
+			throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
 		}
 	}
 

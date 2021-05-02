@@ -58,21 +58,6 @@ public class ServletUtilsTest {
 	}
 
 	@Test
-	public void test_getSecureUrl() {
-		MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-		request.setRequestURL("http://localhost/app/main");
-		Assert.assertEquals(ServletUtils.getSecureUrl(request, 443), "https://localhost/app/main");
-
-		request = new MockHttpServletRequest(servletContext);
-		request.setRequestURL("http://localhost/app/main?param1=value1");
-		Assert.assertEquals(ServletUtils.getSecureUrl(request, 443), "https://localhost/app/main?param1=value1");
-
-		request = new MockHttpServletRequest(servletContext);
-		request.setRequestURL("http://localhost/app/main");
-		Assert.assertEquals(ServletUtils.getSecureUrl(request, 8443), "https://localhost:8443/app/main");
-	}
-
-	@Test
 	public void test_toEtag() {
 		byte[] md5 = new DigesterImpl("MD5").digest(RandomUtils.nextBytes(16));
 		String weakEtag = ServletUtils.toEtag(md5);
