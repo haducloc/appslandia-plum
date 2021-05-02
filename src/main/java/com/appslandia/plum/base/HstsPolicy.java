@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.plum.utils.ServletUtils;
 
 /**
  *
@@ -46,7 +47,9 @@ public class HstsPolicy implements HeaderPolicy {
 
 	@Override
 	public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
-		if (!request.isSecure()) {
+		AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
+
+		if (!appConfig.isEnableHttps()) {
 			return;
 		}
 
