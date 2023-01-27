@@ -1,0 +1,182 @@
+// The MIT License (MIT)
+// Copyright © 2015 AppsLandia. All rights reserved.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package com.appslandia.plum.base;
+
+import java.lang.reflect.Array;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import com.appslandia.common.base.FormatProvider;
+import com.appslandia.common.base.FormatProviderImpl;
+import com.appslandia.common.base.Language;
+import com.appslandia.common.base.Out;
+import com.appslandia.common.converters.Converter;
+import com.appslandia.common.converters.ConverterProvider;
+
+/**
+ *
+ * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
+ *
+ */
+public class ModelBinderStaticTest {
+
+    final FormatProvider formatProvider = new FormatProviderImpl(Language.EN_US);
+
+    @Test
+    public void test_string() {
+	Converter<String> converter = ConverterProvider.getDefault().getConverter(String.class);
+
+	Out<String> parsedErrorMsg = new Out<>();
+	Object result = ModelBinder.parseValue(" data ", String.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(result);
+	Assertions.assertEquals("data", result);
+	Assertions.assertNull(parsedErrorMsg.value);
+
+	// Null
+	parsedErrorMsg = new Out<>();
+	result = ModelBinder.parseValue(" ", String.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNull(result);
+	Assertions.assertNull(parsedErrorMsg.value);
+    }
+
+    @Test
+    public void test_parseValue() {
+	Converter<Integer> converter = ConverterProvider.getDefault().getConverter(Integer.class);
+
+	// Valid values
+	Out<String> parsedErrorMsg = new Out<>();
+	Object result = ModelBinder.parseValue("100", int.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(result);
+	Assertions.assertEquals(100, result);
+	Assertions.assertNull(parsedErrorMsg.value);
+
+	// Null
+	parsedErrorMsg = new Out<>();
+	result = ModelBinder.parseValue(null, int.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(result);
+	Assertions.assertEquals(0, result);
+	Assertions.assertNotNull(parsedErrorMsg.value);
+
+	// Invalid values
+	parsedErrorMsg = new Out<>();
+	result = ModelBinder.parseValue("invalid", int.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertEquals(0, result);
+	Assertions.assertNotNull(parsedErrorMsg.value);
+    }
+
+    @Test
+    public void test_parseValue_wrappers() {
+	Converter<Integer> converter = ConverterProvider.getDefault().getConverter(Integer.class);
+
+	// Valid values
+	Out<String> parsedErrorMsg = new Out<>();
+	Object result = ModelBinder.parseValue("100", Integer.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(result);
+	Assertions.assertEquals(100, result);
+	Assertions.assertNull(parsedErrorMsg.value);
+
+	// Null
+	parsedErrorMsg = new Out<>();
+	result = ModelBinder.parseValue(null, Integer.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNull(result);
+	Assertions.assertNull(parsedErrorMsg.value);
+
+	// Invalid values
+	parsedErrorMsg = new Out<>();
+	result = ModelBinder.parseValue("invalid", Integer.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNull(result);
+	Assertions.assertNotNull(parsedErrorMsg.value);
+    }
+
+    @Test
+    public void test_parseArray() {
+	Converter<Integer> converter = ConverterProvider.getDefault().getConverter(Integer.class);
+
+	// Valid values
+	Out<String> parsedErrorMsg = new Out<>();
+	Object array = ModelBinder.parseArray(new String[] { "100", "2000" }, int.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(array);
+	Assertions.assertEquals(100, Array.get(array, 0));
+	Assertions.assertEquals(2000, Array.get(array, 1));
+	Assertions.assertNull(parsedErrorMsg.value);
+
+	// Invalid values
+	parsedErrorMsg = new Out<>();
+	array = ModelBinder.parseArray(new String[] { "100", "2000", null, "invalid" }, int.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(array);
+	Assertions.assertEquals(100, Array.get(array, 0));
+	Assertions.assertEquals(2000, Array.get(array, 1));
+	Assertions.assertEquals(0, Array.get(array, 2));
+	Assertions.assertEquals(0, Array.get(array, 3));
+	Assertions.assertNotNull(parsedErrorMsg.value);
+    }
+
+    @Test
+    public void test_parseArray_wrappers() {
+	Converter<Integer> converter = ConverterProvider.getDefault().getConverter(Integer.class);
+
+	// Valid values
+	Out<String> parsedErrorMsg = new Out<>();
+	Object array = ModelBinder.parseArray(new String[] { "100", "2000" }, Integer.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(array);
+	Assertions.assertEquals(100, Array.get(array, 0));
+	Assertions.assertEquals(2000, Array.get(array, 1));
+	Assertions.assertNull(parsedErrorMsg.value);
+
+	// Invalid values
+	parsedErrorMsg = new Out<>();
+	array = ModelBinder.parseArray(new String[] { "100", "2000", null, "invalid" }, Integer.class, parsedErrorMsg, converter, formatProvider);
+	Assertions.assertNotNull(array);
+	Assertions.assertEquals(100, Array.get(array, 0));
+	Assertions.assertEquals(2000, Array.get(array, 1));
+	Assertions.assertEquals(null, Array.get(array, 2));
+	Assertions.assertEquals(null, Array.get(array, 3));
+	Assertions.assertNotNull(parsedErrorMsg.value);
+    }
+
+    @Test
+    public void test_toBitMask() {
+	long bitMask = ModelBinder.toBitMask(new int[] {}, new Out<>());
+	Assertions.assertEquals(0, bitMask);
+
+	bitMask = ModelBinder.toBitMask(new int[] { 1, 2, 3 }, new Out<>());
+	Assertions.assertEquals(3, bitMask);
+    }
+
+    @Test
+    public void test_toBitMask_decimals() {
+	long bitMask = ModelBinder.toBitMask(new double[] {}, new Out<>());
+	Assertions.assertEquals(0, bitMask);
+
+	bitMask = ModelBinder.toBitMask(new double[] { 1.0, 2.1, 2.2 }, new Out<>());
+	Assertions.assertEquals(3, bitMask);
+    }
+
+    @Test
+    public void test_toBitMask_invalids() {
+	Out<Boolean> bitMaskResult = new Out<>();
+	long bitMask = ModelBinder.toBitMask(new int[] { 1, 2, 2, 5 }, bitMaskResult);
+
+	Assertions.assertEquals(3, bitMask);
+	Assertions.assertEquals(Boolean.FALSE, bitMaskResult.value);
+    }
+}
