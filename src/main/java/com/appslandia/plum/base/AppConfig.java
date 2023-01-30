@@ -109,7 +109,7 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.config.putIfAbsent(CONFIG_VIEW_PATH, "/WEB-INF/views");
 	this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
-	this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(30, TimeUnit.SECONDS)));
+	this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(180, TimeUnit.SECONDS)));
 
 	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
