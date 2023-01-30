@@ -49,7 +49,7 @@ public class DefaultJspFilter extends HttpFilter {
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 
-	if (this.appConfig.getBool(AppConfig.CONFIG_DIRECT_JSP_ACCESS, false)) {
+	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_DIRECT_JSP_ACCESS)) {
 	    chain.doFilter(request, response);
 
 	} else {
