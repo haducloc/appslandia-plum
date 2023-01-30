@@ -43,7 +43,7 @@ public class HttpStatus403JwtTest extends MockTestBase {
     @Override
     protected void initialize() {
 	container.register(TestController.class, TestController.class);
-	container.getAppConfig().set(AppConfig.CONFIG_MODULE_NAME, "bearer");
+	container.getAppConfig().set(AppConfig.CONFIG_DEFAULT_MODULE, "bearer");
 
 	MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
 	memUserDatabase.addUser("user1", "password", "user");

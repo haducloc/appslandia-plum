@@ -35,37 +35,37 @@ import com.appslandia.common.utils.AssertUtils;
  */
 public class AppConfig extends InitializeObject implements Config {
 
-    public static final String CONFIG_MODULE_NAME = "module.module_name";
+    public static final String CONFIG_DEFAULT_MODULE = "config.default_module";
 
-    public static final String CONFIG_ENABLE_SESSION = "module.enable_session";
-    public static final String CONFIG_ENABLE_DEBUG = "module.enable_debug";
-    public static final String CONFIG_RESOURCE_NAMES = "module.resource_names";
-    public static final String CONFIG_HEADER_POLICIES = "module.header_policies";
+    public static final String CONFIG_ENABLE_SESSION = "config.enable_session";
+    public static final String CONFIG_ENABLE_DEBUG = "config.enable_debug";
+    public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
+    public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
 
-    public static final String CONFIG_DISABLE_GZIP = "module.disable_gzip";
-    public static final String CONFIG_ENABLE_CORS = "module.enable_cors";
-    public static final String CONFIG_CONTENT_LANG = "module.content_lang";
-    public static final String CONFIG_ENABLE_ASYNC = "module.enable_async";
+    public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
+    public static final String CONFIG_ENABLE_CORS = "config.enable_cors";
+    public static final String CONFIG_CONTENT_LANG = "config.content_lang";
+    public static final String CONFIG_ENABLE_ASYNC = "config.enable_async";
 
-    public static final String CONFIG_ENABLE_AUTHORIZE = "module.enable_authorize";
-    public static final String CONFIG_ENABLE_JSON_ERROR = "module.enable_json_error";
+    public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
+    public static final String CONFIG_ENABLE_JSON_ERROR = "config.enable_json_error";
 
-    public static final String CONFIG_REMME_COOKIE_NAME = "module.remme_cookie_name";
-    public static final String CONFIG_REMME_COOKIE_AGE = "module.remme_cookie_age";
-    public static final String CONFIG_REMME_COOKIE_SECURE = "module.remme_cookie_secure";
-    public static final String CONFIG_REMME_COOKIE_HTTPONLY = "module.remme_cookie_httponly";
-    public static final String CONFIG_REMME_COOKIE_SLIDING = "module.remme_cookie_sliding";
+    public static final String CONFIG_REMME_COOKIE_NAME = "config.remme_cookie_name";
+    public static final String CONFIG_REMME_COOKIE_AGE = "config.remme_cookie_age";
+    public static final String CONFIG_REMME_COOKIE_SECURE = "config.remme_cookie_secure";
+    public static final String CONFIG_REMME_COOKIE_HTTPONLY = "config.remme_cookie_httponly";
+    public static final String CONFIG_REMME_COOKIE_SLIDING = "config.remme_cookie_sliding";
 
-    public static final String CONFIG_PATH_LANG = "module.path_lang";
-    public static final String CONFIG_PREF_LANG = "module.pref_lang";
+    public static final String CONFIG_REQUIRE_PATH_LANG = "config.require_path_lang";
+    public static final String CONFIG_ENABLE_PREF_LANG = "config.enable_pref_lang";
 
-    public static final String CONFIG_VIEW_PATH = "module.view_path";
-    public static final String CONFIG_REAUTH_TIMEOUT_MS = "module.reauth_timeout_ms";
-    public static final String CONFIG_ASYNC_TIMEOUT_MS = "module.async_timeout_ms";
+    public static final String CONFIG_VIEW_PATH = "config.view_path";
+    public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
+    public static final String CONFIG_ASYNC_TIMEOUT_MS = "config.async_timeout_ms";
 
-    public static final String CONFIG_TEST_BROWSER_FEATURES = "module.test_browser_features";
-    public static final String CONFIG_X_FORWARDED_PORTS = "module.x_forwarded_ports";
-    public static final String CONFIG_DIRECT_ACCESS_JSP = "module.direct_access_jsp";
+    public static final String CONFIG_PARSE_BROWSER_FEATURES = "config.parse_browser_features";
+    public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
+    public static final String CONFIG_DIRECT_JSP_ACCESS = "config.direct_jsp_access";
 
     protected ConfigMap config;
 
@@ -92,7 +92,7 @@ public class AppConfig extends InitializeObject implements Config {
     protected void init() throws Exception {
 	AssertUtils.assertNotNull(this.config, "config is required.");
 
-	this.config.putIfAbsent(CONFIG_MODULE_NAME, Modules.DEFAULT);
+	this.config.putIfAbsent(CONFIG_DEFAULT_MODULE, Modules.DEFAULT);
 
 	this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_ENABLE_DEBUG, String.valueOf(false));
@@ -113,22 +113,22 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_REMME_COOKIE_HTTPONLY, String.valueOf(true));
 	this.config.putIfAbsent(CONFIG_REMME_COOKIE_SLIDING, String.valueOf(false));
 
-	this.config.putIfAbsent(CONFIG_PATH_LANG, String.valueOf(false));
-	this.config.putIfAbsent(CONFIG_PREF_LANG, String.valueOf(true));
+	this.config.putIfAbsent(CONFIG_REQUIRE_PATH_LANG, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_ENABLE_PREF_LANG, String.valueOf(true));
 
 	this.config.putIfAbsent(CONFIG_VIEW_PATH, "/WEB-INF/views");
 	this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
 
-	this.config.putIfAbsent(CONFIG_TEST_BROWSER_FEATURES, String.valueOf(false));
-	this.config.putIfAbsent(CONFIG_DIRECT_ACCESS_JSP, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
 
 	this.enableSession = this.config.getRequiredBool(CONFIG_ENABLE_SESSION);
 	this.enableDebug = this.config.getRequiredBool(CONFIG_ENABLE_DEBUG);
 	this.enableJsonError = this.config.getRequiredBool(CONFIG_ENABLE_JSON_ERROR);
 
-	this.testBrowserFeatures = this.config.getRequiredBool(CONFIG_TEST_BROWSER_FEATURES);
-	this.pathLang = this.config.getRequiredBool(CONFIG_PATH_LANG);
-	this.prefLang = this.config.getRequiredBool(CONFIG_PREF_LANG);
+	this.testBrowserFeatures = this.config.getRequiredBool(CONFIG_PARSE_BROWSER_FEATURES);
+	this.pathLang = this.config.getRequiredBool(CONFIG_REQUIRE_PATH_LANG);
+	this.prefLang = this.config.getRequiredBool(CONFIG_ENABLE_PREF_LANG);
 
 	this.viewPath = this.config.getRequiredString(CONFIG_VIEW_PATH);
 	this.reauthTimeoutMs = this.config.getRequiredLong(CONFIG_REAUTH_TIMEOUT_MS);
@@ -137,7 +137,7 @@ public class AppConfig extends InitializeObject implements Config {
 
     public String getModule() {
 	this.initialize();
-	return this.config.getString(CONFIG_MODULE_NAME);
+	return this.config.getString(CONFIG_DEFAULT_MODULE);
     }
 
     public boolean isEnableSession() {
