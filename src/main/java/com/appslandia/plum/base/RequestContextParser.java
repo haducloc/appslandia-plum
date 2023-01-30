@@ -83,8 +83,9 @@ public class RequestContextParser {
 	context.setConverterProvider(this.converterProvider);
 
 	List<String> pathItems = parsePathItems(request);
-	String pathLanguage = !pathItems.isEmpty() ? pathItems.get(0) : null;
-	initLanguageContext(request, context, pathLanguage);
+
+	String testPathLanguage = !pathItems.isEmpty() ? pathItems.get(0) : null;
+	initLanguageContext(request, context, testPathLanguage);
 
 	if (context.isPathLanguage()) {
 	    pathItems.remove(0);
@@ -107,12 +108,12 @@ public class RequestContextParser {
 	return context;
     }
 
-    protected void initLanguageContext(HttpServletRequest request, RequestContext context, String pathLanguage) {
+    protected void initLanguageContext(HttpServletRequest request, RequestContext context, String testPathLanguage) {
 	Language language = null;
-	if (pathLanguage == null) {
+	if (testPathLanguage == null) {
 	    language = parseLanguage(request);
 	} else {
-	    language = this.languageProvider.getLanguage(pathLanguage);
+	    language = this.languageProvider.getLanguage(testPathLanguage);
 	    if (language == null) {
 		language = parseLanguage(request);
 	    } else {
@@ -127,9 +128,9 @@ public class RequestContextParser {
 	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
 
 	    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-	    if ((prefCookie != null) && prefCookie.getLanguage() != null) {
+	    if ((prefCookie != null) && (prefCookie.getString(PrefCookie.PARAM_LANGUAGE) != null)) {
 
-		Language language = this.languageProvider.getLanguage(prefCookie.getLanguage());
+		Language language = this.languageProvider.getLanguage(prefCookie.getString(PrefCookie.PARAM_LANGUAGE));
 		if (language != null) {
 		    return language;
 		}

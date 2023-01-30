@@ -26,6 +26,7 @@ import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.HttpGetPost;
 import com.appslandia.plum.base.LanguageProvider;
+import com.appslandia.plum.base.PrefCookie;
 import com.appslandia.plum.base.PrefCookieHandler;
 import com.appslandia.plum.base.RequestAccessor;
 import com.appslandia.plum.results.RedirectResult;
@@ -60,7 +61,7 @@ public class DefaultLanguageController {
 	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
 
 	    this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
-		prefCookie.setLanguage(languageId);
+		prefCookie.set(PrefCookie.PARAM_LANGUAGE, languageId);
 	    });
 	}
 
@@ -76,7 +77,7 @@ public class DefaultLanguageController {
     @HttpGet
     public void reset(RequestAccessor request, HttpServletResponse response) throws Exception {
 	this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
-	    prefCookie.setLanguage(null);
+	    prefCookie.remove(PrefCookie.PARAM_LANGUAGE);
 	});
     }
 }

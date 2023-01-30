@@ -45,7 +45,7 @@ public class RequestContextParserTest extends MockTestBase {
     private Cookie initPrefCookie(String language) {
 	MockHttpServletResponse response = container.createResponse();
 	PrefCookieHandler prefCookieHandler = container.getObject(PrefCookieHandler.class);
-	prefCookieHandler.savePrefCookie(response, new PrefCookie().setLanguage(language));
+	prefCookieHandler.savePrefCookie(response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, language));
 	return response.getCookie(prefCookieHandler.getCookieName());
     }
 

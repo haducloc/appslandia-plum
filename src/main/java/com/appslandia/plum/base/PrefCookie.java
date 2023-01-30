@@ -50,15 +50,6 @@ public class PrefCookie extends MapWrapper<String, String> implements Config {
 	return this.map.get(key);
     }
 
-    public String getLanguage() {
-	return this.map.get(PARAM_LANGUAGE);
-    }
-
-    public PrefCookie setLanguage(String language) {
-	super.put(PARAM_LANGUAGE, language);
-	return this;
-    }
-
     public PrefCookie set(String key, String value) {
 	this.map.put(key, value);
 	return this;
