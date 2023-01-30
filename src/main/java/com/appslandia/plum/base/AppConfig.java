@@ -103,7 +103,7 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_REMME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(14, TimeUnit.DAYS)));
 	this.config.putIfAbsent(CONFIG_REMME_COOKIE_SECURE, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_REMME_COOKIE_HTTPONLY, String.valueOf(true));
-	this.config.putIfAbsent(CONFIG_REMME_COOKIE_SLIDING, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_REMME_COOKIE_SLIDING, String.valueOf(true));
 
 	this.config.putIfAbsent(CONFIG_REQUIRE_PATH_LANG, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_ENABLE_PREF_LANG, String.valueOf(true));
