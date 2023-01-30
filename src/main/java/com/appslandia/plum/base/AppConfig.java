@@ -39,8 +39,6 @@ public class AppConfig extends InitializeObject implements Config {
 
     public static final String CONFIG_ENABLE_SESSION = "config.enable_session";
     public static final String CONFIG_ENABLE_DEBUG = "config.enable_debug";
-    public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
-    public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
 
     public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
     public static final String CONFIG_ENABLE_CORS = "config.enable_cors";
@@ -63,9 +61,12 @@ public class AppConfig extends InitializeObject implements Config {
     public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
     public static final String CONFIG_ASYNC_TIMEOUT_MS = "config.async_timeout_ms";
 
-    public static final String CONFIG_PARSE_BROWSER_FEATURES = "config.parse_browser_features";
-    public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
     public static final String CONFIG_DIRECT_JSP_ACCESS = "config.direct_jsp_access";
+    public static final String CONFIG_PARSE_BROWSER_FEATURES = "config.parse_browser_features";
+
+    public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
+    public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
+    public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
 
     protected ConfigMap config;
 
@@ -92,9 +93,7 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
 	this.config.putIfAbsent(CONFIG_ENABLE_CORS, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_CONTENT_LANG, String.valueOf(false));
-
 	this.config.putIfAbsent(CONFIG_ENABLE_ASYNC, String.valueOf(false));
-	this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(30, TimeUnit.SECONDS)));
 
 	this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_ENABLE_JSON_ERROR, String.valueOf(false));
@@ -110,9 +109,10 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.config.putIfAbsent(CONFIG_VIEW_PATH, "/WEB-INF/views");
 	this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
+	this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(30, TimeUnit.SECONDS)));
 
-	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
 
 	this.enableDebug = this.config.getRequiredBool(CONFIG_ENABLE_DEBUG);
 	this.enableSession = this.config.getRequiredBool(CONFIG_ENABLE_SESSION);
