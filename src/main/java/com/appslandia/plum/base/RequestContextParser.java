@@ -82,9 +82,11 @@ public class RequestContextParser {
 	context.setGetOrHead(HttpMethod.GET.equals(request.getMethod()) || HttpMethod.HEAD.equals(request.getMethod()));
 	context.setConverterProvider(this.converterProvider);
 
+	// Path Items
 	List<String> pathItems = parsePathItems(request);
-
 	String testPathLanguage = !pathItems.isEmpty() ? pathItems.get(0) : null;
+
+	// Initialize localization context
 	initLanguageContext(request, context, testPathLanguage);
 
 	if (context.isPathLanguage()) {
