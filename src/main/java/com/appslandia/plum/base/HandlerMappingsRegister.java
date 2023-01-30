@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.appslandia.common.utils.ArrayUtils;
 import com.appslandia.common.utils.StringFormat;
 
 import jakarta.servlet.DispatcherType;
@@ -38,7 +37,7 @@ import jakarta.servlet.ServletException;
  */
 public abstract class HandlerMappingsRegister implements Startup {
 
-    protected String[] getMappingLanguages() {
+    protected String[] getLanguageIds() {
 	return null;
     }
 
@@ -53,7 +52,7 @@ public abstract class HandlerMappingsRegister implements Startup {
 	Set<String> urlMappings = new TreeSet<>();
 	urlMappings.add("");
 
-	String[] languages = getMappingLanguages();
+	String[] languages = getLanguageIds();
 
 	for (Class<?> controllerClass : scanner.getControllerClasses()) {
 	    String controller = ActionDescProvider.getController(controllerClass);
@@ -61,7 +60,8 @@ public abstract class HandlerMappingsRegister implements Startup {
 	    // /{controller}/*
 	    urlMappings.add(StringFormat.fmt("/{}/*", controller));
 
-	    if (ArrayUtils.hasElements(languages)) {
+	    // Only register language mappings if languages > 1
+	    if ((languages != null) && (languages.length > 1)) {
 		for (String language : languages) {
 
 		    // /{language}/{controller}/*
