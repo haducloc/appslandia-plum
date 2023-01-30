@@ -103,7 +103,8 @@ public class RequestContextParser {
 	context.setModule(getModule(request, actionDesc));
 
 	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_PARSE_BROWSER_FEATURES)) {
-	    context.setBrowserFeatures(ParseUtils.parseInt(ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME), 0));
+	    String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
+	    context.setBrowserFeatures(ParseUtils.parseInt(browserFeatures, 0));
 	}
 
 	request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, context);
@@ -130,11 +131,15 @@ public class RequestContextParser {
 	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
 
 	    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-	    if ((prefCookie != null) && (prefCookie.getString(PrefCookie.PARAM_LANGUAGE) != null)) {
+	    if (prefCookie != null) {
 
-		Language language = this.languageProvider.getLanguage(prefCookie.getString(PrefCookie.PARAM_LANGUAGE));
-		if (language != null) {
-		    return language;
+		String prefLang = prefCookie.getString(PrefCookie.PARAM_LANGUAGE);
+		if (prefLang != null) {
+
+		    Language language = this.languageProvider.getLanguage(prefLang);
+		    if (language != null) {
+			return language;
+		    }
 		}
 	    }
 	}
