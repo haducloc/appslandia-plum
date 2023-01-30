@@ -43,7 +43,6 @@ public class HttpStatus401LoginTest extends MockTestBase {
     protected void initialize() {
 	container.register(TestController.class, TestController.class);
 	container.getAppConfig().set(AppConfig.CONFIG_DEFAULT_MODULE, "form");
-	container.getAppConfig().set(AppConfig.CONFIG_ENABLE_SESSION, "true");
 
 	MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
 	memUserDatabase.addUser("user1", "password");

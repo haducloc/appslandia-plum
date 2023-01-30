@@ -121,7 +121,7 @@ public class ActionParser {
 	url.append(request.getServletContext().getContextPath());
 
 	// Language
-	if (requestContext.isPathLanguage() || this.appConfig.isPathLang()) {
+	if (requestContext.isPathLanguage() || this.appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 	    url.append('/').append(requestContext.getLanguageId());
 	}
 

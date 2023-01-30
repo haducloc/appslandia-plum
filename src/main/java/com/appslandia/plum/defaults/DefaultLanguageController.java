@@ -57,7 +57,7 @@ public class DefaultLanguageController {
 	request.assertNotNull(languageId);
 	request.assertNotNull(this.languageProvider.getLanguage(languageId));
 
-	if (this.appConfig.isPrefLang()) {
+	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
 
 	    this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
 		prefCookie.setLanguage(languageId);

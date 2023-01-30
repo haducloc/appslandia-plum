@@ -39,8 +39,6 @@ public class EnableCsrfTest extends MockTestBase {
     protected void initialize() {
 	container.register(TestController.class, TestController.class);
 	csrfManager = container.getObject(CsrfManager.class);
-
-	container.getAppConfig().set(AppConfig.CONFIG_ENABLE_SESSION, true);
     }
 
     @Test

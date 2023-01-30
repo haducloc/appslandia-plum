@@ -69,17 +69,9 @@ public class AppConfig extends InitializeObject implements Config {
 
     protected ConfigMap config;
 
-    private boolean enableSession;
     private boolean enableDebug;
-    private boolean enableJsonError;
-
-    private boolean testBrowserFeatures;
-    private boolean pathLang;
-    private boolean prefLang;
-
+    private boolean enableSession;
     private String viewPath;
-    private long reauthTimeoutMs;
-    private long asyncTimeoutMs;
 
     public AppConfig() {
     }
@@ -94,7 +86,7 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.config.putIfAbsent(CONFIG_DEFAULT_MODULE, Modules.DEFAULT);
 
-	this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(true));
 	this.config.putIfAbsent(CONFIG_ENABLE_DEBUG, String.valueOf(false));
 
 	this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
@@ -122,27 +114,9 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
 
-	this.enableSession = this.config.getRequiredBool(CONFIG_ENABLE_SESSION);
 	this.enableDebug = this.config.getRequiredBool(CONFIG_ENABLE_DEBUG);
-	this.enableJsonError = this.config.getRequiredBool(CONFIG_ENABLE_JSON_ERROR);
-
-	this.testBrowserFeatures = this.config.getRequiredBool(CONFIG_PARSE_BROWSER_FEATURES);
-	this.pathLang = this.config.getRequiredBool(CONFIG_REQUIRE_PATH_LANG);
-	this.prefLang = this.config.getRequiredBool(CONFIG_ENABLE_PREF_LANG);
-
+	this.enableSession = this.config.getRequiredBool(CONFIG_ENABLE_SESSION);
 	this.viewPath = this.config.getRequiredString(CONFIG_VIEW_PATH);
-	this.reauthTimeoutMs = this.config.getRequiredLong(CONFIG_REAUTH_TIMEOUT_MS);
-	this.asyncTimeoutMs = this.config.getRequiredLong(CONFIG_ASYNC_TIMEOUT_MS);
-    }
-
-    public String getModule() {
-	this.initialize();
-	return this.config.getString(CONFIG_DEFAULT_MODULE);
-    }
-
-    public boolean isEnableSession() {
-	this.initialize();
-	return this.enableSession;
     }
 
     public boolean isEnableDebug() {
@@ -150,39 +124,14 @@ public class AppConfig extends InitializeObject implements Config {
 	return this.enableDebug;
     }
 
-    public boolean isEnableJsonError() {
+    public boolean isEnableSession() {
 	this.initialize();
-	return this.enableJsonError;
-    }
-
-    public boolean isTestBrowserFeatures() {
-	this.initialize();
-	return this.testBrowserFeatures;
-    }
-
-    public boolean isPathLang() {
-	this.initialize();
-	return this.pathLang;
-    }
-
-    public boolean isPrefLang() {
-	this.initialize();
-	return this.prefLang;
+	return this.enableSession;
     }
 
     public String getViewPath() {
 	this.initialize();
 	return this.viewPath;
-    }
-
-    public long getReauthTimeoutMs() {
-	this.initialize();
-	return this.reauthTimeoutMs;
-    }
-
-    public long getAsyncTimeoutMs() {
-	this.initialize();
-	return this.asyncTimeoutMs;
     }
 
     public StringBuilder getViewPathBase() {

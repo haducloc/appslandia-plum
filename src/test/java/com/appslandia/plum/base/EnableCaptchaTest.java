@@ -41,8 +41,6 @@ public class EnableCaptchaTest extends MockTestBase {
     protected void initialize() {
 	container.register(TestController.class, TestController.class);
 	captchaManager = container.getObject(CaptchaManager.class);
-
-	container.getAppConfig().set(AppConfig.CONFIG_ENABLE_SESSION, true);
     }
 
     @Test

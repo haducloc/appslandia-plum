@@ -21,8 +21,8 @@
 package com.appslandia.plum.mocks;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.plum.base.InvalidAuthResult;
 import com.appslandia.plum.base.IdentityStoreBase;
+import com.appslandia.plum.base.InvalidAuthResult;
 import com.appslandia.plum.base.PrincipalRoles;
 
 import jakarta.inject.Inject;

@@ -99,7 +99,7 @@ public class RequestContextParser {
 	context.setClientId(this.clientIdParser.parseId(request));
 	context.setModule(getModule(request, actionDesc));
 
-	if (this.appConfig.isTestBrowserFeatures()) {
+	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_PARSE_BROWSER_FEATURES)) {
 	    context.setBrowserFeatures(ParseUtils.parseInt(ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME), 0));
 	}
 
@@ -124,7 +124,7 @@ public class RequestContextParser {
     }
 
     protected Language parseLanguage(HttpServletRequest request) {
-	if (this.appConfig.isPrefLang()) {
+	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
 
 	    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
 	    if ((prefCookie != null) && prefCookie.getLanguage() != null) {
@@ -146,7 +146,7 @@ public class RequestContextParser {
 	if (principal != null) {
 	    return principal.getModule();
 	}
-	return this.appConfig.getModule();
+	return this.appConfig.getRequiredString(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
     public static List<String> parsePathItems(HttpServletRequest request) {

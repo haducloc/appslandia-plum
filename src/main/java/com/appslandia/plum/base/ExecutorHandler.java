@@ -124,7 +124,7 @@ public class ExecutorHandler extends HttpServlet {
 	if (enableAsync.asyncListener() != EnableAsync.NoAsyncListener.class) {
 	    asyncContext.addListener(asyncContext.createListener(enableAsync.asyncListener()));
 	}
-	asyncContext.setTimeout(enableAsync.timeoutMs() > 0 ? enableAsync.timeoutMs() : this.appConfig.getAsyncTimeoutMs());
+	asyncContext.setTimeout(enableAsync.timeoutMs() > 0 ? enableAsync.timeoutMs() : this.appConfig.getRequiredLong(AppConfig.CONFIG_ASYNC_TIMEOUT_MS));
 
 	final Runnable asyncTask = new Runnable() {
 

@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.plum.base.ActionResult;
-import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
@@ -39,8 +38,6 @@ public class RedirectResultTest extends MockTestBase {
     @Override
     protected void initialize() {
 	container.register(TestController.class, TestController.class);
-
-	container.getAppConfig().set(AppConfig.CONFIG_ENABLE_SESSION, true);
     }
 
     @Test
