@@ -54,14 +54,14 @@ public class ActionParser {
 
     public ActionDesc parse(List<String> pathItems, Map<String, String> pathParamMap) {
 	// /
-	// /language.extension
+	// /language
 	if (pathItems.size() == 0) {
 	    return this.actionDescProvider.getHomeDesc();
 	}
 	ActionDesc actionDesc = null;
 	String controller = pathItems.get(0);
 
-	// /controller.extension
+	// /controller
 	if (pathItems.size() == 1) {
 	    actionDesc = this.actionDescProvider.getActionDesc(controller, ServletUtils.ACTION_INDEX);
 	    if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
@@ -72,7 +72,7 @@ public class ActionParser {
 	    }
 	    return actionDesc;
 	}
-	// /controller/action(/parameter)*.extension
+	// /controller/action(/parameter)*
 	String action = pathItems.get(1);
 	actionDesc = this.actionDescProvider.getActionDesc(controller, action);
 	if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
