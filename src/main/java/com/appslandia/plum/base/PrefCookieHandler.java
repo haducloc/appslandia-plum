@@ -28,6 +28,7 @@ import java.util.function.Consumer;
 
 import com.appslandia.common.utils.AssertUtils;
 import com.appslandia.common.utils.ObjectUtils;
+import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.URLUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -81,7 +82,7 @@ public class PrefCookieHandler {
 	AssertUtils.assertNotNull(prefCookie);
 	String cookieValue = encode(prefCookie);
 
-	if (cookieValue.isEmpty()) {
+	if (StringUtils.isNullOrEmpty(cookieValue)) {
 	    if (this.cookieHandler.getCookieValue(request, getCookieName()) != null) {
 		this.cookieHandler.removeCookie(response, getCookieName());
 	    }
