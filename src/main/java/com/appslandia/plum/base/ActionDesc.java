@@ -55,8 +55,6 @@ public class ActionDesc {
     private EnableEtag enableEtag;
     private EnableCsrf enableCsrf;
     private EnableCaptcha enableCaptcha;
-
-    private ContentLang contentLang;
     private EnableJsonError enableJsonError;
 
     private EnableAsync enableAsync;
@@ -222,14 +220,6 @@ public class ActionDesc {
 
     protected void setEnableCaptcha(EnableCaptcha enableCaptcha) {
 	this.enableCaptcha = enableCaptcha;
-    }
-
-    public ContentLang getContentLang() {
-	return this.contentLang;
-    }
-
-    protected void setContentLang(ContentLang contentLang) {
-	this.contentLang = contentLang;
     }
 
     public EnableAsync getEnableAsync() {

@@ -203,10 +203,6 @@ public class ExecutorHandler extends HttpServlet {
     }
 
     protected void onResultExecuting(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext, Object result) throws Exception {
-	// @ContentLang
-	if (requestContext.getActionDesc().getContentLang() != null) {
-	    this.headerPolicyProvider.getHeaderPolicy(requestContext.getActionDesc().getContentLang().value()).writePolicy(request, response, requestContext);
-	}
 	// @CacheControl
 	if ((requestContext.getActionDesc().getCacheControl() != null) && requestContext.isGetOrHead()) {
 	    this.headerPolicyProvider.getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value()).writePolicy(request, response, requestContext);

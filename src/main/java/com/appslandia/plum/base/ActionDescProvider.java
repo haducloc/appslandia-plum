@@ -216,15 +216,6 @@ public abstract class ActionDescProvider extends InitializeObject {
 		EnableCaptcha enableCaptcha = actionMethod.getDeclaredAnnotation(EnableCaptcha.class);
 		actionDesc.setEnableCaptcha(enableCaptcha);
 
-		// @ContentLang
-		ContentLang contentLang = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(ContentLang.class), controllerClass.getDeclaredAnnotation(ContentLang.class));
-		if (contentLang == null) {
-		    if (this.appConfig.getBool(AppConfig.CONFIG_CONTENT_LANG, false)) {
-			contentLang = ContentLang.IMPL;
-		    }
-		}
-		actionDesc.setContentLang(((contentLang != null) && !contentLang.removed()) ? contentLang : null);
-
 		// @EnableAsync
 		EnableAsync enableAsync = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableAsync.class), controllerClass.getDeclaredAnnotation(EnableAsync.class));
 		if (enableAsync == null) {

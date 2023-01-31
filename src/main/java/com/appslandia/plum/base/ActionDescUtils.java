@@ -62,26 +62,6 @@ public class ActionDescUtils {
 	return true;
     }
 
-    public static ContentLang createContentLang(String policy) {
-	return new ContentLang() {
-
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return ContentLang.class;
-	    }
-
-	    @Override
-	    public String value() {
-		return policy;
-	    }
-
-	    @Override
-	    public boolean removed() {
-		return false;
-	    }
-	};
-    };
-
     public static Authorize createAuthorize(String[] roles, String[] policies, boolean module, boolean reauth) {
 	return new Authorize() {
 

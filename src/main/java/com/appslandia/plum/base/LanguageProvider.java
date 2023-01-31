@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.Language;
@@ -42,8 +41,6 @@ import jakarta.servlet.http.HttpServletRequest;
 public class LanguageProvider extends InitializeObject {
 
     private Map<String, Language> languageMap = new LinkedHashMap<>();
-
-    private String languageIds;
     private Language defaultLanguage;
 
     @Override
@@ -53,8 +50,6 @@ public class LanguageProvider extends InitializeObject {
 	if (this.defaultLanguage == null) {
 	    this.defaultLanguage = this.languageMap.values().iterator().next();
 	}
-
-	this.languageIds = String.join(", ", this.languageMap.values().stream().map(l -> l.getLanguageId()).collect(Collectors.toList()));
 	this.languageMap = Collections.unmodifiableMap(this.languageMap);
     }
 
@@ -77,11 +72,6 @@ public class LanguageProvider extends InitializeObject {
 	    return this.languageMap.get(matchedLang);
 	}
 	return this.defaultLanguage;
-    }
-
-    public String getLanguageIds() {
-	this.initialize();
-	return this.languageIds;
     }
 
     public Collection<Language> getLanguages() {

@@ -42,7 +42,6 @@ public class AppConfig extends InitializeObject implements Config {
 
     public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
     public static final String CONFIG_ENABLE_CORS = "config.enable_cors";
-    public static final String CONFIG_CONTENT_LANG = "config.content_lang";
     public static final String CONFIG_ENABLE_ASYNC = "config.enable_async";
 
     public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
@@ -92,7 +91,6 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
 	this.config.putIfAbsent(CONFIG_ENABLE_CORS, String.valueOf(false));
-	this.config.putIfAbsent(CONFIG_CONTENT_LANG, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_ENABLE_ASYNC, String.valueOf(false));
 
 	this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));

@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.AssertUtils;
-import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -53,11 +52,6 @@ public class HeaderPolicyProvider extends InitializeObject {
 		    response.setHeader("Expires", "0");
 		    response.setHeader("Pragma", "no-cache");
 		}
-	    });
-	}
-	if (!this.headerPolicyMap.containsKey(ContentLang.DEFAULT_POLICY)) {
-	    this.headerPolicyMap.put(ContentLang.DEFAULT_POLICY, (request, response, requestContext) -> {
-		response.setHeader("Content-Language", ServletUtils.getAppScoped(request, LanguageProvider.class).getLanguageIds());
 	    });
 	}
 	this.headerPolicyMap = Collections.unmodifiableMap(this.headerPolicyMap);
