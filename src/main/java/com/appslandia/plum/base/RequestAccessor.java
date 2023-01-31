@@ -24,6 +24,8 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Map;
 
+import com.appslandia.common.converters.Converter;
+import com.appslandia.common.converters.ConverterException;
 import com.appslandia.common.utils.AssertUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -38,23 +40,30 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
  */
 public class RequestAccessor extends HttpServletRequestWrapper {
 
-    public static final String PARAM_ACTION_TYPE = "actionType";
+    public static final String PARAM_FORM_ACTION = "formAction";
 
     public RequestAccessor(HttpServletRequest request) {
 	super(request);
     }
 
-    public String findParam(String name) {
-	String[] values = getParameterValues(name);
-	if (values == null) {
+    public <T> T getParamOrNull(String name, Class<T> targetType) {
+	String value = getParamOrNull(name);
+	Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
+	AssertUtils.assertNotNull(converter);
+
+	try {
+	    return converter.parse(value, getRequestContext().getFormatProvider());
+	} catch (ConverterException ex) {
 	    return null;
 	}
-	return Arrays.stream(values).filter(v -> !StringUtils.isNullOrBlank(v)).findFirst().orElse(null);
     }
 
-    public <T> T paramOrNull(String name, Class<T> targetType) throws IllegalArgumentException {
-	String value = getParamOrNull(name);
-	return getRequestContext().parseOrNull(value, targetType);
+    public String getParamOrNull(String name) {
+	return StringUtils.trimToNull(getParameter(name));
+    }
+
+    public boolean isFormAction(String action) {
+	return action.equalsIgnoreCase(getParamOrNull(PARAM_FORM_ACTION));
     }
 
     public boolean isGetOrHead() {
@@ -63,10 +72,6 @@ public class RequestAccessor extends HttpServletRequestWrapper {
 
     public boolean isAjaxRequest() {
 	return ServletUtils.isAjaxRequest(this);
-    }
-
-    public String getParamOrNull(String name) {
-	return StringUtils.trimToNull(getParameter(name));
     }
 
     public ZoneId getClientZone(ZoneId orZone) {
@@ -104,22 +109,6 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     public boolean getBoolPref(String name, boolean defaultValue) {
 	PrefCookie prefs = ServletUtils.getPrefCookie(this);
 	return (prefs != null) ? prefs.getBool(name, defaultValue) : defaultValue;
-    }
-
-    public String getActionType() {
-	return getParameter(PARAM_ACTION_TYPE);
-    }
-
-    public boolean isSaveAction() {
-	return "save".equalsIgnoreCase(getActionType());
-    }
-
-    public boolean isSaveContAction() {
-	return "saveCont".equalsIgnoreCase(getActionType());
-    }
-
-    public boolean isRemoveAction() {
-	return "remove".equalsIgnoreCase(getActionType());
     }
 
     public void store(String key, Object value) {

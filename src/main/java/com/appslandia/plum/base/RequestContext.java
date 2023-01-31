@@ -25,9 +25,7 @@ import java.util.Map;
 import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.Converter;
-import com.appslandia.common.converters.ConverterException;
 import com.appslandia.common.converters.ConverterProvider;
-import com.appslandia.common.utils.AssertUtils;
 import com.appslandia.plum.utils.XmlEscaper;
 
 /**
@@ -80,18 +78,6 @@ public class RequestContext {
 	    return false;
 	}
 	return this.actionDesc.getAction().equalsIgnoreCase(action) && this.actionDesc.getController().equalsIgnoreCase(controller);
-    }
-
-    public <T> T parseOrNull(String value, Class<T> targetType) throws IllegalArgumentException {
-	try {
-	    Converter<T> converter = this.converterProvider.getConverter(targetType);
-	    AssertUtils.assertNotNull(converter);
-
-	    return converter.parse(value, this.formatProvider);
-
-	} catch (ConverterException ex) {
-	    return null;
-	}
     }
 
     public String getLanguageId() {
