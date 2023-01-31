@@ -81,36 +81,6 @@ public class RequestAccessor extends HttpServletRequestWrapper {
 	return (orZone != null) ? orZone : ZoneId.systemDefault();
     }
 
-    public String getPref(String name) {
-	PrefCookie prefs = ServletUtils.getPrefCookie(this);
-	return (prefs != null) ? prefs.get(name) : null;
-    }
-
-    public String getPref(String name, String defaultValue) {
-	PrefCookie prefs = ServletUtils.getPrefCookie(this);
-	return (prefs != null) ? prefs.getString(name, defaultValue) : null;
-    }
-
-    public int getIntPref(String name, int defaultValue) {
-	PrefCookie prefs = ServletUtils.getPrefCookie(this);
-	return (prefs != null) ? prefs.getInt(name, defaultValue) : defaultValue;
-    }
-
-    public long getLongPref(String name, long defaultValue) {
-	PrefCookie prefs = ServletUtils.getPrefCookie(this);
-	return (prefs != null) ? prefs.getLong(name, defaultValue) : defaultValue;
-    }
-
-    public double getLongPref(String name, double defaultValue) {
-	PrefCookie prefs = ServletUtils.getPrefCookie(this);
-	return (prefs != null) ? prefs.getDouble(name, defaultValue) : defaultValue;
-    }
-
-    public boolean getBoolPref(String name, boolean defaultValue) {
-	PrefCookie prefs = ServletUtils.getPrefCookie(this);
-	return (prefs != null) ? prefs.getBool(name, defaultValue) : defaultValue;
-    }
-
     public void store(String key, Object value) {
 	setAttribute(key, value);
     }
@@ -163,6 +133,10 @@ public class RequestAccessor extends HttpServletRequestWrapper {
 
     public Resources getResources() {
 	return getRequestContext().getResources();
+    }
+
+    public PrefCookie getPrefCookie() {
+	return ServletUtils.getPrefCookie(this);
     }
 
     public String res(String key) {

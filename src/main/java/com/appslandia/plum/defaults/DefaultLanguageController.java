@@ -58,12 +58,9 @@ public class DefaultLanguageController {
 	request.assertNotNull(languageId);
 	request.assertNotNull(this.languageProvider.getLanguage(languageId));
 
-	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
-
-	    this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
-		prefCookie.set(PrefCookie.PARAM_LANGUAGE, languageId);
-	    });
-	}
+	this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
+	    prefCookie.set(PrefCookie.PARAM_LANGUAGE, languageId);
+	});
 
 	final String redirectUrl = request.getParameter("redirectUrl");
 

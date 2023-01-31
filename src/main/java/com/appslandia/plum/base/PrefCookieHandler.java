@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -69,10 +70,10 @@ public class PrefCookieHandler {
     protected PrefCookie decode(String prefCookie) {
 	try {
 	    Map<String, Object> map = URLUtils.parseParams(prefCookie, new HashMap<>(), false);
-	    return new PrefCookie(ObjectUtils.cast(map));
+	    return new PrefCookie(Collections.unmodifiableMap(ObjectUtils.cast(map)));
 
 	} catch (IllegalArgumentException ex) {
-	    return null;
+	    return PrefCookie.EMPTY;
 	}
     }
 
@@ -91,28 +92,26 @@ public class PrefCookieHandler {
 
     public PrefCookie loadPrefCookie(HttpServletRequest request, HttpServletResponse response) {
 	String cookieValue = this.cookieHandler.getCookieValue(request, getCookieName());
+	PrefCookie prefCookie = null;
+
 	if (cookieValue == null) {
-	    return null;
-	}
-	PrefCookie prefCookie = decode(cookieValue);
-	if (prefCookie == null) {
-	    removePrefCookie(response);
-	    return null;
+	    prefCookie = PrefCookie.EMPTY;
+	} else {
+	    prefCookie = decode(cookieValue);
+
+	    if (prefCookie == PrefCookie.EMPTY) {
+		this.cookieHandler.removeCookie(response, getCookieName());
+	    }
 	}
 	request.setAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID, prefCookie);
 	return prefCookie;
     }
 
-    public void removePrefCookie(HttpServletResponse response) {
-	this.cookieHandler.removeCookie(response, getCookieName());
-    }
-
     public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, Consumer<PrefCookie> consumer) {
 	PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-	prefCookie = (prefCookie != null) ? prefCookie : new PrefCookie();
-	consumer.accept(prefCookie);
+	PrefCookie newPrefCookie = (prefCookie != null) ? prefCookie.clone() : new PrefCookie();
+	consumer.accept(newPrefCookie);
 
-	request.setAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID, prefCookie);
-	savePrefCookie(response, prefCookie);
+	savePrefCookie(response, newPrefCookie);
     }
 }

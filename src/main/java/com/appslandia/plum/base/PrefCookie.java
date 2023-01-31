@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -31,11 +32,13 @@ import com.appslandia.common.base.MapWrapper;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class PrefCookie extends MapWrapper<String, String> implements Config {
+public class PrefCookie extends MapWrapper<String, String> implements Config, Cloneable {
     private static final long serialVersionUID = 1L;
 
     public static final String REQUEST_ATTRIBUTE_ID = "prefCookie";
     public static final String PARAM_LANGUAGE = "language";
+
+    public static final PrefCookie EMPTY = new PrefCookie(Collections.emptyMap());
 
     public PrefCookie() {
 	super(new HashMap<>());
@@ -78,5 +81,13 @@ public class PrefCookie extends MapWrapper<String, String> implements Config {
     public PrefCookie set(String key, double value) {
 	this.map.put(key, Double.toString(value));
 	return this;
+    }
+
+    @Override
+    public PrefCookie clone() {
+	if (this == EMPTY)
+	    return new PrefCookie();
+
+	return new PrefCookie(new HashMap<>(this.map));
     }
 }

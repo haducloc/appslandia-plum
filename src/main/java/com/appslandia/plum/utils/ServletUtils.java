@@ -585,7 +585,8 @@ public class ServletUtils {
     }
 
     public static PrefCookie getPrefCookie(HttpServletRequest request) {
-	return (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
+	PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
+	return AssertUtils.assertStateNotNull(prefCookie);
     }
 
     public static Resources getResources(HttpServletRequest request) {

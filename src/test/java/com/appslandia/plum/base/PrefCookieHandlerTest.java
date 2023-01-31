@@ -80,7 +80,7 @@ public class PrefCookieHandlerTest extends MockTestBase {
     public void test_loadPrefCookie_noCookie() {
 	try {
 	    PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertNull(prefCookie);
+	    Assertions.assertEquals(PrefCookie.EMPTY, prefCookie);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -91,25 +91,8 @@ public class PrefCookieHandlerTest extends MockTestBase {
     public void test_loadPrefCookie_invalidCookie() {
 	try {
 	    getCurrentRequest().addCookie(new Cookie(prefCookieHandler.getCookieName(), "invalid"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
-
-	    PrefCookie prefCookie = (PrefCookie) getCurrentRequest().getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-	    Assertions.assertNull(prefCookie);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_removePrefCookie() {
-	try {
-	    prefCookieHandler.removePrefCookie(getCurrentResponse());
-	    Cookie deletedCookie = getCurrentResponse().getCookie(prefCookieHandler.getCookieName());
-
-	    Assertions.assertNotNull(deletedCookie);
-	    Assertions.assertTrue(deletedCookie.getMaxAge() == 0);
-	    Assertions.assertTrue("".equals(deletedCookie.getValue()));
+	    PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
+	    Assertions.assertEquals(PrefCookie.EMPTY, prefCookie);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

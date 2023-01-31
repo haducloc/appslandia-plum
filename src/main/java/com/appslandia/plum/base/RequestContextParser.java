@@ -74,8 +74,11 @@ public class RequestContextParser {
 	if (context != null) {
 	    return context;
 	}
+
 	// PrefCookie
-	this.prefCookieHandler.loadPrefCookie(request, response);
+	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_PARSE_PREF_COOKIE)) {
+	    this.prefCookieHandler.loadPrefCookie(request, response);
+	}
 
 	// Initialize RequestContext
 	context = new RequestContext();
@@ -102,6 +105,7 @@ public class RequestContextParser {
 	context.setClientId(this.clientIdParser.parseId(request));
 	context.setModule(getModule(request, actionDesc));
 
+	// Browser Features
 	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_PARSE_BROWSER_FEATURES)) {
 	    String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
 	    context.setBrowserFeatures(ParseUtils.parseInt(browserFeatures, 0));
@@ -128,7 +132,8 @@ public class RequestContextParser {
     }
 
     protected Language parseLanguage(HttpServletRequest request) {
-	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_ENABLE_PREF_LANG)) {
+	// Only try PrefCookie.language if the application is configured to support more than one language
+	if (this.languageProvider.getLanguages().size() > 1) {
 
 	    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
 	    if (prefCookie != null) {

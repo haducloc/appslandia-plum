@@ -55,7 +55,6 @@ public class AppConfig extends InitializeObject implements Config {
     public static final String CONFIG_REMME_COOKIE_SLIDING = "config.remme_cookie_sliding";
 
     public static final String CONFIG_REQUIRE_PATH_LANG = "config.require_path_lang";
-    public static final String CONFIG_ENABLE_PREF_LANG = "config.enable_pref_lang";
 
     public static final String CONFIG_VIEW_PATH = "config.view_path";
     public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
@@ -63,6 +62,7 @@ public class AppConfig extends InitializeObject implements Config {
 
     public static final String CONFIG_DIRECT_JSP_ACCESS = "config.direct_jsp_access";
     public static final String CONFIG_PARSE_BROWSER_FEATURES = "config.parse_browser_features";
+    public static final String CONFIG_PARSE_PREF_COOKIE = "config.parse_pref_cookie";
 
     public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
     public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
@@ -105,7 +105,6 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_REMME_COOKIE_SLIDING, String.valueOf(true));
 
 	this.config.putIfAbsent(CONFIG_REQUIRE_PATH_LANG, String.valueOf(false));
-	this.config.putIfAbsent(CONFIG_ENABLE_PREF_LANG, String.valueOf(true));
 
 	this.config.putIfAbsent(CONFIG_VIEW_PATH, "/WEB-INF/views");
 	this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
@@ -113,6 +112,7 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_PARSE_PREF_COOKIE, String.valueOf(true));
 
 	this.enableDebug = this.config.getRequiredBool(CONFIG_ENABLE_DEBUG);
 	this.enableSession = this.config.getRequiredBool(CONFIG_ENABLE_SESSION);
