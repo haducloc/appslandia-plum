@@ -77,17 +77,20 @@ public class PrefCookieHandler {
 	}
     }
 
-    public void savePrefCookie(HttpServletResponse response, PrefCookie prefCookie) {
+    public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, PrefCookie prefCookie) {
 	AssertUtils.assertNotNull(prefCookie);
-
 	String cookieValue = encode(prefCookie);
+
 	if (cookieValue.isEmpty()) {
-	    return;
+	    if (this.cookieHandler.getCookieValue(request, getCookieName()) != null) {
+		this.cookieHandler.removeCookie(response, getCookieName());
+	    }
+	} else {
+	    if (cookieValue.length() > 4093) {
+		throw new IllegalArgumentException("PrefCookie is too big.");
+	    }
+	    this.cookieHandler.saveCookie(response, getCookieName(), cookieValue, getCookieAge(), c -> c.setHttpOnly(false));
 	}
-	if (cookieValue.length() > 4093) {
-	    throw new IllegalArgumentException("PrefCookie is too big.");
-	}
-	this.cookieHandler.saveCookie(response, getCookieName(), cookieValue, getCookieAge(), c -> c.setHttpOnly(false));
     }
 
     public PrefCookie loadPrefCookie(HttpServletRequest request, HttpServletResponse response) {
@@ -112,6 +115,6 @@ public class PrefCookieHandler {
 	PrefCookie newPrefCookie = (prefCookie != null) ? prefCookie.clone() : new PrefCookie();
 	consumer.accept(newPrefCookie);
 
-	savePrefCookie(response, newPrefCookie);
+	savePrefCookie(request, response, newPrefCookie);
     }
 }

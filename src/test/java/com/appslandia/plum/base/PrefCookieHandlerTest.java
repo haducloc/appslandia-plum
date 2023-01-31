@@ -23,6 +23,7 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.plum.mocks.MockHttpServletRequest;
 import com.appslandia.plum.mocks.MockHttpServletResponse;
 
 import jakarta.servlet.http.Cookie;
@@ -41,16 +42,18 @@ public class PrefCookieHandlerTest extends MockTestBase {
 	prefCookieHandler = container.getObject(PrefCookieHandler.class);
     }
 
-    private Cookie initPrefCookie() {
+    private Cookie createPrefCookie() {
+	MockHttpServletRequest request = container.createRequest();
 	MockHttpServletResponse response = container.createResponse();
-	prefCookieHandler.savePrefCookie(response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+
+	prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
 	return response.getCookie(prefCookieHandler.getCookieName());
     }
 
     @Test
     public void test_savePrefCookie() {
 	try {
-	    prefCookieHandler.savePrefCookie(getCurrentResponse(), new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+	    prefCookieHandler.savePrefCookie(getCurrentRequest(), getCurrentResponse(), new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
 
 	    Cookie savedCookie = getCurrentResponse().getCookie(prefCookieHandler.getCookieName());
 	    Assertions.assertNotNull(savedCookie);
@@ -63,7 +66,7 @@ public class PrefCookieHandlerTest extends MockTestBase {
     @Test
     public void test_loadPrefCookie() {
 	try {
-	    getCurrentRequest().addCookie(initPrefCookie());
+	    getCurrentRequest().addCookie(createPrefCookie());
 
 	    PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
 	    Assertions.assertNotNull(prefCookie);

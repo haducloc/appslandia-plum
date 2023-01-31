@@ -23,6 +23,7 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.plum.mocks.MockHttpServletRequest;
 import com.appslandia.plum.mocks.MockHttpServletResponse;
 
 import jakarta.servlet.http.Cookie;
@@ -42,10 +43,12 @@ public class RequestContextParserTest extends MockTestBase {
 	requestContextParser = container.getObject(RequestContextParser.class);
     }
 
-    private Cookie initPrefCookie(String language) {
+    private Cookie createPrefCookie(String language) {
+	MockHttpServletRequest request = container.createRequest();
 	MockHttpServletResponse response = container.createResponse();
 	PrefCookieHandler prefCookieHandler = container.getObject(PrefCookieHandler.class);
-	prefCookieHandler.savePrefCookie(response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, language));
+
+	prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, language));
 	return response.getCookie(prefCookieHandler.getCookieName());
     }
 
@@ -76,7 +79,7 @@ public class RequestContextParserTest extends MockTestBase {
     @Test
     public void test_prefLanguage() {
 	getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
-	getCurrentRequest().addCookie(initPrefCookie("vi"));
+	getCurrentRequest().addCookie(createPrefCookie("vi"));
 	requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
 	RequestContext requestContext = (RequestContext) getCurrentRequest().getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
