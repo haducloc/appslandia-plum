@@ -29,21 +29,21 @@ import com.appslandia.common.utils.AssertUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SortBag extends HashMap<String, SortBy> {
+public class SortModel extends HashMap<String, SortBy> {
     private static final long serialVersionUID = 1L;
 
-    public static final String REQUEST_ATTRIBUTE_ID = "sortBag";
+    public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
 
     private SortBy current;
 
-    public SortBag put(String... sortBys) {
+    public SortModel put(String... sortBys) {
 	for (String sortBy : sortBys) {
 	    this.put(sortBy, new SortBy(sortBy, true));
 	}
 	return this;
     }
 
-    public SortBag put(String sortBy, boolean sortAsc) {
+    public SortModel put(String sortBy, boolean sortAsc) {
 	this.put(sortBy, new SortBy(sortBy, sortAsc));
 	return this;
     }

@@ -25,7 +25,7 @@ import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.PagerModel;
 import com.appslandia.plum.base.PrefCookie;
 import com.appslandia.plum.base.RequestContext;
-import com.appslandia.plum.base.SortBag;
+import com.appslandia.plum.base.SortModel;
 import com.appslandia.plum.base.TempData;
 import com.appslandia.plum.tags.ExpressionEvaluator;
 import com.appslandia.plum.utils.ServletUtils;
@@ -52,7 +52,7 @@ public class MockExpressionEvaluator extends ExpressionEvaluator {
 	    defineBean(PrefCookie.REQUEST_ATTRIBUTE_ID, pc, processor);
 	    defineBean(TempData.REQUEST_ATTRIBUTE_ID, pc, processor);
 
-	    defineBean(SortBag.REQUEST_ATTRIBUTE_ID, pc, processor);
+	    defineBean(SortModel.REQUEST_ATTRIBUTE_ID, pc, processor);
 	    defineBean(PagerModel.REQUEST_ATTRIBUTE_ID, pc, processor);
 
 	    defineBean(ServletUtils.REQUEST_ATTRIBUTE_MODEL, pc, processor);

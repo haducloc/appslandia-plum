@@ -23,6 +23,7 @@ package com.appslandia.plum.base;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterException;
@@ -85,16 +86,31 @@ public class RequestAccessor extends HttpServletRequestWrapper {
 	setAttribute(key, value);
     }
 
-    public void storeModel(Object model) {
+    public <T> T storeModel(Supplier<T> model) {
+	return storeModel(model.get());
+    }
+
+    public PagerModel storePagerModel(Supplier<PagerModel> model) {
+	return storePagerModel(model.get());
+    }
+
+    public SortModel storeSortModel(Supplier<SortModel> model) {
+	return storeSortModel(model.get());
+    }
+
+    public <T> T storeModel(T model) {
 	store(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+	return model;
     }
 
-    public void storePagerModel(PagerModel pagerModel) {
-	store(PagerModel.REQUEST_ATTRIBUTE_ID, pagerModel);
+    public PagerModel storePagerModel(PagerModel model) {
+	store(PagerModel.REQUEST_ATTRIBUTE_ID, model);
+	return model;
     }
 
-    public void storeSortBag(SortBag sortBag) {
-	store(SortBag.REQUEST_ATTRIBUTE_ID, sortBag);
+    public SortModel storeSortModel(SortModel model) {
+	store(SortModel.REQUEST_ATTRIBUTE_ID, model);
+	return model;
     }
 
     public boolean isModuleAuthenticated() {
