@@ -114,20 +114,26 @@ public class ExceptionHandler {
 			.setType(prob.getType()).setInstance(prob.getInstance()).setExtensions(prob.getExtensions());
 	    }
 	}
+
+	// Status
 	if (problem.getStatus() == null) {
 	    problem.setStatus((Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
 	}
 	if (problem.getStatus() == null) {
 	    problem.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
 	}
+
+	// Title
 	if (problem.getTitleKey() != null) {
 	    problem.setTitle(problem.getTitleKey().getRes(requestContext.getResources()));
 	}
-	if (problem.getDetailKey() != null) {
-	    problem.setDetail(problem.getDetailKey().getRes(requestContext.getResources()));
-	}
 	if (problem.getTitle() == null) {
 	    problem.setTitle(getErrorMessage(problem.getStatus(), exception, requestContext.getResources()));
+	}
+
+	// Detail
+	if (problem.getDetailKey() != null) {
+	    problem.setDetail(problem.getDetailKey().getRes(requestContext.getResources()));
 	}
 
 	// exception
