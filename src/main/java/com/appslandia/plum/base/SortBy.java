@@ -28,17 +28,13 @@ package com.appslandia.plum.base;
 public class SortBy {
 
     private String sortBy;
-    private boolean sortAsc;
+    private Boolean sortAsc;
 
     public SortBy() {
     }
 
     public SortBy(String sortBy, boolean sortAsc) {
 	this.sortBy = sortBy;
-    }
-
-    public boolean isSortDesc() {
-	return !this.sortAsc;
     }
 
     public String getSortBy() {
@@ -49,7 +45,7 @@ public class SortBy {
 	this.sortBy = sortBy;
     }
 
-    public boolean isSortAsc() {
+    public Boolean getSortAsc() {
 	return this.sortAsc;
     }
 

@@ -35,31 +35,38 @@ public class SortModel extends HashMap<String, SortBy> {
     public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
 
     private SortBy current;
+    private String defSortBy;
 
-    public SortModel put(String... sortBys) {
+    public SortModel set(String... sortBys) {
 	for (String sortBy : sortBys) {
 	    this.put(sortBy, new SortBy(sortBy, true));
 	}
 	return this;
     }
 
-    public SortModel put(String sortBy, boolean sortAsc) {
+    public SortModel set(String sortBy, boolean sortAsc) {
 	this.put(sortBy, new SortBy(sortBy, sortAsc));
 	return this;
     }
 
-    public void setCurrent(String sortBy, Boolean sortAsc, String defSortBy) {
-	SortBy curSortBy = null;
-	if (sortBy != null) {
-	    curSortBy = this.get(sortBy);
-	    if ((curSortBy != null) && (sortAsc != null)) {
-		curSortBy.setSortAsc(sortAsc);
+    public SortModel setDefault(String defSortBy) {
+	this.defSortBy = defSortBy;
+	return this;
+    }
+
+    public void setCurrent(SortBy sortBy) {
+	SortBy curSb = null;
+	if (sortBy.getSortBy() != null) {
+	    curSb = this.get(sortBy.getSortBy());
+
+	    if ((curSb != null) && (sortBy.getSortAsc() != null)) {
+		curSb.setSortAsc(sortBy.getSortAsc());
 	    }
 	}
-	if (curSortBy == null) {
-	    curSortBy = AssertUtils.assertNotNull(this.get(defSortBy));
+	if (curSb == null) {
+	    curSb = AssertUtils.assertNotNull(this.get(this.defSortBy));
 	}
-	this.current = curSortBy;
+	this.current = curSb;
     }
 
     public String getSortBy() {
@@ -67,10 +74,6 @@ public class SortModel extends HashMap<String, SortBy> {
     }
 
     public boolean isSortAsc() {
-	return AssertUtils.assertNotNull(this.current).isSortAsc();
-    }
-
-    public boolean isSortDesc() {
-	return AssertUtils.assertNotNull(this.current).isSortDesc();
+	return AssertUtils.assertNotNull(this.current).getSortAsc();
     }
 }
