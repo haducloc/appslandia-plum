@@ -48,6 +48,13 @@ public class BeanInstanceContextListener {
     @Inject
     protected AppLogger appLogger;
 
+    public BeanInstanceContextListener() {
+    }
+
+    public BeanInstanceContextListener(AppLogger appLogger) {
+	this.appLogger = appLogger;
+    }
+
     public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
 	this.appLogger.info("Registering bean instances holder...");
 	sc.setAttribute(ATTRIBUTE_BEAN_INSTANCES, new ConcurrentHashMap<Class<?>, BeanInstance<?>>());
@@ -68,6 +75,7 @@ public class BeanInstanceContextListener {
 		}
 	    });
 	}
+	sc.removeAttribute(ATTRIBUTE_BEAN_INSTANCES);
 
 	this.appLogger.info("Finished destroying bean instances.");
     }
