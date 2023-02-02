@@ -29,51 +29,45 @@ import com.appslandia.common.utils.AssertUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SortModel extends HashMap<String, SortBy> {
+public class SortModel extends HashMap<String, Boolean> {
     private static final long serialVersionUID = 1L;
 
     public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
 
-    private SortBy current;
-    private String defSortBy;
+    private String defBy;
+    private String sortBy;
+    private boolean sortAsc;
 
-    public SortModel set(String... sortBys) {
+    public SortModel asc(String... sortBys) {
 	for (String sortBy : sortBys) {
-	    this.put(sortBy, new SortBy(sortBy, true));
+	    this.put(sortBy, true);
 	}
 	return this;
     }
 
-    public SortModel set(String sortBy, boolean sortAsc) {
-	this.put(sortBy, new SortBy(sortBy, sortAsc));
+    public SortModel desc(String... sortBys) {
+	for (String sortBy : sortBys) {
+	    this.put(sortBy, false);
+	}
 	return this;
     }
 
-    public SortModel setDefault(String defSortBy) {
-	this.defSortBy = defSortBy;
+    public SortModel defBy(String defBy) {
+	AssertUtils.assertTrue(this.containsKey(defBy));
+	this.defBy = defBy;
 	return this;
     }
 
-    public void setCurrent(SortBy sortBy) {
-	SortBy curSb = null;
-	if (sortBy.getSortBy() != null) {
-	    curSb = this.get(sortBy.getSortBy());
-
-	    if ((curSb != null) && (sortBy.getSortAsc() != null)) {
-		curSb.setSortAsc(sortBy.getSortAsc());
-	    }
-	}
-	if (curSb == null) {
-	    curSb = AssertUtils.assertNotNull(this.get(this.defSortBy));
-	}
-	this.current = curSb;
+    public void sortBy(String sortBy, Boolean sortAsc) {
+	this.sortBy = this.containsKey(sortBy) ? sortBy : this.defBy;
+	this.sortAsc = (sortAsc != null) ? sortAsc : this.get(this.sortBy);
     }
 
-    public String getSortBy() {
-	return AssertUtils.assertNotNull(this.current).getSortBy();
+    public String sortBy() {
+	return this.sortBy;
     }
 
-    public boolean isSortAsc() {
-	return AssertUtils.assertNotNull(this.current).getSortAsc();
+    public boolean sortAsc() {
+	return this.sortAsc;
     }
 }
