@@ -58,9 +58,10 @@ public class SortModel extends HashMap<String, Boolean> {
 	return this;
     }
 
-    public void sortBy(String sortBy, Boolean sortAsc) {
+    public SortModel current(String sortBy, Boolean sortAsc) {
 	this.sortBy = this.containsKey(sortBy) ? sortBy : this.defBy;
 	this.sortAsc = (sortAsc != null) ? sortAsc : this.get(this.sortBy);
+	return this;
     }
 
     public String sortBy() {
