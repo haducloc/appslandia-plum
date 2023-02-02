@@ -36,7 +36,7 @@ public class SortModel extends HashMap<String, Boolean> {
 
     private String defBy;
     private String sortBy;
-    private boolean sortAsc;
+    private Boolean sortAsc;
 
     public SortModel asc(String... fieldNames) {
 	for (String sortBy : fieldNames) {
@@ -64,18 +64,18 @@ public class SortModel extends HashMap<String, Boolean> {
     }
 
     public String sortBy() {
-	return this.sortBy;
+	return AssertUtils.assertStateNotNull(this.sortBy);
     }
 
     public boolean sortAsc() {
-	return this.sortAsc;
+	return AssertUtils.assertStateNotNull(this.sortAsc);
     }
 
     public Boolean sortAsc(String fieldName) {
-	return this.sortBy.equals(fieldName) ? this.sortAsc : null;
+	return this.sortBy().equals(fieldName) ? this.sortAsc() : null;
     }
 
     public Boolean flipAsc(String fieldName) {
-	return this.sortBy.equals(fieldName) ? !this.sortAsc : null;
+	return this.sortBy().equals(fieldName) ? !this.sortAsc() : null;
     }
 }
