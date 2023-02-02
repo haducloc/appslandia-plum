@@ -49,6 +49,7 @@ public class BeanInstanceContextListener {
     protected AppLogger appLogger;
 
     public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
+	this.appLogger.info("Registering bean instances holder...");
 	sc.setAttribute(ATTRIBUTE_BEAN_INSTANCES, new ConcurrentHashMap<Class<?>, BeanInstance<?>>());
     }
 
