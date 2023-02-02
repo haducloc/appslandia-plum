@@ -38,15 +38,15 @@ public class SortModel extends HashMap<String, Boolean> {
     private String sortBy;
     private boolean sortAsc;
 
-    public SortModel asc(String... sortBys) {
-	for (String sortBy : sortBys) {
+    public SortModel asc(String... fieldNames) {
+	for (String sortBy : fieldNames) {
 	    this.put(sortBy, true);
 	}
 	return this;
     }
 
-    public SortModel desc(String... sortBys) {
-	for (String sortBy : sortBys) {
+    public SortModel desc(String... fieldNames) {
+	for (String sortBy : fieldNames) {
 	    this.put(sortBy, false);
 	}
 	return this;
@@ -69,5 +69,13 @@ public class SortModel extends HashMap<String, Boolean> {
 
     public boolean sortAsc() {
 	return this.sortAsc;
+    }
+
+    public Boolean sortAsc(String fieldName) {
+	return this.sortBy.equals(fieldName) ? this.sortAsc : null;
+    }
+
+    public Boolean flipAsc(String fieldName) {
+	return this.sortBy.equals(fieldName) ? !this.sortAsc : null;
     }
 }
