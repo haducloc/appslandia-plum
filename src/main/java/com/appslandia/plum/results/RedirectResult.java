@@ -68,11 +68,6 @@ public class RedirectResult implements ActionResult {
 	return this;
     }
 
-    public RedirectResult queryString(String queryString) {
-	getParams().put(ActionParser.PARAM_QUERY_STRING, queryString);
-	return this;
-    }
-
     private Map<String, Object> getParams() {
 	if (this.params == null) {
 	    this.params = new LinkedHashMap<>();

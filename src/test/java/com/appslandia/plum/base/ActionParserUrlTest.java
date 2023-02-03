@@ -27,6 +27,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.plum.utils.ServletUtils;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -69,7 +71,7 @@ public class ActionParserUrlTest extends MockTestBase {
 	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
 	    Map<String, Object> params = new HashMap<>();
-	    params.put(ActionParser.PARAM_QUERY_STRING, "param1=param1&param2=param+2");
+	    params.put(ServletUtils.PARAM_QUERY_STRING, "param1=param1&param2=param+2");
 	    params.put("param3", "param3");
 
 	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "testQueryString", params, false);

@@ -213,11 +213,9 @@ public class ActionParser {
 	}
     }
 
-    public static final String PARAM_QUERY_STRING = "__QUERY_STRING";
-
     public static void addQueryParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
 	// QUERY_STRING
-	String queryString = (String) parameters.get(PARAM_QUERY_STRING);
+	String queryString = (String) parameters.get(ServletUtils.PARAM_QUERY_STRING);
 	boolean hasQueryString = !StringUtils.isNullOrEmpty(queryString);
 
 	if (hasQueryString) {
@@ -229,7 +227,7 @@ public class ActionParser {
 	    if (pathParams.stream().anyMatch(p -> p.hasPathParam(param.getKey()))) {
 		continue;
 	    }
-	    if (PARAM_QUERY_STRING.equals(param.getKey())) {
+	    if (ServletUtils.PARAM_QUERY_STRING.equals(param.getKey())) {
 		continue;
 	    }
 	    if (isFirstParam) {
