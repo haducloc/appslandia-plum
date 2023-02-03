@@ -95,6 +95,7 @@ public class ServletUtils {
     public static final String REQUEST_ATTRIBUTE_MODEL = "model";
 
     public static final String PARAM_RETURN_URL = "returnUrl";
+    public static final String PARAM_FROM_PAGE_URL = "fromPageUrl";
     public static final String COOKIE_CLIENT_ZONE_ID = "clientZoneId";
 
     public static StringBuilder newUrlBuilder() {

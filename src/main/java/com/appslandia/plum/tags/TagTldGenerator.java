@@ -91,6 +91,7 @@ public class TagTldGenerator {
 	generateTag(MailtoTag.class, sb);
 
 	generateTag(FmtDateTag.class, sb);
+	generateTag(PageUrlTag.class, sb);
 
 	System.out.println(sb);
     }

@@ -2632,4 +2632,12 @@
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 
+	<tag>
+		<description>pageUrl|body=empty|dynamicAttributes</description>
+		<name>pageUrl</name>
+		<tag-class>com.appslandia.plum.tags.PageUrlTag</tag-class>
+		<body-content>empty</body-content>
+		<dynamic-attributes>true</dynamic-attributes>
+	</tag>
+
 </taglib>
