@@ -97,7 +97,7 @@ public class RedirectResultTest extends MockTestBase {
 
 	    String location = getCurrentResponse().getHeader("Location");
 	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app?encodeRedirectURL=true", location);
+	    Assertions.assertEquals("/app/?encodeRedirectURL=true", location);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

@@ -165,9 +165,7 @@ public class RedirectResult implements ActionResult {
 	    if (requestContext.isPathLanguage() || appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 		url.append('/').append(requestContext.getLanguageId());
 	    }
-	    if (url.length() == 0) {
-		url.append('/');
-	    }
+	    url.append('/');
 
 	    // TempData
 	    String tempDataId = tempDataManager.saveTempData(request, response);

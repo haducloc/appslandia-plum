@@ -100,7 +100,7 @@ public class RedirectResultNoSessionTest extends MockTestBase {
 
 	    String location = getCurrentResponse().getHeader("Location");
 	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app", location);
+	    Assertions.assertEquals("/app/", location);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

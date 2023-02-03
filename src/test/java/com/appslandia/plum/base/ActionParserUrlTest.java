@@ -55,7 +55,7 @@ public class ActionParserUrlTest extends MockTestBase {
 	    params.put("param2", "param2");
 
 	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "index", params, false);
-	    Assertions.assertEquals("/app/testController/index/param1?param2=param2", url);
+	    Assertions.assertEquals("/app/testController/index/param1/?param2=param2", url);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -105,7 +105,7 @@ public class ActionParserUrlTest extends MockTestBase {
 	    params.put("param2", "param2");
 
 	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
-	    Assertions.assertEquals("/app/testController/actionPathParams/param1/param2", url);
+	    Assertions.assertEquals("/app/testController/actionPathParams/param1/param2/", url);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -123,7 +123,7 @@ public class ActionParserUrlTest extends MockTestBase {
 	    params.put("param2", "param2");
 
 	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
-	    Assertions.assertEquals("/app/en/testController/actionPathParams/param1/param2", url);
+	    Assertions.assertEquals("/app/en/testController/actionPathParams/param1/param2/", url);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -158,7 +158,7 @@ public class ActionParserUrlTest extends MockTestBase {
 	    params.put("param2", "param2");
 
 	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params, false);
-	    Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2", url);
+	    Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2/", url);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -195,7 +195,7 @@ public class ActionParserUrlTest extends MockTestBase {
 	    params.put("param4", "param4");
 
 	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params, false);
-	    Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2?param3=param3&param4=param4", url);
+	    Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2/?param3=param3&param4=param4", url);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

@@ -65,7 +65,7 @@ public class ActionTagTest extends MockTestBase {
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("/app/testController/actionNoParams"));
+	    Assertions.assertTrue(html.contains("/app/testController/actionNoParams/"));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -83,7 +83,7 @@ public class ActionTagTest extends MockTestBase {
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("/app/testController/actionPathParams/param1?p2=param2"));
+	    Assertions.assertTrue(html.contains("/app/testController/actionPathParams/param1/?p2=param2"));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

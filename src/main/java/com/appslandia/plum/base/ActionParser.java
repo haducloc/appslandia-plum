@@ -139,12 +139,11 @@ public class ActionParser {
 	    }
 	} else {
 	    // Index
-	    if (ServletUtils.ACTION_INDEX.equalsIgnoreCase(action)) {
-		url.append('/');
-	    } else {
-		url.append('/').append(action).append('/');
+	    if (!ServletUtils.ACTION_INDEX.equalsIgnoreCase(action)) {
+		url.append('/').append(action);
 	    }
 	}
+	url.append('/');
 
 	// Query Parameters
 	if ((parameters != null) && (parameters.size() > actionDesc.getPathParamCount())) {

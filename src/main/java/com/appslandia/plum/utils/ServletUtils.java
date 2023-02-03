@@ -132,7 +132,9 @@ public class ServletUtils {
 
 	// If @FormLogin
 	if (formLogin != null) {
-	    url.append('/').append(formLogin.getController()).append('/').append(formLogin.getAction());
+	    url.append('/').append(formLogin.getController());
+	    url.append('/').append(formLogin.getAction());
+	    url.append('/');
 	} else {
 	    // Use loginPage from the authHandler
 	    AuthHandlerProvider authHandlerProvider = ServletUtils.getAppScoped(request, AuthHandlerProvider.class);
