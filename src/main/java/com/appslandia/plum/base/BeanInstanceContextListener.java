@@ -59,28 +59,24 @@ public class BeanInstanceContextListener {
 	this.appLogger.info("Finished destroying bean instances.");
     }
 
-    static final Object MUTEX = new Object();
-
     public static void destroyBeanInstances(ServletContext sc) {
 	Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
+
 	if (beanInsts != null) {
-	    synchronized (MUTEX) {
-		beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
+	    beanInsts.values().stream().forEach(bi -> {
 
-		if (beanInsts != null) {
-		    beanInsts.values().stream().forEach(bi -> {
+		try {
+		    bi.destroy();
 
-			try {
-			    bi.destroy();
-
-			} catch (RuntimeException ignore) {
-			}
-		    });
-		    sc.removeAttribute(ATTRIBUTE_BEAN_INSTANCES);
+		} catch (RuntimeException ex) {
+		    sc.log(ex.getMessage(), ex);
 		}
-	    }
+	    });
+	    sc.removeAttribute(ATTRIBUTE_BEAN_INSTANCES);
 	}
     }
+
+    private static final Object MUTEX = new Object();
 
     public static Map<Class<?>, BeanInstance<?>> getBeanInstances(ServletContext sc) {
 	Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
