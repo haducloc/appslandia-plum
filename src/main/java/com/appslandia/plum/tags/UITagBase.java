@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.appslandia.common.utils.ObjectUtils;
+import com.appslandia.plum.utils.HtmlUtils;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
@@ -63,16 +64,7 @@ public abstract class UITagBase extends TagBase implements DynamicAttributes {
 
     protected void writeDynamicAttributes(JspWriter out) throws JspException, IOException {
 	for (Entry<String, Object> attr : this.dynamicAttributes.entrySet()) {
-
-	    out.write(' ');
-	    out.write(attr.getKey());
-	    out.write("=\"");
-
-	    // Won't escape dynamic attributes
-	    if (attr.getValue() != null) {
-		out.write(attr.getValue().toString());
-	    }
-	    out.write('"');
+	    HtmlUtils.escAttribute(out, attr.getKey(), (attr.getValue() != null) ? attr.getValue().toString() : null);
 	}
     }
 
