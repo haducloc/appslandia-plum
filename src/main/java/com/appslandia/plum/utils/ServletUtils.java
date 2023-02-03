@@ -357,6 +357,10 @@ public class ServletUtils {
 	getRequestDispatcher(request, path).include(request, response);
     }
 
+    public static void sendRedirect(HttpServletResponse response, String location) throws IllegalStateException {
+	sendRedirect(response, location, HttpServletResponse.SC_MOVED_TEMPORARILY);
+    }
+
     public static void sendRedirect(HttpServletResponse response, String location, int status) throws IllegalStateException {
 	assertNotCommitted(response);
 

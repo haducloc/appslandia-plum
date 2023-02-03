@@ -43,10 +43,7 @@ public abstract class TempDataManager {
 	if ((tempData == null) || tempData.isEmpty()) {
 	    return null;
 	}
-	return saveTempData(request, response, tempData);
-    }
 
-    public String saveTempData(HttpServletRequest request, HttpServletResponse response, TempData tempData) {
 	String tempDataId = getTempDataIdGenerator().generate();
 	doSaveTempData(request, response, tempDataId, tempData);
 	return tempDataId;
@@ -74,7 +71,7 @@ public abstract class TempDataManager {
 	return tempData;
     }
 
-    public TempData buildTempData(HttpServletRequest request) {
+    protected TempData buildTempData(HttpServletRequest request) {
 	TempData tempData = (TempData) request.getAttribute(TempData.REQUEST_ATTRIBUTE_ID);
 	Messages messages = (Messages) request.getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
 

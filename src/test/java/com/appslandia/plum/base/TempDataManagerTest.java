@@ -42,7 +42,7 @@ public class TempDataManagerTest extends MockTestBase {
     private String initTempData(MockHttpServletRequest request) throws Exception {
 	TempData tempData = new TempData().set("key1", "data1");
 	request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
-	return tempDataManager.saveTempData(request, container.createResponse(), tempData);
+	return tempDataManager.saveTempData(request, container.createResponse());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class TempDataManagerTest extends MockTestBase {
 	    TempData tempData = new TempData().set("key1", "data1");
 	    getCurrentRequest().setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
 
-	    String tempDataId = tempDataManager.saveTempData(getCurrentRequest(), getCurrentResponse(), tempData);
+	    String tempDataId = tempDataManager.saveTempData(getCurrentRequest(), getCurrentResponse());
 	    Assertions.assertNotNull(tempDataId);
 
 	} catch (Exception ex) {

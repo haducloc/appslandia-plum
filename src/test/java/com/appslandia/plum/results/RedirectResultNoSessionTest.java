@@ -76,63 +76,15 @@ public class RedirectResultNoSessionTest extends MockTestBase {
     }
 
     @Test
-    public void test_redirectToInternal() {
+    public void test_redirectToIndex() {
 	try {
-	    executeCurrent("GET", "http://localhost/app/testController/redirectToInternal");
+	    executeCurrent("GET", "http://localhost/app/testController/redirectToIndex");
 
 	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
 
 	    String location = getCurrentResponse().getHeader("Location");
 	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app/testController/index", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_redirectToInternal_params() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/redirectToInternal_params");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app/testController/index?p1=v1", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_redirectToExternal() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/redirectToExternal");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("http://server/app/index", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_redirectToExternal_params() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/redirectToExternal_params");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("http://server/app/index?p1=v1", location);
+	    Assertions.assertEquals("/app/testController/", location);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -173,23 +125,8 @@ public class RedirectResultNoSessionTest extends MockTestBase {
 	}
 
 	@HttpGet
-	public ActionResult redirectToInternal() throws Exception {
-	    return new RedirectResult().location("/app/testController/index");
-	}
-
-	@HttpGet
-	public ActionResult redirectToInternal_params() throws Exception {
-	    return new RedirectResult().location("/app/testController/index").query("p1", "v1");
-	}
-
-	@HttpGet
-	public ActionResult redirectToExternal() throws Exception {
-	    return new RedirectResult().externalUrl("http://server/app/index");
-	}
-
-	@HttpGet
-	public ActionResult redirectToExternal_params() throws Exception {
-	    return new RedirectResult().externalUrl("http://server/app/index").query("p1", "v1");
+	public ActionResult redirectToIndex() throws Exception {
+	    return RedirectResult.INDEX;
 	}
 
 	@HttpGet

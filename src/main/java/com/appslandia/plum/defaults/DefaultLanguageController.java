@@ -30,6 +30,7 @@ import com.appslandia.plum.base.PrefCookie;
 import com.appslandia.plum.base.PrefCookieHandler;
 import com.appslandia.plum.base.RequestAccessor;
 import com.appslandia.plum.results.RedirectResult;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -65,7 +66,9 @@ public class DefaultLanguageController {
 	final String redirectUrl = request.getParameter("redirectUrl");
 
 	if (redirectUrl != null) {
-	    return new RedirectResult().location(redirectUrl);
+	    ServletUtils.sendRedirect(response, redirectUrl);
+	    return ActionResult.EMPTY;
+
 	} else {
 	    return RedirectResult.ROOT;
 	}
