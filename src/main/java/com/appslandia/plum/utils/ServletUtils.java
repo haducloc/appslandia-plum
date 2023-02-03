@@ -115,6 +115,7 @@ public class ServletUtils {
     }
 
     public static StringBuilder getLoginUrl(HttpServletRequest request) {
+	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
 	RequestContext requestContext = getRequestContext(request);
 
 	// URL
@@ -122,7 +123,7 @@ public class ServletUtils {
 	url.append(request.getServletContext().getContextPath());
 
 	// Language
-	if (requestContext.isPathLanguage()) {
+	if (requestContext.isPathLanguage() || appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 	    url.append('/').append(requestContext.getLanguageId());
 	}
 

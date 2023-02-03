@@ -160,12 +160,13 @@ public class RedirectResult implements ActionResult {
 	    StringBuilder url = new StringBuilder();
 	    url.append(request.getServletContext().getContextPath());
 
-	    if (requestContext.isPathLanguage()) {
+	    if (requestContext.isPathLanguage() || appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 		url.append('/').append(requestContext.getLanguageId());
 	    }
 	    if (url.length() == 0) {
 		url.append('/');
 	    }
+
 	    TempData tempData = tempDataManager.buildTempData(request);
 	    if ((tempData != null) && !tempData.isEmpty()) {
 

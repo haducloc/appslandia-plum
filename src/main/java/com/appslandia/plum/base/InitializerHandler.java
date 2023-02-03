@@ -137,7 +137,7 @@ public class InitializerHandler extends HttpFilter {
 	    }
 
 	    // Language
-	    if (this.appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG) && !requestContext.isPathLanguage()) {
+	    if (!requestContext.isPathLanguage() && this.appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 		if (!requestContext.isGetOrHead()) {
 		    throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
 		}
