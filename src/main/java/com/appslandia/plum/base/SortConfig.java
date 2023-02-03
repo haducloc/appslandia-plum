@@ -20,6 +20,11 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.AssertUtils;
 
 /**
@@ -27,36 +32,56 @@ import com.appslandia.common.utils.AssertUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SortModel {
-    public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
+public class SortConfig extends InitializeObject {
 
-    final SortConfig config;
-    private String sortBy;
-    private Boolean sortAsc;
+    private Map<String, Boolean> sortBys = new HashMap<>();
+    private String sortDefault;
 
-    public SortModel(SortConfig config) {
-	this.config = config;
+    @Override
+    protected void init() throws Exception {
+	AssertUtils.assertNotNull(this.sortDefault);
+
+	this.sortBys = Collections.unmodifiableMap(this.sortBys);
     }
 
-    public SortModel current(String sortBy, Boolean sortAsc) {
-	this.sortBy = this.config.contains(sortBy) ? sortBy : this.config.sortDefault();
-	this.sortAsc = (sortAsc != null) ? sortAsc : this.config.sortAsc(this.sortBy);
+    public SortConfig asc(String... ascFields) {
+	assertNotInitialized();
+
+	for (String sortBy : ascFields) {
+	    this.sortBys.put(sortBy, true);
+	}
 	return this;
     }
 
-    public String sortBy() {
-	return AssertUtils.assertStateNotNull(this.sortBy);
+    public SortConfig desc(String... descFields) {
+	assertNotInitialized();
+
+	for (String sortBy : descFields) {
+	    this.sortBys.put(sortBy, false);
+	}
+	return this;
     }
 
-    public boolean sortAsc() {
-	return AssertUtils.assertStateNotNull(this.sortAsc);
+    public SortConfig sortDefault(String sortDefault) {
+	assertNotInitialized();
+
+	AssertUtils.assertTrue(this.sortBys.containsKey(sortDefault));
+	this.sortDefault = sortDefault;
+	return this;
+    }
+
+    public String sortDefault() {
+	initialize();
+	return this.sortDefault;
     }
 
     public Boolean sortAsc(String fieldName) {
-	return this.sortBy().equals(fieldName) ? this.sortAsc() : null;
+	initialize();
+	return this.sortBys.get(fieldName);
     }
 
-    public Boolean flipAsc(String fieldName) {
-	return this.sortBy().equals(fieldName) ? !this.sortAsc() : null;
+    public boolean contains(String fieldName) {
+	initialize();
+	return this.sortBys.containsKey(fieldName);
     }
 }

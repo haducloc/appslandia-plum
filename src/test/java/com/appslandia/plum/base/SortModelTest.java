@@ -20,43 +20,49 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SortModel {
-    public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
+public class SortModelTest {
 
-    final SortConfig config;
-    private String sortBy;
-    private Boolean sortAsc;
+    @Test
+    public void test() {
+	SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+	SortModel model = new SortModel(config);
 
-    public SortModel(SortConfig config) {
-	this.config = config;
+	model.current("name", null);
+
+	Assertions.assertEquals("name", model.sortBy());
+	Assertions.assertTrue(model.sortAsc());
+
+	Assertions.assertTrue(model.sortAsc("name"));
+	Assertions.assertNull(model.sortAsc("dateCreated"));
     }
 
-    public SortModel current(String sortBy, Boolean sortAsc) {
-	this.sortBy = this.config.contains(sortBy) ? sortBy : this.config.sortDefault();
-	this.sortAsc = (sortAsc != null) ? sortAsc : this.config.sortAsc(this.sortBy);
-	return this;
+    @Test
+    public void test_sortAsc() {
+	SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+	SortModel model = new SortModel(config);
+
+	model.current("name", false);
+
+	Assertions.assertEquals("name", model.sortBy());
+	Assertions.assertTrue(!model.sortAsc());
     }
 
-    public String sortBy() {
-	return AssertUtils.assertStateNotNull(this.sortBy);
-    }
+    @Test
+    public void test_invalid_sortBy() {
+	SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+	SortModel model = new SortModel(config);
 
-    public boolean sortAsc() {
-	return AssertUtils.assertStateNotNull(this.sortAsc);
-    }
+	model.current("dob", true);
 
-    public Boolean sortAsc(String fieldName) {
-	return this.sortBy().equals(fieldName) ? this.sortAsc() : null;
-    }
-
-    public Boolean flipAsc(String fieldName) {
-	return this.sortBy().equals(fieldName) ? !this.sortAsc() : null;
+	Assertions.assertEquals("name", model.sortBy());
+	Assertions.assertTrue(model.sortAsc());
     }
 }
