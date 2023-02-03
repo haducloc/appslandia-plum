@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.appslandia.common.base.StringWriter;
-import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.URLUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -214,20 +213,10 @@ public class ActionParser {
     }
 
     public static void addQueryParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
-	// QUERY_STRING
-	String queryString = (String) parameters.get(ServletUtils.PARAM_QUERY_STRING);
-	boolean hasQueryString = !StringUtils.isNullOrEmpty(queryString);
+	boolean isFirstParam = true;
 
-	if (hasQueryString) {
-	    url.append(queryString);
-	}
-
-	boolean isFirstParam = !hasQueryString;
 	for (Map.Entry<String, Object> param : parameters.entrySet()) {
 	    if (pathParams.stream().anyMatch(p -> p.hasPathParam(param.getKey()))) {
-		continue;
-	    }
-	    if (ServletUtils.PARAM_QUERY_STRING.equals(param.getKey())) {
 		continue;
 	    }
 	    if (isFirstParam) {

@@ -27,8 +27,6 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.plum.utils.ServletUtils;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -47,35 +45,17 @@ public class ActionParserUrlTest extends MockTestBase {
     }
 
     @Test
-    public void test_index() {
+    public void test_actionPathParam() {
 	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/index/param1");
+	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParam/param1");
 	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
 	    Map<String, Object> params = new HashMap<>();
 	    params.put("param1", "param1");
 	    params.put("param2", "param2");
 
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "index", params, false);
-	    Assertions.assertEquals("/app/testController/index/param1/?param2=param2", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_index_navQueryString() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/testQueryString");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put(ServletUtils.PARAM_QUERY_STRING, "param1=param1&param2=param+2");
-	    params.put("param3", "param3");
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "testQueryString", params, false);
-	    Assertions.assertEquals("/app/testController/testQueryString/?param1=param1&param2=param+2&param3=param3", url);
+	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParam", params, false);
+	    Assertions.assertEquals("/app/testController/actionPathParam/param1/?param2=param2", url);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -208,12 +188,16 @@ public class ActionParserUrlTest extends MockTestBase {
     public static class TestController {
 
 	@HttpGet
-	@PathParams("/{param1}")
 	public void index() {
 	}
 
 	@HttpGet
 	public void actionNoPathParams() {
+	}
+
+	@HttpGet
+	@PathParams("/{param1}")
+	public void actionPathParam() {
 	}
 
 	@HttpGet
@@ -224,10 +208,6 @@ public class ActionParserUrlTest extends MockTestBase {
 	@HttpGet
 	@PathParams("/{param1}-{param2}")
 	public void actionSubPathParams() {
-	}
-
-	@HttpGet
-	public void testQueryString() {
 	}
     }
 }
