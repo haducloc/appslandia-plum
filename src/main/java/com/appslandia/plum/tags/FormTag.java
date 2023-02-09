@@ -81,7 +81,6 @@ public class FormTag extends UITagBase {
 	if (this.controller == null) {
 	    this.controller = getRequestContext().getActionDesc().getController();
 	}
-
 	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
 	this._action = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
 	this._action = this.getResponse().encodeURL(this._action);

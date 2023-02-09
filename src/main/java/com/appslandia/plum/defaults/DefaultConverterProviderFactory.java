@@ -72,7 +72,6 @@ public class DefaultConverterProviderFactory implements CDIFactory<ConverterProv
 	    for (Entry<String, Converter<?>> entry : m.entrySet()) {
 		impl.addConverter(entry.getKey(), entry.getValue());
 	    }
-
 	    beanInstances.add(bi);
 	});
 	return impl;

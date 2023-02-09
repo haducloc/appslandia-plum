@@ -60,7 +60,6 @@ public abstract class SessionCsrfManager extends SimpleCsrfManager {
 	    if (cache == null) {
 		cache = new LruCache<>(getCacheSize());
 	    }
-
 	    cache.put(csrfId, null);
 	    session.setAttribute(SESSION_ATTRIBUTE_CSRF_CACHE, cache);
 	    return csrfId;

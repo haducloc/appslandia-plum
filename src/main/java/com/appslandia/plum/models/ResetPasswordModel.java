@@ -44,7 +44,6 @@ public class ResetPasswordModel implements ConfirmPasswordModel {
 	ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ResetPasswordModel>() {
 	});
     }
-
     @NotNull
     @MaxLength(128)
     private String series;

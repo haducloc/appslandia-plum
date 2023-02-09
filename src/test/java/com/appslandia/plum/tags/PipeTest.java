@@ -72,7 +72,6 @@ public class PipeTest {
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
 	}
-
 	try {
 	    Object v = Pipe.transform(DateUtils.iso8601LocalDate("2018-06-07"), "fmtDate:MM/dd/yyyy");
 	    Assertions.assertEquals("06/07/2018", v);

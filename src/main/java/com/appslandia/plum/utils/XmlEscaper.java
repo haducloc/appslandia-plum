@@ -41,7 +41,6 @@ public class XmlEscaper {
 	ESCAPE_XML_CONTENT['<'] = "&lt;".toCharArray();
 	ESCAPE_XML_CONTENT['>'] = "&gt;".toCharArray();
     }
-
     private static char[][] ESCAPE_XML = new char[HIGHEST_SPECIAL + 1][];
     static {
 	ESCAPE_XML['&'] = "&amp;".toCharArray();

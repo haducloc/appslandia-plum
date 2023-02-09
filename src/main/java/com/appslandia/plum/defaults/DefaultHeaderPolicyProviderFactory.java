@@ -73,7 +73,6 @@ public class DefaultHeaderPolicyProviderFactory implements CDIFactory<HeaderPoli
 	    for (Entry<String, HeaderPolicy> entry : m.entrySet()) {
 		impl.addHeaderPolicy(entry.getKey(), entry.getValue());
 	    }
-
 	    beanInstances.add(bi);
 	});
 	return impl;

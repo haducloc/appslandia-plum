@@ -58,7 +58,6 @@ public class FieldLabelTag extends UITagBase {
 	if (this.id == null) {
 	    this.id = "lbl_" + this.forId;
 	}
-
 	this.clazz = (this.clazz == null) ? "field-label" : this.clazz + " field-label";
     }
 

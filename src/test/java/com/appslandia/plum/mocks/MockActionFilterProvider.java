@@ -52,7 +52,6 @@ public class MockActionFilterProvider extends ActionFilterProvider {
 
 	    addActionFilter(mappedID.value(), filter);
 	}
-
 	super.init();
     }
 }

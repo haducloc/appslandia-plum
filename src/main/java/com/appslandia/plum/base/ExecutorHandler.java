@@ -89,7 +89,6 @@ public class ExecutorHandler extends HttpServlet {
 	if (StringUtils.isNullOrEmpty(statusValue)) {
 	    return;
 	}
-
 	int status = Integer.parseInt(statusValue);
 	if (status >= 400 && status < 600) {
 

@@ -78,7 +78,6 @@ public class UrlTag extends TagBase implements DynamicAttributes {
 	    }
 	    URLUtils.addQueryParam(url, param.getKey(), param.getValue());
 	}
-
 	if (this.escXml) {
 	    XmlEscaper.escapeXml(this.pageContext.getOut(), url.toString());
 	} else {

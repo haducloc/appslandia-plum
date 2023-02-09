@@ -112,7 +112,6 @@ public class TagTldGenerator {
 	if (tag.dynamicAttributes()) {
 	    desc.append("|dynamicAttributes");
 	}
-
 	if (sb.length() == 0) {
 	    sb.appendtab().append("<tag>");
 	    sb.appendln();
@@ -120,7 +119,6 @@ public class TagTldGenerator {
 	    sb.appendln(2).appendtab().append("<tag>");
 	    sb.appendln();
 	}
-
 	sb.appendtab(2).append("<description>" + desc + "</description>");
 	sb.appendln();
 	sb.appendtab(2).append("<name>" + name + "</name>");
@@ -136,7 +134,6 @@ public class TagTldGenerator {
 		attributeProps.add(pd);
 	    }
 	}
-
 	for (PropertyDescriptor pd : attributeProps) {
 	    Class<?> type = pd.getWriteMethod().getParameterTypes()[0];
 
@@ -156,7 +153,6 @@ public class TagTldGenerator {
 	    if (!attribute.defaultValue().isEmpty()) {
 		attrDesc.append("|default=" + attribute.defaultValue());
 	    }
-
 	    sb.appendtab(2).append("<attribute>");
 	    sb.appendln();
 	    sb.appendtab(3).append("<description>" + attrDesc + "</description>");

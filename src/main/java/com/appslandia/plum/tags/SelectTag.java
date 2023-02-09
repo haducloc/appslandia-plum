@@ -182,12 +182,10 @@ public class SelectTag extends ValueTagBase {
 		if (selected) {
 		    hasSelected = true;
 		}
-
 		boolean disabled = false;
 		if (this.disabledExpr != null) {
 		    disabled = Boolean.TRUE.equals(ExpressionEvaluator.getDefault().getValue(this.pageContext, this.disabledExpr));
 		}
-
 		writeOption(out, item, selected, disabled);
 	    }
 	    return hasSelected;
@@ -203,7 +201,6 @@ public class SelectTag extends ValueTagBase {
 	if (this._items != null) {
 	    hasSelected1 = writeItems(out, this._items);
 	}
-
 	boolean hasSelected2 = false;
 	if (this.items != null) {
 	    hasSelected2 = writeItems(out, this.items);

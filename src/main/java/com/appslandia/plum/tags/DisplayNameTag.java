@@ -52,7 +52,6 @@ public class DisplayNameTag implements SimpleTag {
 	if (dispName == null) {
 	    dispName = (String) principal.getRequired(UserPrincipal.USER_NAME);
 	}
-
 	XmlEscaper.escapeXml(this.pageContext.getOut(), dispName);
     }
 

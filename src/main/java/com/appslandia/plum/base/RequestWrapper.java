@@ -101,7 +101,6 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 	for (Entry<String, String> param : pathParamMap.entrySet()) {
 	    merged.put(param.getKey(), new String[] { param.getValue() });
 	}
-
 	for (Entry<String, String[]> param : this.getRequest().getParameterMap().entrySet()) {
 	    String[] values = merged.get(param.getKey());
 	    if (values == null) {

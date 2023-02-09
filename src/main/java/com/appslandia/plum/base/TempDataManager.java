@@ -43,7 +43,6 @@ public abstract class TempDataManager {
 	if ((tempData == null) || tempData.isEmpty()) {
 	    return null;
 	}
-
 	String tempDataId = getTempDataIdGenerator().generate();
 	doSaveTempData(request, response, tempDataId, tempData);
 	return tempDataId;
@@ -66,7 +65,6 @@ public abstract class TempDataManager {
 	if ((messages != null) && !messages.isEmpty()) {
 	    request.setAttribute(Messages.REQUEST_ATTRIBUTE_ID, messages);
 	}
-
 	request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
 	return tempData;
     }

@@ -60,7 +60,6 @@ public abstract class SessionCaptchaManager extends SimpleCaptchaManager {
 	    if (cache == null) {
 		cache = new LruCache<>(getCacheSize());
 	    }
-
 	    cache.put(captchaId, captchaWords);
 	    session.setAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE, cache);
 	    return captchaId;
@@ -97,7 +96,6 @@ public abstract class SessionCaptchaManager extends SimpleCaptchaManager {
 	    if (words == null) {
 		return false;
 	    }
-
 	    boolean hasCaptcha = captchaWords.equalsIgnoreCase(words);
 	    if (hasCaptcha) {
 		cache.remove(captchaId);

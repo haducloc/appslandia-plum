@@ -78,7 +78,6 @@ public class FormErrorsTag extends UITagBase {
 	} else {
 	    hasErrors = Objects.equals(this.form, this._modelState.getForm()) && !this._modelState.isValid();
 	}
-
 	if (hasErrors) {
 	    // Parse field orders
 	    if (!this.modelLevelOnly && (this.jspBody != null)) {

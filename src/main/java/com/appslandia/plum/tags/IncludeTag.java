@@ -88,7 +88,6 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 	    if (useWrapper) {
 		response = new ContentResponseWrapper(response, false, false);
 	    }
-
 	    ControllerProvider controllerProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ControllerProvider.class);
 	    ActionInvoker actionInvoker = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionInvoker.class);
 

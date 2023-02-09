@@ -288,14 +288,12 @@ public abstract class Pipe {
 	    }
 	    startIdx = endIdx + 1;
 	}
-
 	if (startIdx < pipes.length()) {
 	    String pipe = pipes.substring(startIdx).trim();
 	    if (!pipe.isEmpty()) {
 		list.add(parsePipe(pipe));
 	    }
 	}
-
 	Asserts.hasElements(list, "No pipe provided.");
 	return list.toArray(new PipeInfo[list.size()]);
     }

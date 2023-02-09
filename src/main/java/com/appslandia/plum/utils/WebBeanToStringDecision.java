@@ -57,7 +57,6 @@ public class WebBeanToStringDecision extends ToStringBuilder.ToStringDecision {
 	if (super.tsIdHash(value, field)) {
 	    return true;
 	}
-
 	if (value instanceof ServletRequest) {
 	    return !this.printRequest;
 	}

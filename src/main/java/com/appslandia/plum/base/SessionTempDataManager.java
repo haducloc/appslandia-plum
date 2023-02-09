@@ -56,7 +56,6 @@ public abstract class SessionTempDataManager extends TempDataManager {
 	    if (cache == null) {
 		cache = new LruCache<>(getCacheSize());
 	    }
-
 	    cache.put(tempDataId, tempData);
 	    session.setAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE, cache);
 	}

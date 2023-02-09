@@ -87,7 +87,6 @@ public class ErrorServlet extends HttpServlet {
 	    Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
 	    problem = this.exceptionHandler.getProblem(request, requestContext, exception);
 	}
-
 	Asserts.notNull(problem.getStatus());
 	Asserts.notNull(problem.getTitle());
 
@@ -137,7 +136,6 @@ public class ErrorServlet extends HttpServlet {
 	    Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
 	    problem = this.exceptionHandler.getProblem(request, requestContext, exception);
 	}
-
 	Asserts.notNull(problem.getStatus());
 	Asserts.notNull(problem.getTitle());
 
@@ -164,7 +162,6 @@ public class ErrorServlet extends HttpServlet {
 	    problem.getException().printStackTrace(out);
 	    out.println();
 	}
-
 	out.println();
 	out.append("Request Info: ").append(new ToStringBuilder(4).toStringDecision(new WebBeanToStringDecision(true, true, true, false)).toString(request));
 	out.flush();

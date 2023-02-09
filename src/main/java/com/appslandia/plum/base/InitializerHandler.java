@@ -208,7 +208,6 @@ public class InitializerHandler extends HttpFilter {
 		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
 		}
 	    }
-
 	    this.rateLimitHandler.checkRequest(request, requestContext);
 	    chain.doFilter(request, response);
 
@@ -248,7 +247,6 @@ public class InitializerHandler extends HttpFilter {
 	if ((origin == null) || (request.getHeader(CorsPolicyHandler.HEADER_AC_REQUEST_METHOD) == null)) {
 	    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
 	}
-
 	CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
 	CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handlePreflight(request, response, corsPolicy);
 

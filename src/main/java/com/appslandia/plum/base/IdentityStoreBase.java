@@ -58,7 +58,6 @@ public abstract class IdentityStoreBase implements IdentityStore {
 	    String code = Asserts.notNull(invalidCode.value, "invalidCode is required.");
 	    return InvalidAuthResult.valueOf(code);
 	}
-
 	return SecurityUtils.createIdentityStoreResult(principalRoles.getPrincipal(), principalRoles.getRoles());
     }
 

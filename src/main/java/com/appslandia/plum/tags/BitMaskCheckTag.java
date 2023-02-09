@@ -64,7 +64,6 @@ public class BitMaskCheckTag extends CheckInputTag {
 	if (this.value == null) {
 	    return false;
 	}
-
 	int flags = ((Number) this.value).intValue();
 	int flag = ((Number) this.submitValue).intValue();
 

@@ -54,7 +54,6 @@ public class CacheResultInterceptor implements Serializable {
 	if (cacheResult == null) {
 	    return context.proceed();
 	}
-
 	Asserts.isTrue(!cacheResult.cacheName().isEmpty());
 	Asserts.isTrue(!cacheResult.key().isEmpty());
 
@@ -76,7 +75,6 @@ public class CacheResultInterceptor implements Serializable {
 	if (value == null) {
 	    return value;
 	}
-
 	cache.put(cacheKey, value);
 	return value;
     }

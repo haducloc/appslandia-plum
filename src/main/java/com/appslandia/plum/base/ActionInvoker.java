@@ -122,7 +122,6 @@ public class ActionInvoker {
 	    if (StringUtils.isNullOrEmpty(paramValue)) {
 		paramValue = paramDesc.getDefaultValue();
 	    }
-
 	    Out<String> msgKey = new Out<>();
 	    Object parsedValue = ModelBinder.parseValue(paramValue, valueType, msgKey, converter, requestContext.getFormatProvider());
 	    actionArgs[index] = (paramDesc.getParameter().getType() != Out.class) ? parsedValue : new Out<Object>(parsedValue);

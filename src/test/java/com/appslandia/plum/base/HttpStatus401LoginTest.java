@@ -92,7 +92,6 @@ public class HttpStatus401LoginTest extends MockTestBase {
 	    if (request.isGetOrHead()) {
 		return;
 	    }
-
 	    Out<String> invalidCode = new Out<>();
 	    MemUserPasswordCredential credential = new MemUserPasswordCredential("user1", "password");
 	    boolean isValid = this.authContext.authenticate(request, response, credential, false, invalidCode);

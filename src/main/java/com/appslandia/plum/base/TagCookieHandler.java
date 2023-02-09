@@ -65,7 +65,6 @@ public class TagCookieHandler {
 	if (tagList != null) {
 	    return tagList;
 	}
-
 	tagList = (tagListNewer != null) ? tagListNewer.get() : new TagList();
 	request.setAttribute(cookieName, tagList);
 

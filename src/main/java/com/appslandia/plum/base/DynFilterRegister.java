@@ -72,7 +72,6 @@ public class DynFilterRegister extends InitializeObject {
 	    reg.addMappingForUrlPatterns(ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes)) : null, false,
 		    this.urlPatterns);
 	}
-
 	reg.setInitParameters(this.initParameters);
 	reg.setAsyncSupported(this.asyncSupported);
 	return this;

@@ -147,7 +147,6 @@ public class ModelBinder {
 			if ((paramValues == null) || Arrays.stream(paramValues).allMatch(v -> StringUtils.isNullOrEmpty(v))) {
 			    paramValues = SplitUtils.split(fieldDesc.getDefaultValue(), ',');
 			}
-
 			Out<String> msgKey = new Out<>();
 			Object parsedValue = parseArray(paramValues, elementType, msgKey, converter, ServletUtils.getFormatProvider(request));
 
@@ -160,7 +159,6 @@ public class ModelBinder {
 			} else {
 			    property.getWriteMethod().invoke(bindNode.model, (int) toBitMask(parsedValue, bitMaskResult));
 			}
-
 			if (msgKey.value != null) {
 			    ServletUtils.addError(request, propertyPath, msgKey.value, getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
 
@@ -180,7 +178,6 @@ public class ModelBinder {
 			if (StringUtils.isNullOrEmpty(paramValue)) {
 			    paramValue = fieldDesc.getDefaultValue();
 			}
-
 			Out<String> msgKey = new Out<>();
 			Object parsedValue = parseValue(paramValue, valueType, msgKey, converter, ServletUtils.getFormatProvider(request));
 

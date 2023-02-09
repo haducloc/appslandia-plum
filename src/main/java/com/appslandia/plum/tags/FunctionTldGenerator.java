@@ -55,7 +55,6 @@ public class FunctionTldGenerator {
 		}
 	    }
 	}
-
 	Collections.sort(functionMths, (m1, m2) -> {
 	    int compare = m1.getDeclaringClass().getName().compareTo(m2.getDeclaringClass().getName());
 	    if (compare != 0) {
@@ -78,7 +77,6 @@ public class FunctionTldGenerator {
 		sb.appendln(2).appendtab().append("<function>");
 		sb.appendln();
 	    }
-
 	    sb.appendtab(2).append("<description>" + desc + "</description>");
 	    sb.appendln();
 	    sb.appendtab(2).append("<name>" + name + "</name>");

@@ -67,7 +67,6 @@ public class AuthorizeInterceptor implements Serializable {
 	if (principal == null) {
 	    throw new UnauthorizedException();
 	}
-
 	String[] roles = authorize.roles();
 	String[] policies = authorize.policies();
 

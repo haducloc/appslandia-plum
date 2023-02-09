@@ -128,7 +128,6 @@ public class ServletUtils {
 	if (requestContext.isPathLanguage() || appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 	    url.append('/').append(requestContext.getLanguageId());
 	}
-
 	ActionDescProvider actionDescProvider = getAppScoped(request, ActionDescProvider.class);
 	ActionDesc formLogin = actionDescProvider.getFormLogin(requestContext.getModule());
 
@@ -168,7 +167,6 @@ public class ServletUtils {
 		AppConfig appConfig = getAppScoped(request, AppConfig.class);
 		httpPorts = appConfig.getString(AppConfig.CONFIG_X_FORWARDED_PORTS);
 	    }
-
 	    if (httpPorts != null) {
 		Asserts.isTrue(X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches(), STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
 

@@ -110,7 +110,6 @@ public class RequestContextParser {
 	    String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
 	    context.setBrowserFeatures(ParseUtils.parseInt(browserFeatures, 0));
 	}
-
 	request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, context);
 	return context;
     }

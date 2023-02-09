@@ -57,7 +57,6 @@ public class TextFileResultTest extends MockTestBase {
 		String content = IOUtils.toString(bis, StandardCharsets.UTF_8.name());
 		Assertions.assertEquals("item1, item2, item3", content);
 	    }
-
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
 	}
@@ -75,7 +74,6 @@ public class TextFileResultTest extends MockTestBase {
 		String content = IOUtils.toString(bis, StandardCharsets.ISO_8859_1.name());
 		Assertions.assertEquals("item1, item2, item3", content);
 	    }
-
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
 	}

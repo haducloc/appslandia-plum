@@ -40,7 +40,6 @@ public class ChangePasswordModel implements ConfirmPasswordModel {
 	ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ChangePasswordModel>() {
 	});
     }
-
     @NotNull
     @Password
     private String newPassword;

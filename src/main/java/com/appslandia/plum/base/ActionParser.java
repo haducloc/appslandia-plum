@@ -251,7 +251,6 @@ public class ActionParser {
 		out.write('"');
 	    }
 	}
-
 	out.write('>');
 	out.write(XmlEscaper.escapeXmlContent(labelText));
 	out.write("</a>");

@@ -69,7 +69,6 @@ public abstract class HandlerMappingsRegister implements Startup {
 		}
 	    }
 	}
-
 	boolean asyncSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableAsync.class) != null);
 	boolean partsSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
 

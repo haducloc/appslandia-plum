@@ -71,7 +71,6 @@ public class IterateTag extends TagBase {
 
 		this.jspBody.invoke(null);
 	    }
-
 	} finally {
 	    this.pageContext.setAttribute(this.var, bakVar);
 

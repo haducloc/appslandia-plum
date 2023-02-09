@@ -101,7 +101,6 @@ public class InvalidAuthResult extends CredentialValidationResult {
 	if (CREDENTIAL_INVALID.getCode().equalsIgnoreCase(code)) {
 	    return CREDENTIAL_INVALID;
 	}
-
 	if (CREDENTIAL_SUSPENDED.getCode().equalsIgnoreCase(code)) {
 	    return CREDENTIAL_SUSPENDED;
 	}
@@ -114,7 +113,6 @@ public class InvalidAuthResult extends CredentialValidationResult {
 	if (CREDENTIAL_INVALID_STATE.getCode().equalsIgnoreCase(code)) {
 	    return CREDENTIAL_INVALID_STATE;
 	}
-
 	if (TOKEN_INVALID.getCode().equalsIgnoreCase(code)) {
 	    return TOKEN_INVALID;
 	}
@@ -124,7 +122,6 @@ public class InvalidAuthResult extends CredentialValidationResult {
 	if (TOKEN_EXPIRED.getCode().equalsIgnoreCase(code)) {
 	    return TOKEN_EXPIRED;
 	}
-
 	if (ID_STORE_EXCEPTION.getCode().equalsIgnoreCase(code)) {
 	    return ID_STORE_EXCEPTION;
 	}

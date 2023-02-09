@@ -63,7 +63,6 @@ public class DefaultConstDescProviderFactory implements CDIFactory<ConstDescProv
 	    for (Class<?> constClass : constClasses) {
 		impl.addConstClass(constClass);
 	    }
-
 	    beanInstances.add(bi);
 	});
 	return impl;

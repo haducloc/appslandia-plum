@@ -86,7 +86,6 @@ public class MockServletUtils {
 	} else if (sc.getSessionCookieConfig().getDomain() != null) {
 	    cookie.setDomain(sc.getSessionCookieConfig().getDomain());
 	}
-
 	if (path != null) {
 	    cookie.setPath(path);
 	} else if (sc.getSessionCookieConfig().getPath() != null) {
@@ -94,7 +93,6 @@ public class MockServletUtils {
 	} else {
 	    cookie.setPath("/");
 	}
-
 	if (maxAge >= 0) {
 	    cookie.setMaxAge(maxAge);
 	}

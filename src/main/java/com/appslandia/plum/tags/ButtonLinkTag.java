@@ -97,7 +97,6 @@ public class ButtonLinkTag extends UITagBase {
 	    clickHandler.append("window.location.href='").append(XmlEscaper.escapeXml(this._href)).append("';");
 	    HtmlUtils.attribute(out, "onclick", clickHandler.toString());
 	}
-
 	if (this.hidden)
 	    HtmlUtils.hidden(out);
 

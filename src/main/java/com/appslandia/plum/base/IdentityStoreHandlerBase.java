@@ -63,7 +63,6 @@ public abstract class IdentityStoreHandlerBase extends InitializeObject implemen
 
 	    return CredentialValidationResult.NOT_VALIDATED_RESULT;
 	}
-
 	AuthCredential authCredential = (AuthCredential) credential;
 	CredentialValidationResult result = null;
 
@@ -97,7 +96,6 @@ public abstract class IdentityStoreHandlerBase extends InitializeObject implemen
 	if (result.getStatus() == Status.INVALID) {
 	    return result;
 	}
-
 	AuthUserPrincipal principal = new AuthUserPrincipal((UserPrincipal) result.getCallerPrincipal(), authCredential);
 	return new CredentialValidationResult(principal, result.getCallerGroups());
     }

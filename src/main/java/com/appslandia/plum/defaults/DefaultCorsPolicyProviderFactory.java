@@ -63,7 +63,6 @@ public class DefaultCorsPolicyProviderFactory implements CDIFactory<CorsPolicyPr
 	    for (CorsPolicy corsPolicy : policies) {
 		impl.addCorsPolicy(corsPolicy);
 	    }
-
 	    beanInstances.add(bi);
 	});
 	return impl;

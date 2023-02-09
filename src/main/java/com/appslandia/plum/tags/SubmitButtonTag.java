@@ -75,7 +75,6 @@ public class SubmitButtonTag extends UITagBase {
 	if (this.actionType != null) {
 	    pActionType = "'" + actionType + "'";
 	}
-
 	HtmlUtils.attribute(out, "onclick", String.format("return __click_submit_btn(event, %s, %s);", this.handleWait, pActionType));
 
 	if (this.datatag != null)

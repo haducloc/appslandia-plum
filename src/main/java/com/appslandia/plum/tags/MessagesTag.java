@@ -51,7 +51,6 @@ public class MessagesTag extends TagBase {
 	if (this.clazz == null) {
 	    this.clazz = "messages";
 	}
-
 	writeTypedMessages(Message.TYPE_ERROR);
 	writeTypedMessages(Message.TYPE_WARN);
 	writeTypedMessages(Message.TYPE_NOTICE);
@@ -63,7 +62,6 @@ public class MessagesTag extends TagBase {
 	if (messages.isEmpty()) {
 	    return;
 	}
-
 	String typedClass = getClassName(typeId);
 	JspWriter out = this.pageContext.getOut();
 
@@ -84,7 +82,6 @@ public class MessagesTag extends TagBase {
 	    }
 	    out.write("</li>");
 	}
-
 	out.write("</ul>");
     }
 

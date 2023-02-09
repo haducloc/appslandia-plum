@@ -88,7 +88,6 @@ public class CaptchaProducer extends InitializeObject {
 	    g.drawLine(0, this.height - 1, this.width, this.height - 1);
 	    g.drawLine(this.width - 1, this.height - 1, this.width - 1, 0);
 	}
-
 	g.dispose();
 	return bg;
     }

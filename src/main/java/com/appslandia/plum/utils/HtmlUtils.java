@@ -148,7 +148,6 @@ public class HtmlUtils {
 	    out.write(matcher.group());
 	    prevEnd = matcher.end();
 	}
-
 	if (prevEnd < str.length()) {
 	    out.write(textContentProcessor.apply(str.substring(prevEnd)));
 	}

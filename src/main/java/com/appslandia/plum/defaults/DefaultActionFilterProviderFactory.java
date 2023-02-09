@@ -74,7 +74,6 @@ public class DefaultActionFilterProviderFactory implements CDIFactory<ActionFilt
 
 		impl.addActionFilter(entry.getKey(), entry.getValue());
 	    }
-
 	    beanInstances.add(bi);
 	});
 	return impl;

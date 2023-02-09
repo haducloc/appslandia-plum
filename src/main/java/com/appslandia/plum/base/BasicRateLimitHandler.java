@@ -186,7 +186,6 @@ public abstract class BasicRateLimitHandler extends RateLimitHandler {
 	    if (nextAccesses > rateLimit1.getAccesses()) {
 		return RateLimitResult.RATE_LIMIT_1;
 	    }
-
 	    final long distanceMs = curTimeMs - this.lastCheckMs;
 
 	    // Level 2

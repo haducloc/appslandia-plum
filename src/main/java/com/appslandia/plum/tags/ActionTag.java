@@ -62,7 +62,6 @@ public class ActionTag extends TagBase implements DynamicAttributes {
 	if (this.controller == null) {
 	    this.controller = getRequestContext().getActionDesc().getController();
 	}
-
 	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
 	String _url = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, this.absUrl);
 	_url = this.getResponse().encodeURL(_url);

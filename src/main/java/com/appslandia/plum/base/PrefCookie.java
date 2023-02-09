@@ -88,7 +88,6 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
 	if (this == EMPTY) {
 	    return new PrefCookie();
 	}
-
 	return new PrefCookie(new HashMap<>(this.map));
     }
 }

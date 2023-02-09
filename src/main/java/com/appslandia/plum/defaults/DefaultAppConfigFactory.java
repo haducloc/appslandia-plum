@@ -75,7 +75,6 @@ public class DefaultAppConfigFactory implements CDIFactory<AppConfig> {
 	} catch (IOException ex) {
 	    throw new InitializeException(ex);
 	}
-
 	try {
 	    this.appLogger.info("Loading configs using appConfigLoader...");
 	    this.appConfigLoader.load(config);

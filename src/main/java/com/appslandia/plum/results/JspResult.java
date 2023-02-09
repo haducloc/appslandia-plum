@@ -70,7 +70,6 @@ public class JspResult implements ActionResult {
 	} else {
 	    jspPath = appConfig.getViewPathBase().append(this.path).toString();
 	}
-
 	if (requestContext.getActionDesc().getChildAction() == null) {
 	    ServletUtils.forward(request, response, jspPath);
 	} else {

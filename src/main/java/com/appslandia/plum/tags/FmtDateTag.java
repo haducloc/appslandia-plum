@@ -51,7 +51,6 @@ public class FmtDateTag extends TagBase {
 	if (val == null) {
 	    return;
 	}
-
 	LocalDate ld = null;
 	LocalDate now = null;
 
@@ -96,7 +95,6 @@ public class FmtDateTag extends TagBase {
 	} else {
 	    throw new JspException("The given value is unsupported.");
 	}
-
 	int days = (int) ChronoUnit.DAYS.between(ld, now);
 
 	if (days < 7) {

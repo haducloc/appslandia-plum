@@ -72,7 +72,6 @@ public class ActionImageTag extends UITagBase {
 	if (this.controller == null) {
 	    this.controller = getRequestContext().getActionDesc().getController();
 	}
-
 	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
 	this._src = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
 	this._src = this.getResponse().encodeURL(this._src);

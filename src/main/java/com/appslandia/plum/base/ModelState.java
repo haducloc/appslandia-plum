@@ -115,11 +115,9 @@ public class ModelState implements Serializable {
 	if (this.errors.isEmpty()) {
 	    return null;
 	}
-
 	if ((fieldNames == null) || (fieldNames.length == 0)) {
 	    return this.errors.values().iterator().next().get(0);
 	}
-
 	for (String fieldName : fieldNames) {
 	    if (this.errors.containsKey(fieldName)) {
 		return this.errors.get(fieldName).get(0);

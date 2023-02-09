@@ -131,13 +131,11 @@ public class DebugUtils {
 	    out.append(env.getKey()).append("=").append(env.getValue());
 	    out.println();
 	}
-
 	out.println();
 	for (Map.Entry<Object, Object> env : System.getProperties().entrySet()) {
 	    out.append(env.getKey().toString()).append("=").append(env.getValue().toString());
 	    out.println();
 	}
-
 	out.flush();
     }
 
@@ -162,7 +160,6 @@ public class DebugUtils {
 	    out.append(zoneId);
 	    out.println();
 	}
-
 	out.flush();
     }
 }

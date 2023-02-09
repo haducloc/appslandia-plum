@@ -73,7 +73,6 @@ public class PreRememberMeInterceptor implements Serializable {
 	if (!isValidateRequest(context.getMethod())) {
 	    return context.proceed();
 	}
-
 	Object[] parameters = context.getParameters();
 	HttpServletRequest request = (HttpServletRequest) parameters[0];
 	HttpServletResponse response = (HttpServletResponse) parameters[1];

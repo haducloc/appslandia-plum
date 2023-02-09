@@ -41,13 +41,11 @@ public class SecurityUtils {
 	if (userRoles == null) {
 	    return new CredentialValidationResult(callerPrincipal, null);
 	}
-
 	String[] roles = parseUserRoles(userRoles);
 
 	if (roles.length > 0) {
 	    return new CredentialValidationResult(callerPrincipal, CollectionUtils.toSet(roles));
 	}
-
 	return new CredentialValidationResult(callerPrincipal, null);
     }
 

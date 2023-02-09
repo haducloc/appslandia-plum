@@ -67,7 +67,6 @@ public class MailtoTag extends UITagBase {
 	if (!StringUtils.isNullOrEmpty(this.bcc)) {
 	    sb.append("&bcc=").append(this.bcc);
 	}
-
 	if (!StringUtils.isNullOrEmpty(this.subject)) {
 	    sb.append("&subject=").append(URLEncoding.encodeParam(this.subject, false));
 	}

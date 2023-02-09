@@ -43,7 +43,6 @@ public class HtmlUtilsTest {
 	} catch (IOException ex) {
 	    Assertions.fail(ex.getMessage());
 	}
-
 	out = new StringWriter();
 	try {
 	    HtmlUtils.attribute(out, "method", "");
@@ -62,7 +61,6 @@ public class HtmlUtilsTest {
 	} catch (IOException ex) {
 	    Assertions.fail(ex.getMessage());
 	}
-
 	out = new StringWriter();
 	try {
 	    HtmlUtils.escAttribute(out, "title", "");

@@ -106,7 +106,6 @@ public class ActionParserStaticTest {
 	    Assertions.fail();
 	} catch (Exception ex) {
 	}
-
 	parameters = new Params();
 	parameters.put("param0", "param0");
 	parameters.put("param1", "param1");
