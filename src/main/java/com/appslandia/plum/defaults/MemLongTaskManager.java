@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.appslandia.common.base.LruMap;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.LongTask;
 import com.appslandia.plum.base.LongTaskManager;
 
@@ -54,7 +54,7 @@ public class MemLongTaskManager implements LongTaskManager {
     @Override
     public void updateDone(String series, String status, String message, long doneAt) {
 	LongTask obj = this.longTaskMap.get(series);
-	AssertUtils.assertNotNull(obj);
+	Asserts.notNull(obj);
 
 	obj.setStatus(status);
 	obj.setMessage(message);

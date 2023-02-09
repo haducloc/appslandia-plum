@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.CaseInsensitiveMap;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -43,17 +43,13 @@ public class AuthHandlerProvider extends InitializeObject {
 
     public void addAuthHandler(String module, AuthHandler impl) {
 	this.assertNotInitialized();
-	AssertUtils.assertTrue(!this.authHandlerMap.containsKey(module), "authHandler already exists (module=" + module + ")");
 	this.authHandlerMap.put(module, impl);
     }
 
-    public AuthHandler getAuthHandler(String module) throws IllegalArgumentException {
+    public AuthHandler getAuthHandler(String module) {
 	this.initialize();
 
 	AuthHandler impl = this.authHandlerMap.get(module);
-	if (impl == null) {
-	    throw new IllegalArgumentException("authHandler is required (module=" + module + ")");
-	}
-	return impl;
+	return Asserts.notNull(impl);
     }
 }

@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.MemoryStream;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.IOUtils;
 import com.appslandia.plum.base.ActionDesc;
 import com.appslandia.plum.base.ActionDescProvider;
@@ -98,7 +98,7 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 	    if (useWrapper) {
 		ContentResponseWrapper wrapper = (ContentResponseWrapper) response;
 		if (childContext.getActionDesc().getMethod().getReturnType() != void.class) {
-		    AssertUtils.assertNotNull(result);
+		    Asserts.notNull(result);
 
 		    ((ActionResult) result).execute(request, response, childContext);
 		}
@@ -171,12 +171,9 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
     protected RequestContext createChildRequestContext() {
 	ActionDescProvider actionDescProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionDescProvider.class);
 	ActionDesc actionDesc = actionDescProvider.getActionDesc(this.controller, this.action);
-	if (actionDesc == null) {
-	    throw new IllegalArgumentException("Action is required (controller=" + this.controller + ", action=" + this.action + ")");
-	}
-	if (actionDesc.getChildAction() == null) {
-	    throw new IllegalArgumentException("Child action is required (controller=" + this.controller + ", action=" + this.action + ")");
-	}
+	Asserts.notNull(actionDesc);
+	Asserts.notNull(actionDesc.getChildAction());
+
 	return getRequestContext().createRequestContext(actionDesc);
     }
 

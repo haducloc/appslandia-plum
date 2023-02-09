@@ -28,7 +28,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.base.Params;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -53,7 +53,7 @@ public class ActionParserTest extends MockTestBase {
 
 	    Map<String, String> pathParamMap = new HashMap<>();
 	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    AssertUtils.assertNotNull(actionDesc);
+	    Asserts.notNull(actionDesc);
 
 	    Assertions.assertEquals("index", actionDesc.getAction());
 	    Assertions.assertEquals("testController", actionDesc.getController());
@@ -72,7 +72,7 @@ public class ActionParserTest extends MockTestBase {
 
 	    Map<String, String> pathParamMap = new HashMap<>();
 	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    AssertUtils.assertNotNull(actionDesc);
+	    Asserts.notNull(actionDesc);
 
 	    Assertions.assertEquals("actionNoPathParams", actionDesc.getAction());
 	    Assertions.assertEquals("testController", actionDesc.getController());
@@ -106,7 +106,7 @@ public class ActionParserTest extends MockTestBase {
 
 	    Map<String, String> pathParamMap = new HashMap<>();
 	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    AssertUtils.assertNotNull(actionDesc);
+	    Asserts.notNull(actionDesc);
 
 	    Assertions.assertEquals("actionPathParams", actionDesc.getAction());
 	    Assertions.assertEquals("testController", actionDesc.getController());
@@ -143,7 +143,7 @@ public class ActionParserTest extends MockTestBase {
 
 	    Map<String, String> pathParamMap = new HashMap<>();
 	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    AssertUtils.assertNotNull(actionDesc);
+	    Asserts.notNull(actionDesc);
 
 	    Assertions.assertEquals("actionSubPathParams", actionDesc.getAction());
 	    Assertions.assertEquals("testController", actionDesc.getController());

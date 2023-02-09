@@ -26,7 +26,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.el.ELContext;
 import jakarta.servlet.Servlet;
@@ -107,7 +107,7 @@ public class MockJspContext extends PageContext {
 
     @Override
     public ServletConfig getServletConfig() {
-	AssertUtils.assertNotNull(this.servletConfig, "servletConfig is required.");
+	Asserts.notNull(this.servletConfig, "servletConfig is required.");
 	return this.servletConfig;
     }
 

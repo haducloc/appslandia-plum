@@ -24,6 +24,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.appslandia.common.utils.Asserts;
+
 import jakarta.security.enterprise.CallerPrincipal;
 
 /**
@@ -52,9 +54,7 @@ public abstract class UserPrincipal extends CallerPrincipal {
 
     public Object getRequired(String attributeName) throws IllegalArgumentException {
 	Object obj = this.attributes.get(attributeName);
-	if (obj == null)
-	    throw new IllegalArgumentException("No value associated with attribute: " + attributeName);
-	return obj;
+	return Asserts.notNull(obj);
     }
 
     // Internal override only

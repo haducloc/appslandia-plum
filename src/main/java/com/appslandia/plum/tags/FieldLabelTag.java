@@ -22,7 +22,7 @@ package com.appslandia.plum.tags;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.HtmlUtils;
 
 import jakarta.servlet.jsp.JspException;
@@ -50,7 +50,7 @@ public class FieldLabelTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	AssertUtils.assertTrue((this.labelKey != null) || (this.jspBody != null));
+	Asserts.isTrue((this.labelKey != null) || (this.jspBody != null));
 
 	if (this.forId == null) {
 	    this.forId = HtmlUtils.buildId(this.field);

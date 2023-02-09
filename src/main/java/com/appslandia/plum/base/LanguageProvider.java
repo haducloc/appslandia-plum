@@ -28,7 +28,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.Language;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ public class LanguageProvider extends InitializeObject {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertTrue(!this.languageMap.isEmpty(), "No language provided.");
+	Asserts.isTrue(!this.languageMap.isEmpty(), "No language provided.");
 
 	if (this.defaultLanguage == null) {
 	    this.defaultLanguage = this.languageMap.values().iterator().next();
@@ -60,7 +60,6 @@ public class LanguageProvider extends InitializeObject {
 
     public Language getLanguage(String languageId) {
 	this.initialize();
-	AssertUtils.assertNotNull(languageId);
 	return this.languageMap.get(languageId.toLowerCase(Locale.ENGLISH));
     }
 
@@ -81,13 +80,12 @@ public class LanguageProvider extends InitializeObject {
 
     public LanguageProvider addLanguage(Language impl) {
 	this.assertNotInitialized();
-	AssertUtils.assertTrue(!this.languageMap.containsKey(impl.getLanguageId()), "language already exists (language=" + impl.getLanguageId() + ")");
 	this.languageMap.put(impl.getLanguageId(), impl);
 	return this;
     }
 
     public LanguageProvider addDefault(Language impl) {
-	AssertUtils.assertNull(this.defaultLanguage);
+	Asserts.isNull(this.defaultLanguage);
 	this.defaultLanguage = impl;
 	return addLanguage(impl);
     }

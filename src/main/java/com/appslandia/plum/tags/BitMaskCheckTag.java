@@ -22,7 +22,7 @@ package com.appslandia.plum.tags;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.jsp.JspException;
 
@@ -44,10 +44,10 @@ public class BitMaskCheckTag extends CheckInputTag {
     @Override
     protected void initTag() throws JspException, IOException {
 	super.initTag();
-	AssertUtils.assertTrue((this.submitValue instanceof Number), "submitValue must be a number.");
+	Asserts.isTrue((this.submitValue instanceof Number), "submitValue must be a number.");
 
 	if (this.value != null) {
-	    AssertUtils.assertTrue(this.value instanceof Number, "value must be a number.");
+	    Asserts.isTrue(this.value instanceof Number, "value must be a number.");
 	}
     }
 

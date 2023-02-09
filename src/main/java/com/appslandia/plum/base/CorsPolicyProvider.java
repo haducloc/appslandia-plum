@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -41,18 +41,14 @@ public class CorsPolicyProvider extends InitializeObject {
 	this.corsPolicyMap = Collections.unmodifiableMap(this.corsPolicyMap);
     }
 
-    public CorsPolicy getCorsPolicy(String name) throws IllegalArgumentException {
+    public CorsPolicy getCorsPolicy(String name) {
 	this.initialize();
 	CorsPolicy impl = this.corsPolicyMap.get(name);
-	if (impl == null) {
-	    throw new IllegalArgumentException("corsPolicy is required (name=" + name + ")");
-	}
-	return impl;
+	return Asserts.notNull(impl);
     }
 
     public void addCorsPolicy(CorsPolicy impl) {
 	this.assertNotInitialized();
-	AssertUtils.assertTrue(!this.corsPolicyMap.containsKey(impl.getName()), "corsPolicy already exists (name=" + impl.getName() + ")");
 	this.corsPolicyMap.put(impl.getName(), impl);
     }
 }

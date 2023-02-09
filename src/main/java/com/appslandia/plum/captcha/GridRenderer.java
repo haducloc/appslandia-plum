@@ -27,7 +27,7 @@ import java.security.SecureRandom;
 import java.util.Random;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -43,8 +43,8 @@ public class GridRenderer extends InitializeObject implements ImageRenderer {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.hColor, "hColor is required.");
-	AssertUtils.assertNotNull(this.vColor, "vColor is required.");
+	Asserts.notNull(this.hColor, "hColor is required.");
+	Asserts.notNull(this.vColor, "vColor is required.");
     }
 
     @Override

@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.appslandia.common.base.CaseInsensitiveMap;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.plum.base.UserPrincipal;
 import com.appslandia.plum.utils.HeaderUtils;
@@ -112,7 +112,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     }
 
     protected byte[] getContent() {
-	AssertUtils.assertNotNull(this.content, "content is required.");
+	Asserts.notNull(this.content, "content is required.");
 	return this.content;
     }
 
@@ -184,7 +184,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getScheme() {
-	AssertUtils.assertNotNull(this.scheme, "scheme is required.");
+	Asserts.notNull(this.scheme, "scheme is required.");
 	return this.scheme;
     }
 
@@ -195,19 +195,19 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getServerName() {
-	AssertUtils.assertNotNull(this.serverName, "serverName is required.");
+	Asserts.notNull(this.serverName, "serverName is required.");
 	return this.serverName;
     }
 
     @Override
     public int getServerPort() {
-	AssertUtils.assertTrue(this.serverPort >= 0, "serverPort is required.");
+	Asserts.isTrue(this.serverPort >= 0, "serverPort is required.");
 	return this.serverPort;
     }
 
     @Override
     public String getRemoteAddr() {
-	AssertUtils.assertNotNull(this.serverName, "remoteAddr is required.");
+	Asserts.notNull(this.serverName, "remoteAddr is required.");
 	return this.remoteAddr;
     }
 
@@ -238,7 +238,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getMethod() {
-	AssertUtils.assertNotNull(this.method, "method is required.");
+	Asserts.notNull(this.method, "method is required.");
 	return this.method;
     }
 
@@ -249,7 +249,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getRequestURI() {
-	AssertUtils.assertNotNull(this.requestURI, "requestURI is required.");
+	Asserts.notNull(this.requestURI, "requestURI is required.");
 	return this.requestURI;
     }
 
@@ -258,11 +258,11 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	    URL url = new URL(requestURL);
 	    this.serverName = url.getHost();
 
-	    AssertUtils.assertTrue("http".equals(url.getProtocol()) || "https".equals(url.getProtocol()), "http|https is required.");
+	    Asserts.isTrue("http".equals(url.getProtocol()) || "https".equals(url.getProtocol()), "http|https is required.");
 	    this.scheme = url.getProtocol();
 	    this.serverPort = (url.getPort() >= 0) ? url.getPort() : url.getDefaultPort();
 
-	    AssertUtils.assertTrue(url.getPath().startsWith("/app"));
+	    Asserts.isTrue(url.getPath().startsWith("/app"));
 	    this.requestURI = url.getPath();
 	    this.servletPath = url.getPath().substring(4);
 
@@ -292,7 +292,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public String getServletPath() {
-	AssertUtils.assertNotNull(this.servletPath, "servletPath is required.");
+	Asserts.notNull(this.servletPath, "servletPath is required.");
 	return this.servletPath;
     }
 
@@ -313,13 +313,13 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public Locale getLocale() {
-	AssertUtils.assertHasElements(this.locales, "locales is required.");
+	Asserts.hasElements(this.locales, "locales is required.");
 	return this.locales[0];
     }
 
     @Override
     public Enumeration<Locale> getLocales() {
-	AssertUtils.assertHasElements(this.locales, "locales is required.");
+	Asserts.hasElements(this.locales, "locales is required.");
 	return Collections.enumeration(CollectionUtils.toList(this.locales));
     }
 
@@ -335,7 +335,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     @Override
     public DispatcherType getDispatcherType() {
-	AssertUtils.assertNotNull(this.dispatcherType, "dispatcherType is required.");
+	Asserts.notNull(this.dispatcherType, "dispatcherType is required.");
 	return this.dispatcherType;
     }
 
@@ -353,7 +353,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
     public AsyncContext startAsync() throws IllegalStateException {
 	this.isAsyncStarted = true;
 	ServletResponse response = (ServletResponse) getAttribute(ServletResponse.class.getName());
-	return new MockAsyncContext(this, AssertUtils.assertNotNull(response));
+	return new MockAsyncContext(this, Asserts.notNull(response));
     }
 
     @Override
@@ -542,7 +542,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	if (this.userPrincipal == null) {
 	    return false;
 	}
-	AssertUtils.assertTrue(this.userPrincipal instanceof UserPrincipal);
+	Asserts.isTrue(this.userPrincipal instanceof UserPrincipal);
 
 	String userRoles = (String) ((UserPrincipal) this.userPrincipal).get(UserPrincipal.USER_ROLES);
 	String[] roles = SecurityUtils.parseUserRoles(userRoles);

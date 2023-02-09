@@ -57,7 +57,7 @@ public class AuthUserPrincipal extends UserPrincipal {
     }
 
     @Override
-    public Object getRequired(String attributeName) throws IllegalArgumentException {
+    public Object getRequired(String attributeName) {
 	return this.principal.getRequired(attributeName);
     }
 

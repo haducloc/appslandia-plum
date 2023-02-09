@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.appslandia.common.base.MappedID;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.AuthHandler;
 import com.appslandia.plum.base.AuthHandlerProvider;
 
@@ -47,7 +47,7 @@ public class MockAuthHandlerProvider extends AuthHandlerProvider {
 
 	for (AuthHandler authHandler : handlers) {
 	    MappedID mappedId = authHandler.getClass().getDeclaredAnnotation(MappedID.class);
-	    AssertUtils.assertNotNull(mappedId);
+	    Asserts.notNull(mappedId);
 
 	    addAuthHandler(mappedId.value(), authHandler);
 	}

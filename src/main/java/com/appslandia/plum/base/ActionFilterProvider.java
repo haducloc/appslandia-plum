@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -41,18 +41,14 @@ public class ActionFilterProvider extends InitializeObject {
 	this.actionFilterMap = Collections.unmodifiableMap(this.actionFilterMap);
     }
 
-    public ActionFilter getActionFilter(String name) throws IllegalArgumentException {
+    public ActionFilter getActionFilter(String name) {
 	this.initialize();
 	ActionFilter impl = this.actionFilterMap.get(name);
-	if (impl == null) {
-	    throw new IllegalArgumentException("actionFilter is required (name=" + name + ")");
-	}
-	return impl;
+	return Asserts.notNull(impl);
     }
 
     public void addActionFilter(String name, ActionFilter impl) {
 	this.assertNotInitialized();
-	AssertUtils.assertTrue(!this.actionFilterMap.containsKey(name), "actionFilter already exists (name=" + name + ")");
 	this.actionFilterMap.put(name, impl);
     }
 }

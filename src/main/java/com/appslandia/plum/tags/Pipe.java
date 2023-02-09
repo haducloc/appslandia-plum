@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.base.ToStringBuilder;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.XmlEscaper;
@@ -164,7 +164,7 @@ public abstract class Pipe {
 		}
 		int len = Integer.parseInt(arg);
 		String s = (String) value;
-		AssertUtils.assertTrue(s.length() > len);
+		Asserts.isTrue(s.length() > len);
 
 		char[] maskChars = new char[len];
 		Arrays.fill(maskChars, '*');
@@ -186,7 +186,7 @@ public abstract class Pipe {
 		}
 		int len = Integer.parseInt(arg);
 		String s = (String) value;
-		AssertUtils.assertTrue(s.length() > len);
+		Asserts.isTrue(s.length() > len);
 
 		char[] maskChars = new char[len];
 		Arrays.fill(maskChars, '*');
@@ -262,15 +262,14 @@ public abstract class Pipe {
 
     @Function(name = "pipe")
     public static String transform(Object value, String pipes) {
-	AssertUtils.assertNotNull(pipes);
+	Asserts.notNull(pipes);
 
 	PipeInfo[] pis = PIPE_INFOS.computeIfAbsent(pipes, (c) -> parsePipes(c));
 	for (PipeInfo pipe : pis) {
 
 	    Pipe impl = PIPES.get(pipe.name);
-	    if (impl == null) {
-		throw new IllegalArgumentException("Pipe is not found (name=" + pipe.name + ")");
-	    }
+	    Asserts.notNull(impl);
+
 	    value = impl.apply(value, pipe.arg);
 	}
 	return ObjectUtils.toStringOrNull(value);
@@ -281,6 +280,7 @@ public abstract class Pipe {
 	int startIdx = 0;
 	int endIdx;
 	List<PipeInfo> list = new ArrayList<>(5);
+
 	while ((endIdx = pipes.indexOf('|', startIdx)) != -1) {
 	    String pipe = pipes.substring(startIdx, endIdx).trim();
 	    if (!pipe.isEmpty()) {
@@ -288,13 +288,15 @@ public abstract class Pipe {
 	    }
 	    startIdx = endIdx + 1;
 	}
+
 	if (startIdx < pipes.length()) {
 	    String pipe = pipes.substring(startIdx).trim();
 	    if (!pipe.isEmpty()) {
 		list.add(parsePipe(pipe));
 	    }
 	}
-	AssertUtils.assertHasElements(list, "No pipe provided.");
+
+	Asserts.hasElements(list, "No pipe provided.");
 	return list.toArray(new PipeInfo[list.size()]);
     }
 
@@ -311,7 +313,7 @@ public abstract class Pipe {
 	final String arg;
 
 	PipeInfo(String name, String arg) {
-	    this.name = AssertUtils.assertNotNull(name);
+	    this.name = Asserts.notNull(name);
 	    this.arg = arg;
 	}
     }

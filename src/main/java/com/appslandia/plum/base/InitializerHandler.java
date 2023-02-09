@@ -25,7 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import com.appslandia.common.logging.AppLogger;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -109,7 +109,7 @@ public class InitializerHandler extends HttpFilter {
 
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-	AssertUtils.assertTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
+	Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
 	try {
 	    // RequestContext
 	    RequestContext requestContext = this.requestContextParser.parse(request, response);

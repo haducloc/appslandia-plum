@@ -28,7 +28,7 @@ import com.appslandia.common.base.ToStringBuilder;
 import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.results.JspResult;
 import com.appslandia.plum.utils.ServletUtils;
@@ -70,7 +70,7 @@ public class ErrorServlet extends HttpServlet {
 	    this.exceptionHandler.writeSimpleHtml(request, response, HttpServletResponse.SC_NOT_FOUND, "404: Not Found");
 	    return;
 	}
-	AssertUtils.assertTrue(request.getDispatcherType() == DispatcherType.ERROR);
+	Asserts.isTrue(request.getDispatcherType() == DispatcherType.ERROR);
 
 	if (this.appConfig.getBool(CONFIG_ERROR_DEV, false)) {
 	    writeErrorDev(request, response);
@@ -88,8 +88,8 @@ public class ErrorServlet extends HttpServlet {
 	    problem = this.exceptionHandler.getProblem(request, requestContext, exception);
 	}
 
-	AssertUtils.assertNotNull(problem.getStatus());
-	AssertUtils.assertNotNull(problem.getTitle());
+	Asserts.notNull(problem.getStatus());
+	Asserts.notNull(problem.getTitle());
 
 	request.setAttribute(Problem.class.getName(), problem);
 	final ResponseSafeWriter responseWrapper = new ResponseSafeWriter(response);
@@ -138,8 +138,8 @@ public class ErrorServlet extends HttpServlet {
 	    problem = this.exceptionHandler.getProblem(request, requestContext, exception);
 	}
 
-	AssertUtils.assertNotNull(problem.getStatus());
-	AssertUtils.assertNotNull(problem.getTitle());
+	Asserts.notNull(problem.getStatus());
+	Asserts.notNull(problem.getTitle());
 
 	out.println();
 	out.append("Problem Status: ").append(String.valueOf(problem.getStatus()));

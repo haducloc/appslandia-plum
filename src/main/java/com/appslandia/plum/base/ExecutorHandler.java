@@ -27,7 +27,7 @@ import java.util.concurrent.ExecutorService;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.ArrayUtils;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -177,7 +177,7 @@ public class ExecutorHandler extends HttpServlet {
 
 		// Execute Result
 		if (ActionResult.class.isAssignableFrom(requestContext.getActionDesc().getMethod().getReturnType())) {
-		    AssertUtils.assertNotNull(result);
+		    Asserts.notNull(result);
 		    ((ActionResult) result).execute(request, response, requestContext);
 
 		} else if (requestContext.getActionDesc().getMethod().getReturnType() != void.class) {

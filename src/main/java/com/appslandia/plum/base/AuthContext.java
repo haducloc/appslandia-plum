@@ -23,9 +23,10 @@ package com.appslandia.plum.base;
 import java.security.Principal;
 import java.util.Arrays;
 
+import com.appslandia.common.base.AssertException;
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.annotation.PostConstruct;
@@ -83,7 +84,7 @@ public class AuthContext {
 	    if (credential instanceof UsernamePasswordCredential) {
 
 		UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
-		AssertUtils.assertTrue(principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller()));
+		Asserts.isTrue(principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller()));
 
 		if (this.identityValidator.validate(principal.getModule(), usernamePasswordCredential.getCaller(), usernamePasswordCredential.getPasswordAsString(),
 			invalidCode) == null) {
@@ -104,10 +105,10 @@ public class AuthContext {
 
 	// HttpAuthenticationMechanismBase.validateRequest() is supposed to be called
 	CredentialValidationResult authResult = (CredentialValidationResult) request.getAttribute(CredentialValidationResult.class.getName());
-	AssertUtils.assertStateNotNull(authResult, "HttpAuthenticationMechanismBase.validateRequest() was not called.");
+	Asserts.notNull(authResult, "HttpAuthenticationMechanismBase.validateRequest() was not called.");
 
 	if (authResult.getStatus() == CredentialValidationResult.Status.VALID) {
-	    AssertUtils.assertState(authStatus == AuthenticationStatus.SUCCESS);
+	    Asserts.isTrue(authStatus == AuthenticationStatus.SUCCESS);
 
 	    // Authenticated successfully: Change sessionId
 	    if (this.appConfig.isEnableSession() && (request.getSession(false) != null)) {
@@ -122,7 +123,7 @@ public class AuthContext {
     }
 
     public boolean isCallerInRoles(String... roles) {
-	AssertUtils.assertHasElements(roles);
+	Asserts.hasElements(roles);
 	return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
     }
 
@@ -132,12 +133,12 @@ public class AuthContext {
 	    return null;
 	}
 	if (!(principal instanceof UserPrincipal)) {
-	    throw new IllegalStateException("securityContext.getCallerPrincipal() must be UserPrincipal.");
+	    throw new AssertException("securityContext.getCallerPrincipal() must be UserPrincipal.");
 	}
 	return (UserPrincipal) principal;
     }
 
     public UserPrincipal getRequiredPrincipal() {
-	return AssertUtils.assertStateNotNull(getUserPrincipal(), "securityContext.getCallerPrincipal() must be not null.");
+	return Asserts.notNull(getUserPrincipal(), "securityContext.getCallerPrincipal() is required.");
     }
 }

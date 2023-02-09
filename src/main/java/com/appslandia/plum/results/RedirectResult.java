@@ -23,7 +23,7 @@ package com.appslandia.plum.results;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.ActionParser;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.AppConfig;
@@ -81,7 +81,7 @@ public class RedirectResult implements ActionResult {
 	TempDataManager tempDataManager = ServletUtils.getAppScoped(request, TempDataManager.class);
 
 	// Controller/action
-	AssertUtils.assertNotNull(this.action);
+	Asserts.notNull(this.action);
 	if (this.controller == null) {
 	    this.controller = requestContext.getActionDesc().getController();
 	}

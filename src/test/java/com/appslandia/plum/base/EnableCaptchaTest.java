@@ -23,7 +23,7 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.mocks.MockCaptchaManager;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
 import com.appslandia.plum.results.RedirectResult;
@@ -73,7 +73,7 @@ public class EnableCaptchaTest extends MockTestBase {
 
 	    // Removed
 	    boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
-	    AssertUtils.assertTrue(!valid);
+	    Asserts.isTrue(!valid);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

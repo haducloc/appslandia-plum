@@ -36,7 +36,7 @@ import java.util.Map;
 import com.appslandia.common.base.CaseInsensitiveMap;
 import com.appslandia.common.base.MemoryStream;
 import com.appslandia.common.base.Params;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.URLUtils;
 import com.appslandia.plum.utils.HeaderUtils;
 
@@ -84,7 +84,7 @@ public class MockHttpServletResponse implements HttpServletResponse {
 
     @Override
     public String getContentType() {
-	AssertUtils.assertNotNull(this.contentType, "contentType is required.");
+	Asserts.notNull(this.contentType, "contentType is required.");
 	return this.contentType;
     }
 

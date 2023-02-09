@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -51,7 +51,7 @@ public class CorsPolicyHandler {
 
     public CorsResult handleCors(HttpServletRequest request, HttpServletResponse response, CorsPolicy corsPolicy) {
 	// CORS Headers
-	String origin = AssertUtils.assertNotNull(request.getHeader(HEADER_ORIGIN));
+	String origin = Asserts.notNull(request.getHeader(HEADER_ORIGIN));
 
 	// Origin
 	if (!corsPolicy.allowOrigin(origin)) {
@@ -73,7 +73,7 @@ public class CorsPolicyHandler {
 
     public CorsResult handlePreflight(HttpServletRequest request, HttpServletResponse response, CorsPolicy corsPolicy) {
 	// CORS Headers
-	String origin = AssertUtils.assertNotNull(request.getHeader(HEADER_ORIGIN));
+	String origin = Asserts.notNull(request.getHeader(HEADER_ORIGIN));
 
 	// Origin
 	if (!corsPolicy.allowOrigin(origin)) {
@@ -82,7 +82,7 @@ public class CorsPolicyHandler {
 	RequestContext requestContext = ServletUtils.getRequestContext(request);
 
 	// Request Method
-	String requestMethod = AssertUtils.assertNotNull(request.getHeader(HEADER_AC_REQUEST_METHOD));
+	String requestMethod = Asserts.notNull(request.getHeader(HEADER_AC_REQUEST_METHOD));
 	if (!requestContext.getActionDesc().getAllowMethods().contains(requestMethod)) {
 	    return CorsResult.NOT_ALLOWED_METHOD;
 	}

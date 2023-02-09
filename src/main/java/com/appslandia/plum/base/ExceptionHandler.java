@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
 
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.logging.AppLogger;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.utils.ServletUtils;
@@ -209,7 +209,7 @@ public class ExceptionHandler {
     }
 
     public void writeSimpleHtml(HttpServletRequest request, HttpServletResponse response, int status, String message) throws ServletException, IOException {
-	AssertUtils.assertTrue(!response.isCommitted());
+	Asserts.isTrue(!response.isCommitted());
 	response.resetBuffer();
 
 	response.setContentType(MimeTypes.TEXT_HTML);

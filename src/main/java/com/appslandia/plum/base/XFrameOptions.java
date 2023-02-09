@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
 
 /**
@@ -45,7 +45,7 @@ public class XFrameOptions {
     }
 
     public XFrameOptions allowFrom(String value) {
-	this.allowFrom = AssertUtils.assertNotNull(StringUtils.trimToNull(value));
+	this.allowFrom = Asserts.notNull(StringUtils.trimToNull(value));
 	return this;
     }
 

@@ -22,7 +22,7 @@ package com.appslandia.plum.base;
 
 import java.io.Serializable;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -64,7 +64,7 @@ public class Message implements Serializable {
     }
 
     public static int parseType(String type) {
-	AssertUtils.assertNotNull(type);
+	Asserts.notNull(type);
 
 	if ("info".equalsIgnoreCase(type)) {
 	    return TYPE_INFO;

@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.URLUtils;
 import com.appslandia.plum.utils.XmlEscaper;
@@ -57,7 +57,7 @@ public class UrlTag extends TagBase implements DynamicAttributes {
 
     @Override
     public void doTag() throws JspException, IOException {
-	AssertUtils.assertNotNull(this._params, "No parameter provided.");
+	Asserts.notNull(this._params, "No parameter provided.");
 	StringBuilder url = null;
 
 	if (this.fmtUri) {
@@ -121,9 +121,8 @@ public class UrlTag extends TagBase implements DynamicAttributes {
 	    String parameterName = parameterGroup.substring(1, parameterGroup.length() - 1);
 
 	    Object parameterVal = parameters.get(parameterName);
-	    if (parameterVal == null) {
-		throw new IllegalArgumentException("Path parameter is required (name=" + parameterName + ")");
-	    }
+	    Asserts.notNull(parameterVal);
+
 	    sb.append(URLEncoding.encodePath(parameterVal.toString()));
 	    parameters.remove(parameterName);
 

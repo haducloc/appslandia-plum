@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.logging.AppLogger;
+import com.appslandia.common.utils.STR;
 
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.credential.Credential;
@@ -87,7 +88,7 @@ public abstract class IdentityStoreHandlerBase extends InitializeObject implemen
 
 	// NOT_VALIDATED
 	if ((result == null) || (result.getStatus() == Status.NOT_VALIDATED)) {
-	    this.appLogger.warn("No identity store found for validating credential type: " + credential.getClass().getName());
+	    this.appLogger.warn(STR.fmt("No identity store found for validating credential type '{}'.", credential.getClass()));
 
 	    return CredentialValidationResult.NOT_VALIDATED_RESULT;
 	}

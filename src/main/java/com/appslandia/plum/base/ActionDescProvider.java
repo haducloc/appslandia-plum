@@ -40,8 +40,9 @@ import com.appslandia.common.base.Bind;
 import com.appslandia.common.base.CaseInsensitiveMap;
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
+import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.ValueUtils;
@@ -124,7 +125,7 @@ public abstract class ActionDescProvider extends InitializeObject {
 	    // Module
 	    Controller controllerAnt = controllerClass.getDeclaredAnnotation(Controller.class);
 	    String module = controllerAnt.module().isEmpty() ? this.appConfig.getRequiredString(AppConfig.CONFIG_DEFAULT_MODULE) : controllerAnt.module();
-	    actionDesc.setModule(AssertUtils.assertNotNull(module));
+	    actionDesc.setModule(module);
 
 	    // HTTP Methods
 	    Out<Boolean> httpMethod = new Out<>();
@@ -179,7 +180,6 @@ public abstract class ActionDescProvider extends InitializeObject {
 		if (cacheControl != null) {
 		    if (!cacheControl.nocache()) {
 			actionDesc.setCacheControl(cacheControl);
-			AssertUtils.assertNotBlank(cacheControl.value());
 		    } else {
 			actionDesc.setCacheControl(CacheControl.IMPL_NO_CACHE);
 		    }
@@ -250,21 +250,21 @@ public abstract class ActionDescProvider extends InitializeObject {
 
 	    // ActionRoute
 	    ActionRoute actionRoute = new ActionRoute(controller, action);
-	    AssertUtils.assertTrue(!this.actionDescMap.containsKey(actionRoute),
-		    "controller/action is duplicated (controller=" + controllerClass + ", action=" + actionMethod + ")");
+	    Asserts.isTrue(!this.actionDescMap.containsKey(actionRoute),
+		    () -> STR.fmt("controller/action is duplicated: controller={}, action={}.", controllerClass, actionMethod));
 
 	    // Index
 	    if (action.equalsIgnoreCase(ServletUtils.ACTION_INDEX)) {
 		// @Home
 		if (controllerClass.getAnnotation(Home.class) != null) {
-		    AssertUtils.assertNull(this.homeController, "@Home is duplicated (controller=" + controllerClass + ")");
+		    Asserts.isNull(this.homeController, () -> STR.fmt("@Home is duplicated: controller={}.", controllerClass));
 		    this.homeController = controller;
 		}
 	    }
 
 	    // @FormLogin
 	    if (actionMethod.getDeclaredAnnotation(FormLogin.class) != null) {
-		AssertUtils.assertTrue(!this.formLogins.containsKey(actionDesc.getModule()), "@FormLogin is duplicated");
+		Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()), "@FormLogin is duplicated.");
 		this.formLogins.put(actionDesc.getModule(), actionDesc);
 	    }
 	    this.actionDescMap.put(actionRoute, actionDesc);
@@ -298,7 +298,7 @@ public abstract class ActionDescProvider extends InitializeObject {
 	    if (model != null) {
 		paramDesc.setModel(model);
 
-		AssertUtils.assertNull(parameter.getDeclaredAnnotation(Valid.class), "@Valid is invalid location.");
+		Asserts.isNull(parameter.getDeclaredAnnotation(Valid.class), () -> STR.fmt("@Valid is unsupported at this location: {}.", parameter));
 		continue;
 	    }
 
@@ -352,7 +352,8 @@ public abstract class ActionDescProvider extends InitializeObject {
 
     // value: (/{parameter}(-{parameter})*)+
     public static List<PathParam> parsePathParams(String value) {
-	AssertUtils.assertTrue(PATH_PARAMS_PATTERN.matcher(value).matches(), "pathParams is invalid (value=" + value + ")");
+	Asserts.notNull(value);
+	Asserts.isTrue(PATH_PARAMS_PATTERN.matcher(value).matches(), () -> STR.fmt("pathParams '{}' is invalid.", value));
 
 	List<PathParam> pathParams = new ArrayList<>();
 	for (String pathItem : SplitUtils.split(value, '/')) {
@@ -404,20 +405,20 @@ public abstract class ActionDescProvider extends InitializeObject {
 	    return actionMethod.getName();
 	}
 	String route = StringUtils.trimToNull(action.value());
-	AssertUtils.assertNotNull(route, "Can't determime action route (action=" + actionMethod + ")");
+	Asserts.notNull(route, () -> STR.fmt("Couldn't determime action route: action={}.", actionMethod));
 	return StringUtils.firstLowerCase(route, Locale.ENGLISH);
     }
 
     public static String getController(Class<?> clazz) {
 	Controller controller = clazz.getDeclaredAnnotation(Controller.class);
-	AssertUtils.assertNotNull(controller, "@Controller is required (controller=" + clazz + ")");
+	Asserts.notNull(controller, () -> STR.fmt("@Controller is required: controller={}.", clazz));
 
 	String route = StringUtils.trimToNull(controller.value());
 	if (route == null) {
-	    AssertUtils.assertTrue(StringUtils.endsWith(clazz.getSimpleName(), "Controller"), "Can't determime controller route (controller=" + clazz + ")");
+	    Asserts.isTrue(StringUtils.endsWith(clazz.getSimpleName(), "Controller"), () -> STR.fmt("Couldn't determime controller route: controller={}.", clazz));
 
 	    route = clazz.getSimpleName().substring(0, clazz.getSimpleName().length() - 10);
-	    AssertUtils.assertTrue(!route.isEmpty(), "Controller is invalid (controller=" + clazz + ")");
+	    Asserts.isTrue(!route.isEmpty(), () -> STR.fmt("Controller is invalid: controller={}.", clazz));
 	}
 	return StringUtils.firstLowerCase(route, Locale.ENGLISH);
     }

@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -41,25 +41,22 @@ public class AuthorizePolicyProvider extends InitializeObject {
 	this.authorizePolicyMap = Collections.unmodifiableMap(this.authorizePolicyMap);
     }
 
-    public AuthorizePolicy getAuthorizePolicy(String name) throws IllegalArgumentException {
+    public AuthorizePolicy getAuthorizePolicy(String name) {
 	this.initialize();
 	AuthorizePolicy impl = this.authorizePolicyMap.get(name);
-	if (impl == null) {
-	    throw new IllegalArgumentException("authorizePolicy is required (name=" + name + ")");
-	}
-	return impl;
+	return Asserts.notNull(impl);
     }
 
     public void addAuthorizePolicy(String name, AuthorizePolicy impl) {
 	this.assertNotInitialized();
-	AssertUtils.assertTrue(!this.authorizePolicyMap.containsKey(name), "authorizePolicy already exists (name=" + name + ")");
 	this.authorizePolicyMap.put(name, impl);
     }
 
     public boolean authorize(UserPrincipal principal, String... policies) {
 	this.initialize();
-	AssertUtils.assertNotNull(principal);
-	AssertUtils.assertHasElements(policies);
+
+	Asserts.notNull(principal);
+	Asserts.hasElements(policies);
 
 	for (String policy : policies) {
 	    if (getAuthorizePolicy(policy).authorize(principal)) {

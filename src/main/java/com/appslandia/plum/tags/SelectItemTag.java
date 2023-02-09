@@ -22,7 +22,7 @@ package com.appslandia.plum.tags;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
@@ -44,7 +44,7 @@ public class SelectItemTag implements SimpleTag {
 
     @Override
     public void doTag() throws JspException, IOException {
-	AssertUtils.assertNotNull(this.parent);
+	Asserts.notNull(this.parent);
 	((SelectTag) this.parent).addItem(this.name, this.value);
     }
 

@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,7 +39,7 @@ public class CacheControlPolicy implements HeaderPolicy {
     }
 
     public CacheControlPolicy(CacheControlBuilder builder, boolean enableLocal) {
-	this.cacheControl = AssertUtils.assertNotNull(builder.toString());
+	this.cacheControl = Asserts.notNull(builder.toString());
     }
 
     @Override

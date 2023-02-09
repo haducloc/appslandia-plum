@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 import com.appslandia.common.base.Config;
 import com.appslandia.common.base.ConfigMap;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -82,7 +82,7 @@ public class AppConfig extends InitializeObject implements Config {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.config, "config is required.");
+	Asserts.notNull(this.config, "config is required.");
 
 	this.config.putIfAbsent(CONFIG_DEFAULT_MODULE, Modules.DEFAULT);
 
@@ -149,7 +149,7 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public String getRequiredString(String key) throws IllegalArgumentException {
+    public String getRequiredString(String key) {
 	this.initialize();
 	return this.config.getRequiredString(key);
     }
@@ -161,37 +161,37 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public String getFormatted(String key) throws IllegalArgumentException {
+    public String getFormatted(String key) {
 	this.initialize();
 	return this.config.getFormatted(key);
     }
 
     @Override
-    public String getRequiredFormatted(String key) throws IllegalArgumentException {
+    public String getRequiredFormatted(String key) {
 	this.initialize();
 	return this.config.getRequiredFormatted(key);
     }
 
     @Override
-    public String getFormatted(String key, Map<String, Object> parameters) throws IllegalArgumentException {
+    public String getFormatted(String key, Map<String, Object> parameters) {
 	this.initialize();
 	return this.config.getFormatted(key, parameters);
     }
 
     @Override
-    public String getRequiredFormatted(String key, Map<String, Object> parameters) throws IllegalArgumentException {
+    public String getRequiredFormatted(String key, Map<String, Object> parameters) {
 	this.initialize();
 	return this.config.getRequiredFormatted(key, parameters);
     }
 
     @Override
-    public String getFormatted(String key, Object... parameters) throws IllegalArgumentException {
+    public String getFormatted(String key, Object... parameters) {
 	this.initialize();
 	return this.config.getFormatted(key, parameters);
     }
 
     @Override
-    public String getRequiredFormatted(String key, Object... parameters) throws IllegalArgumentException {
+    public String getRequiredFormatted(String key, Object... parameters) {
 	this.initialize();
 	return this.config.getRequiredFormatted(key, parameters);
     }
@@ -203,7 +203,7 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public boolean getRequiredBool(String key) throws IllegalArgumentException {
+    public boolean getRequiredBool(String key) {
 	this.initialize();
 	return this.config.getRequiredBool(key);
     }
@@ -215,7 +215,7 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public int getRequiredInt(String key) throws IllegalArgumentException {
+    public int getRequiredInt(String key) {
 	this.initialize();
 	return this.config.getRequiredInt(key);
     }
@@ -227,7 +227,7 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public long getRequiredLong(String key) throws IllegalArgumentException {
+    public long getRequiredLong(String key) {
 	this.initialize();
 	return this.config.getRequiredLong(key);
     }
@@ -239,7 +239,7 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public double getRequiredDouble(String key) throws IllegalArgumentException {
+    public double getRequiredDouble(String key) {
 	this.initialize();
 	return this.config.getRequiredDouble(key);
     }

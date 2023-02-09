@@ -22,7 +22,7 @@ package com.appslandia.plum.tags;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.HtmlUtils;
 
 import jakarta.servlet.jsp.JspException;
@@ -51,7 +51,7 @@ public abstract class CheckInputTag extends ValueTagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	AssertUtils.assertNotNull(this.submitValue, "submitValue is required.");
+	Asserts.notNull(this.submitValue, "submitValue is required.");
 
 	super.initTag();
     }

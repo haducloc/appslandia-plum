@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import com.appslandia.common.base.LruMap;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.AuthToken;
 import com.appslandia.plum.base.AuthTokenManager;
 
@@ -57,7 +57,7 @@ public class MemAuthTokenManager implements AuthTokenManager {
     @Override
     public void reissue(String series, String hashToken, long expiresAt, long issuedAt) {
 	AuthToken obj = this.tokenMap.get(series);
-	AssertUtils.assertNotNull(obj);
+	Asserts.notNull(obj);
 
 	obj.setHashToken(hashToken);
 	obj.setExpiresAt(expiresAt);

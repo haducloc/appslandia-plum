@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -39,7 +39,7 @@ public class SortConfig extends InitializeObject {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.sortDefault);
+	Asserts.notNull(this.sortDefault);
 
 	this.sortBys = Collections.unmodifiableMap(this.sortBys);
     }
@@ -65,7 +65,7 @@ public class SortConfig extends InitializeObject {
     public SortConfig sortDefault(String sortDefault) {
 	assertNotInitialized();
 
-	AssertUtils.assertTrue(this.sortBys.containsKey(sortDefault));
+	Asserts.isTrue(this.sortBys.containsKey(sortDefault));
 	this.sortDefault = sortDefault;
 	return this;
     }

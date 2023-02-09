@@ -21,7 +21,7 @@
 package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.SecurityUtils;
 
 import jakarta.security.enterprise.credential.Credential;
@@ -55,7 +55,7 @@ public abstract class IdentityStoreBase implements IdentityStore {
 	PrincipalRoles principalRoles = doValidate(authCredential.getModule(), authCredential.getCredential(), invalidCode);
 
 	if (principalRoles == null) {
-	    String code = AssertUtils.assertNotNull(invalidCode.value, "invalidCode is required.");
+	    String code = Asserts.notNull(invalidCode.value, "invalidCode is required.");
 	    return InvalidAuthResult.valueOf(code);
 	}
 

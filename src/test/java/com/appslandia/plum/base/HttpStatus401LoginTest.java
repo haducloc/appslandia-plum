@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.mocks.MemUserDatabase;
 import com.appslandia.plum.mocks.MemUserPasswordCredential;
 
@@ -55,7 +55,7 @@ public class HttpStatus401LoginTest extends MockTestBase {
 
 	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
 	    String location = getCurrentResponse().getHeader("Location");
-	    AssertUtils.assertNotNull(location);
+	    Asserts.notNull(location);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -67,7 +67,7 @@ public class HttpStatus401LoginTest extends MockTestBase {
 	try {
 	    executeCurrent("POST", "http://localhost/app/testController/loginAction");
 
-	    AssertUtils.assertNotNull(getCurrentRequest().getUserPrincipal());
+	    Asserts.notNull(getCurrentRequest().getUserPrincipal());
 	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
 
 	} catch (Exception ex) {

@@ -23,7 +23,7 @@ package com.appslandia.plum.mocks;
 import java.security.Principal;
 import java.util.Set;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationException;
@@ -47,7 +47,7 @@ public class MockSecurityContext implements SecurityContext {
     @Override
     public Principal getCallerPrincipal() {
 	MockHttpServletRequest currentRequest = MockContainer.currentRequestHolder.get();
-	AssertUtils.assertState(currentRequest != null, "currentRequest is null.");
+	Asserts.isTrue(currentRequest != null, "currentRequest is null.");
 	return currentRequest.getUserPrincipal();
     }
 
@@ -59,7 +59,7 @@ public class MockSecurityContext implements SecurityContext {
     @Override
     public boolean isCallerInRole(String role) {
 	MockHttpServletRequest currentRequest = MockContainer.currentRequestHolder.get();
-	AssertUtils.assertState(currentRequest != null, "currentRequest is null.");
+	Asserts.isTrue(currentRequest != null, "currentRequest is null.");
 	return currentRequest.isUserInRole(role);
     }
 

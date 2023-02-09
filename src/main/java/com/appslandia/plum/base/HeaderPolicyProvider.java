@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -62,18 +62,14 @@ public class HeaderPolicyProvider extends InitializeObject {
 	return this.headerPolicyMap;
     }
 
-    public HeaderPolicy getHeaderPolicy(String name) throws IllegalArgumentException {
+    public HeaderPolicy getHeaderPolicy(String name) {
 	this.initialize();
 	HeaderPolicy impl = this.headerPolicyMap.get(name);
-	if (impl == null) {
-	    throw new IllegalArgumentException("headerPolicy is required (name=" + name + ")");
-	}
-	return impl;
+	return Asserts.notNull(impl);
     }
 
     public void addHeaderPolicy(String name, HeaderPolicy impl) {
 	this.assertNotInitialized();
-	AssertUtils.assertTrue(!this.headerPolicyMap.containsKey(name), "headerPolicy already exists (name=" + name + ")");
 	this.headerPolicyMap.put(name, impl);
     }
 }

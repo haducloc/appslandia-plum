@@ -24,6 +24,7 @@ import java.io.Serializable;
 
 import com.appslandia.common.caching.AppCache;
 import com.appslandia.common.caching.AppCacheManager;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
@@ -54,12 +55,8 @@ public class CacheResultInterceptor implements Serializable {
 	    return context.proceed();
 	}
 
-	if (cacheResult.cacheName().isEmpty()) {
-	    throw new IllegalStateException("cacheName is required.");
-	}
-	if (cacheResult.key().isEmpty()) {
-	    throw new IllegalStateException("key is required.");
-	}
+	Asserts.isTrue(!cacheResult.cacheName().isEmpty());
+	Asserts.isTrue(!cacheResult.key().isEmpty());
 
 	// Build cacheKey
 	String cacheKey = CacheUtils.format(cacheResult.key(), context.getParameters());

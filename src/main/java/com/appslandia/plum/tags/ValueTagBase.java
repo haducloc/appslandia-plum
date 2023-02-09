@@ -23,7 +23,7 @@ package com.appslandia.plum.tags;
 import java.io.IOException;
 import java.util.Objects;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.HtmlUtils;
 import com.appslandia.plum.utils.XmlEscaper;
@@ -66,7 +66,7 @@ public abstract class ValueTagBase extends UITagBase {
 	// Path Expression?
 	if (this.path != null) {
 	    int nameIdx = this.path.indexOf('.');
-	    AssertUtils.assertTrue(nameIdx > 0);
+	    Asserts.isTrue(nameIdx > 0);
 
 	    this.name = this.path.substring(nameIdx + 1);
 
@@ -78,7 +78,7 @@ public abstract class ValueTagBase extends UITagBase {
 	    }
 	} else {
 	    // name/value
-	    AssertUtils.assertNotNull(this.name, "name is required.");
+	    Asserts.notNull(this.name, "name is required.");
 
 	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
 	    if (!isValid) {

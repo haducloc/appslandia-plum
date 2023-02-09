@@ -21,7 +21,7 @@
 package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Mutex;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.annotation.WebListener;
@@ -43,7 +43,7 @@ public class MutexSessionListener implements HttpSessionListener {
 
     @Override
     public void sessionCreated(HttpSessionEvent hse) {
-	AssertUtils.assertState(this.appConfig.isEnableSession(), "Http session is disabled.");
+	Asserts.isTrue(this.appConfig.isEnableSession(), "Http session is disabled.");
 
 	hse.getSession().setAttribute(ATTRIBUTE_MUTEX, new Mutex());
     }

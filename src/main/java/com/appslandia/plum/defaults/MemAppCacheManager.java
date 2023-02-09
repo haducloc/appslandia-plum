@@ -27,10 +27,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.appslandia.common.base.AssertException;
 import com.appslandia.common.base.LruMap;
 import com.appslandia.common.caching.AppCache;
 import com.appslandia.common.caching.AppCacheManager;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
 
 /**
@@ -46,7 +47,7 @@ public class MemAppCacheManager implements AppCacheManager {
     public <K, V> AppCache<K, V> createCache(String cacheName, int size) {
 	assertNotClosed();
 
-	AssertUtils.assertTrue(!this.caches.containsKey(cacheName));
+	Asserts.isTrue(!this.caches.containsKey(cacheName));
 
 	AppCache<K, V> cache = new MemAppCache<>(cacheName, size);
 	this.caches.put(cacheName, ObjectUtils.cast(cache));
@@ -94,9 +95,9 @@ public class MemAppCacheManager implements AppCacheManager {
 	this.isClosed.compareAndSet(false, true);
     }
 
-    protected void assertNotClosed() throws IllegalStateException {
+    protected void assertNotClosed() throws AssertException {
 	if (this.isClosed.get()) {
-	    throw new IllegalStateException("closed");
+	    throw new AssertException("closed");
 	}
     }
 

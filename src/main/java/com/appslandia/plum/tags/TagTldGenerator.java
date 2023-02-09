@@ -27,7 +27,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.appslandia.common.base.TextBuilder;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
 
 /**
@@ -98,7 +98,7 @@ public class TagTldGenerator {
 
     public static void generateTag(Class<?> tagClass, TextBuilder sb) throws Exception {
 	Tag tag = tagClass.getDeclaredAnnotation(Tag.class);
-	AssertUtils.assertNotNull(tag, "@Tag is required.");
+	Asserts.notNull(tag, "@Tag is required.");
 
 	String name = tag.name().length() == 0 ? tagClass.getSimpleName().substring(0, tagClass.getSimpleName().lastIndexOf("Tag")) : tag.name();
 	StringBuilder desc = new StringBuilder();

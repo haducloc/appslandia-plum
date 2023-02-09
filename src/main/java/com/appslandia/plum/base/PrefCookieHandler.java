@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.URLUtils;
@@ -79,7 +79,7 @@ public class PrefCookieHandler {
     }
 
     public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, PrefCookie prefCookie) {
-	AssertUtils.assertNotNull(prefCookie);
+	Asserts.notNull(prefCookie);
 	String cookieValue = encode(prefCookie);
 
 	if (StringUtils.isNullOrEmpty(cookieValue)) {
@@ -87,9 +87,8 @@ public class PrefCookieHandler {
 		this.cookieHandler.removeCookie(response, getCookieName());
 	    }
 	} else {
-	    if (cookieValue.length() > 4093) {
-		throw new IllegalArgumentException("PrefCookie is too big.");
-	    }
+	    Asserts.isTrue(cookieValue.length() <= 4093);
+
 	    this.cookieHandler.saveCookie(response, getCookieName(), cookieValue, getCookieAge(), c -> c.setHttpOnly(false));
 	}
     }

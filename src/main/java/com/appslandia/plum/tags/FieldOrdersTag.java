@@ -22,7 +22,7 @@ package com.appslandia.plum.tags;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.JspTag;
@@ -38,7 +38,7 @@ public class FieldOrdersTag extends TagBase {
     @Override
     public void doTag() throws JspException, IOException {
 	JspTag parent = this.getParent();
-	AssertUtils.assertNotNull(parent);
+	Asserts.notNull(parent);
 
 	((FormErrorsTag) parent).setFieldOrders(evalJspBody());
     }

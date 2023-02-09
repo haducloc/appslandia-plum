@@ -26,7 +26,7 @@ import java.util.Map;
 
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterException;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -49,7 +49,7 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     public <T> T getParamOrNull(String name, Class<T> targetType) {
 	String value = getParamOrNull(name);
 	Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
-	AssertUtils.assertNotNull(converter);
+	Asserts.notNull(converter);
 
 	try {
 	    return converter.parse(value, getRequestContext().getFormatProvider());
@@ -107,11 +107,11 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     }
 
     public UserPrincipal getRequiredPrincipal() {
-	return AssertUtils.assertStateNotNull(getUserPrincipal(), "getUserPrincipal() must be not null.");
+	return Asserts.notNull(getUserPrincipal(), "getUserPrincipal() is required.");
     }
 
     public boolean isUserInRoles(String... roles) {
-	AssertUtils.assertHasElements(roles);
+	Asserts.hasElements(roles);
 	return Arrays.stream(roles).anyMatch(role -> isUserInRole(role));
     }
 
@@ -183,7 +183,7 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     }
 
     public void assertInRoles(String[] roles) throws ForbiddenException {
-	AssertUtils.assertHasElements(roles);
+	Asserts.hasElements(roles);
 
 	if (!isUserInRoles(roles)) {
 	    throw new ForbiddenException(res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);

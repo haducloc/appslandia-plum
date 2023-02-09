@@ -100,7 +100,7 @@ public class IterateTag extends TagBase {
 	    };
 
 	} else {
-	    throw new IllegalStateException("items must be an Iterable or an Array.");
+	    throw new IllegalArgumentException("items must be Iterable/Array.");
 	}
     }
 

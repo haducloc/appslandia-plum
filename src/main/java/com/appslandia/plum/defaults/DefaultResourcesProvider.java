@@ -24,7 +24,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Properties;
 
-import com.appslandia.common.utils.StringFormat;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.PropertiesResourcesProvider;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,7 +39,7 @@ public class DefaultResourcesProvider extends PropertiesResourcesProvider {
 
     @Override
     protected String getResourcePath(String resourceName, String language) {
-	return StringFormat.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, language);
+	return STR.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, language);
     }
 
     @Override

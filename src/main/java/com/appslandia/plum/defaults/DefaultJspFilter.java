@@ -22,7 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.StringFormat;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.AppConfig;
 
 import jakarta.inject.Inject;
@@ -53,7 +53,7 @@ public class DefaultJspFilter extends HttpFilter {
 	    chain.doFilter(request, response);
 
 	} else {
-	    response.sendError(HttpServletResponse.SC_FORBIDDEN, StringFormat.fmt("{}=false", AppConfig.CONFIG_DIRECT_JSP_ACCESS));
+	    response.sendError(HttpServletResponse.SC_FORBIDDEN, STR.fmt("Couldn't access jsp pages directly. {}=false.", AppConfig.CONFIG_DIRECT_JSP_ACCESS));
 	}
     }
 }

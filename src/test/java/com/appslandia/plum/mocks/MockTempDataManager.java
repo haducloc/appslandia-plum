@@ -21,7 +21,7 @@
 package com.appslandia.plum.mocks;
 
 import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.SessionTempDataManager;
 
 /**
@@ -42,7 +42,7 @@ public class MockTempDataManager extends SessionTempDataManager {
 
 	@Override
 	public boolean verify(String value) {
-	    AssertUtils.assertNotNull(value);
+	    Asserts.notNull(value);
 	    return value.equals(MOCK_TEMP_DATA_ID);
 	}
     };

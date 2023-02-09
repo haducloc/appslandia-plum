@@ -27,7 +27,7 @@ import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.base.PropertyConfig;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.logging.AppLogger;
-import com.appslandia.common.utils.StringFormat;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.AppConfigLoader;
 import com.appslandia.plum.utils.ServletUtils;
@@ -67,7 +67,7 @@ public class DefaultAppConfigFactory implements CDIFactory<AppConfig> {
 	    this.appLogger.info("Loading configs from " + DEFAULT_CONFIG_PATH);
 	    ServletUtils.loadProps(this.servletContext, DEFAULT_CONFIG_PATH, config);
 
-	    String envConfig = StringFormat.fmt(ENV_CONFIG_PATH, DeployEnv.getCurrent().getName());
+	    String envConfig = STR.fmt(ENV_CONFIG_PATH, DeployEnv.getCurrent().getName());
 	    this.appLogger.info("Loading configs from " + envConfig);
 
 	    ServletUtils.loadProps(this.servletContext, envConfig, config);

@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.RandomUtils;
 
 /**
@@ -49,7 +49,7 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertTrue(this.textColors.size() > 0, "textColor is required.");
+	Asserts.isTrue(this.textColors.size() > 0, "textColor is required.");
 
 	if (this.textFonts.isEmpty()) {
 	    addTextFont(Font.SERIF, Font.PLAIN, 36);

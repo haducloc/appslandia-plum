@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.appslandia.common.utils.ArrayUtils;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,7 +56,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     @Override
     public HttpSession getSession(boolean create) {
 	AppConfig config = ServletUtils.getAppScoped(this, AppConfig.class);
-	AssertUtils.assertState(config.isEnableSession(), "Http session is disabled.");
+	Asserts.isTrue(config.isEnableSession(), "Http session is disabled.");
 
 	return super.getSession(create);
     }

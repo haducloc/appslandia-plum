@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ValueUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +40,7 @@ public class HstsPolicy implements HeaderPolicy {
     }
 
     public HstsPolicy(HstsBuilder builder, boolean enableLocal) {
-	this.hsts = AssertUtils.assertNotNull(builder.toString());
+	this.hsts = Asserts.notNull(builder.toString());
     }
 
     @Override

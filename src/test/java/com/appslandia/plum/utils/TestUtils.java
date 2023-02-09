@@ -29,7 +29,7 @@ import java.util.zip.GZIPInputStream;
 import com.appslandia.common.base.DeployEnv;
 import com.appslandia.common.base.MemoryStream;
 import com.appslandia.common.base.ToStringBuilder;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.IOUtils;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.common.utils.StringUtils;
@@ -49,14 +49,14 @@ public class TestUtils {
 
     public static void setDeployEnv(DeployEnv env) {
 	Field field = ReflectionUtils.findField(DeployEnv.class, "current");
-	AssertUtils.assertNotNull(field);
+	Asserts.notNull(field);
 	field.setAccessible(true);
 	ReflectionUtils.set(field, null, env);
     }
 
     public static void initExpressionEvaluator() {
 	Field field = ReflectionUtils.findField(ExpressionEvaluator.class, "__default");
-	AssertUtils.assertNotNull(field);
+	Asserts.notNull(field);
 	field.setAccessible(true);
 	ReflectionUtils.set(field, null, new MockExpressionEvaluator());
     }

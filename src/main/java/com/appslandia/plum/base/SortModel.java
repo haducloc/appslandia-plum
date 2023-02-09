@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -45,11 +45,11 @@ public class SortModel {
     }
 
     public String sortBy() {
-	return AssertUtils.assertStateNotNull(this.sortBy);
+	return Asserts.notNull(this.sortBy);
     }
 
     public boolean sortAsc() {
-	return AssertUtils.assertStateNotNull(this.sortAsc);
+	return Asserts.notNull(this.sortAsc);
     }
 
     public Boolean sortAsc(String fieldName) {

@@ -30,7 +30,7 @@ import java.util.regex.Pattern;
 
 import com.appslandia.common.base.CaseInsensitiveSet;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.PatternUtils;
 import com.appslandia.common.utils.SplitUtils;
@@ -60,10 +60,11 @@ public class CorsPolicy extends InitializeObject {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.name);
+	Asserts.notNull(this.name);
 
 	// allowOrigins
-	AssertUtils.assertTrue(this.anyOrigin || (this.allowOrigins != null), "No allow origin configured.");
+	Asserts.isTrue(this.anyOrigin || (this.allowOrigins != null), "No allow origin configured.");
+
 	if (this.allowOrigins != null) {
 	    this.allowOrigins = Collections.unmodifiableList(this.allowOrigins);
 	}
@@ -97,7 +98,7 @@ public class CorsPolicy extends InitializeObject {
 
     public boolean allowHeaders(String headers) {
 	this.initialize();
-	AssertUtils.assertNotNull(headers);
+	Asserts.notNull(headers);
 
 	if (this.allowHeaders == null) {
 	    return false;

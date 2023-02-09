@@ -26,7 +26,7 @@ import java.util.List;
 import com.appslandia.common.base.NotBind;
 import com.appslandia.common.models.SelectItem;
 import com.appslandia.common.models.SelectItemImpl;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.validators.MaxLength;
 import com.appslandia.common.validators.ValidInts;
 import com.appslandia.plum.base.Resources;
@@ -64,12 +64,12 @@ public class ManageSqlModel {
     private String resultText;
 
     public boolean isQueryType() {
-	AssertUtils.assertStateNotNull(this.sqlType);
+	Asserts.notNull(this.sqlType);
 	return this.sqlType == SQL_TYPE_QUERY;
     }
 
     public boolean isJsonResult() {
-	AssertUtils.assertStateNotNull(this.resultFormat);
+	Asserts.notNull(this.resultFormat);
 	return this.resultFormat == RESULT_FORMAT_JSON;
     }
 

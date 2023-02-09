@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.oauth;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.security.enterprise.credential.Credential;
 
@@ -35,8 +35,8 @@ public class OAuthCredential implements Credential {
     final String caller;
 
     public OAuthCredential(String state, String caller) {
-	AssertUtils.assertNotNull(state);
-	AssertUtils.assertNotNull(caller);
+	Asserts.notNull(state);
+	Asserts.notNull(caller);
 
 	this.state = state;
 	this.caller = caller;

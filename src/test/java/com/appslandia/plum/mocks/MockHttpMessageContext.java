@@ -26,7 +26,7 @@ import java.util.Set;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.security.auth.message.MessageInfo;
@@ -174,7 +174,7 @@ public class MockHttpMessageContext implements HttpMessageContext {
     @Override
     public AuthenticationStatus notifyContainerAboutLogin(CredentialValidationResult result) {
 	if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-	    this.callerPrincipal = AssertUtils.assertNotNull(result.getCallerPrincipal());
+	    this.callerPrincipal = Asserts.notNull(result.getCallerPrincipal());
 	    this.groups = result.getCallerGroups();
 
 	    MockHttpServletRequest req = ServletUtils.unwrapRequest(this.request, MockHttpServletRequest.class);

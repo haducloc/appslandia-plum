@@ -24,7 +24,7 @@ import java.lang.reflect.Field;
 
 import org.junit.jupiter.api.extension.RegisterExtension;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.plum.mocks.MockContainer;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
@@ -100,11 +100,11 @@ public abstract class MockTestBase {
     }
 
     protected MockHttpServletRequest getCurrentRequest() {
-	return AssertUtils.assertNotNull(MockContainer.currentRequestHolder.get());
+	return Asserts.notNull(MockContainer.currentRequestHolder.get());
     }
 
     protected MockHttpServletResponse getCurrentResponse() {
-	return AssertUtils.assertNotNull(MockContainer.currentResponseHolder.get());
+	return Asserts.notNull(MockContainer.currentResponseHolder.get());
     }
 
     protected void printCurrentException() {
@@ -113,7 +113,7 @@ public abstract class MockTestBase {
 
     protected void setRequestContextField(String fieldName, Object value) {
 	Field field = ReflectionUtils.findField(RequestContext.class, fieldName);
-	AssertUtils.assertNotNull(field);
+	Asserts.notNull(field);
 	field.setAccessible(true);
 
 	ReflectionUtils.set(field, getCurrentRequestContext(), value);

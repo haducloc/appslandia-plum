@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
 
 import jakarta.servlet.Servlet;
@@ -52,10 +52,9 @@ public class DynServletRegister extends InitializeObject {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.servletName);
-	AssertUtils.assertTrue((this.servletClass != null) || (this.servletClassName != null), "No servlet provided.");
-
-	AssertUtils.assertHasElements(this.urlPatterns, "urlPatterns is required.");
+	Asserts.notNull(this.servletName);
+	Asserts.isTrue((this.servletClass != null) || (this.servletClassName != null), "No servlet provided.");
+	Asserts.hasElements(this.urlPatterns, "urlPatterns is required.");
     }
 
     public DynServletRegister registerTo(ServletContext sc) {

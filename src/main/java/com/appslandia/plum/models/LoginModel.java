@@ -23,7 +23,7 @@ package com.appslandia.plum.models;
 import com.appslandia.common.base.Bind;
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.validators.Password;
-import com.appslandia.common.validators.UserName;
+import com.appslandia.common.validators.Username;
 
 import jakarta.validation.constraints.NotNull;
 
@@ -36,7 +36,7 @@ public class LoginModel {
 
     @Bind(converter = Converter.STRING_LC)
     @NotNull
-    @UserName
+    @Username
     private String username;
 
     @NotNull

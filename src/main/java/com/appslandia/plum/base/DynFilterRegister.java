@@ -26,7 +26,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.ArrayUtils;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.StringUtils;
 
@@ -55,10 +55,9 @@ public class DynFilterRegister extends InitializeObject {
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.filterName);
-	AssertUtils.assertTrue((this.filterClass != null) || (this.filterClassName != null), "No filter provided.");
-
-	AssertUtils.assertTrue(ArrayUtils.hasElements(this.servletNames) || ArrayUtils.hasElements(this.urlPatterns), "No mapping provided.");
+	Asserts.notNull(this.filterName);
+	Asserts.isTrue((this.filterClass != null) || (this.filterClassName != null), "No filter provided.");
+	Asserts.isTrue(ArrayUtils.hasElements(this.servletNames) || ArrayUtils.hasElements(this.urlPatterns), "No mapping provided.");
     }
 
     public DynFilterRegister registerTo(ServletContext sc) {

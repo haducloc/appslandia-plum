@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.StringUtils;
 
@@ -78,12 +78,12 @@ public class MockServletContext implements ServletContext {
 
     @Override
     public String getContextPath() {
-	AssertUtils.assertNotNull(this.contextPath, "appDir is required.");
+	Asserts.notNull(this.contextPath, "appDir is required.");
 	return this.contextPath;
     }
 
     public String getAppDir() {
-	AssertUtils.assertNotNull(this.appDir, "appDir is required.");
+	Asserts.notNull(this.appDir, "appDir is required.");
 	return this.appDir;
     }
 

@@ -28,7 +28,7 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -42,8 +42,8 @@ public class GradientBgProducer extends InitializeObject implements BackgroundPr
 
     @Override
     protected void init() throws Exception {
-	AssertUtils.assertNotNull(this.fromColor, "fromColor is required.");
-	AssertUtils.assertNotNull(this.toColor, "toColor is required.");
+	Asserts.notNull(this.fromColor, "fromColor is required.");
+	Asserts.notNull(this.toColor, "toColor is required.");
     }
 
     @Override

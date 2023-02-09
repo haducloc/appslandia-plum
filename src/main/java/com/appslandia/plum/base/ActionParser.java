@@ -25,6 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.appslandia.common.base.StringWriter;
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.URLUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -103,9 +105,8 @@ public class ActionParser {
 
     public String toActionUrl(HttpServletRequest request, String controller, String action, Map<String, Object> parameters, boolean absoluteUrl) throws IllegalArgumentException {
 	ActionDesc actionDesc = this.actionDescProvider.getActionDesc(controller, action);
-	if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
-	    throw new IllegalArgumentException("Action is required (controller=" + controller + ", action=" + action + ")");
-	}
+	Asserts.notNull(actionDesc);
+	Asserts.isNull(actionDesc.getChildAction());
 
 	RequestContext requestContext = ServletUtils.getRequestContext(request);
 	StringBuilder url = null;
@@ -188,20 +189,20 @@ public class ActionParser {
     public static void addPathParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
 	for (PathParam pathParam : pathParams) {
 	    if (pathParam.getParamName() != null) {
+
 		Object value = parameters.get(pathParam.getParamName());
-		if (value == null) {
-		    throw new IllegalArgumentException("Path parameter is required (name=" + pathParam.getParamName() + ")");
-		}
+		Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", pathParam.getParamName()));
+
 		url.append('/').append(URLEncoding.encodePath(value.toString()));
 		continue;
 	    }
 	    // Sub Parameters
 	    boolean isFirstSub = true;
 	    for (PathParam subParam : pathParam.getSubParams()) {
+
 		Object value = parameters.get(subParam.getParamName());
-		if (value == null) {
-		    throw new IllegalArgumentException("Path parameter is required (name=" + subParam.getParamName() + ")");
-		}
+		Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", subParam.getParamName()));
+
 		if (isFirstSub) {
 		    url.append('/').append(URLEncoding.encodePath(value.toString()));
 		    isFirstSub = false;

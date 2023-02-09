@@ -22,7 +22,7 @@ package com.appslandia.plum.tags;
 
 import java.time.LocalDate;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.XmlEscaper;
@@ -197,7 +197,7 @@ public class Functions {
 
     @Function
     public static String fmtMonth(int month) {
-	AssertUtils.assertTrue(month >= 1 && month <= 12, "month is invalid.");
+	Asserts.isTrue(month >= 1 && month <= 12, "month is invalid.");
 	if (month < 10)
 	    return "0" + month;
 	return String.valueOf(month);

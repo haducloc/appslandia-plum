@@ -23,7 +23,7 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
 import com.appslandia.plum.mocks.MockHttpServletResponse;
 import com.appslandia.plum.utils.HeaderUtils;
@@ -48,7 +48,7 @@ public class LastModifiedTest extends MockTestBase {
 	MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/documentController/document/1");
 	MockHttpServletResponse response = container.createResponse();
 	execute(request, response);
-	return AssertUtils.assertNotNull(response.getHeader("Last-Modified"));
+	return Asserts.notNull(response.getHeader("Last-Modified"));
     }
 
     @Test

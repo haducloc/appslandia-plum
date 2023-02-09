@@ -21,11 +21,11 @@
 package com.appslandia.plum.base;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.appslandia.common.json.JsonIgnore;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -62,7 +62,7 @@ public class Problem implements Serializable {
     }
 
     public Problem setStatus(Integer status) {
-	AssertUtils.assertTrue((status == null) || ((400 <= status) && (status < 600))); // 4XX, 5XX
+	Asserts.isTrue((status == null) || ((400 <= status) && (status < 600))); // 4XX, 5XX
 	this.status = status;
 	return this;
     }
@@ -139,10 +139,10 @@ public class Problem implements Serializable {
     }
 
     public Problem addExtension(String key, Object value) {
-	AssertUtils.assertNotNull(key);
+	Asserts.notNull(key);
 
 	if (this.extensions == null) {
-	    this.extensions = new HashMap<>();
+	    this.extensions = new LinkedHashMap<>();
 	}
 	this.extensions.put(key, value);
 	return this;

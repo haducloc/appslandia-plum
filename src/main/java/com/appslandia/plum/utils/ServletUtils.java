@@ -46,10 +46,11 @@ import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.PropertyConfig;
 import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.crypto.DigesterImpl;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.HexUtils;
 import com.appslandia.common.utils.IOUtils;
 import com.appslandia.common.utils.ObjectUtils;
+import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.URLEncoding;
@@ -169,8 +170,7 @@ public class ServletUtils {
 	    }
 
 	    if (httpPorts != null) {
-		if (!X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches())
-		    throw new IllegalStateException("X-Forwarded-Ports is invalid: " + httpPorts);
+		Asserts.isTrue(X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches(), STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
 
 		String[] ports = SplitUtils.split(httpPorts, ',');
 		port = "https".equals(scheme) ? ports[1] : ports[0];
@@ -265,7 +265,7 @@ public class ServletUtils {
 
     public static String getAppDir(ServletContext sc) {
 	String appDir = sc.getRealPath("/");
-	AssertUtils.assertNotNull(appDir, "Can't determine appDir.");
+	Asserts.notNull(appDir, "Couldn't determine appDir.");
 	return appDir;
     }
 
@@ -346,10 +346,7 @@ public class ServletUtils {
 
     public static RequestDispatcher getRequestDispatcher(HttpServletRequest request, String path) {
 	RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-	if (dispatcher == null) {
-	    throw new IllegalArgumentException("getRequestDispatcher (path=" + path + ")");
-	}
-	return dispatcher;
+	return Asserts.notNull(dispatcher, () -> STR.fmt("Couldn't obtain a dispatcher for the path '{}'.", path));
     }
 
     public static void forward(HttpServletRequest request, HttpServletResponse response, String path) throws ServletException, IOException {
@@ -526,7 +523,7 @@ public class ServletUtils {
     }
 
     public static UserPrincipal getRequiredPrincipal(HttpServletRequest request) {
-	return AssertUtils.assertStateNotNull(getUserPrincipal(request), "request.getUserPrincipal() must be not null.");
+	return Asserts.notNull(getUserPrincipal(request), "request.getUserPrincipal() is required.");
     }
 
     public static void setWWWAuthenticate(HttpServletResponse response, String authType, String realmName) {
@@ -559,10 +556,7 @@ public class ServletUtils {
 
     public static RequestContext getRequestContext(HttpServletRequest request) {
 	RequestContext obj = (RequestContext) request.getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-	if (obj == null) {
-	    throw new IllegalStateException("requestContext is null.");
-	}
-	return obj;
+	return Asserts.notNull(obj);
     }
 
     public static ModelState getModelState(HttpServletRequest request) {
@@ -594,7 +588,7 @@ public class ServletUtils {
 
     public static PrefCookie getPrefCookie(HttpServletRequest request) {
 	PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-	return AssertUtils.assertStateNotNull(prefCookie);
+	return Asserts.notNull(prefCookie);
     }
 
     public static Resources getResources(HttpServletRequest request) {

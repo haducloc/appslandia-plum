@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,7 +42,7 @@ public class CspPolicy implements HeaderPolicy {
     }
 
     public CspPolicy(CspBuilder builder, boolean addReportOnly) {
-	this.csp = AssertUtils.assertNotNull(builder.toString());
+	this.csp = Asserts.notNull(builder.toString());
 	this.addReportOnly = addReportOnly;
     }
 

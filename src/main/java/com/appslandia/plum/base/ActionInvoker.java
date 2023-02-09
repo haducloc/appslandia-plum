@@ -31,10 +31,10 @@ import com.appslandia.common.base.Out;
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterProvider;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.ReflectionUtils;
-import com.appslandia.common.utils.StringFormat;
+import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -115,9 +115,7 @@ public class ActionInvoker {
 	    // Converter
 	    Class<?> valueType = ModelBinder.getValueType(paramDesc.getParameter());
 	    Converter<Object> converter = this.converterProvider.getConverter(paramDesc.getConverter(), valueType);
-	    if (converter == null) {
-		throw new IllegalStateException(StringFormat.fmt("Unsupported data binding for type: {}", valueType));
-	    }
+	    Asserts.notNull(converter, () -> STR.fmt("Unsupported data binding for type '{}'.", valueType));
 
 	    // paramValue
 	    String paramValue = request.getParameter(paramDesc.getParamName());
@@ -158,7 +156,7 @@ public class ActionInvoker {
 	    ConstraintViolation<?> violation = (ConstraintViolation<?>) error;
 
 	    Path.Node paramNode = getParamNode(violation.getPropertyPath());
-	    AssertUtils.assertNotNull(paramNode);
+	    Asserts.notNull(paramNode);
 
 	    ParamDesc paramDesc = requestContext.getActionDesc().getParamDescs().stream().filter(p -> p.getParameter().getName().equals(paramNode.getName())).findFirst().get();
 	    ServletUtils.addError(request, paramDesc.getParamName(), ModelBinder.getMsgKey(violation), getMsgParams(violation, paramDesc, requestContext.getResources()));

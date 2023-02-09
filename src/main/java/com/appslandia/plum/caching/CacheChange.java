@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Set;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 
 /**
@@ -43,12 +43,12 @@ public class CacheChange implements Serializable {
     }
 
     public CacheChange(String cacheName, String key) {
-	this(cacheName, CollectionUtils.unmodifiableSet(AssertUtils.assertNotNull(key)));
+	this(cacheName, CollectionUtils.unmodifiableSet(Asserts.notNull(key)));
     }
 
     public CacheChange(String cacheName, Set<String> keys) {
-	AssertUtils.assertNotNull(cacheName);
-	AssertUtils.assertNotNull(keys);
+	Asserts.notNull(cacheName);
+	Asserts.notNull(keys);
 
 	this.cacheName = cacheName;
 	this.keys = Collections.unmodifiableSet(keys);

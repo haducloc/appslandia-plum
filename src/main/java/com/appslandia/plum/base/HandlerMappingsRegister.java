@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-import com.appslandia.common.utils.StringFormat;
+import com.appslandia.common.utils.STR;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContext;
@@ -58,14 +58,14 @@ public abstract class HandlerMappingsRegister implements Startup {
 	    String controller = ActionDescProvider.getController(controllerClass);
 
 	    // /{controller}/*
-	    urlMappings.add(StringFormat.fmt("/{}/*", controller));
+	    urlMappings.add(STR.fmt("/{}/*", controller));
 
 	    // Only register language mappings if languages > 1
 	    if ((languages != null) && (languages.length > 1)) {
 		for (String language : languages) {
 
 		    // /{language}/{controller}/*
-		    urlMappings.add(StringFormat.fmt("/{}/{}/*", language, controller));
+		    urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
 		}
 	    }
 	}

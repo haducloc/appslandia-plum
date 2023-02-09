@@ -125,7 +125,6 @@ public class ActionParserUrlTest extends MockTestBase {
 	    Assertions.fail();
 
 	} catch (Exception ex) {
-	    Assertions.assertTrue(ex instanceof IllegalArgumentException);
 	}
     }
 
@@ -160,7 +159,6 @@ public class ActionParserUrlTest extends MockTestBase {
 	    Assertions.fail();
 
 	} catch (Exception ex) {
-	    Assertions.assertTrue(ex instanceof IllegalArgumentException);
 	}
     }
 

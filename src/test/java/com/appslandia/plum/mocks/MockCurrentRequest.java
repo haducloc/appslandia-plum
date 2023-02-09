@@ -22,7 +22,7 @@ package com.appslandia.plum.mocks;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.ServletConnection;
 import jakarta.servlet.ServletException;
@@ -38,7 +38,7 @@ public class MockCurrentRequest implements HttpServletRequest {
 
     protected HttpServletRequest getCurrent() {
 	HttpServletRequest current = MockContainer.currentRequestHolder.get();
-	AssertUtils.assertState(current != null, "currentRequest is null.");
+	Asserts.isTrue(current != null, "currentRequest is null.");
 	return current;
     }
 

@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.ActionParser;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.XmlEscaper;
@@ -49,7 +49,7 @@ public class ActionTag extends TagBase implements DynamicAttributes {
 
     @Override
     public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	AssertUtils.assertTrue(TagUtils.isForParameter(name));
+	Asserts.isTrue(TagUtils.isForParameter(name));
 
 	if (this._parameters == null) {
 	    this._parameters = new LinkedHashMap<>();

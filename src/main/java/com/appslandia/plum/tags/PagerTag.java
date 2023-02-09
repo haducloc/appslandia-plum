@@ -22,7 +22,8 @@ package com.appslandia.plum.tags;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.PagerItem;
 import com.appslandia.plum.base.PagerModel;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -65,19 +66,19 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 	} else if ("dots".equalsIgnoreCase(type)) {
 	    this.dotsTpl = tpl;
 	} else {
-	    throw new IllegalArgumentException("type is invalid (value=" + type + ")");
+	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
 	}
     }
 
     @Override
     protected void initTag() throws JspException, IOException {
-	AssertUtils.assertNotNull(this.tag);
-	AssertUtils.assertNotNull(this.model);
+	Asserts.notNull(this.tag);
+	Asserts.notNull(this.model);
 
 	this.jspBody.invoke(null);
 
-	AssertUtils.assertNotNull(this.pageTpl);
-	AssertUtils.assertNotNull(this.dotsTpl);
+	Asserts.notNull(this.pageTpl);
+	Asserts.notNull(this.dotsTpl);
     }
 
     @Override

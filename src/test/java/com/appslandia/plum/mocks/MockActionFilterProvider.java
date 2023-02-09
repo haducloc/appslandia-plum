@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.appslandia.common.base.MappedID;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.ActionFilter;
 import com.appslandia.plum.base.ActionFilterProvider;
 
@@ -48,7 +48,7 @@ public class MockActionFilterProvider extends ActionFilterProvider {
 	for (ActionFilter filter : filters) {
 
 	    MappedID mappedID = filter.getClass().getDeclaredAnnotation(MappedID.class);
-	    AssertUtils.assertNotNull(mappedID);
+	    Asserts.notNull(mappedID);
 
 	    addActionFilter(mappedID.value(), filter);
 	}

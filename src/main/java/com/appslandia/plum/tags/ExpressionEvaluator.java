@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.tags;
 
+import com.appslandia.common.utils.Asserts;
+
 import jakarta.el.ExpressionFactory;
 import jakarta.servlet.jsp.JspFactory;
 import jakarta.servlet.jsp.PageContext;
@@ -47,6 +49,8 @@ public abstract class ExpressionEvaluator {
     }
 
     public static void setDefault(ExpressionEvaluator impl) {
+	Asserts.isNull(__default, "ExpressionEvaluator.__default must be null.");
+
 	if (__default == null) {
 	    synchronized (MUTEX) {
 		if (__default == null) {
@@ -55,7 +59,6 @@ public abstract class ExpressionEvaluator {
 		}
 	    }
 	}
-	throw new IllegalStateException("ExpressionEvaluator.__default must be null.");
     }
 
     public abstract Object getValue(PageContext pc, String property);

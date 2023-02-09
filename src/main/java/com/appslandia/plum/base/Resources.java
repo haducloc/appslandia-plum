@@ -24,8 +24,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.MapAccessor;
-import com.appslandia.common.utils.AssertUtils;
-import com.appslandia.common.utils.StringFormat;
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.StringUtils;
 
 /**
@@ -105,16 +105,16 @@ public class Resources implements MapAccessor<String, String> {
 	if (msg == null) {
 	    return this.language + ":" + key + "[]";
 	}
-	return StringFormat.format(msg, params);
+	return STR.format(msg, params);
     }
 
     public String get(String key, Map<String, Object> params) {
-	AssertUtils.assertNotNull(params);
+	Asserts.notNull(params);
 
 	String msg = this.resources.get(key);
 	if (msg == null) {
 	    return this.language + ":" + key + "{}";
 	}
-	return StringFormat.format(msg, params);
+	return STR.format(msg, params);
     }
 }

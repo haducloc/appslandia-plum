@@ -50,7 +50,7 @@ import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterException;
 import com.appslandia.common.converters.ConverterProvider;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.utils.AssertUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CharsetUtils;
 import com.appslandia.common.utils.MathUtils;
 import com.appslandia.common.utils.MimeTypes;
@@ -132,7 +132,7 @@ public class ModelBinder {
 			    elementType = field.getType().getComponentType();
 			} else {
 			    elementType = field.getType();
-			    AssertUtils.assertTrue((elementType == long.class) || (elementType == int.class));
+			    Asserts.isTrue((elementType == long.class) || (elementType == int.class));
 			}
 
 			// Converter
@@ -271,7 +271,7 @@ public class ModelBinder {
 
 		// Sub-Model
 		if (hasSubProperties(request, propertyPath)) {
-		    Object subModel = AssertUtils.assertNotNull(property.getReadMethod()).invoke(bindNode.model);
+		    Object subModel = Asserts.notNull(property.getReadMethod()).invoke(bindNode.model);
 		    if (subModel == null) {
 			subModel = ReflectionUtils.newInstance(field.getType());
 			property.getWriteMethod().invoke(bindNode.model, subModel);
@@ -286,8 +286,8 @@ public class ModelBinder {
 
     public <T> T bindModel(HttpServletRequest request, String partName, Class<T> modelType, ModelState modelState) throws Exception {
 	Part part = request.getPart(partName);
-	AssertUtils.assertNotNull(part);
-	AssertUtils.assertTrue(ServletUtils.allowContentType(part.getContentType(), MimeTypes.APP_JSON));
+	Asserts.notNull(part);
+	Asserts.isTrue(ServletUtils.allowContentType(part.getContentType(), MimeTypes.APP_JSON));
 
 	T model = null;
 	try (BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream(), CharsetUtils.parseCharset(part.getContentType())))) {
@@ -310,7 +310,7 @@ public class ModelBinder {
 		propertyPath.setLength(0);
 	    }
 	    String fieldName = getLeafProp(violation.getPropertyPath(), propertyPath);
-	    AssertUtils.assertNotNull(fieldName);
+	    Asserts.notNull(fieldName);
 
 	    modelState.addError(fieldName, resources.get(getMsgKey(violation), getMsgParams(violation, fieldName, resources)));
 	}
@@ -420,7 +420,7 @@ public class ModelBinder {
 
     public static String getMsgKey(ConstraintViolation<?> violation) {
 	String template = violation.getMessageTemplate();
-	AssertUtils.assertTrue(template.startsWith("{") && template.endsWith("}"), "messageTemplate is invalid.");
+	Asserts.isTrue(template.startsWith("{") && template.endsWith("}"), "messageTemplate is invalid.");
 	return template.substring(1, template.length() - 1);
     }
 
