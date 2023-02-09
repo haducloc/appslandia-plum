@@ -42,8 +42,9 @@ public class VerBarTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	if (this.clazz == null)
+	if (this.clazz == null) {
 	    this.clazz = "ver-bar";
+	}
     }
 
     @Override

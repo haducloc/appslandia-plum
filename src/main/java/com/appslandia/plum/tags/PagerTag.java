@@ -143,7 +143,6 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 	    this.pageContext.setAttribute(VAR_SELECTED, bakSelected);
 	    this.pageContext.setAttribute(VAR_LABEL, bakLabel);
 	}
-
     }
 
     @Attribute(required = true, rtexprvalue = false)

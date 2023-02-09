@@ -138,7 +138,6 @@ public class MockJspContext extends PageContext {
     @Override
     public void handlePageException(Exception ex) throws ServletException, IOException {
 	throw new UnsupportedOperationException();
-
     }
 
     @Override

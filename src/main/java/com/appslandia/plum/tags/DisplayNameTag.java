@@ -49,8 +49,9 @@ public class DisplayNameTag implements SimpleTag {
 	UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
 
 	String dispName = (String) principal.get(UserPrincipal.DISP_NAME);
-	if (dispName == null)
+	if (dispName == null) {
 	    dispName = (String) principal.getRequired(UserPrincipal.USER_NAME);
+	}
 
 	XmlEscaper.escapeXml(this.pageContext.getOut(), dispName);
     }

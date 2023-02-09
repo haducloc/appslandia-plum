@@ -76,8 +76,9 @@ public class RequestAccessor extends HttpServletRequestWrapper {
 
     public ZoneId getClientZone(ZoneId orZone) {
 	ZoneId zone = ServletUtils.getClientZone(this);
-	if (zone != null)
+	if (zone != null) {
 	    return zone;
+	}
 	return (orZone != null) ? orZone : ZoneId.systemDefault();
     }
 

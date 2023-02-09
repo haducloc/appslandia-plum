@@ -114,8 +114,9 @@ public class HtmlUtils {
     static String buildBasicHtmlTagsPattern(String[] tags) {
 	StringBuilder sb = new StringBuilder(tags.length * 40);
 	for (String tag : tags) {
-	    if (sb.length() > 0)
+	    if (sb.length() > 0) {
 		sb.append("|");
+	    }
 	    sb.append("<").append(tag).append("\\s*>").append("|<").append(tag).append("\\s+[^<>]+\\s*>").append("|</\\s*").append(tag).append("\\s*>");
 	}
 	return sb.toString();

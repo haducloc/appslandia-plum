@@ -48,8 +48,9 @@ public class FmtDateTag extends TagBase {
     @Override
     public void doTag() throws JspException, IOException {
 	Object val = this.value;
-	if (val == null)
+	if (val == null) {
 	    return;
+	}
 
 	LocalDate ld = null;
 	LocalDate now = null;
@@ -65,7 +66,6 @@ public class FmtDateTag extends TagBase {
 
 	    ld = (LocalDate) val;
 	    now = LocalDate.now(zoneId);
-
 	}
 	// LocalDateTime
 	else if (val instanceof LocalDateTime) {
@@ -73,7 +73,6 @@ public class FmtDateTag extends TagBase {
 
 	    ld = ((LocalDateTime) val).toLocalDate();
 	    now = LocalDate.now(zoneId);
-
 	}
 	// Date
 	else if (val instanceof java.util.Date) {
@@ -81,7 +80,6 @@ public class FmtDateTag extends TagBase {
 
 	    ld = Instant.ofEpochMilli(((java.util.Date) val).getTime()).atZone(zoneId).toLocalDate();
 	    now = LocalDate.now(zoneId);
-
 	}
 	// Long
 	else if (val instanceof Long) {

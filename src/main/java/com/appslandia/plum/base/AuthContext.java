@@ -90,7 +90,6 @@ public class AuthContext {
 			invalidCode) == null) {
 		    return false;
 		}
-
 	    }
 
 	    // LOGOUT

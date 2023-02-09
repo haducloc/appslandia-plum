@@ -112,8 +112,9 @@ public class ModelState implements Serializable {
     }
 
     public Message findError(String... fieldNames) {
-	if (this.errors.isEmpty())
+	if (this.errors.isEmpty()) {
 	    return null;
+	}
 
 	if ((fieldNames == null) || (fieldNames.length == 0)) {
 	    return this.errors.values().iterator().next().get(0);

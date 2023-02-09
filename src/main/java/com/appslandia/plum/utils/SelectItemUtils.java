@@ -37,8 +37,9 @@ public class SelectItemUtils {
     public static List<SelectItem> yesNoItems(Resources res, boolean addEmpty) {
 	List<SelectItem> list = new ArrayList<>(3);
 
-	if (addEmpty)
+	if (addEmpty) {
 	    list.add(SelectItemImpl.EMPTY);
+	}
 
 	list.add(new SelectItemImpl(true, res.getOrDefault("yesNo.yes", "yes")));
 	list.add(new SelectItemImpl(false, res.getOrDefault("yesNo.no", "no")));

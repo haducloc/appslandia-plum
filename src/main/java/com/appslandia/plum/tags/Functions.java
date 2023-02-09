@@ -190,16 +190,18 @@ public class Functions {
 
     @Function
     public static String cprYears(int startYear) {
-	if (startYear == LocalDate.now().getYear())
+	if (startYear == LocalDate.now().getYear()) {
 	    return Integer.toString(startYear);
+	}
 	return String.format("%d-%d", startYear, LocalDate.now().getYear());
     }
 
     @Function
     public static String fmtMonth(int month) {
 	Asserts.isTrue(month >= 1 && month <= 12, "month is invalid.");
-	if (month < 10)
+	if (month < 10) {
 	    return "0" + month;
+	}
 	return String.valueOf(month);
     }
 

@@ -42,8 +42,9 @@ public class CheckMarkTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	if (this.clazz == null)
+	if (this.clazz == null) {
 	    this.clazz = "check-mark";
+	}
     }
 
     @Override

@@ -38,13 +38,15 @@ public class SecurityUtils {
     private static final String USER_ROLE_SEPARATOR = ",";
 
     public static CredentialValidationResult createIdentityStoreResult(CallerPrincipal callerPrincipal, String userRoles) {
-	if (userRoles == null)
+	if (userRoles == null) {
 	    return new CredentialValidationResult(callerPrincipal, null);
+	}
 
 	String[] roles = parseUserRoles(userRoles);
 
-	if (roles.length > 0)
+	if (roles.length > 0) {
 	    return new CredentialValidationResult(callerPrincipal, CollectionUtils.toSet(roles));
+	}
 
 	return new CredentialValidationResult(callerPrincipal, null);
     }
