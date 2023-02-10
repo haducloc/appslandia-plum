@@ -35,5 +35,5 @@ public interface OpenIdHandler {
 
     OpenIdUser getUserInfo(Map<String, Object> parameters);
 
-    void revokeToken(Map<String, Object> parameters);
+    OpenIdToken getAccessToken(Map<String, Object> parameters);
 }
