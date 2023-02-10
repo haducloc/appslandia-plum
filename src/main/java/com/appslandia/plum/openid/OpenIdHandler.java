@@ -18,59 +18,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.oauth;
+package com.appslandia.plum.openid;
+
+import java.util.Map;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class OAuthUser {
+public interface OpenIdHandler {
 
-    private String id;
-    private String email;
+    String getLoginUrlBase();
 
-    private String firstName;
-    private String lastName;
-    private String middleName;
+    String getTokenByCodeUrl();
 
-    public String getId() {
-	return this.id;
-    }
+    String getUserInfoUrl();
 
-    public void setId(String id) {
-	this.id = id;
-    }
+    String getRevokeTokenUrl();
 
-    public String getEmail() {
-	return this.email;
-    }
+    String getLoginUrl(String redirectUri, String responseType, String permissions, String state, Map<String, String> params);
 
-    public void setEmail(String email) {
-	this.email = email;
-    }
+    OpenIdToken getTokenByCode(String code, String redirectUri);
 
-    public String getFirstName() {
-	return this.firstName;
-    }
+    OpenIdUser getUserInfo(String accessToken);
 
-    public void setFirstName(String firstName) {
-	this.firstName = firstName;
-    }
-
-    public String getLastName() {
-	return this.lastName;
-    }
-
-    public void setLastName(String lastName) {
-	this.lastName = lastName;
-    }
-
-    public String getMiddleName() {
-	return this.middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-	this.middleName = middleName;
-    }
+    void revokeToken(String token);
 }

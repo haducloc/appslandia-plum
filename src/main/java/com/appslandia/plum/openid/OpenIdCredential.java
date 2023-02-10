@@ -18,34 +18,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.oauth;
+package com.appslandia.plum.openid;
+
+import com.appslandia.common.utils.Asserts;
+
+import jakarta.security.enterprise.credential.Credential;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class OAuthToken {
+public class OpenIdCredential implements Credential {
 
-    final String accessToken;
-    final int expiresInSec;
-    final String refreshToken;
+    final String state;
+    final String caller;
 
-    public OAuthToken(String accessToken, int expiresInSec, String refreshToken) {
-	this.accessToken = accessToken;
-	this.expiresInSec = expiresInSec;
-	this.refreshToken = refreshToken;
+    public OpenIdCredential(String state, String caller) {
+	Asserts.notNull(state);
+	Asserts.notNull(caller);
+
+	this.state = state;
+	this.caller = caller;
     }
 
-    public String getAccessToken() {
-	return this.accessToken;
+    public String getState() {
+	return this.state;
     }
 
-    public int getExpiresInSec() {
-	return this.expiresInSec;
-    }
-
-    public String getRefreshToken() {
-	return this.refreshToken;
+    public String getCaller() {
+	return this.caller;
     }
 }

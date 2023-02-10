@@ -18,30 +18,34 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.oauth;
-
-import java.util.Map;
+package com.appslandia.plum.openid;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public interface OAuthHandler {
+public class OpenIdToken {
 
-    String getLoginUrlBase();
+    final String accessToken;
+    final int expiresInSec;
+    final String refreshToken;
 
-    String getTokenByCodeUrl();
+    public OpenIdToken(String accessToken, int expiresInSec, String refreshToken) {
+	this.accessToken = accessToken;
+	this.expiresInSec = expiresInSec;
+	this.refreshToken = refreshToken;
+    }
 
-    String getUserInfoUrl();
+    public String getAccessToken() {
+	return this.accessToken;
+    }
 
-    String getRevokeTokenUrl();
+    public int getExpiresInSec() {
+	return this.expiresInSec;
+    }
 
-    String getLoginUrl(String redirectUri, String responseType, String permissions, String state, Map<String, String> params);
-
-    OAuthToken getTokenByCode(String code, String redirectUri);
-
-    OAuthUser getUserInfo(String accessToken);
-
-    void revokeToken(String token);
+    public String getRefreshToken() {
+	return this.refreshToken;
+    }
 }

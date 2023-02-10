@@ -18,35 +18,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.oauth;
-
-import com.appslandia.common.utils.Asserts;
-
-import jakarta.security.enterprise.credential.Credential;
+package com.appslandia.plum.openid;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class OAuthCredential implements Credential {
+public abstract class OpenIdConfig {
 
-    final String state;
-    final String caller;
+    public abstract String getClientId();
 
-    public OAuthCredential(String state, String caller) {
-	Asserts.notNull(state);
-	Asserts.notNull(caller);
-
-	this.state = state;
-	this.caller = caller;
-    }
-
-    public String getState() {
-	return this.state;
-    }
-
-    public String getCaller() {
-	return this.caller;
-    }
+    public abstract String getClientSecret();
 }

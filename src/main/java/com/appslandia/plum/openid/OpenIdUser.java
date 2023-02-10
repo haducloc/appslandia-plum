@@ -18,16 +18,59 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.oauth;
+package com.appslandia.plum.openid;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class OAuthConfig {
+public class OpenIdUser {
 
-    public abstract String getClientId();
+    private String id;
+    private String email;
 
-    public abstract String getClientSecret();
+    private String firstName;
+    private String lastName;
+    private String middleName;
+
+    public String getId() {
+	return this.id;
+    }
+
+    public void setId(String id) {
+	this.id = id;
+    }
+
+    public String getEmail() {
+	return this.email;
+    }
+
+    public void setEmail(String email) {
+	this.email = email;
+    }
+
+    public String getFirstName() {
+	return this.firstName;
+    }
+
+    public void setFirstName(String firstName) {
+	this.firstName = firstName;
+    }
+
+    public String getLastName() {
+	return this.lastName;
+    }
+
+    public void setLastName(String lastName) {
+	this.lastName = lastName;
+    }
+
+    public String getMiddleName() {
+	return this.middleName;
+    }
+
+    public void setMiddleName(String middleName) {
+	this.middleName = middleName;
+    }
 }
