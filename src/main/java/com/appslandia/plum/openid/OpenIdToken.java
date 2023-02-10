@@ -20,32 +20,33 @@
 
 package com.appslandia.plum.openid;
 
+import java.util.HashMap;
+
+import com.appslandia.common.base.MapWrapper;
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.STR;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class OpenIdToken {
+public class OpenIdToken extends MapWrapper<String, Object> {
+    private static final long serialVersionUID = 1L;
 
-    final String accessToken;
-    final int expiresInSec;
-    final String refreshToken;
+    public static final String ACCESS_TOKEN = "access_token";
+    public static final String EXPIRES_IN = "expires_in";
+    public static final String REFRESH_TOKEN = "refresh_token";
 
-    public OpenIdToken(String accessToken, int expiresInSec, String refreshToken) {
-	this.accessToken = accessToken;
-	this.expiresInSec = expiresInSec;
-	this.refreshToken = refreshToken;
+    public static final String SCOPE = "scope";
+    public static final String TOKEN_TYPE = "token_type";
+
+    public OpenIdToken() {
+	super(new HashMap<>());
     }
 
-    public String getAccessToken() {
-	return this.accessToken;
-    }
-
-    public int getExpiresInSec() {
-	return this.expiresInSec;
-    }
-
-    public String getRefreshToken() {
-	return this.refreshToken;
+    public Object getRequired(String key) {
+	Object obj = this.get(key);
+	return Asserts.notNull(obj, () -> STR.fmt("No value associated with key '{}'.", key));
     }
 }

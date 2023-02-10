@@ -20,57 +20,36 @@
 
 package com.appslandia.plum.openid;
 
+import java.util.HashMap;
+
+import com.appslandia.common.base.MapWrapper;
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.STR;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class OpenIdUser {
+public class OpenIdUser extends MapWrapper<String, Object> {
+    private static final long serialVersionUID = 1L;
 
-    private String id;
-    private String email;
+    public static final String ID = "id";
 
-    private String firstName;
-    private String lastName;
-    private String middleName;
+    public static final String FIRST_NAME = "first_name";
+    public static final String LAST_NAME = "last_name";
+    public static final String MIDDLE_NAME = "middle_name";
+    public static final String EMAIL = "email";
 
-    public String getId() {
-	return this.id;
+    public static final String LOCALE = "locale";
+    public static final String PICTURE = "picture";
+
+    public OpenIdUser() {
+	super(new HashMap<>());
     }
 
-    public void setId(String id) {
-	this.id = id;
-    }
-
-    public String getEmail() {
-	return this.email;
-    }
-
-    public void setEmail(String email) {
-	this.email = email;
-    }
-
-    public String getFirstName() {
-	return this.firstName;
-    }
-
-    public void setFirstName(String firstName) {
-	this.firstName = firstName;
-    }
-
-    public String getLastName() {
-	return this.lastName;
-    }
-
-    public void setLastName(String lastName) {
-	this.lastName = lastName;
-    }
-
-    public String getMiddleName() {
-	return this.middleName;
-    }
-
-    public void setMiddleName(String middleName) {
-	this.middleName = middleName;
+    public Object getRequired(String key) {
+	Object obj = this.get(key);
+	return Asserts.notNull(obj, () -> STR.fmt("No value associated with key '{}'.", key));
     }
 }

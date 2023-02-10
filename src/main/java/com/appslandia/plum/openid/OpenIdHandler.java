@@ -29,19 +29,11 @@ import java.util.Map;
  */
 public interface OpenIdHandler {
 
-    String getLoginUrlBase();
+    String getLoginUrl(Map<String, Object> parameters);
 
-    String getTokenByCodeUrl();
+    OpenIdToken getTokenByCode(Map<String, Object> parameters);
 
-    String getUserInfoUrl();
+    OpenIdUser getUserInfo(Map<String, Object> parameters);
 
-    String getRevokeTokenUrl();
-
-    String getLoginUrl(String redirectUri, String responseType, String permissions, String state, Map<String, String> params);
-
-    OpenIdToken getTokenByCode(String code, String redirectUri);
-
-    OpenIdUser getUserInfo(String accessToken);
-
-    void revokeToken(String token);
+    void revokeToken(Map<String, Object> parameters);
 }
