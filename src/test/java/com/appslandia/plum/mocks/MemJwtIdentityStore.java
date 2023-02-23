@@ -45,6 +45,6 @@ public class MemJwtIdentityStore extends JwtIdentityStore {
 
     @Override
     protected JwtToken parseJwtToken(String credential) {
-	return this.jwtProcessor.parseJwt(credential);
+	return this.jwtProcessor.verifyJwt(credential);
     }
 }
