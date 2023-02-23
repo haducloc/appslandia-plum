@@ -43,10 +43,7 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
     @ApplicationScoped
     @Override
     public JsonProcessor produce() {
-	JsonbConfig config = JsonbProcessor.newConfig();
-	config.withFormatting(false);
-	config.withNullValues(false);
-	return new JsonbProcessor().setConfig(config);
+	return createJsonbProcessor(true, true);
     }
 
     @Override
@@ -58,10 +55,7 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
     @ApplicationScoped
     @Json(Profile.COMPACT)
     public JsonProcessor produceCompact() {
-	JsonbConfig config = JsonbProcessor.newConfig();
-	config.withFormatting(false);
-	config.withNullValues(false);
-	return new JsonbProcessor().setConfig(config);
+	return createJsonbProcessor(false, true);
     }
 
     public void disposeCompact(@Disposes @Json(Profile.COMPACT) JsonProcessor impl) {
@@ -70,43 +64,20 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
 
     @Produces
     @ApplicationScoped
-    @Json(Profile.COMPACT_NULL)
-    public JsonProcessor produceCompactNull() {
-	JsonbConfig config = JsonbProcessor.newConfig();
-	config.withFormatting(false);
-	config.withNullValues(true);
-	return new JsonbProcessor().setConfig(config);
-    }
-
-    public void disposeCompactNull(@Disposes @Json(Profile.COMPACT_NULL) JsonProcessor impl) {
-	impl.destroy();
-    }
-
-    @Produces
-    @ApplicationScoped
     @Json(Profile.PRETTY)
     public JsonProcessor producePretty() {
-	JsonbConfig config = JsonbProcessor.newConfig();
-	config.withFormatting(true);
-	config.withNullValues(false);
-	return new JsonbProcessor().setConfig(config);
+	return createJsonbProcessor(true, true);
     }
 
     public void disposePretty(@Disposes @Json(Profile.PRETTY) JsonProcessor impl) {
 	impl.destroy();
     }
 
-    @Produces
-    @ApplicationScoped
-    @Json(Profile.PRETTY_NULL)
-    public JsonProcessor producePrettyNull() {
+    static JsonbProcessor createJsonbProcessor(boolean formatting, boolean serializeNulls) {
 	JsonbConfig config = JsonbProcessor.newConfig();
-	config.withFormatting(true);
-	config.withNullValues(true);
-	return new JsonbProcessor().setConfig(config);
-    }
+	config.withFormatting(formatting);
+	config.withNullValues(serializeNulls);
 
-    public void disposePrettyNull(@Disposes @Json(Profile.PRETTY_NULL) JsonProcessor impl) {
-	impl.destroy();
+	return new JsonbProcessor().setConfig(config);
     }
 }

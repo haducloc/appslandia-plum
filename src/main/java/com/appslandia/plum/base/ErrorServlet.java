@@ -62,7 +62,7 @@ public class ErrorServlet extends HttpServlet {
     protected RequestContextParser requestContextParser;
 
     @Inject
-    @Json(Profile.PRETTY_NULL)
+    @Json(Profile.PRETTY)
     protected JsonProcessor jsonProcessor;
 
     private void doRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
