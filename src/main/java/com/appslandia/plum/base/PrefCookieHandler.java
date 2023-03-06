@@ -87,8 +87,6 @@ public class PrefCookieHandler {
 		this.cookieHandler.removeCookie(response, getCookieName());
 	    }
 	} else {
-	    Asserts.isTrue(cookieValue.length() <= 4093);
-
 	    this.cookieHandler.saveCookie(response, getCookieName(), cookieValue, getCookieAge(), c -> c.setHttpOnly(false));
 	}
     }
