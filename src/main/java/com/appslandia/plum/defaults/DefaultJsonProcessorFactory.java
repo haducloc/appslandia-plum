@@ -25,6 +25,7 @@ import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.json.JsonbProcessor;
+import com.appslandia.common.jwt.JwtJsonb;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
@@ -74,7 +75,7 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
     }
 
     static JsonbProcessor createJsonbProcessor(boolean formatting, boolean serializeNulls) {
-	JsonbConfig config = JsonbProcessor.newConfig();
+	JsonbConfig config = JwtJsonb.newJsonbConfig();
 	config.withFormatting(formatting);
 	config.withNullValues(serializeNulls);
 

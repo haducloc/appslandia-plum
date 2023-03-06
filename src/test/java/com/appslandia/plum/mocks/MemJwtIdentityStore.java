@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.mocks;
 
-import com.appslandia.common.jwt.JwtProcessor;
+import com.appslandia.common.jwt.JwtSigner;
 import com.appslandia.common.jwt.JwtToken;
 import com.appslandia.plum.base.JwtCredential;
 import com.appslandia.plum.base.JwtIdentityStore;
@@ -36,7 +36,7 @@ public class MemJwtIdentityStore extends JwtIdentityStore {
 
     @Inject
     @MemVersion
-    protected JwtProcessor jwtProcessor;
+    protected JwtSigner jwtSigner;
 
     @Override
     public Class<? extends JwtCredential> getAcceptedCredentialType() {
@@ -45,6 +45,7 @@ public class MemJwtIdentityStore extends JwtIdentityStore {
 
     @Override
     protected JwtToken parseJwtToken(String credential) {
-	return this.jwtProcessor.verifyJwt(credential);
+	JwtToken token = jwtSigner.parseJwt(credential);
+	return jwtSigner.verifyJwt(token);
     }
 }

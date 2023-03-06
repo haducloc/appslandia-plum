@@ -29,12 +29,9 @@ import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.cdi.JsonLiteral;
 import com.appslandia.common.converters.ConverterProvider;
 import com.appslandia.common.crypto.MacDigester;
-import com.appslandia.common.json.GsonMapDeserializer;
 import com.appslandia.common.json.GsonProcessor;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.jwt.JwtHeader;
-import com.appslandia.common.jwt.JwtPayload;
-import com.appslandia.common.jwt.JwtProcessor;
+import com.appslandia.common.jwt.JwtGson;
 import com.appslandia.common.jwt.JwtSigner;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.objects.ObjectException;
@@ -91,7 +88,6 @@ import com.appslandia.plum.defaults.DefaultRateLimitSkipper;
 import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
 import com.appslandia.plum.defaults.MemAppCacheManager;
 import com.appslandia.plum.defaults.MemAuthTokenManager;
-import com.google.gson.GsonBuilder;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.security.enterprise.AuthenticationException;
@@ -316,18 +312,14 @@ public class MockContainer extends InitializeObject {
 	factory.register(PrefCookieHandler.class, PrefCookieHandler.class);
 	factory.register(TagCookieHandler.class, TagCookieHandler.class);
 
-	factory.register(JwtProcessor.class, new ObjectProducer<JwtProcessor>() {
+	factory.register(JwtSigner.class, new ObjectProducer<JwtSigner>() {
 
 	    @MemVersion
 	    @Override
-	    public JwtProcessor produce(ObjectFactory factory) throws ObjectException {
-		GsonBuilder gsonBuilder = GsonProcessor.newBuilder().registerTypeAdapter(JwtHeader.class, new GsonMapDeserializer<>((m) -> new JwtHeader(m)))
-			.registerTypeAdapter(JwtPayload.class, new GsonMapDeserializer<>((m) -> new JwtPayload(m)));
+	    public JwtSigner produce(ObjectFactory factory) throws ObjectException {
+		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JwtGson.newGsonBuilder());
 
-		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(gsonBuilder);
-
-		return new JwtProcessor().setJsonProcessor(gsonProcessor)
-			.setJwtSigner(new JwtSigner().setAlg("HS256").setSigner(new MacDigester().setAlgorithm("HmacSHA256").setSecret("secret".getBytes())));
+		return new JwtSigner().setJsonProcessor(gsonProcessor).setAlg("HS256").setSigner(new MacDigester().setAlgorithm("HmacSHA256").setSecret("secret".getBytes()));
 	    }
 	});
 
