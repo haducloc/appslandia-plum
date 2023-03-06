@@ -21,7 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -70,7 +70,7 @@ public class PrefCookieHandler {
 
     protected PrefCookie decode(String prefCookie) {
 	try {
-	    Map<String, Object> map = URLUtils.parseParams(prefCookie, new HashMap<>(), false);
+	    Map<String, Object> map = URLUtils.parseParams(prefCookie, new LinkedHashMap<>(), false);
 	    return new PrefCookie(Collections.unmodifiableMap(ObjectUtils.cast(map)));
 
 	} catch (IllegalArgumentException ex) {

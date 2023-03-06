@@ -21,7 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.Config;
@@ -41,7 +41,7 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
     public static final PrefCookie EMPTY = new PrefCookie(Collections.emptyMap());
 
     public PrefCookie() {
-	super(new HashMap<>());
+	super(new LinkedHashMap<>());
     }
 
     public PrefCookie(Map<String, String> newMap) {
@@ -88,6 +88,6 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
 	if (this == EMPTY) {
 	    return new PrefCookie();
 	}
-	return new PrefCookie(new HashMap<>(this.map));
+	return new PrefCookie(new LinkedHashMap<>(this.map));
     }
 }
