@@ -21,7 +21,7 @@
 package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.common.jwt.JwtToken;
+import com.appslandia.common.jose.JwtToken;
 
 import jakarta.security.enterprise.credential.Credential;
 

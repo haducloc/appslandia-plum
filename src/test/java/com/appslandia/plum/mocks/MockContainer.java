@@ -28,11 +28,11 @@ import com.appslandia.common.caching.AppCacheManager;
 import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.cdi.JsonLiteral;
 import com.appslandia.common.converters.ConverterProvider;
-import com.appslandia.common.crypto.MacDigester;
+import com.appslandia.common.jose.HsJwtSigner;
+import com.appslandia.common.jose.JoseGson;
+import com.appslandia.common.jose.JwtSigner;
 import com.appslandia.common.json.GsonProcessor;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.jwt.JwtGson;
-import com.appslandia.common.jwt.JwtSigner;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.objects.ObjectException;
 import com.appslandia.common.objects.ObjectFactory;
@@ -317,9 +317,9 @@ public class MockContainer extends InitializeObject {
 	    @MemVersion
 	    @Override
 	    public JwtSigner produce(ObjectFactory factory) throws ObjectException {
-		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JwtGson.newGsonBuilder());
+		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JoseGson.newGsonBuilder());
 
-		return new JwtSigner().setJsonProcessor(gsonProcessor).setAlg("HS256").setSigner(new MacDigester().setAlgorithm("HmacSHA256").setSecret("secret".getBytes()));
+		return HsJwtSigner.HS256().setJsonProcessor(gsonProcessor).setSecret("secret".getBytes()).build();
 	    }
 	});
 

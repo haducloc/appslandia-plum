@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.jwt.JwtToken;
+import com.appslandia.common.jose.JwtToken;
 
 /**
  *

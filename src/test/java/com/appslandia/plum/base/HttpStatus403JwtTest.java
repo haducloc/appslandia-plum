@@ -23,10 +23,10 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.jwt.JwtHeader;
-import com.appslandia.common.jwt.JwtPayload;
-import com.appslandia.common.jwt.JwtSigner;
-import com.appslandia.common.jwt.JwtToken;
+import com.appslandia.common.jose.JoseHeader;
+import com.appslandia.common.jose.JwtPayload;
+import com.appslandia.common.jose.JwtSigner;
+import com.appslandia.common.jose.JwtToken;
 import com.appslandia.plum.mocks.MemUserDatabase;
 import com.appslandia.plum.mocks.MemVersionLiteral;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
@@ -61,8 +61,8 @@ public class HttpStatus403JwtTest extends MockTestBase {
 
     void initAccessToken(MockHttpServletRequest request, JwtPayload payload) {
 	JwtSigner jwtSigner = container.getObject(JwtSigner.class, MemVersionLiteral.IMPL);
-	JwtHeader header = jwtSigner.newHeader();
-	request.setHeader("Authorization", "Bearer " + jwtSigner.toJwt(new JwtToken(header, payload)));
+	JoseHeader header = jwtSigner.newHeader();
+	request.setHeader("Authorization", "Bearer " + jwtSigner.sign(new JwtToken(header, payload)));
     }
 
     @Test

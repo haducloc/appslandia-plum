@@ -20,8 +20,8 @@
 
 package com.appslandia.plum.mocks;
 
-import com.appslandia.common.jwt.JwtSigner;
-import com.appslandia.common.jwt.JwtToken;
+import com.appslandia.common.jose.JwtSigner;
+import com.appslandia.common.jose.JwtToken;
 import com.appslandia.plum.base.JwtCredential;
 import com.appslandia.plum.base.JwtIdentityStore;
 
@@ -45,7 +45,8 @@ public class MemJwtIdentityStore extends JwtIdentityStore {
 
     @Override
     protected JwtToken parseJwtToken(String credential) {
-	JwtToken token = jwtSigner.parseJwt(credential);
-	return jwtSigner.verifyJwt(token);
+	JwtToken token = jwtSigner.parse(credential);
+	jwtSigner.verify(token);
+	return token;
     }
 }
