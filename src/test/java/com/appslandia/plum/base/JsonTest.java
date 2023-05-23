@@ -69,8 +69,8 @@ public class JsonTest extends MockTestBase {
 	    executeCurrent("GET", "http://localhost/app/testController/testModel");
 
 	    String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
-	    Assertions.assertTrue(content.contains("\"userId\": 1"));
-	    Assertions.assertTrue(content.contains("\"name\": \"user1\""));
+	    Assertions.assertTrue(content.contains("\"userId\":1"));
+	    Assertions.assertTrue(content.contains("\"name\":\"user1\""));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

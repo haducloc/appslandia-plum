@@ -22,7 +22,7 @@ package com.appslandia.plum.base;
 
 import java.io.Serializable;
 
-import com.appslandia.common.jpa.EntityBase;
+import com.appslandia.common.models.EntityBase;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

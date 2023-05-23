@@ -317,7 +317,7 @@ public class MockContainer extends InitializeObject {
 	    @MemVersion
 	    @Override
 	    public JwtSigner produce(ObjectFactory factory) throws ObjectException {
-		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JoseGson.newGsonBuilder());
+		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JoseGson.newGsonBuilder(true, false));
 
 		return HsJwtSigner.HS256().setJsonProcessor(gsonProcessor).setSecret("secret".getBytes()).build();
 	    }

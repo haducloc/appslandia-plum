@@ -44,7 +44,7 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
     @ApplicationScoped
     @Override
     public JsonProcessor produce() {
-	return createJsonbProcessor(true, true);
+	return createJsonbProcessor(true, false);
     }
 
     @Override
@@ -56,7 +56,7 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
     @ApplicationScoped
     @Json(Profile.COMPACT)
     public JsonProcessor produceCompact() {
-	return createJsonbProcessor(false, true);
+	return createJsonbProcessor(true, false);
     }
 
     public void disposeCompact(@Disposes @Json(Profile.COMPACT) JsonProcessor impl) {
@@ -74,11 +74,8 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
 	impl.destroy();
     }
 
-    static JsonbProcessor createJsonbProcessor(boolean formatting, boolean serializeNulls) {
-	JsonbConfig config = JoseJsonb.newJsonbConfig();
-	config.withFormatting(formatting);
-	config.withNullValues(serializeNulls);
-
+    static JsonbProcessor createJsonbProcessor(boolean serializeNulls, boolean formatting) {
+	JsonbConfig config = JoseJsonb.newJsonbConfig(serializeNulls, formatting);
 	return new JsonbProcessor().setConfig(config);
     }
 }

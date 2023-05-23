@@ -339,6 +339,8 @@ public class ModelBinder {
 			indexes = new HashSet<>();
 		    }
 		    indexes.add(subIndexProp.substring(1, subIndexProp.indexOf(']')));
+
+		    Asserts.isTrue(indexes.size() <= 100, "The list parameter is too long.");
 		}
 	    }
 	}
@@ -360,6 +362,8 @@ public class ModelBinder {
 			keys = new ArrayList<>();
 		    }
 		    keys.add(subKeyProp.substring(1, subKeyProp.indexOf(']')));
+
+		    Asserts.isTrue(keys.size() <= 100, "The map parameter is too long.");
 		}
 	    }
 	}
