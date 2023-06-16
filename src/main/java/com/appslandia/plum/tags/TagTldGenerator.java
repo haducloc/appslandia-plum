@@ -92,6 +92,7 @@ public class TagTldGenerator {
 
 	generateTag(FmtDateTag.class, sb);
 	generateTag(PageUrlTag.class, sb);
+	generateTag(DeployEnvTag.class, sb);
 
 	System.out.println(sb);
     }
