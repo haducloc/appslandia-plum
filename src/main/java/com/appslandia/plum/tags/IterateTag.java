@@ -89,14 +89,7 @@ public class IterateTag extends TagBase {
 	    this.items = (Iterable<?>) items;
 
 	} else if (items.getClass().isArray()) {
-
-	    this.items = new Iterable<Object>() {
-
-		@Override
-		public Iterator<Object> iterator() {
-		    return ArrayUtils.iterator(items);
-		}
-	    };
+	    this.items = new ArrayUtils.ArrayObjIterable(items);
 
 	} else {
 	    throw new IllegalArgumentException("items must be Iterable/Array.");
