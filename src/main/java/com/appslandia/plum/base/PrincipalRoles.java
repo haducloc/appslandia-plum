@@ -34,14 +34,17 @@ public class PrincipalRoles {
     final UserPrincipal principal;
     final String roles;
 
-    public PrincipalRoles(UserPrincipal principal, String userRoles) {
-	this.principal = principal;
-	this.roles = userRoles;
+    public PrincipalRoles(UserPrincipal principal) {
+	this(principal, (String) null);
     }
 
     public PrincipalRoles(UserPrincipal principal, Set<String> userRoles) {
+	this(principal, SecurityUtils.toUserRoles(userRoles));
+    }
+
+    public PrincipalRoles(UserPrincipal principal, String userRoles) {
 	this.principal = principal;
-	this.roles = SecurityUtils.toUserRoles(userRoles);
+	this.roles = userRoles;
     }
 
     public UserPrincipal getPrincipal() {
