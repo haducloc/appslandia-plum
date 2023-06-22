@@ -83,7 +83,7 @@ public class TagTldGenerator {
 
 	generateTag(ControlTag.class, sb);
 	generateTag(EvalTag.class, sb);
-	generateTag(DisplayNameTag.class, sb);
+	generateTag(UserDNameTag.class, sb);
 
 	generateTag(TemplateTag.class, sb);
 	generateTag(PagerTag.class, sb);

@@ -100,4 +100,8 @@ public abstract class AuthTokenHandler {
     protected String getTokenData(String series, String token, String identity, long expiresAt, String data) {
 	return String.join("|", series, token, identity, Long.toString(expiresAt), data);
     }
+
+    public void removeToken(String series) {
+	this.authTokenManager.remove(series);
+    }
 }

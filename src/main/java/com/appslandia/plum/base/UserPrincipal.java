@@ -37,9 +37,13 @@ public abstract class UserPrincipal extends CallerPrincipal {
     private static final long serialVersionUID = 1L;
 
     public static final String USER_ID = "uid";
-    public static final String USER_NAME = "unm";
-    public static final String DISP_NAME = "dpn";
-    public static final String USER_ROLES = "roles";
+    public static final String USER_UUID = "uud";
+
+    public static final String USER_DNAME = "udn";
+    public static final String USER_EMAIL = "uem";
+
+    public static final String USER_NAME = "una";
+    public static final String USER_ROLES = "uro";
 
     final Map<String, Object> attributes;
 
@@ -52,9 +56,18 @@ public abstract class UserPrincipal extends CallerPrincipal {
 	return this.attributes.get(attributeName);
     }
 
-    public Object getRequired(String attributeName) throws IllegalArgumentException {
+    public Object getRequired(String attributeName) {
 	Object obj = this.attributes.get(attributeName);
 	return Asserts.notNull(obj);
+    }
+
+    public Object getUserId() {
+	return get(USER_ID);
+    }
+
+    public String getUserDName() {
+	String dn = (String) get(USER_DNAME);
+	return (dn != null) ? dn : getName();
     }
 
     // Internal override only

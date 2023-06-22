@@ -39,8 +39,8 @@ import jakarta.servlet.jsp.tagext.SimpleTag;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "displayName", dynamicAttributes = false)
-public class DisplayNameTag implements SimpleTag {
+@Tag(name = "userDName", dynamicAttributes = false)
+public class UserDNameTag implements SimpleTag {
 
     protected PageContext pageContext;
 
@@ -48,11 +48,7 @@ public class DisplayNameTag implements SimpleTag {
     public void doTag() throws JspException, IOException {
 	UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
 
-	String dispName = (String) principal.get(UserPrincipal.DISP_NAME);
-	if (dispName == null) {
-	    dispName = (String) principal.getRequired(UserPrincipal.USER_NAME);
-	}
-	XmlEscaper.escapeXml(this.pageContext.getOut(), dispName);
+	XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getUserDName());
     }
 
     @Override

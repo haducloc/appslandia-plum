@@ -2410,9 +2410,9 @@
 	</tag>
 
 	<tag>
-		<description>displayName|body=empty</description>
-		<name>displayName</name>
-		<tag-class>com.appslandia.plum.tags.DisplayNameTag</tag-class>
+		<description>userDName|body=empty</description>
+		<name>userDName</name>
+		<tag-class>com.appslandia.plum.tags.UserDNameTag</tag-class>
 		<body-content>empty</body-content>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
