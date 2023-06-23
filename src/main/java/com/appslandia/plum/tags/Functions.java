@@ -22,7 +22,8 @@ package com.appslandia.plum.tags;
 
 import java.time.LocalDate;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.base.DeployEnv;
+import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.XmlEscaper;
@@ -171,16 +172,19 @@ public class Functions {
     }
 
     @Function
-    public static String encParam(String value, boolean spaceToPlus) {
+    public static String encParam(String value) {
 	if (value == null) {
 	    return null;
 	}
-	return URLEncoding.encodeParam(value, spaceToPlus);
+	return URLEncoding.encodeParam(value);
     }
 
     @Function
-    public static int todayYear() {
-	return LocalDate.now().getYear();
+    public static String encPath(String value) {
+	if (value == null) {
+	    return null;
+	}
+	return URLEncoding.encodePath(value);
     }
 
     @Function
@@ -189,20 +193,18 @@ public class Functions {
     }
 
     @Function
-    public static String cprYears(int startYear) {
-	if (startYear == LocalDate.now().getYear()) {
+    public static String copyrightYears(int startYear, String offsetId) {
+	LocalDate ld = (offsetId != null) ? DateUtils.nowAt(offsetId).toLocalDate() : LocalDate.now();
+
+	if (startYear == ld.getYear()) {
 	    return Integer.toString(startYear);
 	}
-	return String.format("%d-%d", startYear, LocalDate.now().getYear());
+	return String.format("%d-%d", startYear, ld.getYear());
     }
 
     @Function
-    public static String fmtMonth(int month) {
-	Asserts.isTrue(month >= 1 && month <= 12, "month is invalid.");
-	if (month < 10) {
-	    return "0" + month;
-	}
-	return String.valueOf(month);
+    public static String deployEnv() {
+	return DeployEnv.getCurrent().getName();
     }
 
     @Function

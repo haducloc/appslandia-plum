@@ -18,10 +18,17 @@
 	</function>
 
 	<function>
-		<description>java.lang.String cprYears(int)</description>
-		<name>cprYears</name>
+		<description>java.lang.String copyrightYears(int, java.lang.String)</description>
+		<name>copyrightYears</name>
 		<function-class>com.appslandia.plum.tags.Functions</function-class>
-		<function-signature>java.lang.String cprYears(int)</function-signature>
+		<function-signature>java.lang.String copyrightYears(int, java.lang.String)</function-signature>
+	</function>
+
+	<function>
+		<description>java.lang.String deployEnv()</description>
+		<name>deployEnv</name>
+		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-signature>java.lang.String deployEnv()</function-signature>
 	</function>
 
 	<function>
@@ -32,10 +39,17 @@
 	</function>
 
 	<function>
-		<description>java.lang.String encParam(java.lang.String, boolean)</description>
+		<description>java.lang.String encParam(java.lang.String)</description>
 		<name>encParam</name>
 		<function-class>com.appslandia.plum.tags.Functions</function-class>
-		<function-signature>java.lang.String encParam(java.lang.String, boolean)</function-signature>
+		<function-signature>java.lang.String encParam(java.lang.String)</function-signature>
+	</function>
+
+	<function>
+		<description>java.lang.String encPath(java.lang.String)</description>
+		<name>encPath</name>
+		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-signature>java.lang.String encPath(java.lang.String)</function-signature>
 	</function>
 
 	<function>
@@ -158,13 +172,6 @@
 	</function>
 
 	<function>
-		<description>int todayYear()</description>
-		<name>todayYear</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
-		<function-signature>int todayYear()</function-signature>
-	</function>
-
-	<function>
 		<description>org.owasp.encoder.Encode.forCssString</description>
 		<name>escCssString</name>
 		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
@@ -218,13 +225,6 @@
 		<name>pipe</name>
 		<function-class>com.appslandia.plum.tags.Pipe</function-class>
 		<function-signature>java.lang.String transform(java.lang.Object, java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<description>java.lang.String fmtMonth(int)</description>
-		<name>fmtMonth</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
-		<function-signature>java.lang.String fmtMonth(int)</function-signature>
 	</function>
 
 </taglib>
