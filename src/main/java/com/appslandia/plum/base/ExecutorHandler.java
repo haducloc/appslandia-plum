@@ -165,11 +165,11 @@ public class ExecutorHandler extends HttpServlet {
 	}
     }
 
-    protected static final String[] DEFAULT_FILTERS = { PreActionFilter.NAME };
+    protected static final String[] PLATFORM_FILTERS = { PreActionFilter.NAME };
 
     protected ActionFilterChain getFilterChain(RequestContext requestContext) {
-	String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() == null) ? DEFAULT_FILTERS
-		: ArrayUtils.append(DEFAULT_FILTERS, requestContext.getActionDesc().getEnableFilters().value());
+	String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() == null) ? PLATFORM_FILTERS
+		: ArrayUtils.append(PLATFORM_FILTERS, requestContext.getActionDesc().getEnableFilters().value());
 
 	return new ActionFilterChain(actionFilters, this.actionFilterProvider) {
 
