@@ -36,14 +36,19 @@ import jakarta.security.enterprise.CallerPrincipal;
 public abstract class UserPrincipal extends CallerPrincipal {
     private static final long serialVersionUID = 1L;
 
-    public static final String USER_ID = "uid";
-    public static final String USER_UUID = "uud";
+    // https://www.iana.org/assignments/jwt/jwt.xhtml#claims
 
-    public static final String USER_DNAME = "udn";
-    public static final String USER_EMAIL = "uem";
+    public static final String ATTRIBUTE_USER_ID = "user_id";
+    public static final String ATTRIBUTE_USER_UUID = "user_uuid";
 
-    public static final String USER_NAME = "una";
-    public static final String USER_ROLES = "uro";
+    public static final String ATTRIBUTE_DISPLAY_NAME = "display_name";
+    public static final String ATTRIBUTE_EMAIL = "email";
+
+    public static final String ATTRIBUTE_USER_NAME = "user_name";
+    public static final String ATTRIBUTE_ROLES = "roles";
+
+    public static final String ATTRIBUTE_NAME = "name";
+    public static final String ATTRIBUTE_PHONE_NUMBER = "phone_number";
 
     final Map<String, Object> attributes;
 
@@ -62,11 +67,11 @@ public abstract class UserPrincipal extends CallerPrincipal {
     }
 
     public Object getUserId() {
-	return get(USER_ID);
+	return get(ATTRIBUTE_USER_ID);
     }
 
-    public String getUserDName() {
-	String dn = (String) get(USER_DNAME);
+    public String getDisplayName() {
+	String dn = (String) get(ATTRIBUTE_DISPLAY_NAME);
 	return (dn != null) ? dn : getName();
     }
 

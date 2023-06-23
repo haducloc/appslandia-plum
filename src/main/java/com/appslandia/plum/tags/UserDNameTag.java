@@ -48,7 +48,7 @@ public class UserDNameTag implements SimpleTag {
     public void doTag() throws JspException, IOException {
 	UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
 
-	XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getUserDName());
+	XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
     }
 
     @Override

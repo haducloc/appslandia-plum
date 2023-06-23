@@ -40,8 +40,8 @@ public class MemPrincipal extends UserPrincipal {
     static Map<String, Object> createAttributes(MemUser user) {
 	Map<String, Object> attributes = new HashMap<>();
 
-	attributes.put(USER_NAME, user.getUsername());
-	attributes.put(USER_ROLES, user.getRoles());
+	attributes.put(ATTRIBUTE_USER_NAME, user.getUsername());
+	attributes.put(ATTRIBUTE_ROLES, user.getRoles());
 
 	return attributes;
     }

@@ -52,7 +52,7 @@ public abstract class JwtIdentityStore extends IdentityStoreBase {
 	}
 
 	// PrincipalRoles
-	String userRoles = (String) token.getPayload().get(UserPrincipal.USER_ROLES);
+	String userRoles = (String) token.getPayload().get(UserPrincipal.ATTRIBUTE_ROLES);
 	return new PrincipalRoles(new JwtPrincipal(token), userRoles);
     }
 }

@@ -544,7 +544,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 	}
 	Asserts.isTrue(this.userPrincipal instanceof UserPrincipal);
 
-	String userRoles = (String) ((UserPrincipal) this.userPrincipal).get(UserPrincipal.USER_ROLES);
+	String userRoles = (String) ((UserPrincipal) this.userPrincipal).get(UserPrincipal.ATTRIBUTE_ROLES);
 	String[] roles = SecurityUtils.parseUserRoles(userRoles);
 	return Arrays.stream(roles).anyMatch(r -> role.equalsIgnoreCase(r));
     }

@@ -68,7 +68,7 @@ public class HttpStatus401JwtTest extends MockTestBase {
     @Test
     public void test_testAction_authenticated() {
 	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.USER_NAME, "user1").set(UserPrincipal.USER_ROLES, "user"));
+	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "user1").set(UserPrincipal.ATTRIBUTE_ROLES, "user"));
 
 	    executeCurrent("GET", "http://localhost/app/testController/testAction");
 

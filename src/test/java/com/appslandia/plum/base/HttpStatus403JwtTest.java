@@ -80,7 +80,7 @@ public class HttpStatus403JwtTest extends MockTestBase {
     @Test
     public void test_testManager_unAuthorized() {
 	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.USER_NAME, "user1").set(UserPrincipal.USER_ROLES, "user"));
+	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "user1").set(UserPrincipal.ATTRIBUTE_ROLES, "user"));
 
 	    executeCurrent("GET", "http://localhost/app/testController/testManager");
 
@@ -94,7 +94,7 @@ public class HttpStatus403JwtTest extends MockTestBase {
     @Test
     public void test_testManager_authorized() {
 	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.USER_NAME, "manager1").set(UserPrincipal.USER_ROLES, "manager"));
+	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "manager1").set(UserPrincipal.ATTRIBUTE_ROLES, "manager"));
 
 	    executeCurrent("GET", "http://localhost/app/testController/testManager");
 
@@ -108,7 +108,7 @@ public class HttpStatus403JwtTest extends MockTestBase {
     @Test
     public void test_testPolicyManager1_unauthorized() {
 	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.USER_NAME, "user1").set(UserPrincipal.USER_ROLES, "user"));
+	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "user1").set(UserPrincipal.ATTRIBUTE_ROLES, "user"));
 
 	    executeCurrent("GET", "http://localhost/app/testController/testPolicyManager1");
 
@@ -122,7 +122,7 @@ public class HttpStatus403JwtTest extends MockTestBase {
     @Test
     public void test_testPolicyManager1_authorized() {
 	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.USER_NAME, "manager1").set(UserPrincipal.USER_ROLES, "manager"));
+	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "manager1").set(UserPrincipal.ATTRIBUTE_ROLES, "manager"));
 
 	    executeCurrent("GET", "http://localhost/app/testController/testPolicyManager1");
 
@@ -136,7 +136,7 @@ public class HttpStatus403JwtTest extends MockTestBase {
     @Test
     public void test_testForbiddenException_unAuthorized() {
 	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.USER_NAME, "user1").set(UserPrincipal.USER_ROLES, "user"));
+	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "user1").set(UserPrincipal.ATTRIBUTE_ROLES, "user"));
 
 	    executeCurrent("GET", "http://localhost/app/testController/testForbiddenException");
 
