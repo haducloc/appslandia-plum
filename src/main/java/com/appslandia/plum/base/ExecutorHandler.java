@@ -30,6 +30,7 @@ import com.appslandia.common.utils.ArrayUtils;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.common.utils.StringUtils;
+import com.appslandia.plum.results.JspResult;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -99,14 +100,14 @@ public class ExecutorHandler extends HttpServlet {
     }
 
     protected void doRequest(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws ServletException, IOException {
-	if (this.appConfig.isEnableDebug()) {
-	    testErrorStatus(request);
-	}
 	final EnableAsync enableAsync = requestContext.getActionDesc().getEnableAsync();
 
 	// Not startAsync
 	if ((enableAsync == null) || enableAsync.markOnly()) {
 	    try {
+		if (this.appConfig.isEnableDebug()) {
+		    testErrorStatus(request);
+		}
 		getFilterChain(requestContext).doFilter(request, response, requestContext);
 
 	    } catch (RuntimeException | ServletException | IOException ex) {
@@ -131,8 +132,18 @@ public class ExecutorHandler extends HttpServlet {
 	    public void run() {
 		HttpServletRequest asyncReq = (HttpServletRequest) asyncContext.getRequest();
 		HttpServletResponse asyncResp = (HttpServletResponse) asyncContext.getResponse();
+
 		try {
+		    if (appConfig.isEnableDebug()) {
+			testErrorStatus(request);
+		    }
 		    getFilterChain(requestContext).doFilter(asyncReq, asyncResp, requestContext);
+
+		    // JSP
+		    String dispatchJspPath = (String) asyncReq.getAttribute(JspResult.DISPATCH_JSP_PATH);
+		    if (dispatchJspPath != null) {
+			asyncContext.dispatch(dispatchJspPath);
+		    }
 
 		} catch (Exception ex) {
 		    try {
@@ -141,9 +152,7 @@ public class ExecutorHandler extends HttpServlet {
 			appLogger.error(t);
 		    }
 		} finally {
-
-		    // Complete ASYNC?
-		    if (!RequestFlags.isFlagSet(asyncReq, RequestFlags.FLAG_ASYNC_COMPLETE_IMPLICITLY)) {
+		    if (asyncReq.getAttribute(JspResult.DISPATCH_JSP_PATH) == null) {
 			asyncContext.complete();
 		    }
 		}

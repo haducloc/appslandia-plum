@@ -35,6 +35,8 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class JspResult implements ActionResult {
 
+    public static final String DISPATCH_JSP_PATH = "jakarta.servlet.dispatch.jsp_path";
+
     private String action;
     private String controller;
     private String path;
@@ -70,10 +72,16 @@ public class JspResult implements ActionResult {
 	} else {
 	    jspPath = appConfig.getViewPathBase().append(this.path).toString();
 	}
-	if (requestContext.getActionDesc().getChildAction() == null) {
-	    ServletUtils.forward(request, response, jspPath);
+
+	if (request.isAsyncStarted()) {
+	    request.setAttribute(DISPATCH_JSP_PATH, jspPath);
+
 	} else {
-	    ServletUtils.include(request, response, jspPath);
+	    if (requestContext.getActionDesc().getChildAction() == null) {
+		ServletUtils.forward(request, response, jspPath);
+	    } else {
+		ServletUtils.include(request, response, jspPath);
+	    }
 	}
     }
 
