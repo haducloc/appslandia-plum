@@ -93,7 +93,7 @@ public class ExecutorHandler extends HttpServlet {
 	int status = Integer.parseInt(statusValue);
 	if (status >= 400 && status < 600) {
 
-	    throw new HttpException(status);
+	    throw new HttpException(status, "__error_status=" + status);
 	} else {
 	    throw new BadRequestException("__error_status is invalid.");
 	}
