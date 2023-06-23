@@ -54,7 +54,7 @@ import com.appslandia.plum.base.BeanInstanceContextListener;
 import com.appslandia.plum.base.CaptchaManager;
 import com.appslandia.plum.base.ClientIdParser;
 import com.appslandia.plum.base.ConstDescProvider;
-import com.appslandia.plum.base.ContentFilterImpl;
+import com.appslandia.plum.base.PreActionFilter;
 import com.appslandia.plum.base.ControllerProvider;
 import com.appslandia.plum.base.CookieHandler;
 import com.appslandia.plum.base.CorsPolicyHandler;
@@ -260,7 +260,7 @@ public class MockContainer extends InitializeObject {
 	factory.register(ActionParser.class, ActionParser.class);
 	factory.register(ActionDescProvider.class, MockActionDescProvider.class);
 
-	factory.register(ActionFilter.class, ContentFilterImpl.class);
+	factory.register(ActionFilter.class, PreActionFilter.class);
 	factory.register(ActionFilterProvider.class, MockActionFilterProvider.class);
 
 	factory.register(ModelBinder.class, ModelBinder.class);

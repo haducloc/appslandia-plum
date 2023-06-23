@@ -34,10 +34,10 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @ApplicationScoped
-@MappedID(ContentFilterImpl.NAME)
-public class ContentFilterImpl implements ActionFilter {
+@MappedID(PreActionFilter.NAME)
+public class PreActionFilter implements ActionFilter {
 
-    public static final String NAME = "contentFilter";
+    public static final String NAME = "preActionFilter";
 
     @Inject
     protected AppConfig appConfig;

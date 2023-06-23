@@ -165,7 +165,7 @@ public class ExecutorHandler extends HttpServlet {
 	}
     }
 
-    protected static final String[] DEFAULT_FILTERS = { ContentFilterImpl.NAME };
+    protected static final String[] DEFAULT_FILTERS = { PreActionFilter.NAME };
 
     protected ActionFilterChain getFilterChain(RequestContext requestContext) {
 	String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() == null) ? DEFAULT_FILTERS
