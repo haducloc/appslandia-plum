@@ -25,7 +25,6 @@ import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -78,26 +77,13 @@ public class ContentFilterImpl implements ActionFilter {
 
 	// GZIP
 	if (gzipContent) {
-
 	    GzipResponseWrapper wrapper = new GzipResponseWrapper(response);
-	    try {
-		filterChain.doFilter(request, wrapper, requestContext);
+	    filterChain.doFilter(request, wrapper, requestContext);
 
-		if ((300 <= wrapper.getStatus()) && (wrapper.getStatus() < 400)) {
-		    return;
-		}
-		wrapper.finishWrapper();
-
-	    } catch (Exception ex) {
-		if (wrapper.isCommitted()) {
-		    wrapper.finishWrapper();
-		}
-		if (ex instanceof Exception) {
-		    throw (Exception) ex;
-		} else {
-		    throw new ServletException(ex);
-		}
+	    if ((300 <= wrapper.getStatus()) && (wrapper.getStatus() < 400)) {
+		return;
 	    }
+	    wrapper.finishWrapper();
 	    return;
 	}
 
