@@ -57,7 +57,7 @@ public class LangJspResult implements ActionResult {
 	String action = (this.action != null) ? this.action : requestContext.getActionDesc().getAction();
 	String controller = (this.controller != null) ? this.controller : requestContext.getActionDesc().getController();
 
-	String jspPath = appConfig.getViewPathBase().append("/").append(controller).append("/").append(action).append(".").append(requestContext.getLanguageId()).append(".jsp")
+	String jspPath = appConfig.getJspPathBase().append("/").append(controller).append("/").append(action).append(".").append(requestContext.getLanguageId()).append(".jsp")
 		.toString();
 
 	if (requestContext.getActionDesc().getChildAction() == null) {

@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.results;
 
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
@@ -34,8 +35,6 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 public class JspResult implements ActionResult {
-
-    public static final String DISPATCH_JSP_PATH = "jakarta.servlet.dispatch.jsp_path";
 
     private String action;
     private String controller;
@@ -67,21 +66,18 @@ public class JspResult implements ActionResult {
 	    String action = (this.action != null) ? this.action : requestContext.getActionDesc().getAction();
 	    String controller = (this.controller != null) ? this.controller : requestContext.getActionDesc().getController();
 
-	    jspPath = appConfig.getViewPathBase().append("/").append(controller).append("/").append(action).append(".jsp").toString();
+	    jspPath = appConfig.getJspPathBase().append("/").append(controller).append("/").append(action).append(".jsp").toString();
 
 	} else {
-	    jspPath = appConfig.getViewPathBase().append(this.path).toString();
+	    jspPath = appConfig.getJspPathBase().append(this.path).toString();
 	}
 
-	if (request.isAsyncStarted()) {
-	    request.setAttribute(DISPATCH_JSP_PATH, jspPath);
+	Asserts.isTrue(!request.isAsyncStarted());
 
+	if (requestContext.getActionDesc().getChildAction() == null) {
+	    ServletUtils.forward(request, response, jspPath);
 	} else {
-	    if (requestContext.getActionDesc().getChildAction() == null) {
-		ServletUtils.forward(request, response, jspPath);
-	    } else {
-		ServletUtils.include(request, response, jspPath);
-	    }
+	    ServletUtils.include(request, response, jspPath);
 	}
     }
 
@@ -92,9 +88,4 @@ public class JspResult implements ActionResult {
 	    throw new UnsupportedOperationException();
 	}
     };
-
-    public static String getJspPath(HttpServletRequest request, String path) {
-	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
-	return appConfig.getViewPathBase().append(path).toString();
-    }
 }

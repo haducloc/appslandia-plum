@@ -30,7 +30,6 @@ import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
-import com.appslandia.plum.results.JspResult;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.WebBeanToStringDecision;
 
@@ -94,7 +93,7 @@ public class ErrorServlet extends HttpServlet {
 	final ResponseSafeWriter responseWrapper = new ResponseSafeWriter(response);
 
 	try {
-	    String errorJspPath = JspResult.getJspPath(request, getErrorJsp(request, requestContext));
+	    String errorJspPath = this.appConfig.getJspPath(getErrorJsp(request, requestContext));
 	    ServletUtils.forward(request, responseWrapper, errorJspPath);
 
 	    responseWrapper.flushBuffer();
