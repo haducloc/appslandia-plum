@@ -160,10 +160,6 @@ public class ExecutorHandler extends HttpServlet {
 	this.jsonProcessor.write(response.getWriter(), result);
     }
 
-    public boolean isMockContext() {
-	return false;
-    }
-
     @Override
     protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	if (request.getMethod().equals(HttpMethod.PATCH)) {
@@ -205,5 +201,9 @@ public class ExecutorHandler extends HttpServlet {
     @Override
     protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 	throw new UnsupportedOperationException();
+    }
+
+    public boolean isMockContext() {
+	return false;
     }
 }
