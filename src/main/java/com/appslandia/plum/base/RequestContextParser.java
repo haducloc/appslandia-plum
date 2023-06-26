@@ -29,11 +29,13 @@ import java.util.Map;
 
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.ConverterProvider;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ParseUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.DispatcherType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -77,6 +79,8 @@ public class RequestContextParser {
 	if (context != null) {
 	    return context;
 	}
+
+	Asserts.isTrue(request.getDispatcherType() == DispatcherType.REQUEST);
 
 	// PrefCookie
 	if (this.appConfig.getRequiredBool(AppConfig.CONFIG_PARSE_PREF_COOKIE)) {

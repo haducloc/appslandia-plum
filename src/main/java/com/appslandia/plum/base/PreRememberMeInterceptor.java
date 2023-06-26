@@ -82,9 +82,6 @@ public class PreRememberMeInterceptor implements Serializable {
 	    return context.proceed();
 	}
 
-	// Parse RequestContext before RememberMeInterceptor
-	this.requestContextParser.parse(request, response);
-
 	// Try to authenticate with the next interceptor or actual authentication mechanism
 	AuthenticationStatus status = (AuthenticationStatus) context.proceed();
 	if (status != AuthenticationStatus.SUCCESS) {
