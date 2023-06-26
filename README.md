@@ -11,7 +11,7 @@
 - Model binding implemented
 - Standard JSTL tags implemented
 - i18n implemented
-- Handles CSRF, ETag, GZIP, CAPTCHA, CORS, HSTS, CSP, Cache-Control, Logger, TempData, Rate Limit, ASYNC, etc.
+- Handles CSRF, ETag, GZIP, CAPTCHA, CORS, HSTS, CSP, Cache-Control, Logger, TempData, Rate Limit, etc.
 - 360+ Unit tests
 
 ## Installation
@@ -116,7 +116,7 @@ public class UserController {
 	}
 		
 	// Other Annotations:
-	// @EnableCsrf, @EnableEtag, @EnableGzip, @EnableParts, @EnableAsync
+	// @EnableCsrf, @EnableEtag, @EnableGzip, @EnableParts, etc.
 	
 	// @ConsumeType
 	

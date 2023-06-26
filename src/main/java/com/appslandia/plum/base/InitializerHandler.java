@@ -94,19 +94,6 @@ public class InitializerHandler extends HttpFilter {
 	ServletUtils.sendRedirect(response, this.appConfig.isEnableSession() ? response.encodeRedirectURL(url) : url, status);
     }
 
-    protected String getCrossOrigin(HttpServletRequest request) {
-	String origin = request.getHeader(CorsPolicyHandler.HEADER_ORIGIN);
-	if (origin == null) {
-	    return null;
-	}
-	StringBuilder url = ServletUtils.absUrlBase(request);
-
-	if (origin.equals(url.toString())) {
-	    return null;
-	}
-	return origin;
-    }
-
     @Override
     protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
 	Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
@@ -166,7 +153,7 @@ public class InitializerHandler extends HttpFilter {
 	    response = new ResponseWrapperImpl(response);
 
 	    // Authorize Origin
-	    String origin = getCrossOrigin(request);
+	    String origin = this.corsPolicyHandler.getCrossOrigin(request);
 	    if (origin != null) {
 
 		// Not @EnableCors
@@ -174,7 +161,7 @@ public class InitializerHandler extends HttpFilter {
 		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, "No @EnableCors"));
 		}
 		CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
-		CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, corsPolicy);
+		CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, origin, corsPolicy);
 
 		if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
 		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
@@ -208,7 +195,60 @@ public class InitializerHandler extends HttpFilter {
 		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
 		}
 	    }
+
+	    // Rate Limit
 	    this.rateLimitHandler.checkRequest(request, requestContext);
+
+	    // GZIP
+	    final boolean gzipContent = (requestContext.getActionDesc().getEnableGzip() != null) && ServletUtils.isGzipAccepted(request);
+
+	    // VARY: Accept-Encoding
+	    if (requestContext.getActionDesc().getEnableGzip() != null) {
+		response.addHeader("Vary", "Accept-Encoding");
+	    }
+
+	    // ETAG
+	    if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
+		ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, gzipContent);
+		chain.doFilter(request, wrapper);
+
+		if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+
+		    // If the cacheControl contains 'no-store', skip ETag
+		    String cacheControl = response.getHeader("Cache-Control");
+		    if (cacheControl != null && cacheControl.contains("no-store")) {
+			return;
+		    }
+		}
+		wrapper.finishWrapper();
+
+		if (!ServletUtils.checkNotModified(request, response, ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
+		    response.setContentLengthLong(wrapper.getContent().size());
+		    wrapper.getContent().writeTo(response.getOutputStream());
+		}
+		return;
+	    }
+
+	    // GZIP
+	    if (gzipContent) {
+		GzipResponseWrapper wrapper = new GzipResponseWrapper(response);
+		try {
+		    chain.doFilter(request, wrapper);
+
+		    if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+			return;
+		    }
+		    wrapper.finishWrapper();
+
+		} catch (Exception ex) {
+		    if (response.isCommitted()) {
+			wrapper.finishWrapper();
+		    }
+		    throw ex;
+		}
+		return;
+	    }
+
 	    chain.doFilter(request, response);
 
 	} catch (Exception ex) {

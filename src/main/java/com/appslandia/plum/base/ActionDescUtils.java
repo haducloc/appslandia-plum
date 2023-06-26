@@ -27,8 +27,6 @@ import java.lang.reflect.Modifier;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.ArrayUtils;
 
-import jakarta.servlet.AsyncListener;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -148,36 +146,6 @@ public class ActionDescUtils {
 	    @Override
 	    public Class<? extends Annotation> annotationType() {
 		return EnableGzip.class;
-	    }
-
-	    @Override
-	    public boolean removed() {
-		return false;
-	    }
-	};
-    };
-
-    public static EnableAsync createEnableAsync(boolean markOnly, Class<? extends AsyncListener> asyncListener) {
-	return new EnableAsync() {
-
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return EnableAsync.class;
-	    }
-
-	    @Override
-	    public boolean markOnly() {
-		return markOnly;
-	    }
-
-	    @Override
-	    public Class<? extends AsyncListener> asyncListener() {
-		return asyncListener;
-	    }
-
-	    @Override
-	    public long timeoutMs() {
-		return 0;
 	    }
 
 	    @Override

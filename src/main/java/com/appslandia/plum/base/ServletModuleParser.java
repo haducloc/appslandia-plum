@@ -18,51 +18,16 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.mocks;
+package com.appslandia.plum.base;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
-import jakarta.servlet.Filter;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletRequest;
-import jakarta.servlet.ServletResponse;
-import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MockFilterChain implements FilterChain {
+public interface ServletModuleParser {
 
-    private List<Filter> filters = new ArrayList<>();
-    private HttpServlet servlet;
-    private int index = -1;
-
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-	this.index++;
-	request.setAttribute(ServletResponse.class.getName(), response);
-
-	if (this.index == this.filters.size()) {
-	    if (this.servlet != null) {
-		this.servlet.service(request, response);
-	    }
-	} else {
-	    this.filters.get(this.index).doFilter(request, response, this);
-	}
-    }
-
-    public MockFilterChain addFilter(Filter filter) {
-	this.filters.add(filter);
-	return this;
-    }
-
-    public MockFilterChain setServlet(HttpServlet servlet) {
-	this.servlet = servlet;
-	return this;
-    }
+    String parseModule(HttpServletRequest request);
 }

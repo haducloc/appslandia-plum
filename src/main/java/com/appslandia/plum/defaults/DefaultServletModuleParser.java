@@ -18,54 +18,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.base;
+package com.appslandia.plum.defaults;
 
-import java.io.IOException;
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.appslandia.plum.base.ServletModuleParser;
 
-import jakarta.servlet.AsyncEvent;
-import jakarta.servlet.AsyncListener;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Target(value = { ElementType.METHOD })
-@Retention(value = RetentionPolicy.RUNTIME)
-@Documented
-public @interface EnableAsync {
+@ApplicationScoped
+public class DefaultServletModuleParser implements ServletModuleParser {
 
-    boolean markOnly() default false;
-
-    Class<? extends AsyncListener> asyncListener() default NoAsyncListener.class;
-
-    long timeoutMs() default 0;
-
-    boolean removed() default false;
-
-    public static final EnableAsync IMPL = ActionDescUtils.createEnableAsync(false, NoAsyncListener.class);
-
-    public static final class NoAsyncListener implements AsyncListener {
-
-	@Override
-	public void onComplete(AsyncEvent event) throws IOException {
-	}
-
-	@Override
-	public void onTimeout(AsyncEvent event) throws IOException {
-	}
-
-	@Override
-	public void onError(AsyncEvent event) throws IOException {
-	}
-
-	@Override
-	public void onStartAsync(AsyncEvent event) throws IOException {
-	}
+    @Override
+    public String parseModule(HttpServletRequest request) {
+	return null;
     }
 }

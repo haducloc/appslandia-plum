@@ -22,19 +22,15 @@ package com.appslandia.plum.base;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
 
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.logging.AppLogger;
-import com.appslandia.common.utils.ArrayUtils;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.common.utils.StringUtils;
-import com.appslandia.plum.results.JspResult;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
-import jakarta.servlet.AsyncContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -81,10 +77,6 @@ public class ExecutorHandler extends HttpServlet {
     @Inject
     protected ExceptionHandler exceptionHandler;
 
-    protected ExecutorService getAsyncExecutor() {
-	return null;
-    }
-
     protected void testErrorStatus(HttpServletRequest request) {
 	String statusValue = request.getParameter("__error_status");
 	if (StringUtils.isNullOrEmpty(statusValue)) {
@@ -100,76 +92,21 @@ public class ExecutorHandler extends HttpServlet {
     }
 
     protected void doRequest(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws ServletException, IOException {
-	final EnableAsync enableAsync = requestContext.getActionDesc().getEnableAsync();
-
-	// Not startAsync
-	if ((enableAsync == null) || enableAsync.markOnly()) {
-	    try {
-		if (this.appConfig.isEnableDebug()) {
-		    testErrorStatus(request);
-		}
-		getFilterChain(requestContext).doFilter(request, response, requestContext);
-
-	    } catch (RuntimeException | ServletException | IOException ex) {
-		throw ex;
-	    } catch (Exception ex) {
-		throw new ServletException(ex);
+	try {
+	    if (this.appConfig.isEnableDebug()) {
+		testErrorStatus(request);
 	    }
-	    return;
-	}
+	    getFilterChain(requestContext).doFilter(request, response, requestContext);
 
-	// startAsync
-	final AsyncContext asyncContext = request.startAsync();
-
-	if (enableAsync.asyncListener() != EnableAsync.NoAsyncListener.class) {
-	    asyncContext.addListener(asyncContext.createListener(enableAsync.asyncListener()));
-	}
-	asyncContext.setTimeout(enableAsync.timeoutMs() > 0 ? enableAsync.timeoutMs() : this.appConfig.getRequiredLong(AppConfig.CONFIG_ASYNC_TIMEOUT_MS));
-
-	final Runnable asyncTask = new Runnable() {
-
-	    @Override
-	    public void run() {
-		HttpServletRequest asyncReq = (HttpServletRequest) asyncContext.getRequest();
-		HttpServletResponse asyncResp = (HttpServletResponse) asyncContext.getResponse();
-
-		try {
-		    if (appConfig.isEnableDebug()) {
-			testErrorStatus(request);
-		    }
-		    getFilterChain(requestContext).doFilter(asyncReq, asyncResp, requestContext);
-
-		    // JSP
-		    String dispatchJspPath = (String) asyncReq.getAttribute(JspResult.DISPATCH_JSP_PATH);
-		    if (dispatchJspPath != null) {
-			asyncContext.dispatch(dispatchJspPath);
-		    }
-
-		} catch (Exception ex) {
-		    try {
-			exceptionHandler.handleException(asyncReq, asyncResp, ex);
-		    } catch (Exception t) {
-			appLogger.error(t);
-		    }
-		} finally {
-		    if (asyncReq.getAttribute(JspResult.DISPATCH_JSP_PATH) == null) {
-			asyncContext.complete();
-		    }
-		}
-	    }
-	};
-	if (getAsyncExecutor() == null) {
-	    asyncContext.start(asyncTask);
-	} else {
-	    getAsyncExecutor().execute(asyncTask);
+	} catch (RuntimeException | ServletException | IOException ex) {
+	    throw ex;
+	} catch (Exception ex) {
+	    throw new ServletException(ex);
 	}
     }
 
-    protected static final String[] PLATFORM_FILTERS = { PreActionFilter.NAME };
-
     protected ActionFilterChain getFilterChain(RequestContext requestContext) {
-	String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() == null) ? PLATFORM_FILTERS
-		: ArrayUtils.append(PLATFORM_FILTERS, requestContext.getActionDesc().getEnableFilters().value());
+	String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() != null) ? requestContext.getActionDesc().getEnableFilters().value() : StringUtils.EMPTY_ARRAY;
 
 	return new ActionFilterChain(actionFilters, this.actionFilterProvider) {
 

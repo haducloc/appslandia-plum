@@ -69,6 +69,9 @@ public class RequestContextParser {
     @Inject
     protected ClientIdParser clientIdParser;
 
+    @Inject
+    protected ServletModuleParser servletModuleParser;
+
     public RequestContext parse(HttpServletRequest request, HttpServletResponse response) {
 	RequestContext context = (RequestContext) request.getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
 	if (context != null) {
@@ -131,7 +134,7 @@ public class RequestContextParser {
     }
 
     protected Language parseLanguage(HttpServletRequest request) {
-	// Only try PrefCookie.language if the application is configured to support more than one language
+	// Languages > 1?
 	if (this.languageProvider.getLanguages().size() > 1) {
 
 	    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
@@ -154,6 +157,12 @@ public class RequestContextParser {
 	if (actionDesc != null) {
 	    return actionDesc.getModule();
 	}
+
+	String module = this.servletModuleParser.parseModule(request);
+	if (module != null) {
+	    return module;
+	}
+
 	UserPrincipal principal = ServletUtils.getUserPrincipal(request);
 	if (principal != null) {
 	    return principal.getModule();

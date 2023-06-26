@@ -216,15 +216,6 @@ public abstract class ActionDescProvider extends InitializeObject {
 		EnableCaptcha enableCaptcha = actionMethod.getDeclaredAnnotation(EnableCaptcha.class);
 		actionDesc.setEnableCaptcha(enableCaptcha);
 
-		// @EnableAsync
-		EnableAsync enableAsync = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableAsync.class), controllerClass.getDeclaredAnnotation(EnableAsync.class));
-		if (enableAsync == null) {
-		    if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_ASYNC, false)) {
-			enableAsync = EnableAsync.IMPL;
-		    }
-		}
-		actionDesc.setEnableAsync(((enableAsync != null) && !enableAsync.removed()) ? enableAsync : null);
-
 		// @EnableJsonError
 		EnableJsonError enableJsonError = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableJsonError.class),
 			controllerClass.getDeclaredAnnotation(EnableJsonError.class));

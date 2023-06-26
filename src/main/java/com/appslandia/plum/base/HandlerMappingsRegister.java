@@ -69,18 +69,16 @@ public abstract class HandlerMappingsRegister implements Startup {
 		}
 	    }
 	}
-	boolean asyncSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableAsync.class) != null);
-	boolean partsSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
 
+	boolean partsSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
 	DynMultipartConfig multipartConfig = partsSupported ? buildMultipartConfig() : null;
 
 	String executorName = ExecutorHandler.class.getSimpleName();
 	String initializerName = InitializerHandler.class.getSimpleName();
 
 	new DynServletRegister().servletName(executorName).servletClass(ExecutorHandler.class).urlPatterns(urlMappings.toArray(new String[urlMappings.size()]))
-		.asyncSupported(asyncSupported).multipartConfig(multipartConfig).registerTo(sc);
+		.multipartConfig(multipartConfig).registerTo(sc);
 
-	new DynFilterRegister().filterName(initializerName).filterClass(InitializerHandler.class).servletNames(executorName).asyncSupported(asyncSupported)
-		.dispatcherTypes(DispatcherType.REQUEST).registerTo(sc);
+	new DynFilterRegister().filterName(initializerName).filterClass(InitializerHandler.class).servletNames(executorName).dispatcherTypes(DispatcherType.REQUEST).registerTo(sc);
     }
 }

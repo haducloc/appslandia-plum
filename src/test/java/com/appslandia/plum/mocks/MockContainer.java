@@ -39,7 +39,6 @@ import com.appslandia.common.objects.ObjectFactory;
 import com.appslandia.common.objects.ObjectProducer;
 import com.appslandia.common.threading.ThreadLocalStorage;
 import com.appslandia.plum.base.ActionDescProvider;
-import com.appslandia.plum.base.ActionFilter;
 import com.appslandia.plum.base.ActionFilterProvider;
 import com.appslandia.plum.base.ActionInvoker;
 import com.appslandia.plum.base.ActionParser;
@@ -54,7 +53,6 @@ import com.appslandia.plum.base.BeanInstanceContextListener;
 import com.appslandia.plum.base.CaptchaManager;
 import com.appslandia.plum.base.ClientIdParser;
 import com.appslandia.plum.base.ConstDescProvider;
-import com.appslandia.plum.base.PreActionFilter;
 import com.appslandia.plum.base.ControllerProvider;
 import com.appslandia.plum.base.CookieHandler;
 import com.appslandia.plum.base.CorsPolicyHandler;
@@ -76,6 +74,7 @@ import com.appslandia.plum.base.RateLimitSkipper;
 import com.appslandia.plum.base.RemoteClientVerifier;
 import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
+import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.captcha.CaptchaProducer;
@@ -86,6 +85,7 @@ import com.appslandia.plum.defaults.DefaultHttpAuthenticationMechanism;
 import com.appslandia.plum.defaults.DefaultIdentityValidator;
 import com.appslandia.plum.defaults.DefaultRateLimitSkipper;
 import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
+import com.appslandia.plum.defaults.DefaultServletModuleParser;
 import com.appslandia.plum.defaults.MemAppCacheManager;
 import com.appslandia.plum.defaults.MemAuthTokenManager;
 
@@ -239,6 +239,10 @@ public class MockContainer extends InitializeObject {
 	executeAuthenticationMechanism(request, response);
 
 	new MockFilterChain().addFilter(getInitializerHandler()).setServlet(getExecutorHandler()).doFilter(request, response);
+
+	if (response.getStatus() < 300 || response.getStatus() >= 400) {
+	    response.flushBuffer();
+	}
     }
 
     protected ObjectFactory createObjectFactory(final ServletContext sc) {
@@ -259,8 +263,6 @@ public class MockContainer extends InitializeObject {
 
 	factory.register(ActionParser.class, ActionParser.class);
 	factory.register(ActionDescProvider.class, MockActionDescProvider.class);
-
-	factory.register(ActionFilter.class, PreActionFilter.class);
 	factory.register(ActionFilterProvider.class, MockActionFilterProvider.class);
 
 	factory.register(ModelBinder.class, ModelBinder.class);
@@ -287,6 +289,7 @@ public class MockContainer extends InitializeObject {
 	factory.register(AuthTokenHandler.class, DefaultAuthTokenHandler.class);
 
 	factory.register(ClientIdParser.class, DefaultClientIdParser.class);
+	factory.register(ServletModuleParser.class, DefaultServletModuleParser.class);
 	factory.register(RemoteClientVerifier.class, DefaultRemoteClientVerifier.class);
 	factory.register(AuthorizePolicyProvider.class, AuthorizePolicyProvider.class);
 

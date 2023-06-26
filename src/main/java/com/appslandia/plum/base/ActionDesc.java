@@ -57,7 +57,6 @@ public class ActionDesc {
     private EnableCaptcha enableCaptcha;
     private EnableJsonError enableJsonError;
 
-    private EnableAsync enableAsync;
     private ChildAction childAction;
 
     public String getController() {
@@ -220,14 +219,6 @@ public class ActionDesc {
 
     protected void setEnableCaptcha(EnableCaptcha enableCaptcha) {
 	this.enableCaptcha = enableCaptcha;
-    }
-
-    public EnableAsync getEnableAsync() {
-	return this.enableAsync;
-    }
-
-    protected void setEnableAsync(EnableAsync enableAsync) {
-	this.enableAsync = enableAsync;
     }
 
     public EnableJsonError getEnableJsonError() {

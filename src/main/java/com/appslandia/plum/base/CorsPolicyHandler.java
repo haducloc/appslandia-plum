@@ -49,17 +49,27 @@ public class CorsPolicyHandler {
     public static final String HEADER_AC_REQUEST_METHOD = "Access-Control-Request-Method";
     public static final String HEADER_AC_REQUEST_HEADERS = "Access-Control-Request-Headers";
 
-    public CorsResult handleCors(HttpServletRequest request, HttpServletResponse response, CorsPolicy corsPolicy) {
-	// CORS Headers
-	String origin = Asserts.notNull(request.getHeader(HEADER_ORIGIN));
+    public String getCrossOrigin(HttpServletRequest request) {
+	String origin = request.getHeader(HEADER_ORIGIN);
+	if (origin == null) {
+	    return null;
+	}
+	StringBuilder url = ServletUtils.absUrlBase(request);
 
+	if (origin.equals(url.toString())) {
+	    return null;
+	}
+	return origin;
+    }
+
+    public CorsResult handleCors(HttpServletRequest request, HttpServletResponse response, String crossOrigin, CorsPolicy corsPolicy) {
 	// Origin
-	if (!corsPolicy.allowOrigin(origin)) {
+	if (!corsPolicy.allowOrigin(crossOrigin)) {
 	    return CorsResult.NOT_ALLOWED_ORIGIN;
 	}
 
 	// Allow-Origin
-	response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(origin));
+	response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(crossOrigin));
 	if (!corsPolicy.isAnyOrigin()) {
 	    response.addHeader(HEADER_VARY, HEADER_ORIGIN);
 	}
@@ -73,7 +83,7 @@ public class CorsPolicyHandler {
 
     public CorsResult handlePreflight(HttpServletRequest request, HttpServletResponse response, CorsPolicy corsPolicy) {
 	// CORS Headers
-	String origin = Asserts.notNull(request.getHeader(HEADER_ORIGIN));
+	String origin = Asserts.notNull(getCrossOrigin(request));
 
 	// Origin
 	if (!corsPolicy.allowOrigin(origin)) {
