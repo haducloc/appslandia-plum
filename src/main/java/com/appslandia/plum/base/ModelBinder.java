@@ -90,11 +90,11 @@ public class ModelBinder {
     @Inject
     protected JsonProcessor jsonProcessor;
 
-    public void bindModel(HttpServletRequest request, Object model) throws Exception {
-	bindModel(request, model, null);
+    public ModelState bindModel(HttpServletRequest request, Object model) throws Exception {
+	return bindModel(request, model, null);
     }
 
-    public void bindModel(HttpServletRequest request, Object model, Function<String, Boolean> excludePaths) throws Exception {
+    public ModelState bindModel(HttpServletRequest request, Object model, Function<String, Boolean> excludePaths) throws Exception {
 	Queue<BindingNode> queue = new LinkedList<>();
 	queue.add(new BindingNode(model, null));
 
@@ -277,19 +277,25 @@ public class ModelBinder {
 		}
 	    } // Iteration of properties
 	}
+
 	// Validate Model
 	validateModel(model, ServletUtils.getModelState(request), ServletUtils.getResources(request));
+	return ServletUtils.getModelState(request);
     }
 
     public <T> T bindModel(HttpServletRequest request, String partName, Class<T> modelType, ModelState modelState) throws Exception {
+	// Part
 	Part part = request.getPart(partName);
 	Asserts.notNull(part);
 	Asserts.isTrue(ServletUtils.allowContentType(part.getContentType(), MimeTypes.APP_JSON));
 
+	// Part JSON
 	T model = null;
 	try (BufferedReader br = new BufferedReader(new InputStreamReader(part.getInputStream(), CharsetUtils.parseCharset(part.getContentType())))) {
 	    model = this.jsonProcessor.read(br, modelType);
 	}
+
+	// Validate Model
 	if (model != null) {
 	    validateModel(model, modelState, ServletUtils.getResources(request));
 	}
