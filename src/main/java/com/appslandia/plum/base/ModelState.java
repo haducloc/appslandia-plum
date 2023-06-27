@@ -27,9 +27,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.Function;
-
-import com.appslandia.common.utils.StringUtils;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -40,7 +40,7 @@ public class ModelState implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final String REQUEST_ATTRIBUTE_ID = "modelState";
-    public static final String MODEL_FIELD = StringUtils.EMPTY_STRING;
+    public static final String MODEL_FIELD = "_";
 
     private String form;
     final Map<String, List<Message>> errors = new HashMap<>();
@@ -124,5 +124,9 @@ public class ModelState implements Serializable {
 	    }
 	}
 	return this.errors.values().iterator().next().get(0);
+    }
+
+    public Map<String, String> toErrorMap() {
+	return this.errors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get(0).getText(), (v1, v2) -> v1, TreeMap::new));
     }
 }
