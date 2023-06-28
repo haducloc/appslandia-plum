@@ -22,8 +22,8 @@ package com.appslandia.plum.mocks;
 
 import java.util.Iterator;
 
-import com.appslandia.common.objects.ObjectDefinition;
-import com.appslandia.common.objects.ObjectFactory;
+import com.appslandia.common.factory.ObjectDefinition;
+import com.appslandia.common.factory.ObjectFactory;
 import com.appslandia.plum.base.ActionDescProvider;
 import com.appslandia.plum.base.Controller;
 
