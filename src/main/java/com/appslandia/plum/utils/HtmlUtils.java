@@ -22,11 +22,6 @@ package com.appslandia.plum.utils;
 
 import java.io.IOException;
 import java.io.Writer;
-import java.util.function.Function;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.appslandia.common.utils.StringUtils;
 
 /**
  *
@@ -106,50 +101,5 @@ public class HtmlUtils {
 	    buf[i] = ((c == '.') || (c == '[') || (c == ']')) ? ('_') : c;
 	}
 	return new String(buf);
-    }
-
-    static final String[] BASIC_HTML_TAGS = new String[] { "a", "b", "blockquote", "br", "cite", "code", "dd", "dl", "dt", "em", "i", "li", "ol", "p", "pre", "q", "small", "span",
-	    "strike", "strong", "sub", "sup", "u", "ul", "img" };
-
-    static String buildBasicHtmlTagsPattern(String[] tags) {
-	StringBuilder sb = new StringBuilder(tags.length * 40);
-	for (String tag : tags) {
-	    if (sb.length() > 0) {
-		sb.append("|");
-	    }
-	    sb.append("<").append(tag).append("\\s*>").append("|<").append(tag).append("\\s+[^<>]+\\s*>").append("|</\\s*").append(tag).append("\\s*>");
-	}
-	return sb.toString();
-    }
-
-    static final Pattern BASIC_HTML_TAGS_PATTERN = Pattern.compile(buildBasicHtmlTagsPattern(BASIC_HTML_TAGS));
-
-    public static void processHtml(Writer out, String str) throws IOException {
-	processHtml(out, str, (ct) -> !StringUtils.isNullOrBlank(ct) ? XmlEscaper.escapeXmlContent(ct) : ct);
-    }
-
-    public static void processHtml(Writer out, String str, Function<String, String> textContentProcessor) throws IOException {
-	if (str == null) {
-	    return;
-	}
-	Matcher matcher = BASIC_HTML_TAGS_PATTERN.matcher(str);
-	int prevEnd = 0;
-
-	while (matcher.find()) {
-
-	    // Text Content
-	    if (prevEnd == 0) {
-		out.write(textContentProcessor.apply(str.substring(0, matcher.start())));
-	    } else {
-		out.write(textContentProcessor.apply(str.substring(prevEnd, matcher.start())));
-	    }
-
-	    // HTML Tags
-	    out.write(matcher.group());
-	    prevEnd = matcher.end();
-	}
-	if (prevEnd < str.length()) {
-	    out.write(textContentProcessor.apply(str.substring(prevEnd)));
-	}
     }
 }
