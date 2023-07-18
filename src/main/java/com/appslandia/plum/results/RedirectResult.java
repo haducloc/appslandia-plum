@@ -118,7 +118,7 @@ public class RedirectResult implements ActionResult {
 	    url.append(request.getServletContext().getContextPath());
 
 	    // Language
-	    if (requestContext.isPathLanguage() || appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+	    if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 		url.append('/').append(requestContext.getLanguageId());
 	    }
 
@@ -157,7 +157,7 @@ public class RedirectResult implements ActionResult {
 	    url.append(request.getServletContext().getContextPath());
 
 	    // Language
-	    if (requestContext.isPathLanguage() || appConfig.getRequiredBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+	    if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 		url.append('/').append(requestContext.getLanguageId());
 	    }
 	    url.append('/');

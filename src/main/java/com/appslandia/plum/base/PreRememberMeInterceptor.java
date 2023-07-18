@@ -97,8 +97,8 @@ public class PreRememberMeInterceptor implements Serializable {
 	    // Re-issue RememberMe cookie
 	    this.cookieHandler.saveCookie(response, this.appConfig.getRequiredString(AppConfig.CONFIG_REMME_COOKIE_NAME), reissuedToken.getLoginToken(), reissuedToken.getMaxAge(),
 		    (c) -> {
-			c.setSecure(this.appConfig.getRequiredBool(AppConfig.CONFIG_REMME_COOKIE_SECURE));
-			c.setHttpOnly(this.appConfig.getRequiredBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY));
+			c.setSecure(this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SECURE));
+			c.setHttpOnly(this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY));
 		    });
 
 	    this.postRememberMe.apply(request, response, reissuedToken.getIdentity());

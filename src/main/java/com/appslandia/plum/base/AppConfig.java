@@ -20,8 +20,10 @@
 
 package com.appslandia.plum.base;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import com.appslandia.common.base.Config;
 import com.appslandia.common.base.ConfigMap;
@@ -110,9 +112,9 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_PARSE_PREF_COOKIE, String.valueOf(true));
 
-	this.enableDebug = this.config.getRequiredBool(CONFIG_ENABLE_DEBUG);
-	this.enableSession = this.config.getRequiredBool(CONFIG_ENABLE_SESSION);
-	this.jspDir = this.config.getRequiredString(CONFIG_JSP_DIR);
+	this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
+	this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);
+	this.jspDir = this.config.getString(CONFIG_JSP_DIR);
     }
 
     public boolean isEnableDebug() {
@@ -163,51 +165,15 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public String getFormatted(String key) {
-	this.initialize();
-	return this.config.getFormatted(key);
-    }
-
-    @Override
-    public String getRequiredFormatted(String key) {
-	this.initialize();
-	return this.config.getRequiredFormatted(key);
-    }
-
-    @Override
-    public String getFormatted(String key, Map<String, Object> parameters) {
-	this.initialize();
-	return this.config.getFormatted(key, parameters);
-    }
-
-    @Override
-    public String getRequiredFormatted(String key, Map<String, Object> parameters) {
-	this.initialize();
-	return this.config.getRequiredFormatted(key, parameters);
-    }
-
-    @Override
-    public String getFormatted(String key, Object... parameters) {
-	this.initialize();
-	return this.config.getFormatted(key, parameters);
-    }
-
-    @Override
-    public String getRequiredFormatted(String key, Object... parameters) {
-	this.initialize();
-	return this.config.getRequiredFormatted(key, parameters);
-    }
-
-    @Override
     public boolean getBool(String key, boolean defaultValue) {
 	this.initialize();
 	return this.config.getBool(key, defaultValue);
     }
 
     @Override
-    public boolean getRequiredBool(String key) {
+    public boolean getBool(String key) {
 	this.initialize();
-	return this.config.getRequiredBool(key);
+	return this.config.getBool(key);
     }
 
     @Override
@@ -217,9 +183,9 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public int getRequiredInt(String key) {
+    public int getInt(String key) {
 	this.initialize();
-	return this.config.getRequiredInt(key);
+	return this.config.getInt(key);
     }
 
     @Override
@@ -229,9 +195,9 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public long getRequiredLong(String key) {
+    public long getLong(String key) {
 	this.initialize();
-	return this.config.getRequiredLong(key);
+	return this.config.getLong(key);
     }
 
     @Override
@@ -241,8 +207,44 @@ public class AppConfig extends InitializeObject implements Config {
     }
 
     @Override
-    public double getRequiredDouble(String key) {
+    public double getDouble(String key) {
 	this.initialize();
-	return this.config.getRequiredDouble(key);
+	return this.config.getDouble(key);
+    }
+
+    @Override
+    public BigDecimal getDecimal(String key) {
+	this.initialize();
+	return this.config.getDecimal(key);
+    }
+
+    @Override
+    public BigDecimal getDecimal(String key, BigDecimal defaultValue) {
+	this.initialize();
+	return this.config.getDecimal(key, defaultValue);
+    }
+
+    @Override
+    public String resolve(String key) {
+	this.initialize();
+	return this.config.resolve(key);
+    }
+
+    @Override
+    public String resolve(String key, Map<String, Object> parameters) {
+	this.initialize();
+	return this.config.resolve(key, parameters);
+    }
+
+    @Override
+    public String resolve(String key, Object... parameters) {
+	this.initialize();
+	return this.config.resolve(key, parameters);
+    }
+
+    @Override
+    public <T> T getValue(String key, Function<String, T> converter) {
+	this.initialize();
+	return this.config.getValue(key, converter);
     }
 }
