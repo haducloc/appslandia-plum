@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.results;
 
+import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
 
@@ -58,7 +59,9 @@ public class TextFileResult extends DownloadResult {
 	if (this.contentEncoding != null) {
 	    response.setCharacterEncoding(this.contentEncoding);
 	}
-	OutputStreamWriter out = new OutputStreamWriter(new BOMOutputStream(response.getOutputStream(), response.getCharacterEncoding()), response.getCharacterEncoding());
+
+	BufferedWriter out = new BufferedWriter(
+		new OutputStreamWriter(new BOMOutputStream(response.getOutputStream(), response.getCharacterEncoding()), response.getCharacterEncoding()));
 	out.write(this.content);
 
 	out.flush();
