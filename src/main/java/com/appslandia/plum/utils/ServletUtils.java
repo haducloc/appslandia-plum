@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.time.DateTimeException;
@@ -311,14 +310,6 @@ public class ServletUtils {
     public static Object getMutex(ServletContext context) {
 	Object mutex = context.getAttribute(MutexContextListener.ATTRIBUTE_MUTEX);
 	return (mutex != null) ? mutex : context;
-    }
-
-    public static Writer getWriter(HttpServletResponse response) throws IOException {
-	try {
-	    return response.getWriter();
-	} catch (IllegalStateException ex) {
-	    return new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), response.getCharacterEncoding()));
-	}
     }
 
     public static PrintWriter getPrintWriter(HttpServletResponse response) throws IOException {

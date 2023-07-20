@@ -22,7 +22,6 @@ package com.appslandia.plum.base;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 
 import com.appslandia.common.json.JsonProcessor;
@@ -156,7 +155,7 @@ public class ExceptionHandler {
 	response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 	response.setStatus(status);
 
-	Writer out = ServletUtils.getWriter(response);
+	PrintWriter out = ServletUtils.getPrintWriter(response);
 	this.jsonProcessor.write(out, problem);
 	out.flush();
     }
