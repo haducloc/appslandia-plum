@@ -41,7 +41,6 @@ import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import com.appslandia.common.base.BOMOutputStream;
 import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.PropertyConfig;
 import com.appslandia.common.cdi.BeanInstance;
@@ -328,11 +327,6 @@ public class ServletUtils {
 	} catch (IllegalStateException ex) {
 	    return new PrintWriter(new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), response.getCharacterEncoding())));
 	}
-    }
-
-    public static PrintWriter getBOMWriter(HttpServletResponse response) throws IOException, IllegalStateException {
-	return new PrintWriter(
-		new BufferedWriter(new OutputStreamWriter(new BOMOutputStream(response.getOutputStream(), response.getCharacterEncoding()), response.getCharacterEncoding())));
     }
 
     public static HttpServletResponse assertNotCommitted(HttpServletResponse response) throws IllegalStateException {
