@@ -20,17 +20,12 @@
 
 package com.appslandia.plum.tags;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.file.Files;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.appslandia.common.base.MemoryStream;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.IOUtils;
+import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.plum.base.ActionDesc;
 import com.appslandia.plum.base.ActionDescProvider;
 import com.appslandia.plum.base.ActionDescUtils;
@@ -104,7 +99,7 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 		wrapper.finishWrapper();
 		return wrapper.getContent().toString(response.getCharacterEncoding());
 	    }
-	    return resultToString(result, response.getCharacterEncoding());
+	    return ObjectUtils.toStringOrEmpty(result);
 
 	} finally {
 	    request.removeAttribute(REQUEST_ATTRIBUTE_INCLUDE_PARAMS);
@@ -125,29 +120,6 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 	} catch (Exception ex) {
 	    handleException(ex);
 	}
-    }
-
-    protected String resultToString(Object result, String characterEncoding) throws IOException {
-	if (result instanceof String) {
-	    return (String) result;
-	}
-	if (result instanceof Reader) {
-	    try (Reader r = (Reader) result) {
-		return IOUtils.toString(r);
-	    }
-	}
-	if (result instanceof InputStream) {
-	    try (InputStream is = (InputStream) result) {
-		return IOUtils.toString(is, characterEncoding);
-	    }
-	}
-	if (result instanceof File) {
-	    return new String(Files.readAllBytes(((File) result).toPath()), characterEncoding);
-	}
-	if (result instanceof MemoryStream) {
-	    return ((MemoryStream) result).toString(characterEncoding);
-	}
-	return String.valueOf(result);
     }
 
     protected void handleException(Exception ex) throws JspException, IOException {
