@@ -20,26 +20,22 @@
 
 package com.appslandia.plum.results;
 
-import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.MathUtils;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class DownloadResultTest extends MockTestBase {
+public class ContentResultTest extends MockTestBase {
 
     @Override
     protected void initialize() {
@@ -47,14 +43,14 @@ public class DownloadResultTest extends MockTestBase {
     }
 
     @Test
-    public void test() {
+    public void test_testTextResult() {
 	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testDownload");
+	    executeCurrent("GET", "http://localhost/app/testController/testContentResult");
 
-	    Assertions.assertEquals("application/pdf", getCurrentResponse().getContentType());
-	    Assertions.assertEquals("attachment; filename=\"testDownload.dat\"", getCurrentResponse().getHeader("Content-Disposition"));
+	    Assertions.assertEquals("Some text", getCurrentResponse().getContent().toString(StandardCharsets.UTF_8.name()));
+	    Assertions.assertEquals("text/plain", getCurrentResponse().getContentType());
 
-	    Assertions.assertArrayEquals(MathUtils.toByteArray(1, 10), getCurrentResponse().getContent().toByteArray());
+	    Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -62,14 +58,14 @@ public class DownloadResultTest extends MockTestBase {
     }
 
     @Test
-    public void test_inline() {
+    public void test_testTextResult_ISO_8859_1() {
 	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testDownloadInline");
+	    executeCurrent("GET", "http://localhost/app/testController/testContentResult_ISO_8859_1");
 
-	    Assertions.assertEquals("application/pdf", getCurrentResponse().getContentType());
-	    Assertions.assertEquals("inline; filename=\"testDownloadInline.dat\"", getCurrentResponse().getHeader("Content-Disposition"));
+	    Assertions.assertEquals("Some text", getCurrentResponse().getContent().toString(StandardCharsets.ISO_8859_1));
+	    Assertions.assertEquals("text/plain", getCurrentResponse().getContentType());
 
-	    Assertions.assertArrayEquals(MathUtils.toByteArray(1, 10), getCurrentResponse().getContent().toByteArray());
+	    Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -80,25 +76,13 @@ public class DownloadResultTest extends MockTestBase {
     public static class TestController {
 
 	@HttpGet
-	public ActionResult testDownload() throws Exception {
-	    return new DownloadResult("testDownload.dat", "application/pdf") {
-
-		@Override
-		protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		    response.getOutputStream().write(MathUtils.toByteArray(1, 10));
-		}
-	    };
+	public ActionResult testContentResult() throws Exception {
+	    return new ContentResult("Some text", "text/plain");
 	}
 
 	@HttpGet
-	public ActionResult testDownloadInline() throws Exception {
-	    return new DownloadResult("testDownloadInline.dat", "application/pdf", true) {
-
-		@Override
-		protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		    response.getOutputStream().write(MathUtils.toByteArray(1, 10));
-		}
-	    };
+	public ActionResult testContentResult_ISO_8859_1() throws Exception {
+	    return new ContentResult("Some text", "text/plain", StandardCharsets.ISO_8859_1.name());
 	}
     }
 }

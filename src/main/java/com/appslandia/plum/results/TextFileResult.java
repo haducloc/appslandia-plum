@@ -33,7 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextFileResult extends DownloadResult {
+public class TextFileResult extends FilenameResult {
 
     protected String contentEncoding;
     protected String content;

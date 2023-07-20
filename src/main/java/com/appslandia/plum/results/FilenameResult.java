@@ -20,9 +20,9 @@
 
 package com.appslandia.plum.results;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
+import com.appslandia.plum.base.ActionResult;
+import com.appslandia.plum.base.RequestContext;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,24 +32,30 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class FileResult extends FilenameResult {
+public abstract class FilenameResult implements ActionResult {
 
-    private File content;
+    private String fileName;
+    private String contentType;
+    private boolean inline;
 
-    public FileResult(File content, String fileName, String contentType) {
-	this(content, fileName, contentType, false);
+    public FilenameResult(String fileName, String contentType) {
+	this(fileName, contentType, false);
     }
 
-    public FileResult(File content, String fileName, String contentType, boolean inline) {
-	super(fileName, contentType, inline);
-	this.content = content;
+    public FilenameResult(String fileName, String contentType, boolean inline) {
+	this.fileName = fileName;
+	this.contentType = contentType;
+	this.inline = inline;
     }
 
     @Override
-    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	response.setContentLengthLong(this.content.length());
+    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
+	response.setContentType(this.contentType);
 
-	Files.copy(this.content.toPath(), response.getOutputStream());
-	response.getOutputStream().flush();
+	ServletUtils.setContentDisposition(response, this.fileName, this.inline);
+
+	this.writeContent(request, response);
     }
+
+    protected abstract void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

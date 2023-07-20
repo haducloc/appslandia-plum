@@ -34,21 +34,21 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextResult implements ActionResult {
+public class ContentResult implements ActionResult {
 
     protected String content;
     protected String contentType;
     protected String contentEncoding;
 
-    public TextResult(String content) {
+    public ContentResult(String content) {
 	this(content, MimeTypes.TEXT_PLAIN);
     }
 
-    public TextResult(String content, String contentType) {
+    public ContentResult(String content, String contentType) {
 	this(content, contentType, StandardCharsets.UTF_8.name());
     }
 
-    public TextResult(String content, String contentType, String contentEncoding) {
+    public ContentResult(String content, String contentType, String contentEncoding) {
 	this.content = content;
 	this.contentType = contentType;
 	this.contentEncoding = contentEncoding;

@@ -38,7 +38,7 @@ import com.appslandia.plum.base.MockTestBase;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextFileResultTest extends MockTestBase {
+public class TextResultTest extends MockTestBase {
 
     @Override
     protected void initialize() {

@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.utils.MimeTypes;
-import com.appslandia.plum.results.TextResult;
+import com.appslandia.plum.results.ContentResult;
 import com.appslandia.plum.utils.TestUtils;
 
 /**
@@ -99,7 +99,7 @@ public class EnableGzipTest extends MockTestBase {
 	@HttpGetPost
 	@EnableGzip
 	public ActionResult testGzip() throws Exception {
-	    return new TextResult("data", MimeTypes.TEXT_PLAIN);
+	    return new ContentResult("data", MimeTypes.TEXT_PLAIN);
 	}
     }
 }

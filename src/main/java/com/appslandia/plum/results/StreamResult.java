@@ -33,7 +33,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class StreamResult extends DownloadResult {
+public class StreamResult extends FilenameResult {
 
     private InputStream content;
 

@@ -20,9 +20,11 @@
 
 package com.appslandia.plum.results;
 
-import com.appslandia.plum.base.ActionResult;
-import com.appslandia.plum.base.RequestContext;
-import com.appslandia.plum.utils.ServletUtils;
+import java.io.BufferedWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+
+import com.appslandia.common.utils.IOUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,30 +34,38 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class DownloadResult implements ActionResult {
+public abstract class CsvResult<T> extends FilenameResult {
 
-    private String fileName;
-    private String contentType;
-    private boolean inline;
+    protected String contentEncoding;
+    protected List<T> records;
 
-    public DownloadResult(String fileName, String contentType) {
-	this(fileName, contentType, false);
+    public CsvResult(String fileName, String contentType) {
+	this(fileName, contentType, StandardCharsets.UTF_8.name(), false);
     }
 
-    public DownloadResult(String fileName, String contentType, boolean inline) {
-	this.fileName = fileName;
-	this.contentType = contentType;
-	this.inline = inline;
+    public CsvResult(String fileName, String contentType, String contentEncoding) {
+	this(fileName, contentType, contentEncoding, false);
+    }
+
+    public CsvResult(String fileName, String contentType, String contentEncoding, boolean inline) {
+	super(fileName, contentType, inline);
+
+	this.contentEncoding = contentEncoding;
     }
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	response.setContentType(this.contentType);
+    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	if (this.contentEncoding != null) {
+	    response.setCharacterEncoding(this.contentEncoding);
+	}
 
-	ServletUtils.setContentDisposition(response, this.fileName, this.inline);
+	BufferedWriter out = IOUtils.newWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
 
-	this.writeContent(request, response);
+	for (T r : this.records) {
+	    writeRecord(out, r);
+	}
+	out.flush();
     }
 
-    protected abstract void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception;
+    protected abstract void writeRecord(BufferedWriter out, T record) throws Exception;
 }

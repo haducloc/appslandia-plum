@@ -30,7 +30,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ByteArrayResult extends DownloadResult {
+public class ByteArrayResult extends FilenameResult {
 
     private byte[] content;
 
