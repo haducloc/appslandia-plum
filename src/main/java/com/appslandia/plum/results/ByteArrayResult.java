@@ -47,5 +47,6 @@ public class ByteArrayResult extends DownloadResult {
     protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	response.setContentLength(this.content.length);
 	response.getOutputStream().write(this.content);
+	response.getOutputStream().flush();
     }
 }

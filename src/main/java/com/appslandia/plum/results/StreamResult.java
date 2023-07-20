@@ -49,5 +49,6 @@ public class StreamResult extends DownloadResult {
     @Override
     protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
 	IOUtils.copy(this.content, response.getOutputStream());
+	response.getOutputStream().flush();
     }
 }

@@ -61,6 +61,8 @@ public class TextResult implements ActionResult {
 	if (this.contentEncoding != null) {
 	    response.setCharacterEncoding(this.contentEncoding);
 	}
+
 	response.getWriter().write(this.content);
+	response.getWriter().flush();
     }
 }

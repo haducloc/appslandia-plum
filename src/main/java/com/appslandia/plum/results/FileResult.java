@@ -50,5 +50,6 @@ public class FileResult extends DownloadResult {
 	response.setContentLengthLong(this.content.length());
 
 	Files.copy(this.content.toPath(), response.getOutputStream());
+	response.getOutputStream().flush();
     }
 }
