@@ -36,37 +36,23 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class JspResult implements ActionResult {
 
-    private String action;
-    private String controller;
     private String path;
 
     public JspResult() {
     }
 
-    public JspResult(String action) {
-	this.action = action;
-    }
-
-    public JspResult(String action, String controller) {
-	this.action = action;
-	this.controller = controller;
-    }
-
-    public JspResult path(String path) {
+    public JspResult(String path) {
 	this.path = path;
-	return this;
     }
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
 	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
+
 	String jspPath = null;
-
 	if (this.path == null) {
-	    String action = (this.action != null) ? this.action : requestContext.getActionDesc().getAction();
-	    String controller = (this.controller != null) ? this.controller : requestContext.getActionDesc().getController();
-
-	    jspPath = appConfig.getViewBase().append("/").append(controller).append("/").append(action).append(".jsp").toString();
+	    jspPath = appConfig.getViewBase().append("/").append(requestContext.getActionDesc().getController()).append("/").append(requestContext.getActionDesc().getAction())
+		    .append(".jsp").toString();
 
 	} else {
 	    jspPath = appConfig.getViewBase().append(this.path).toString();
@@ -81,11 +67,5 @@ public class JspResult implements ActionResult {
 	}
     }
 
-    public static final JspResult DEFAULT = new JspResult() {
-
-	@Override
-	public JspResult path(String path) {
-	    throw new UnsupportedOperationException();
-	}
-    };
+    public static final JspResult DEFAULT = new JspResult();
 }
