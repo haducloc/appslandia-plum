@@ -13,7 +13,7 @@
 	<tag>
 		<description>form|body=scriptless|dynamicAttributes</description>
 		<name>form</name>
-		<tag-class>com.appslandia.plum.tags.FormTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.FormTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>acceptCharset|type=java.lang.String</description>
@@ -140,7 +140,7 @@
 	<tag>
 		<description>formErrors|body=scriptless|dynamicAttributes</description>
 		<name>formErrors</name>
-		<tag-class>com.appslandia.plum.tags.FormErrorsTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.FormErrorsTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -204,7 +204,7 @@
 	<tag>
 		<description>fieldOrders|body=tagdependent</description>
 		<name>fieldOrders</name>
-		<tag-class>com.appslandia.plum.tags.FieldOrdersTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.FieldOrdersTag</tag-class>
 		<body-content>tagdependent</body-content>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
@@ -212,7 +212,7 @@
 	<tag>
 		<description>fieldLabel|body=scriptless|dynamicAttributes</description>
 		<name>fieldLabel</name>
-		<tag-class>com.appslandia.plum.tags.FieldLabelTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.FieldLabelTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -304,7 +304,7 @@
 	<tag>
 		<description>fieldError|body=empty|dynamicAttributes</description>
 		<name>fieldError</name>
-		<tag-class>com.appslandia.plum.tags.FieldErrorTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.FieldErrorTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -361,7 +361,7 @@
 	<tag>
 		<description>hidden|body=empty|dynamicAttributes</description>
 		<name>hidden</name>
-		<tag-class>com.appslandia.plum.tags.HiddenTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.HiddenTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>autofocus|type=boolean|expression</description>
@@ -446,7 +446,7 @@
 	<tag>
 		<description>textBox|body=empty|dynamicAttributes</description>
 		<name>textBox</name>
-		<tag-class>com.appslandia.plum.tags.TextBoxTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.TextBoxTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>alt|type=java.lang.String|expression</description>
@@ -636,7 +636,7 @@
 	<tag>
 		<description>dataList|body=scriptless</description>
 		<name>dataList</name>
-		<tag-class>com.appslandia.plum.tags.DataListTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.DataListTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>datatag|type=java.lang.Object|expression</description>
@@ -672,7 +672,7 @@
 	<tag>
 		<description>dataItem|body=empty</description>
 		<name>dataItem</name>
-		<tag-class>com.appslandia.plum.tags.DataItemTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.DataItemTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>value|type=java.lang.Object|expression</description>
@@ -687,7 +687,7 @@
 	<tag>
 		<description>textArea|body=empty|dynamicAttributes</description>
 		<name>textArea</name>
-		<tag-class>com.appslandia.plum.tags.TextAreaTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.TextAreaTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>autocomplete|type=java.lang.String</description>
@@ -842,7 +842,7 @@
 	<tag>
 		<description>captchaWords|body=empty|dynamicAttributes</description>
 		<name>captchaWords</name>
-		<tag-class>com.appslandia.plum.tags.CaptchaWordsTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.CaptchaWordsTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -927,7 +927,7 @@
 	<tag>
 		<description>radio|body=empty|dynamicAttributes</description>
 		<name>radio</name>
-		<tag-class>com.appslandia.plum.tags.RadioTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.RadioTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>autocomplete|type=java.lang.String</description>
@@ -1082,7 +1082,7 @@
 	<tag>
 		<description>checkbox|body=empty|dynamicAttributes</description>
 		<name>checkbox</name>
-		<tag-class>com.appslandia.plum.tags.CheckboxTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.CheckboxTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>autocomplete|type=java.lang.String</description>
@@ -1244,7 +1244,7 @@
 	<tag>
 		<description>bitMaskCheck|body=empty|dynamicAttributes</description>
 		<name>bitMaskCheck</name>
-		<tag-class>com.appslandia.plum.tags.BitMaskCheckTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.BitMaskCheckTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>autocomplete|type=java.lang.String</description>
@@ -1399,7 +1399,7 @@
 	<tag>
 		<description>checkGroup|body=scriptless|dynamicAttributes</description>
 		<name>checkGroup</name>
-		<tag-class>com.appslandia.plum.tags.CheckGroupTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.CheckGroupTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>asDiv|type=boolean</description>
@@ -1477,7 +1477,7 @@
 	<tag>
 		<description>button|body=empty|dynamicAttributes</description>
 		<name>button</name>
-		<tag-class>com.appslandia.plum.tags.ButtonTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ButtonTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>autofocus|type=boolean|expression</description>
@@ -1562,7 +1562,7 @@
 	<tag>
 		<description>submitButton|body=empty|dynamicAttributes</description>
 		<name>submitButton</name>
-		<tag-class>com.appslandia.plum.tags.SubmitButtonTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.SubmitButtonTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>actionType|type=java.lang.String</description>
@@ -1654,7 +1654,7 @@
 	<tag>
 		<description>buttonLink|body=scriptless|dynamicAttributes</description>
 		<name>buttonLink</name>
-		<tag-class>com.appslandia.plum.tags.ButtonLinkTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ButtonLinkTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>action|type=java.lang.String</description>
@@ -1739,7 +1739,7 @@
 	<tag>
 		<description>select|body=scriptless|dynamicAttributes</description>
 		<name>select</name>
-		<tag-class>com.appslandia.plum.tags.SelectTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.SelectTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>autocomplete|type=java.lang.String</description>
@@ -1915,7 +1915,7 @@
 	<tag>
 		<description>selectItem|body=empty</description>
 		<name>selectItem</name>
-		<tag-class>com.appslandia.plum.tags.SelectItemTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.SelectItemTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>name|type=java.lang.String|expression</description>
@@ -1937,7 +1937,7 @@
 	<tag>
 		<description>action|body=empty|dynamicAttributes</description>
 		<name>action</name>
-		<tag-class>com.appslandia.plum.tags.ActionTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ActionTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>absUrl|type=boolean</description>
@@ -1973,7 +1973,7 @@
 	<tag>
 		<description>actionLink|body=scriptless|dynamicAttributes</description>
 		<name>actionLink</name>
-		<tag-class>com.appslandia.plum.tags.ActionLinkTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ActionLinkTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>action|type=java.lang.String</description>
@@ -2051,7 +2051,7 @@
 	<tag>
 		<description>actionImage|body=empty|dynamicAttributes</description>
 		<name>actionImage</name>
-		<tag-class>com.appslandia.plum.tags.ActionImageTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ActionImageTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>action|type=java.lang.String</description>
@@ -2143,7 +2143,7 @@
 	<tag>
 		<description>include|body=empty|dynamicAttributes</description>
 		<name>include</name>
-		<tag-class>com.appslandia.plum.tags.IncludeTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.IncludeTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>action|type=java.lang.String</description>
@@ -2172,7 +2172,7 @@
 	<tag>
 		<description>param|body=empty</description>
 		<name>param</name>
-		<tag-class>com.appslandia.plum.tags.ParamTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ParamTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>name|type=java.lang.String</description>
@@ -2194,7 +2194,7 @@
 	<tag>
 		<description>iterate|body=scriptless</description>
 		<name>iterate</name>
-		<tag-class>com.appslandia.plum.tags.IterateTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.IterateTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>items|type=java.lang.Object|expression</description>
@@ -2223,7 +2223,7 @@
 	<tag>
 		<description>constDesc|body=empty</description>
 		<name>constDesc</name>
-		<tag-class>com.appslandia.plum.tags.ConstDescTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ConstDescTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>constGroup|type=java.lang.String</description>
@@ -2245,7 +2245,7 @@
 	<tag>
 		<description>url|body=empty|dynamicAttributes</description>
 		<name>url</name>
-		<tag-class>com.appslandia.plum.tags.UrlTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.UrlTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>baseUri|type=java.lang.String|expression</description>
@@ -2274,7 +2274,7 @@
 	<tag>
 		<description>messages|body=empty</description>
 		<name>messages</name>
-		<tag-class>com.appslandia.plum.tags.MessagesTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.MessagesTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String</description>
@@ -2289,7 +2289,7 @@
 	<tag>
 		<description>verBar|body=empty</description>
 		<name>verBar</name>
-		<tag-class>com.appslandia.plum.tags.VerBarTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.VerBarTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -2304,7 +2304,7 @@
 	<tag>
 		<description>checkMark|body=empty</description>
 		<name>checkMark</name>
-		<tag-class>com.appslandia.plum.tags.CheckMarkTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.CheckMarkTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -2326,7 +2326,7 @@
 	<tag>
 		<description>c|body=scriptless|dynamicAttributes</description>
 		<name>c</name>
-		<tag-class>com.appslandia.plum.tags.ControlTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.ControlTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -2390,7 +2390,7 @@
 	<tag>
 		<description>eval|body=empty</description>
 		<name>eval</name>
-		<tag-class>com.appslandia.plum.tags.EvalTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.EvalTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>esc|type=boolean</description>
@@ -2412,7 +2412,7 @@
 	<tag>
 		<description>userDName|body=empty</description>
 		<name>userDName</name>
-		<tag-class>com.appslandia.plum.tags.UserDNameTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.UserDNameTag</tag-class>
 		<body-content>empty</body-content>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
@@ -2420,7 +2420,7 @@
 	<tag>
 		<description>tpl|body=scriptless</description>
 		<name>tpl</name>
-		<tag-class>com.appslandia.plum.tags.TemplateTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.TemplateTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>type|type=java.lang.String</description>
@@ -2435,7 +2435,7 @@
 	<tag>
 		<description>pager|template=page,dots|body=scriptless|dynamicAttributes</description>
 		<name>pager</name>
-		<tag-class>com.appslandia.plum.tags.PagerTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.PagerTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>clazz|type=java.lang.String|expression</description>
@@ -2520,7 +2520,7 @@
 	<tag>
 		<description>newline|body=empty</description>
 		<name>newline</name>
-		<tag-class>com.appslandia.plum.tags.NewLineTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.NewLineTag</tag-class>
 		<body-content>empty</body-content>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
@@ -2528,7 +2528,7 @@
 	<tag>
 		<description>mailto|body=scriptless|dynamicAttributes</description>
 		<name>mailto</name>
-		<tag-class>com.appslandia.plum.tags.MailtoTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.MailtoTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>bcc|type=java.lang.String|expression</description>
@@ -2620,7 +2620,7 @@
 	<tag>
 		<description>fmtDate|body=empty</description>
 		<name>fmtDate</name>
-		<tag-class>com.appslandia.plum.tags.FmtDateTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.FmtDateTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>value|type=java.lang.Object|expression</description>
@@ -2635,7 +2635,7 @@
 	<tag>
 		<description>pageUrl|body=empty|dynamicAttributes</description>
 		<name>pageUrl</name>
-		<tag-class>com.appslandia.plum.tags.PageUrlTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.PageUrlTag</tag-class>
 		<body-content>empty</body-content>
 		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
@@ -2643,7 +2643,7 @@
 	<tag>
 		<description>deployEnv|body=scriptless</description>
 		<name>deployEnv</name>
-		<tag-class>com.appslandia.plum.tags.DeployEnvTag</tag-class>
+		<tag-class>com.appslandia.plum.jsptags.DeployEnvTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>name|type=java.lang.String</description>

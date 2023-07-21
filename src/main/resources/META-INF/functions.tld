@@ -13,217 +13,217 @@
 	<function>
 		<description>java.lang.String checked(boolean)</description>
 		<name>checked</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String checked(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String copyrightYears(int, java.lang.String)</description>
 		<name>copyrightYears</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String copyrightYears(int, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String deployEnv()</description>
 		<name>deployEnv</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String deployEnv()</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String disabled(boolean)</description>
 		<name>disabled</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String disabled(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String encParam(java.lang.String)</description>
 		<name>encParam</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String encParam(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String encPath(java.lang.String)</description>
 		<name>encPath</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String encPath(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String esc(java.lang.Object)</description>
 		<name>esc</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String esc(java.lang.Object)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String escCt(java.lang.Object)</description>
 		<name>escCt</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String escCt(java.lang.Object)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String hardWrap(boolean)</description>
 		<name>hardWrap</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String hardWrap(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>boolean hasCookie(jakarta.servlet.jsp.PageContext, java.lang.String)</description>
 		<name>hasCookie</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>boolean hasCookie(jakarta.servlet.jsp.PageContext, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String hidden(boolean)</description>
 		<name>hidden</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String hidden(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String iif(boolean, java.lang.Object, java.lang.Object)</description>
 		<name>iif</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String iif(boolean, java.lang.Object, java.lang.Object)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String iifEsc(boolean, java.lang.String, java.lang.String)</description>
 		<name>iifEsc</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String iifEsc(boolean, java.lang.String, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String iifEscCt(boolean, java.lang.String, java.lang.String)</description>
 		<name>iifEscCt</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String iifEscCt(boolean, java.lang.String, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String multiple(boolean)</description>
 		<name>multiple</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String multiple(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String novalidate(boolean)</description>
 		<name>novalidate</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String novalidate(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>long now()</description>
 		<name>now</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>long now()</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String out(boolean, java.lang.Object)</description>
 		<name>if</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String out(boolean, java.lang.Object)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String outEsc(boolean, java.lang.String)</description>
 		<name>ifEsc</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String outEsc(boolean, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String outEscCt(boolean, java.lang.String)</description>
 		<name>ifEscCt</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String outEscCt(boolean, java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String readonly(boolean)</description>
 		<name>readonly</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String readonly(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String required(boolean)</description>
 		<name>required</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String required(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String selected(boolean)</description>
 		<name>selected</name>
-		<function-class>com.appslandia.plum.tags.Functions</function-class>
+		<function-class>com.appslandia.plum.jsptags.Functions</function-class>
 		<function-signature>java.lang.String selected(boolean)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forCssString</description>
 		<name>escCssString</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escCssString(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forCssUrl</description>
 		<name>escCssUrl</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escCssUrl(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forJavaScript</description>
 		<name>escJS</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJS(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forJavaScriptAttribute</description>
 		<name>escJSAttr</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJSAttr(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forJavaScriptBlock</description>
 		<name>escJSBlock</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJSBlock(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forJavaScriptSource</description>
 		<name>escJSSource</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJSSource(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>org.owasp.encoder.Encode.forXmlComment</description>
 		<name>escXmlComment</name>
-		<function-class>com.appslandia.plum.tags.OwaspFunctions</function-class>
+		<function-class>com.appslandia.plum.jsptags.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escXmlComment(java.lang.String)</function-signature>
 	</function>
 
 	<function>
 		<description>java.lang.String transform(java.lang.Object, java.lang.String)</description>
 		<name>pipe</name>
-		<function-class>com.appslandia.plum.tags.Pipe</function-class>
+		<function-class>com.appslandia.plum.jsptags.Pipe</function-class>
 		<function-signature>java.lang.String transform(java.lang.Object, java.lang.String)</function-signature>
 	</function>
 
