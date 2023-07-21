@@ -56,7 +56,7 @@ public class AppConfig extends InitializeObject implements Config {
 
     public static final String CONFIG_REQUIRE_PATH_LANG = "config.require_path_lang";
 
-    public static final String CONFIG_JSP_DIR = "config.jsp_dir";
+    public static final String CONFIG_VIEW_DIR = "config.view_dir";
     public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
     public static final String CONFIG_ASYNC_TIMEOUT_MS = "config.async_timeout_ms";
 
@@ -72,7 +72,7 @@ public class AppConfig extends InitializeObject implements Config {
 
     private boolean enableDebug;
     private boolean enableSession;
-    private String jspDir;
+    private String viewDir;
 
     public AppConfig() {
     }
@@ -104,7 +104,7 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.config.putIfAbsent(CONFIG_REQUIRE_PATH_LANG, String.valueOf(false));
 
-	this.config.putIfAbsent(CONFIG_JSP_DIR, "/WEB-INF/jsp");
+	this.config.putIfAbsent(CONFIG_VIEW_DIR, "/WEB-INF/views");
 	this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
 	this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(180, TimeUnit.SECONDS)));
 
@@ -114,7 +114,7 @@ public class AppConfig extends InitializeObject implements Config {
 
 	this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
 	this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);
-	this.jspDir = this.config.getString(CONFIG_JSP_DIR);
+	this.viewDir = this.config.getString(CONFIG_VIEW_DIR);
     }
 
     public boolean isEnableDebug() {
@@ -127,17 +127,17 @@ public class AppConfig extends InitializeObject implements Config {
 	return this.enableSession;
     }
 
-    public String getJspDir() {
+    public String getViewDir() {
 	this.initialize();
-	return this.jspDir;
+	return this.viewDir;
     }
 
-    public StringBuilder getJspPathBase() {
-	return new StringBuilder(getJspDir().length() + 80).append(getJspDir());
+    public StringBuilder getViewBase() {
+	return new StringBuilder(getViewDir().length() + 80).append(getViewDir());
     }
 
-    public String getJspPath(String path) {
-	return getJspPathBase().append(path).toString();
+    public String getViewPath(String path) {
+	return getViewBase().append(path).toString();
     }
 
     @Override

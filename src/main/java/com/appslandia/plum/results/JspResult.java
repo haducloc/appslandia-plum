@@ -66,10 +66,10 @@ public class JspResult implements ActionResult {
 	    String action = (this.action != null) ? this.action : requestContext.getActionDesc().getAction();
 	    String controller = (this.controller != null) ? this.controller : requestContext.getActionDesc().getController();
 
-	    jspPath = appConfig.getJspPathBase().append("/").append(controller).append("/").append(action).append(".jsp").toString();
+	    jspPath = appConfig.getViewBase().append("/").append(controller).append("/").append(action).append(".jsp").toString();
 
 	} else {
-	    jspPath = appConfig.getJspPathBase().append(this.path).toString();
+	    jspPath = appConfig.getViewBase().append(this.path).toString();
 	}
 
 	Asserts.isTrue(!request.isAsyncStarted());
