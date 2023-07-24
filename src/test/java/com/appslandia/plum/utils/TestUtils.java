@@ -33,7 +33,7 @@ import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.IOUtils;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.common.utils.StringUtils;
-import com.appslandia.plum.jsptags.ExpressionEvaluator;
+import com.appslandia.plum.jsp.ExpressionEvaluator;
 import com.appslandia.plum.mocks.MockExpressionEvaluator;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
 import com.appslandia.plum.mocks.MockHttpServletResponse;
