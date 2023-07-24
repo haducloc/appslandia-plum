@@ -22,7 +22,10 @@ package com.appslandia.plum.results;
 
 import java.util.Map;
 
+import com.appslandia.plum.base.ActionResult;
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -32,41 +35,41 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class JspResult extends ViewResult {
+public abstract class ViewResult implements ActionResult {
 
-    public JspResult() {
-	super();
+    protected String path;
+    protected Map<String, Object> model;
+    protected String resolvedPath;
+
+    public ViewResult() {
     }
 
-    public JspResult(String path) {
-	super(path);
+    public ViewResult(String path) {
+	this.path = path;
     }
 
-    public JspResult(String path, Map<String, Object> model) {
-	super(path, model);
+    public ViewResult(String path, Map<String, Object> model) {
+	this.path = path;
+	this.model = model;
     }
+
+    public abstract String getSuffix();
 
     @Override
-    public String getSuffix() {
-	return ".jsp";
-    }
+    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
+	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
 
-    @Override
-    protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-
-	if (this.model != null) {
-	    for (Map.Entry<String, Object> variable : this.model.entrySet()) {
-		request.setAttribute(variable.getKey(), variable.getValue());
-	    }
-	}
-
-	if (requestContext.getActionDesc().getChildAction() == null) {
-	    request.getRequestDispatcher(this.resolvedPath).forward(request, response);
+	// Build resolvedPath
+	if (this.path == null) {
+	    this.resolvedPath = appConfig.getViewBase().append("/").append(requestContext.getActionDesc().getController()).append("/")
+		    .append(requestContext.getActionDesc().getAction()).append(getSuffix()).toString();
 
 	} else {
-	    request.getRequestDispatcher(this.resolvedPath).include(request, response);
+	    this.resolvedPath = appConfig.getViewBase().append(this.path).append(getSuffix()).toString();
 	}
+
+	doExecute(request, response, requestContext);
     }
 
-    public static final JspResult DEFAULT = new JspResult();
+    protected abstract void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception;
 }
