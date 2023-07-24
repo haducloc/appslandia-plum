@@ -22,6 +22,7 @@ package com.appslandia.plum.results;
 
 import java.util.Map;
 
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -52,14 +53,17 @@ public class JspResult extends ViewResult {
     }
 
     @Override
-    protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
+    protected String getViewDir(AppConfig appConfig) {
+	return appConfig.getJspDir();
+    }
 
+    @Override
+    protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
 	if (this.model != null) {
 	    for (Map.Entry<String, Object> variable : this.model.entrySet()) {
 		request.setAttribute(variable.getKey(), variable.getValue());
 	    }
 	}
-
 	if (requestContext.getActionDesc().getChildAction() == null) {
 	    request.getRequestDispatcher(this.resolvedPath).forward(request, response);
 

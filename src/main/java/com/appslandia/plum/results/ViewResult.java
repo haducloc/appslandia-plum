@@ -37,15 +37,16 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class ViewResult implements ActionResult {
 
-    protected String path;
-    protected Map<String, Object> model;
+    protected final String path;
+    protected final Map<String, Object> model;
     protected String resolvedPath;
 
     public ViewResult() {
+	this(null, null);
     }
 
     public ViewResult(String path) {
-	this.path = path;
+	this(path, null);
     }
 
     public ViewResult(String path, Map<String, Object> model) {
@@ -55,17 +56,21 @@ public abstract class ViewResult implements ActionResult {
 
     public abstract String getSuffix();
 
+    protected abstract String getViewDir(AppConfig appConfig);
+
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
 	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
+	String viewDir = getViewDir(appConfig);
+	StringBuilder viewBase = new StringBuilder(viewDir.length() + 80).append(viewDir);
 
 	// Build resolvedPath
 	if (this.path == null) {
-	    this.resolvedPath = appConfig.getViewBase().append("/").append(requestContext.getActionDesc().getController()).append("/")
-		    .append(requestContext.getActionDesc().getAction()).append(getSuffix()).toString();
+	    this.resolvedPath = viewBase.append("/").append(requestContext.getActionDesc().getController()).append("/").append(requestContext.getActionDesc().getAction())
+		    .append(getSuffix()).toString();
 
 	} else {
-	    this.resolvedPath = appConfig.getViewBase().append(this.path).append(getSuffix()).toString();
+	    this.resolvedPath = viewBase.append(this.path).append(getSuffix()).toString();
 	}
 
 	doExecute(request, response, requestContext);

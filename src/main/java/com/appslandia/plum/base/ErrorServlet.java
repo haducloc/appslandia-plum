@@ -93,7 +93,7 @@ public class ErrorServlet extends HttpServlet {
 	final ResponseSafeWriter responseWrapper = new ResponseSafeWriter(response);
 
 	try {
-	    String errorJspPath = this.appConfig.getViewPath(getErrorJsp(request, requestContext));
+	    String errorJspPath = this.appConfig.getJspPath(getErrorJsp(request, requestContext));
 	    ServletUtils.forward(request, responseWrapper, errorJspPath);
 
 	    responseWrapper.flushBuffer();
