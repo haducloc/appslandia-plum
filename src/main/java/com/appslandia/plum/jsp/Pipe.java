@@ -39,7 +39,7 @@ import com.appslandia.common.base.ToStringBuilder;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
-import com.appslandia.plum.utils.XmlEscaper;
+import com.appslandia.common.utils.XmlEscaper;
 
 /**
  *

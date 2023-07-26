@@ -25,8 +25,8 @@ import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.HtmlUtils;
-import com.appslandia.plum.utils.XmlEscaper;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
@@ -86,7 +86,7 @@ public abstract class ValueTagBase extends UITagBase {
 	    }
 	}
 	if (this.id == null) {
-	    this.id = HtmlUtils.buildId(this.name);
+	    this.id = HtmlUtils.toTagId(this.name);
 	}
 	if (!isValid && cssFieldError()) {
 	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";

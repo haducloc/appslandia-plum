@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.URLUtils;
-import com.appslandia.plum.utils.XmlEscaper;
+import com.appslandia.common.utils.XmlEscaper;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.tagext.DynamicAttributes;

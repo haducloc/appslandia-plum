@@ -24,9 +24,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.base.Messages;
-import com.appslandia.plum.utils.XmlEscaper;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;

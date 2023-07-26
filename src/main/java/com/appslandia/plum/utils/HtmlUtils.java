@@ -23,6 +23,8 @@ package com.appslandia.plum.utils;
 import java.io.IOException;
 import java.io.Writer;
 
+import com.appslandia.common.utils.XmlEscaper;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -90,7 +92,7 @@ public class HtmlUtils {
 	out.write('"');
     }
 
-    public static String buildId(String fieldName) {
+    public static String toTagId(String fieldName) {
 	int len = fieldName.length();
 	int i = -1;
 	char buf[] = new char[fieldName.length()];

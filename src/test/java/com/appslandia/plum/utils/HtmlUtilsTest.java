@@ -71,14 +71,14 @@ public class HtmlUtilsTest {
     }
 
     @Test
-    public void test_buildId() {
-	String id = HtmlUtils.buildId("user.userName");
+    public void test_toTagId() {
+	String id = HtmlUtils.toTagId("user.userName");
 	Assertions.assertEquals("user_userName", id);
 
-	id = HtmlUtils.buildId("user.location.address");
+	id = HtmlUtils.toTagId("user.location.address");
 	Assertions.assertEquals("user_location_address", id);
 
-	id = HtmlUtils.buildId("user.addresses[1].location");
+	id = HtmlUtils.toTagId("user.addresses[1].location");
 	Assertions.assertEquals("user_addresses_1__location", id);
     }
 }

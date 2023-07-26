@@ -195,7 +195,7 @@ public class ModelBinder {
 
 		// List
 		if (List.class.isAssignableFrom(field.getType())) {
-		    Class<?> elementType = ReflectionUtils.getListArgType(field.getGenericType());
+		    Class<?> elementType = ReflectionUtils.getArgTypes1(field.getGenericType());
 
 		    // List<SubModel> supported
 		    if (elementType == null) {
@@ -232,7 +232,7 @@ public class ModelBinder {
 
 		// Map
 		if (Map.class.isAssignableFrom(field.getType())) {
-		    Class<?>[] kvTypes = ReflectionUtils.getMapArgTypes(field.getGenericType());
+		    Class<?>[] kvTypes = ReflectionUtils.getArgTypes2(field.getGenericType());
 
 		    // Map<String, SubModel> supported
 		    if ((kvTypes == null) || (kvTypes[0] != String.class)) {
@@ -496,7 +496,7 @@ public class ModelBinder {
 
     public static Class<?> getValueType(Field field) {
 	if (field.getType() == Out.class) {
-	    Class<?> type = ReflectionUtils.getListArgType(field.getGenericType());
+	    Class<?> type = ReflectionUtils.getArgTypes1(field.getGenericType());
 	    if (type != null) {
 		return type;
 	    }
@@ -506,7 +506,7 @@ public class ModelBinder {
 
     public static Class<?> getValueType(Parameter parameter) {
 	if (parameter.getType() == Out.class) {
-	    Class<?> type = ReflectionUtils.getListArgType(parameter.getParameterizedType());
+	    Class<?> type = ReflectionUtils.getArgTypes1(parameter.getParameterizedType());
 	    if (type != null) {
 		return type;
 	    }

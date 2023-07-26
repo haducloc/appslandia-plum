@@ -26,7 +26,7 @@ import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterProvider;
-import com.appslandia.plum.utils.XmlEscaper;
+import com.appslandia.common.utils.XmlEscaper;
 
 /**
  *

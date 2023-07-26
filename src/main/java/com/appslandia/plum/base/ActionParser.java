@@ -29,8 +29,8 @@ import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.URLUtils;
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.ServletUtils;
-import com.appslandia.plum.utils.XmlEscaper;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

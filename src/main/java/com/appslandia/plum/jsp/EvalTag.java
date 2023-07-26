@@ -22,7 +22,7 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
-import com.appslandia.plum.utils.XmlEscaper;
+import com.appslandia.common.utils.XmlEscaper;
 
 import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;

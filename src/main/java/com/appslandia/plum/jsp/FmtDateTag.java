@@ -30,7 +30,7 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 
 import com.appslandia.common.utils.DateUtils;
-import com.appslandia.plum.utils.XmlEscaper;
+import com.appslandia.common.utils.XmlEscaper;
 
 import jakarta.servlet.jsp.JspException;
 
