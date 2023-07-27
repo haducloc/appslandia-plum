@@ -63,7 +63,7 @@ public class PebbleResult extends ViewResult {
 
     @Override
     public String getSuffix() {
-	return ".pebble";
+	return ".peb";
     }
 
     @Override
