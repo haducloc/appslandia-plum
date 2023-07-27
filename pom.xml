@@ -21,6 +21,7 @@
 		<version.nexus-staging-maven-plugin>1.6.13</version.nexus-staging-maven-plugin>
 		<version.gson>2.10</version.gson>
 		<version.owasp-encoder>1.2.3</version.owasp-encoder>
+		<version.pebble>3.2.1</version.pebble>		
 		<version.appslandia-common>16.6.6</version.appslandia-common>
 		<version.jakarta.platform>10.0.0</version.jakarta.platform>
 		<version.glassfish-jakarta-el>5.0.0-M1</version.glassfish-jakarta-el>
@@ -180,6 +181,12 @@
 			<version>${version.gson}</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>io.pebbletemplates</groupId>
+			<artifactId>pebble</artifactId>
+			<version>${version.pebble}</version>
+			<scope>provided</scope>
+		</dependency>		
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
