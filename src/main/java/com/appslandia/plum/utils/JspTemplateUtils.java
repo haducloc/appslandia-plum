@@ -38,12 +38,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class JspTemplateUtils {
 
     public static byte[] executeByteArray(HttpServletRequest request, HttpServletResponse response, String templatePath, Object model) throws ServletException, IOException {
-
 	RequestAttributes backupAttributes = new RequestAttributes(request);
-
 	request.setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
-	final String ce = response.getCharacterEncoding();
 
+	final String ce = response.getCharacterEncoding();
 	try {
 	    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
