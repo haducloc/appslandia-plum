@@ -23,10 +23,9 @@ package com.appslandia.plum.results;
 import java.util.Map;
 
 import com.appslandia.plum.base.ActionResult;
-import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
-import com.appslandia.plum.utils.ServletUtils;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -56,12 +55,11 @@ public abstract class ViewResult implements ActionResult {
 
     public abstract String getSuffix();
 
-    protected abstract String getViewDir(AppConfig appConfig);
+    protected abstract String getViewDir(ServletContext servletContext);
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
-	String viewDir = getViewDir(appConfig);
+	String viewDir = getViewDir(request.getServletContext());
 	StringBuilder viewBase = new StringBuilder(viewDir.length() + 80).append(viewDir);
 
 	// Build resolvedPath

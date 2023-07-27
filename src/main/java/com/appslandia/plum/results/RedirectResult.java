@@ -77,8 +77,8 @@ public class RedirectResult implements ActionResult {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
-	TempDataManager tempDataManager = ServletUtils.getAppScoped(request, TempDataManager.class);
+	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+	TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
 
 	// Controller/action
 	Asserts.notNull(this.action);
@@ -93,7 +93,7 @@ public class RedirectResult implements ActionResult {
 	}
 
 	// URL
-	ActionParser actionParser = ServletUtils.getAppScoped(request, ActionParser.class);
+	ActionParser actionParser = ServletUtils.getAppScoped(request.getServletContext(), ActionParser.class);
 	String url = actionParser.toActionUrl(request, this.controller, this.action, this.params, false);
 	sendRedirect(response, url, appConfig.isEnableSession());
     }
@@ -110,8 +110,8 @@ public class RedirectResult implements ActionResult {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	    AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
-	    TempDataManager tempDataManager = ServletUtils.getAppScoped(request, TempDataManager.class);
+	    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+	    TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
 
 	    // URL
 	    StringBuilder url = new StringBuilder();
@@ -149,8 +149,8 @@ public class RedirectResult implements ActionResult {
 
 	@Override
 	public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	    AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
-	    TempDataManager tempDataManager = ServletUtils.getAppScoped(request, TempDataManager.class);
+	    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+	    TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
 
 	    // URL
 	    StringBuilder url = new StringBuilder();

@@ -55,7 +55,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
     @Override
     public HttpSession getSession(boolean create) {
-	AppConfig config = ServletUtils.getAppScoped(this, AppConfig.class);
+	AppConfig config = ServletUtils.getAppScoped(this.getServletContext(), AppConfig.class);
 	Asserts.isTrue(config.isEnableSession(), "Http session is disabled.");
 
 	return super.getSession(create);

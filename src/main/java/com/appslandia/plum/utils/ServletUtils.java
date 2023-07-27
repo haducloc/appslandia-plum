@@ -115,7 +115,7 @@ public class ServletUtils {
     }
 
     public static StringBuilder getLoginUrl(HttpServletRequest request) {
-	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
+	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
 	RequestContext requestContext = getRequestContext(request);
 
 	// URL
@@ -126,7 +126,7 @@ public class ServletUtils {
 	if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
 	    url.append('/').append(requestContext.getLanguageId());
 	}
-	ActionDescProvider actionDescProvider = getAppScoped(request, ActionDescProvider.class);
+	ActionDescProvider actionDescProvider = getAppScoped(request.getServletContext(), ActionDescProvider.class);
 	ActionDesc formLogin = actionDescProvider.getFormLogin(requestContext.getModule());
 
 	// If @FormLogin
@@ -136,7 +136,7 @@ public class ServletUtils {
 	    url.append('/');
 	} else {
 	    // Use loginPage from the authHandler
-	    AuthHandlerProvider authHandlerProvider = ServletUtils.getAppScoped(request, AuthHandlerProvider.class);
+	    AuthHandlerProvider authHandlerProvider = ServletUtils.getAppScoped(request.getServletContext(), AuthHandlerProvider.class);
 	    AuthHandler authHandler = authHandlerProvider.getAuthHandler(requestContext.getModule());
 
 	    url.append(authHandler.getLoginPage());
@@ -162,7 +162,7 @@ public class ServletUtils {
 	    String httpPorts = request.getHeader("X-Forwarded-Ports");
 	    if (httpPorts == null) {
 
-		AppConfig appConfig = getAppScoped(request, AppConfig.class);
+		AppConfig appConfig = getAppScoped(request.getServletContext(), AppConfig.class);
 		httpPorts = appConfig.getString(AppConfig.CONFIG_X_FORWARDED_PORTS);
 	    }
 	    if (httpPorts != null) {
@@ -588,10 +588,6 @@ public class ServletUtils {
 
     public static void addError(HttpServletRequest request, String fieldName, String msgKey, Map<String, Object> msgParams) {
 	ServletUtils.getModelState(request).addError(fieldName, getResources(request).get(msgKey, msgParams));
-    }
-
-    public static <T> T getAppScoped(HttpServletRequest request, Class<T> beanType) {
-	return getAppScoped(request.getServletContext(), beanType);
     }
 
     public static <T> T getAppScoped(ServletContext sc, Class<T> beanType) {

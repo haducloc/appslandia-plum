@@ -33,6 +33,7 @@ import com.appslandia.plum.results.ViewResult;
 import com.appslandia.plum.utils.ServletUtils;
 
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,13 +72,14 @@ public class PebbleResult extends ViewResult {
     }
 
     @Override
-    protected String getViewDir(AppConfig appConfig) {
+    protected String getViewDir(ServletContext servletContext) {
+	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
 	return appConfig.getString("pebble.template_dir", "/WEB-INF/pebble");
     }
 
     @Override
     protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	AppConfig appConfig = ServletUtils.getAppScoped(request, AppConfig.class);
+	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
 
 	if (this.characterEncoding != null) {
 	    response.setCharacterEncoding(this.characterEncoding);
@@ -94,7 +96,7 @@ public class PebbleResult extends ViewResult {
 	variables.put(VARIABLE_REQUEST, request);
 
 	// PebbleTemplateProvider
-	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request, PebbleTemplateProvider.class);
+	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request.getServletContext(), PebbleTemplateProvider.class);
 	PebbleTemplate template = templateProvider.getTemplate(this.resolvedPath);
 
 	template.evaluate(response.getWriter(), variables, requestContext.getLanguage().getLocale());

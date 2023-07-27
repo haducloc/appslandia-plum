@@ -24,7 +24,9 @@ import java.util.Map;
 
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
+import com.appslandia.plum.utils.ServletUtils;
 
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -53,7 +55,8 @@ public class JspResult extends ViewResult {
     }
 
     @Override
-    protected String getViewDir(AppConfig appConfig) {
+    protected String getViewDir(ServletContext servletContext) {
+	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
 	return appConfig.getJspDir();
     }
 
