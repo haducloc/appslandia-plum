@@ -89,4 +89,6 @@ public class PebbleResult extends ViewResult {
 	template.evaluate(response.getWriter(), viewModel, requestContext.getLanguage().getLocale());
 	response.getWriter().flush();
     }
+
+    public static final PebbleResult DEFAULT = new PebbleResult();
 }
