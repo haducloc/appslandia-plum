@@ -80,7 +80,7 @@ public class PebbleResult extends ViewResult {
 	// Variables
 	Map<String, Object> viewModel = (this.model != null) ? new HashMap<>(this.model) : new HashMap<>();
 
-	viewModel.put(VARIABLE_REQUEST, ServletUtils.getRequestContext(request));
+	viewModel.put(VARIABLE_REQUEST, requestContext);
 	viewModel.put(VARIABLE_REQUEST, request);
 
 	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request, PebbleTemplateProvider.class);
