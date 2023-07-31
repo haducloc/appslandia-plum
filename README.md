@@ -3,6 +3,7 @@
 ## Features
 - Utilize the power of **Jakarta EE 10+** technology.
 - Utilize the power of Jakarta EE Security
+- MVC architecture
 - No need for web.xml security-constraint, login-config
 - Multiple authentication schemes implemented
 - Authentication by code mechanism implemented
@@ -10,6 +11,7 @@
 - Re-authentication implemented
 - Model binding implemented
 - Standard JSTL tags implemented
+- PebbleTemplates integrated
 - i18n implemented
 - Handles CSRF, ETag, GZIP, CAPTCHA, CORS, HSTS, CSP, Cache-Control, Logger, TempData, Rate Limit, etc.
 - 360+ Unit tests
