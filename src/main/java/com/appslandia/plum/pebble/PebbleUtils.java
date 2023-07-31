@@ -24,6 +24,10 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.utils.ServletUtils;
+
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -56,5 +60,10 @@ public class PebbleUtils {
 	    values.add(enumer.nextElement());
 	}
 	return values.toArray(new String[values.size()]);
+    }
+
+    public static String getPebbleDir(ServletContext servletContext) {
+	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
+	return appConfig.getString("pebble.template_dir", "/WEB-INF/pebble");
     }
 }

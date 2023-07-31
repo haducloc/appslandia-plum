@@ -22,7 +22,6 @@ package com.appslandia.plum.pebble;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -37,6 +36,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -44,8 +44,6 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 public class PebbleResult extends ViewResult {
-
-    public static final String VARIABLE_REQUEST = "request";
 
     private String characterEncoding;
 
@@ -73,8 +71,7 @@ public class PebbleResult extends ViewResult {
 
     @Override
     protected String getViewDir(ServletContext servletContext) {
-	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
-	return appConfig.getString("pebble.template_dir", "/WEB-INF/pebble");
+	return PebbleUtils.getPebbleDir(servletContext);
     }
 
     @Override
@@ -90,10 +87,9 @@ public class PebbleResult extends ViewResult {
 	// Variables
 	Map<String, Object> variables = (this.model != null) ? new HashMap<>(this.model) : new HashMap<>();
 	registerVariables(request, variables);
-	exposeRequestAttributes(request, variables);
 
-	// request variable
-	variables.put(VARIABLE_REQUEST, request);
+	variables.put("request", request);
+	variables.put("ctx", requestContext);
 
 	// PebbleTemplateProvider
 	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request.getServletContext(), PebbleTemplateProvider.class);
@@ -105,32 +101,33 @@ public class PebbleResult extends ViewResult {
 
     public static final PebbleResult DEFAULT = new PebbleResult();
 
-    protected void exposeRequestAttributes(HttpServletRequest request, Map<String, Object> variables) {
-	Enumeration<String> attributes = request.getAttributeNames();
-	while (attributes.hasMoreElements()) {
-	    String attribute = attributes.nextElement();
-
-	    variables.put(attribute, request.getAttribute(attribute));
-	}
-    }
-
     protected void registerVariables(HttpServletRequest request, Map<String, Object> variables) {
+	variables.put("requestScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public Object get(Object key) {
+		return request.getAttribute((String) key);
+	    }
+	});
+
+	variables.put("sessionScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public Object get(Object key) {
+		HttpSession session = request.getSession(false);
+		return (session != null) ? session.getAttribute((String) key) : null;
+	    }
+	});
+
+	variables.put("applicationScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public Object get(Object key) {
+		return request.getServletContext().getAttribute((String) key);
+	    }
+	});
+
 	variables.put("param", new MapAccessor<String, String>() {
-
-	    @Override
-	    public int size() {
-		return request.getParameterMap().size();
-	    }
-
-	    @Override
-	    public boolean isEmpty() {
-		return size() == 0;
-	    }
-
-	    @Override
-	    public boolean containsKey(Object key) {
-		return request.getParameterMap().containsKey(key);
-	    }
 
 	    @Override
 	    public String get(Object key) {
@@ -141,44 +138,12 @@ public class PebbleResult extends ViewResult {
 	variables.put("paramValues", new MapAccessor<String, String[]>() {
 
 	    @Override
-	    public int size() {
-		return request.getParameterMap().size();
-	    }
-
-	    @Override
-	    public boolean isEmpty() {
-		return size() == 0;
-	    }
-
-	    @Override
-	    public boolean containsKey(Object key) {
-		return request.getParameterMap().containsKey(key);
-	    }
-
-	    @Override
 	    public String[] get(Object key) {
 		return request.getParameterValues((String) key);
 	    }
 	});
 
 	variables.put("header", new MapAccessor<String, String>() {
-
-	    final String[] headers = PebbleUtils.getHeaderNames(request);
-
-	    @Override
-	    public int size() {
-		return this.headers.length;
-	    }
-
-	    @Override
-	    public boolean isEmpty() {
-		return size() == 0;
-	    }
-
-	    @Override
-	    public boolean containsKey(Object key) {
-		return Arrays.stream(this.headers).anyMatch(h -> h.equalsIgnoreCase((String) key));
-	    }
 
 	    @Override
 	    public String get(Object key) {
@@ -188,48 +153,21 @@ public class PebbleResult extends ViewResult {
 
 	variables.put("headerValues", new MapAccessor<String, String[]>() {
 
-	    final String[] headers = PebbleUtils.getHeaderNames(request);
-
-	    @Override
-	    public int size() {
-		return this.headers.length;
-	    }
-
-	    @Override
-	    public boolean isEmpty() {
-		return size() == 0;
-	    }
-
-	    @Override
-	    public boolean containsKey(Object key) {
-		return Arrays.stream(this.headers).anyMatch(h -> h.equalsIgnoreCase((String) key));
-	    }
-
 	    @Override
 	    public String[] get(Object key) {
 		return PebbleUtils.getHeaderValues(request, (String) key);
 	    }
 	});
 
+	variables.put("initParam", new MapAccessor<String, String>() {
+
+	    @Override
+	    public String get(Object key) {
+		return request.getServletContext().getInitParameter((String) key);
+	    }
+	});
+
 	variables.put("cookie", new MapAccessor<String, Cookie>() {
-
-	    @Override
-	    public int size() {
-		return (request.getCookies() != null) ? request.getCookies().length : 0;
-	    }
-
-	    @Override
-	    public boolean isEmpty() {
-		return size() == 0;
-	    }
-
-	    @Override
-	    public boolean containsKey(Object key) {
-		if (request.getCookies() == null) {
-		    return false;
-		}
-		return Arrays.stream(request.getCookies()).anyMatch(c -> c.getName().equalsIgnoreCase((String) key));
-	    }
 
 	    @Override
 	    public Cookie get(Object key) {
