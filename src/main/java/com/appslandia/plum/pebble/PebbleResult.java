@@ -70,11 +70,11 @@ public class PebbleResult extends ViewResult {
 
     @Override
     protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-
 	if (this.characterEncoding != null) {
 	    response.setCharacterEncoding(this.characterEncoding);
+
 	} else {
+	    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
 	    response.setCharacterEncoding(appConfig.getString("pebble.character_encoding", StandardCharsets.UTF_8.name()));
 	}
 	PebbleUtils.executePebble(request, response.getWriter(), this.resolvedPath, this.model, requestContext.getLanguage().getLocale());
