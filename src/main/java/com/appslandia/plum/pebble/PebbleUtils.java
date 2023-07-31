@@ -20,15 +20,23 @@
 
 package com.appslandia.plum.pebble;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
+import java.io.IOException;
+import java.io.Writer;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
+import com.appslandia.common.base.MapAccessor;
+import com.appslandia.common.utils.ArrayUtils;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.utils.ServletUtils;
 
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -37,33 +45,103 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class PebbleUtils {
 
-    public static String[] getHeaderValues(HttpServletRequest request, String headerName) {
-	Enumeration<String> headerValues = request.getHeaders(headerName);
-	return toArray(headerValues);
-    }
-
-    public static String[] getRequestAttrNames(HttpServletRequest request) {
-	return toArray(request.getAttributeNames());
-    }
-
-    public static String[] getHeaderNames(HttpServletRequest request) {
-	return toArray(request.getHeaderNames());
-    }
-
-    private static String[] toArray(Enumeration<String> enumer) {
-	if (enumer == null) {
-	    return null;
-	}
-
-	List<String> values = new ArrayList<>();
-	while (enumer.hasMoreElements()) {
-	    values.add(enumer.nextElement());
-	}
-	return values.toArray(new String[values.size()]);
-    }
-
     public static String getPebbleDir(ServletContext servletContext) {
 	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
 	return appConfig.getString("pebble.template_dir", "/WEB-INF/pebble");
+    }
+
+    public static void executePebble(HttpServletRequest request, Writer out, String pebblePath, Map<String, Object> model, Locale locale) throws IOException {
+	// Variables
+	Map<String, Object> variables = (model != null) ? new HashMap<>(model) : new HashMap<>();
+	registerImplicitVariables(request, variables);
+
+	// PebbleTemplateProvider
+	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request.getServletContext(), PebbleTemplateProvider.class);
+	PebbleTemplate template = templateProvider.getTemplate(pebblePath);
+
+	template.evaluate(out, variables, locale);
+	out.flush();
+    }
+
+    public static void registerImplicitVariables(HttpServletRequest request, Map<String, Object> variables) {
+	variables.put("request", request);
+	variables.put("ctx", ServletUtils.getRequestContext(request));
+
+	// Maps
+	variables.put("requestScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public Object get(Object key) {
+		return request.getAttribute((String) key);
+	    }
+	});
+
+	variables.put("sessionScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public Object get(Object key) {
+		HttpSession session = request.getSession(false);
+		return (session != null) ? session.getAttribute((String) key) : null;
+	    }
+	});
+
+	variables.put("applicationScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public Object get(Object key) {
+		return request.getServletContext().getAttribute((String) key);
+	    }
+	});
+
+	variables.put("param", new MapAccessor<String, String>() {
+
+	    @Override
+	    public String get(Object key) {
+		return request.getParameter((String) key);
+	    }
+	});
+
+	variables.put("paramValues", new MapAccessor<String, String[]>() {
+
+	    @Override
+	    public String[] get(Object key) {
+		return request.getParameterValues((String) key);
+	    }
+	});
+
+	variables.put("header", new MapAccessor<String, String>() {
+
+	    @Override
+	    public String get(Object key) {
+		return request.getHeader((String) key);
+	    }
+	});
+
+	variables.put("headerValues", new MapAccessor<String, String[]>() {
+
+	    @Override
+	    public String[] get(Object key) {
+		return ArrayUtils.toArray(request.getHeaders((String) key), String.class);
+	    }
+	});
+
+	variables.put("initParam", new MapAccessor<String, String>() {
+
+	    @Override
+	    public String get(Object key) {
+		return request.getServletContext().getInitParameter((String) key);
+	    }
+	});
+
+	variables.put("cookie", new MapAccessor<String, Cookie>() {
+
+	    @Override
+	    public Cookie get(Object key) {
+		if (request.getCookies() == null) {
+		    return null;
+		}
+		return Arrays.stream(request.getCookies()).filter(c -> c.getName().equalsIgnoreCase((String) key)).findFirst().orElse(null);
+	    }
+	});
     }
 }

@@ -21,22 +21,16 @@
 package com.appslandia.plum.pebble;
 
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Map;
 
-import com.appslandia.common.base.MapAccessor;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.results.ViewResult;
 import com.appslandia.plum.utils.ServletUtils;
 
-import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -83,99 +77,8 @@ public class PebbleResult extends ViewResult {
 	} else {
 	    response.setCharacterEncoding(appConfig.getString("pebble.character_encoding", StandardCharsets.UTF_8.name()));
 	}
-
-	// Variables
-	Map<String, Object> variables = (this.model != null) ? new HashMap<>(this.model) : new HashMap<>();
-	registerVariables(request, variables);
-
-	variables.put("request", request);
-	variables.put("ctx", requestContext);
-
-	// PebbleTemplateProvider
-	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request.getServletContext(), PebbleTemplateProvider.class);
-	PebbleTemplate template = templateProvider.getTemplate(this.resolvedPath);
-
-	template.evaluate(response.getWriter(), variables, requestContext.getLanguage().getLocale());
-	response.getWriter().flush();
+	PebbleUtils.executePebble(request, response.getWriter(), this.resolvedPath, this.model, requestContext.getLanguage().getLocale());
     }
 
     public static final PebbleResult DEFAULT = new PebbleResult();
-
-    protected void registerVariables(HttpServletRequest request, Map<String, Object> variables) {
-	variables.put("requestScope", new MapAccessor<String, Object>() {
-
-	    @Override
-	    public Object get(Object key) {
-		return request.getAttribute((String) key);
-	    }
-	});
-
-	variables.put("sessionScope", new MapAccessor<String, Object>() {
-
-	    @Override
-	    public Object get(Object key) {
-		HttpSession session = request.getSession(false);
-		return (session != null) ? session.getAttribute((String) key) : null;
-	    }
-	});
-
-	variables.put("applicationScope", new MapAccessor<String, Object>() {
-
-	    @Override
-	    public Object get(Object key) {
-		return request.getServletContext().getAttribute((String) key);
-	    }
-	});
-
-	variables.put("param", new MapAccessor<String, String>() {
-
-	    @Override
-	    public String get(Object key) {
-		return request.getParameter((String) key);
-	    }
-	});
-
-	variables.put("paramValues", new MapAccessor<String, String[]>() {
-
-	    @Override
-	    public String[] get(Object key) {
-		return request.getParameterValues((String) key);
-	    }
-	});
-
-	variables.put("header", new MapAccessor<String, String>() {
-
-	    @Override
-	    public String get(Object key) {
-		return request.getHeader((String) key);
-	    }
-	});
-
-	variables.put("headerValues", new MapAccessor<String, String[]>() {
-
-	    @Override
-	    public String[] get(Object key) {
-		return PebbleUtils.getHeaderValues(request, (String) key);
-	    }
-	});
-
-	variables.put("initParam", new MapAccessor<String, String>() {
-
-	    @Override
-	    public String get(Object key) {
-		return request.getServletContext().getInitParameter((String) key);
-	    }
-	});
-
-	variables.put("cookie", new MapAccessor<String, Cookie>() {
-
-	    @Override
-	    public Cookie get(Object key) {
-		if (request.getCookies() == null) {
-		    return null;
-		}
-		return Arrays.stream(request.getCookies()).filter(c -> c.getName().equalsIgnoreCase((String) key)).findFirst().orElse(null);
-	    }
-	});
-    }
 }
