@@ -37,16 +37,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class JspTemplateUtils {
 
-    public static byte[] executeByteArray(HttpServletRequest request, HttpServletResponse response, String templatePath, Object model) throws ServletException, IOException {
+    public static byte[] executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model) throws ServletException, IOException {
+	return executeJsp(request, response, jspPath, model, StandardCharsets.UTF_8.name());
+    }
+
+    public static byte[] executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model, String contentEncoding)
+	    throws ServletException, IOException {
 	RequestAttributes backupAttributes = new RequestAttributes(request);
 	request.setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
 
 	final String ce = response.getCharacterEncoding();
 	try {
-	    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+	    response.setCharacterEncoding(contentEncoding);
 
 	    ContentResponseWrapper wrapper = new ContentResponseWrapper(response, false, false);
-	    ServletUtils.include(request, wrapper, templatePath);
+	    ServletUtils.include(request, wrapper, jspPath);
 
 	    wrapper.finishWrapper();
 	    return wrapper.getContent().toByteArray();
@@ -55,9 +60,5 @@ public class JspTemplateUtils {
 	    response.setCharacterEncoding(ce);
 	    backupAttributes.restore(request);
 	}
-    }
-
-    public static String executeString(HttpServletRequest request, HttpServletResponse response, String templatePath, Object model) throws ServletException, IOException {
-	return new String(executeByteArray(request, response, templatePath, model), StandardCharsets.UTF_8);
     }
 }
