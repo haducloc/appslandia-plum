@@ -37,11 +37,11 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class JspTemplateUtils {
 
-    public static byte[] executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model) throws ServletException, IOException {
+    public static String executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model) throws ServletException, IOException {
 	return executeJsp(request, response, jspPath, model, StandardCharsets.UTF_8.name());
     }
 
-    public static byte[] executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model, String contentEncoding)
+    public static String executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model, String contentEncoding)
 	    throws ServletException, IOException {
 	RequestAttributes backupAttributes = new RequestAttributes(request);
 	request.setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
@@ -54,7 +54,7 @@ public class JspTemplateUtils {
 	    ServletUtils.include(request, wrapper, jspPath);
 
 	    wrapper.finishWrapper();
-	    return wrapper.getContent().toByteArray();
+	    return wrapper.getContent().toString(contentEncoding);
 
 	} finally {
 	    response.setCharacterEncoding(ce);
