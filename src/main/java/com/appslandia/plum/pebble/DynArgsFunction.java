@@ -20,9 +20,10 @@
 
 package com.appslandia.plum.pebble;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
-
-import com.appslandia.common.utils.Asserts;
 
 import io.pebbletemplates.pebble.extension.Function;
 import io.pebbletemplates.pebble.template.EvaluationContext;
@@ -41,10 +42,17 @@ public abstract class DynArgsFunction implements Function {
     @Override
     public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
 	Map<String, Object> dynArgs = (Map<String, Object>) args.get(ARGUMENT_DYN_ARGS);
-	Asserts.notNull(dynArgs, "dynArgs is required.");
+	if (dynArgs == null) {
+	    dynArgs = Collections.emptyMap();
+	}
 
 	return doExecute(new TemplateEvaluationContext(dynArgs, self, context), lineNumber);
     }
 
     protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber);
+
+    @Override
+    public List<String> getArgumentNames() {
+	return Arrays.asList(ARGUMENT_DYN_ARGS);
+    }
 }
