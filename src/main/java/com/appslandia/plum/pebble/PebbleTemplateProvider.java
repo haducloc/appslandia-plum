@@ -70,7 +70,7 @@ public abstract class PebbleTemplateProvider {
 	builder.defaultLocale(this.languageProvider.getDefaultLanguage().getLocale());
 	// builder.methodAccessValidator();
 
-	registerExtensions(builder);
+	builder.extension(new ExtensionProvider());
 	this.pebbleEngine = builder.build();
     }
 
@@ -78,6 +78,6 @@ public abstract class PebbleTemplateProvider {
 	return this.pebbleEngine.getTemplate(name);
     }
 
-    protected void registerExtensions(PebbleEngine.Builder builder) {
+    protected void configurePebbleEngine(PebbleEngine.Builder builder) {
     }
 }

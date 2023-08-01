@@ -36,6 +36,7 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 /**
@@ -45,15 +46,20 @@ import jakarta.servlet.http.HttpSession;
  */
 public class PebbleUtils {
 
+    public static final String VARIABLE_REQUEST = "request";
+    public static final String VARIABLE_RESPONSE = "response";
+    public static final String VARIABLE_REQUEST_CONTEXT = "ctx";
+
     public static String getPebbleDir(ServletContext servletContext) {
 	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
 	return appConfig.getString("pebble.template_dir", "/WEB-INF/pebble");
     }
 
-    public static void executePebble(HttpServletRequest request, Writer out, String pebblePath, Map<String, Object> model, Locale locale) throws IOException {
+    public static void executePebble(HttpServletRequest request, HttpServletResponse response, Writer out, String pebblePath, Map<String, Object> model, Locale locale)
+	    throws IOException {
 	// Variables
 	Map<String, Object> variables = (model != null) ? new HashMap<>(model) : new HashMap<>();
-	registerImplicitVariables(request, variables);
+	registerImplicitVariables(request, response, variables);
 
 	// PebbleTemplateProvider
 	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request.getServletContext(), PebbleTemplateProvider.class);
@@ -63,9 +69,10 @@ public class PebbleUtils {
 	out.flush();
     }
 
-    public static void registerImplicitVariables(HttpServletRequest request, Map<String, Object> variables) {
-	variables.put("request", request);
-	variables.put("ctx", ServletUtils.getRequestContext(request));
+    public static void registerImplicitVariables(HttpServletRequest request, HttpServletResponse response, Map<String, Object> variables) {
+	variables.put(VARIABLE_REQUEST, request);
+	variables.put(VARIABLE_RESPONSE, response);
+	variables.put(VARIABLE_REQUEST_CONTEXT, ServletUtils.getRequestContext(request));
 
 	// Maps
 	variables.put("requestScope", new MapAccessor<String, Object>() {
