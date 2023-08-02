@@ -49,7 +49,7 @@ public class FieldErrorTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	this.id = "err_" + HtmlUtils.toTagId(this.field);
+	this.id = "err_" + HtmlUtils.toValueTagId(this.field);
 	this.clazz = (this.clazz == null) ? "field-error-msg" : this.clazz + " field-error-msg";
 
 	this._isInvalid = Objects.equals(this.form, getModelState().getForm()) && !getModelState().isValid(this.field);

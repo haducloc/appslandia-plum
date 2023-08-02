@@ -97,7 +97,7 @@ public class HtmlUtils {
 	}
     }
 
-    public static String toTagId(String fieldName) {
+    public static String toValueTagId(String fieldName) {
 	int len = fieldName.length();
 	int i = -1;
 	char buf[] = new char[fieldName.length()];

@@ -86,7 +86,7 @@ public abstract class ValueTagBase extends UITagBase {
 	    }
 	}
 	if (this.id == null) {
-	    this.id = HtmlUtils.toTagId(this.name);
+	    this.id = HtmlUtils.toValueTagId(this.name);
 	}
 	if (!isValid && cssFieldError()) {
 	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";

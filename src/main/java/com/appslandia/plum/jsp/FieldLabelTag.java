@@ -53,7 +53,7 @@ public class FieldLabelTag extends UITagBase {
 	Asserts.isTrue((this.labelKey != null) || (this.jspBody != null));
 
 	if (this.forId == null) {
-	    this.forId = HtmlUtils.toTagId(this.field);
+	    this.forId = HtmlUtils.toValueTagId(this.field);
 	}
 	if (this.id == null) {
 	    this.id = "lbl_" + this.forId;
