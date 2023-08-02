@@ -71,13 +71,13 @@ public class TextBoxTag extends ValueTagBase {
 
 	HtmlUtils.escAttribute(out, "value", format(this.value, this.converter));
 	if (this.min != null)
-	    HtmlUtils.escAttribute(out, "min", getRequestContext().fmt(this.min, this.converter, false));
+	    HtmlUtils.escAttribute(out, "min", format(this.min, this.converter));
 
 	if (this.max != null)
-	    HtmlUtils.escAttribute(out, "max", getRequestContext().fmt(this.max, this.converter, false));
+	    HtmlUtils.escAttribute(out, "max", format(this.max, this.converter));
 
 	if (this.step != null)
-	    HtmlUtils.escAttribute(out, "step", getRequestContext().fmt(this.step, this.converter, false));
+	    HtmlUtils.escAttribute(out, "step", format(this.step, this.converter));
 
 	if (this.pattern != null)
 	    HtmlUtils.escAttribute(out, "pattern", this.pattern);
