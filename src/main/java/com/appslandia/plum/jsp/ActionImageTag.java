@@ -80,13 +80,13 @@ public class ActionImageTag extends UITagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
-	    HtmlUtils.attribute(out, "id", this.id);
+	    HtmlUtils.escAttribute(out, "id", this.id);
 	HtmlUtils.escAttribute(out, "src", this._src);
 
 	if (this.width != null)
-	    HtmlUtils.attribute(out, "width", this.width);
+	    HtmlUtils.escAttribute(out, "width", this.width);
 	if (this.height != null)
-	    HtmlUtils.attribute(out, "height", this.height);
+	    HtmlUtils.escAttribute(out, "height", this.height);
 
 	HtmlUtils.escAttribute(out, "alt", this.alt);
 	if (this.hidden)
@@ -95,9 +95,9 @@ public class ActionImageTag extends UITagBase {
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
 	if (this.clazz != null)
-	    HtmlUtils.attribute(out, "class", this.clazz);
+	    HtmlUtils.escAttribute(out, "class", this.clazz);
 	if (this.style != null)
-	    HtmlUtils.attribute(out, "style", this.style);
+	    HtmlUtils.escAttribute(out, "style", this.style);
 	if (this.title != null)
 	    HtmlUtils.escAttribute(out, "title", this.title);
     }

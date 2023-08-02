@@ -67,22 +67,22 @@ public class TextAreaTag extends ValueTagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
-	    HtmlUtils.attribute(out, "id", this.id);
-	HtmlUtils.attribute(out, "name", this.name);
+	    HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "name", this.name);
 
 	if (this.maxlength != null)
-	    HtmlUtils.attribute(out, "maxlength", this.maxlength);
+	    HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
 	if (this.readonly)
 	    HtmlUtils.readonly(out);
 	if (this.placeholder != null)
 	    HtmlUtils.escAttribute(out, "placeholder", this.placeholder);
 	if (this.autocomplete != null)
-	    HtmlUtils.attribute(out, "autocomplete", this.autocomplete);
+	    HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
 
 	if (this.rows != null)
-	    HtmlUtils.attribute(out, "rows", this.rows);
+	    HtmlUtils.escAttribute(out, "rows", this.rows);
 	if (this.cols != null)
-	    HtmlUtils.attribute(out, "cols", this.cols);
+	    HtmlUtils.escAttribute(out, "cols", this.cols);
 	if (this.hardWrap)
 	    HtmlUtils.hardWrap(out);
 
@@ -96,14 +96,14 @@ public class TextAreaTag extends ValueTagBase {
 	    HtmlUtils.hidden(out);
 
 	if (this.form != null)
-	    HtmlUtils.attribute(out, "form", this.form);
+	    HtmlUtils.escAttribute(out, "form", this.form);
 
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
 	if (this.clazz != null)
-	    HtmlUtils.attribute(out, "class", this.clazz);
+	    HtmlUtils.escAttribute(out, "class", this.clazz);
 	if (this.style != null)
-	    HtmlUtils.attribute(out, "style", this.style);
+	    HtmlUtils.escAttribute(out, "style", this.style);
 	if (this.title != null)
 	    HtmlUtils.escAttribute(out, "title", this.title);
     }

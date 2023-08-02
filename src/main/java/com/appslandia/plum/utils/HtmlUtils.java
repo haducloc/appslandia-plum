@@ -73,16 +73,6 @@ public class HtmlUtils {
 	out.write(" novalidate=\"novalidate\"");
     }
 
-    public static void attribute(Writer out, String name, String value) throws IOException {
-	out.write(' ');
-	out.write(name);
-	out.write("=\"");
-	if (value != null) {
-	    out.write(value);
-	}
-	out.write('"');
-    }
-
     public static void escAttribute(Writer out, String name, String value) throws IOException {
 	out.write(' ');
 	out.write(name);
@@ -106,12 +96,9 @@ public class HtmlUtils {
 	return new String(buf);
     }
 
-    public static void writeAttributes(Writer out, Map<String, Object> attributes, boolean excludeValueAttribute) throws IOException {
+    public static void writeAttributes(Writer out, Map<String, Object> attributes) throws IOException {
 	for (Map.Entry<String, Object> attr : attributes.entrySet()) {
 	    if (attr.getValue() == null) {
-		continue;
-	    }
-	    if (excludeValueAttribute && "value".equals(attr.getKey())) {
 		continue;
 	    }
 
@@ -121,5 +108,10 @@ public class HtmlUtils {
 	    XmlEscaper.escapeXml(out, attr.getValue().toString());
 	    out.write('"');
 	}
+    }
+
+    public static void main(String[] args) {
+
+	System.out.println(XmlEscaper.escapeXml("<my_id>"));
     }
 }

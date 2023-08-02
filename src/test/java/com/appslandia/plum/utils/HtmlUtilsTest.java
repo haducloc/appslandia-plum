@@ -35,25 +35,7 @@ import com.appslandia.common.base.StringWriter;
 public class HtmlUtilsTest {
 
     @Test
-    public void test_attribute() {
-	StringWriter out = new StringWriter();
-	try {
-	    HtmlUtils.attribute(out, "method", "POST");
-	    Assertions.assertTrue(out.toString().contains("method=\"POST\""));
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-	out = new StringWriter();
-	try {
-	    HtmlUtils.attribute(out, "method", "");
-	    Assertions.assertTrue(out.toString().contains("method=\"\""));
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_escapeAttribute() {
+    public void test_escAttribute() {
 	StringWriter out = new StringWriter();
 	try {
 	    HtmlUtils.escAttribute(out, "title", "test < title");

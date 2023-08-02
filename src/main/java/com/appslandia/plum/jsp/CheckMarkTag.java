@@ -49,7 +49,7 @@ public class CheckMarkTag extends UITagBase {
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.attribute(out, "class", this.clazz);
+	HtmlUtils.escAttribute(out, "class", this.clazz);
     }
 
     @Override

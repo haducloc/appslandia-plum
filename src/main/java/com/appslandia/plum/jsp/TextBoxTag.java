@@ -65,9 +65,9 @@ public class TextBoxTag extends ValueTagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
-	    HtmlUtils.attribute(out, "id", this.id);
-	HtmlUtils.attribute(out, "type", this.type);
-	HtmlUtils.attribute(out, "name", this.name);
+	    HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "type", this.type);
+	HtmlUtils.escAttribute(out, "name", this.name);
 
 	HtmlUtils.escAttribute(out, "value", format(this.value, this.converter));
 	if (this.min != null)
@@ -83,10 +83,10 @@ public class TextBoxTag extends ValueTagBase {
 	    HtmlUtils.escAttribute(out, "pattern", this.pattern);
 
 	if (this.autocomplete != null)
-	    HtmlUtils.attribute(out, "autocomplete", this.autocomplete);
+	    HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
 
 	if (this.maxlength != null)
-	    HtmlUtils.attribute(out, "maxlength", this.maxlength);
+	    HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
 	if (this.readonly)
 	    HtmlUtils.readonly(out);
 
@@ -103,14 +103,14 @@ public class TextBoxTag extends ValueTagBase {
 	    HtmlUtils.hidden(out);
 
 	if (this.form != null)
-	    HtmlUtils.attribute(out, "form", this.form);
+	    HtmlUtils.escAttribute(out, "form", this.form);
 
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
 	if (this.clazz != null)
-	    HtmlUtils.attribute(out, "class", this.clazz);
+	    HtmlUtils.escAttribute(out, "class", this.clazz);
 	if (this.style != null)
-	    HtmlUtils.attribute(out, "style", this.style);
+	    HtmlUtils.escAttribute(out, "style", this.style);
 	if (this.title != null)
 	    HtmlUtils.escAttribute(out, "title", this.title);
 
@@ -119,10 +119,10 @@ public class TextBoxTag extends ValueTagBase {
 
 	// OnEnter
 	if (this.enterFn != null) {
-	    HtmlUtils.attribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
+	    HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
 
 	} else if (this.enterBtn != null) {
-	    HtmlUtils.attribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
+	    HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
 	}
     }
 

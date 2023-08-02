@@ -85,9 +85,9 @@ public class ButtonLinkTag extends UITagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
-	    HtmlUtils.attribute(out, "id", this.id);
+	    HtmlUtils.escAttribute(out, "id", this.id);
 
-	HtmlUtils.attribute(out, "type", "button");
+	HtmlUtils.escAttribute(out, "type", "button");
 
 	if (this.autofocus)
 	    HtmlUtils.autofocus(out);
@@ -95,7 +95,7 @@ public class ButtonLinkTag extends UITagBase {
 	if (!this.disabled) {
 	    StringBuilder clickHandler = new StringBuilder();
 	    clickHandler.append("window.location.href='").append(XmlEscaper.escapeXml(this._href)).append("';");
-	    HtmlUtils.attribute(out, "onclick", clickHandler.toString());
+	    HtmlUtils.escAttribute(out, "onclick", clickHandler.toString());
 	}
 	if (this.hidden)
 	    HtmlUtils.hidden(out);
@@ -103,9 +103,9 @@ public class ButtonLinkTag extends UITagBase {
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
 	if (this.clazz != null)
-	    HtmlUtils.attribute(out, "class", this.clazz);
+	    HtmlUtils.escAttribute(out, "class", this.clazz);
 	if (this.style != null)
-	    HtmlUtils.attribute(out, "style", this.style);
+	    HtmlUtils.escAttribute(out, "style", this.style);
 	if (this.title != null)
 	    HtmlUtils.escAttribute(out, "title", this.title);
     }

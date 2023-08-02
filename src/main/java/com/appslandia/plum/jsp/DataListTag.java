@@ -62,7 +62,7 @@ public class DataListTag extends UITagBase {
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.attribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "id", this.id);
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
     }

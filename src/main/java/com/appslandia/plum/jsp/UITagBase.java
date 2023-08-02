@@ -86,7 +86,7 @@ public abstract class UITagBase extends TagBase implements DynamicAttributes {
 
 	this.writeAttributes(out);
 	if (this.dynamicAttributes != null) {
-	    HtmlUtils.writeAttributes(out, this.dynamicAttributes, false);
+	    HtmlUtils.writeAttributes(out, this.dynamicAttributes);
 	}
 	if (this.hasBody()) {
 	    out.write('>');

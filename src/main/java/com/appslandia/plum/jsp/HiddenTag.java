@@ -53,16 +53,16 @@ public class HiddenTag extends ValueTagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
-	    HtmlUtils.attribute(out, "id", this.id);
-	HtmlUtils.attribute(out, "type", "hidden");
-	HtmlUtils.attribute(out, "name", this.name);
+	    HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "type", "hidden");
+	HtmlUtils.escAttribute(out, "name", this.name);
 	HtmlUtils.escAttribute(out, "value", format(this.value, this.converter));
 
 	if (this.required)
 	    HtmlUtils.required(out);
 
 	if (this.form != null)
-	    HtmlUtils.attribute(out, "form", this.form);
+	    HtmlUtils.escAttribute(out, "form", this.form);
 
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);

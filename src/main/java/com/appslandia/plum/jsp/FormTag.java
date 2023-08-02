@@ -89,22 +89,22 @@ public class FormTag extends UITagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
-	    HtmlUtils.attribute(out, "id", this.id);
+	    HtmlUtils.escAttribute(out, "id", this.id);
 	if (this.name != null)
-	    HtmlUtils.attribute(out, "name", this.name);
+	    HtmlUtils.escAttribute(out, "name", this.name);
 	HtmlUtils.escAttribute(out, "action", this._action);
 
 	if (this.method != null)
-	    HtmlUtils.attribute(out, "method", this.method);
+	    HtmlUtils.escAttribute(out, "method", this.method);
 	if (this.acceptCharset != null)
-	    HtmlUtils.attribute(out, "accept-charset", this.acceptCharset);
+	    HtmlUtils.escAttribute(out, "accept-charset", this.acceptCharset);
 	if (this.enctype != null)
-	    HtmlUtils.attribute(out, "enctype", this.enctype);
+	    HtmlUtils.escAttribute(out, "enctype", this.enctype);
 
 	if (this.novalidate)
 	    HtmlUtils.novalidate(out);
 	if (this.autocomplete != null)
-	    HtmlUtils.attribute(out, "autocomplete", this.autocomplete);
+	    HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
 
 	if (this.hidden)
 	    HtmlUtils.hidden(out);
@@ -112,9 +112,9 @@ public class FormTag extends UITagBase {
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
 	if (this.clazz != null)
-	    HtmlUtils.attribute(out, "class", this.clazz);
+	    HtmlUtils.escAttribute(out, "class", this.clazz);
 	if (this.style != null)
-	    HtmlUtils.attribute(out, "style", this.style);
+	    HtmlUtils.escAttribute(out, "style", this.style);
 	if (this.title != null)
 	    HtmlUtils.escAttribute(out, "title", this.title);
     }

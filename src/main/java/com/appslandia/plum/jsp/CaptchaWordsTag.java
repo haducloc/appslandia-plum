@@ -58,31 +58,31 @@ public class CaptchaWordsTag extends UITagBase {
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.attribute(out, "id", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
-	HtmlUtils.attribute(out, "type", "text");
-	HtmlUtils.attribute(out, "name", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
+	HtmlUtils.escAttribute(out, "id", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
+	HtmlUtils.escAttribute(out, "type", "text");
+	HtmlUtils.escAttribute(out, "name", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
 
 	if (this.maxlength != null)
-	    HtmlUtils.attribute(out, "maxlength", this.maxlength);
+	    HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
 	if (this.placeholder != null)
 	    HtmlUtils.escAttribute(out, "placeholder", this.placeholder);
 
 	if (this.required)
 	    HtmlUtils.required(out);
-	HtmlUtils.attribute(out, "autocomplete", "off");
+	HtmlUtils.escAttribute(out, "autocomplete", "off");
 
 	if (this.hidden)
 	    HtmlUtils.hidden(out);
 
 	if (this.form != null)
-	    HtmlUtils.attribute(out, "form", this.form);
+	    HtmlUtils.escAttribute(out, "form", this.form);
 
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
 	if (this.clazz != null)
-	    HtmlUtils.attribute(out, "class", this.clazz);
+	    HtmlUtils.escAttribute(out, "class", this.clazz);
 	if (this.style != null)
-	    HtmlUtils.attribute(out, "style", this.style);
+	    HtmlUtils.escAttribute(out, "style", this.style);
 	if (this.title != null)
 	    HtmlUtils.escAttribute(out, "title", this.title);
     }
