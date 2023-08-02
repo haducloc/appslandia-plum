@@ -22,7 +22,6 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
-import com.appslandia.plum.base.BrowserFeatures;
 import com.appslandia.plum.utils.HtmlUtils;
 
 import jakarta.servlet.jsp.JspException;
@@ -60,89 +59,7 @@ public class TextBoxTag extends ValueTagBase {
 
     @Override
     protected String format(Object value, String converter) {
-	if (value == null) {
-	    return null;
-	}
-	if (value.getClass() == String.class) {
-	    return (String) value;
-	}
-
-	// hidden
-	if ("hidden".equals(this.type)) {
-	    return getRequestContext().fmt(value, converter, false);
-	}
-
-	// text
-	if ("text".equals(this.type)) {
-	    return getRequestContext().fmt(value, converter, true);
-	}
-
-	// number
-	if ("number".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter, (getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_NUMBER) != BrowserFeatures.INPUT_NUMBER);
-	    }
-	}
-
-	// range
-	if ("range".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter, (getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_RANGE) != BrowserFeatures.INPUT_RANGE);
-	    }
-	}
-
-	// date
-	if ("date".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter, (getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_DATE) != BrowserFeatures.INPUT_DATE);
-	    }
-	}
-
-	// time
-	if ("time".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter, (getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_TIME) != BrowserFeatures.INPUT_TIME);
-	    }
-	}
-
-	// datetime-local
-	if ("datetime-local".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter,
-			(getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_DATETIME_LOCAL) != BrowserFeatures.INPUT_DATETIME_LOCAL);
-	    }
-	}
-
-	// month
-	if ("month".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter, (getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_MONTH) != BrowserFeatures.INPUT_MONTH);
-	    }
-	}
-
-	// week
-	if ("week".equals(this.type)) {
-	    if (getRequestContext().getBrowserFeatures() == null) {
-		return getRequestContext().fmt(value, converter, false);
-	    } else {
-		return getRequestContext().fmt(value, converter, (getRequestContext().getBrowserFeatures() & BrowserFeatures.INPUT_WEEK) != BrowserFeatures.INPUT_WEEK);
-	    }
-	}
-
-	// Others: localize = true
-	return getRequestContext().fmt(value, converter, true);
+	return TextBoxUtils.formatValue(getRequestContext(), this.type, value, converter);
     }
 
     @Override
