@@ -83,19 +83,6 @@ public class HtmlUtils {
 	out.write('"');
     }
 
-    public static String toTagId(String fieldName) {
-	int len = fieldName.length();
-	int i = -1;
-	char buf[] = new char[fieldName.length()];
-
-	while (i < len - 1) {
-	    i++;
-	    char c = fieldName.charAt(i);
-	    buf[i] = ((c == '.') || (c == '[') || (c == ']')) ? ('_') : c;
-	}
-	return new String(buf);
-    }
-
     public static void writeAttributes(Writer out, Map<String, Object> attributes) throws IOException {
 	for (Map.Entry<String, Object> attr : attributes.entrySet()) {
 	    if (attr.getValue() == null) {
@@ -110,8 +97,16 @@ public class HtmlUtils {
 	}
     }
 
-    public static void main(String[] args) {
+    public static String toTagId(String fieldName) {
+	int len = fieldName.length();
+	int i = -1;
+	char buf[] = new char[fieldName.length()];
 
-	System.out.println(XmlEscaper.escapeXml("<my_id>"));
+	while (i < len - 1) {
+	    i++;
+	    char c = fieldName.charAt(i);
+	    buf[i] = ((c == '.') || (c == '[') || (c == ']')) ? ('_') : c;
+	}
+	return new String(buf);
     }
 }
