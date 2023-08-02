@@ -24,11 +24,14 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.jsp.TagUtils;
+import com.appslandia.plum.utils.ServletUtils;
 
 import io.pebbletemplates.pebble.template.EvaluationContext;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.el.ELProcessor;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -64,6 +67,14 @@ public class TemplateEvaluationContext {
 
     public RequestContext getRequestContext() {
 	return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST_CONTEXT);
+    }
+
+    public ELProcessor getELProcessor() {
+	return getRequiredVariable(PebbleUtils.VARIABLE_EL_PROCESSOR);
+    }
+
+    public ModelState getModelState() {
+	return ServletUtils.getModelState(getRequest());
     }
 
     public <T> T getArgument(String name) {

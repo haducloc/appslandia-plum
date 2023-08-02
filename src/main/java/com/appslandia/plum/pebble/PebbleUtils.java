@@ -33,6 +33,7 @@ import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.utils.ServletUtils;
 
 import io.pebbletemplates.pebble.template.PebbleTemplate;
+import jakarta.el.ELProcessor;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,6 +50,7 @@ public class PebbleUtils {
     public static final String VARIABLE_REQUEST = "request";
     public static final String VARIABLE_RESPONSE = "response";
     public static final String VARIABLE_REQUEST_CONTEXT = "ctx";
+    public static final String VARIABLE_EL_PROCESSOR = "elProcessor";
 
     public static String getPebbleDir(ServletContext servletContext) {
 	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
@@ -59,21 +61,29 @@ public class PebbleUtils {
 	    throws IOException {
 	// Variables
 	Map<String, Object> variables = (model != null) ? new HashMap<>(model) : new HashMap<>();
-	registerImplicitVariables(request, response, variables);
+	registerRequestBasedVariables(request, variables);
+
+	variables.put(VARIABLE_REQUEST, request);
+	variables.put(VARIABLE_RESPONSE, response);
+	variables.put(VARIABLE_REQUEST_CONTEXT, ServletUtils.getRequestContext(request));
+
+	// ELProcessor
+	ELProcessor elProcessor = new ELProcessor();
+	for (Map.Entry<String, Object> variable : variables.entrySet()) {
+	    elProcessor.defineBean(variable.getKey(), variable.getValue());
+	}
+	variables.put(VARIABLE_EL_PROCESSOR, elProcessor);
 
 	// PebbleTemplateProvider
 	PebbleTemplateProvider templateProvider = ServletUtils.getAppScoped(request.getServletContext(), PebbleTemplateProvider.class);
 	PebbleTemplate template = templateProvider.getTemplate(pebblePath);
 
+	// Evaluate template
 	template.evaluate(out, variables, locale);
 	out.flush();
     }
 
-    public static void registerImplicitVariables(HttpServletRequest request, HttpServletResponse response, Map<String, Object> variables) {
-	variables.put(VARIABLE_REQUEST, request);
-	variables.put(VARIABLE_RESPONSE, response);
-	variables.put(VARIABLE_REQUEST_CONTEXT, ServletUtils.getRequestContext(request));
-
+    public static void registerRequestBasedVariables(HttpServletRequest request, Map<String, Object> variables) {
 	// Maps
 	variables.put("requestScope", new MapAccessor<String, Object>() {
 
