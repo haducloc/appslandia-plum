@@ -69,8 +69,8 @@ public abstract class InputTagBase extends UITagBase {
 	    Asserts.isTrue(nameIdx > 0);
 
 	    this.name = this.path.substring(nameIdx + 1);
-
 	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
+
 	    if (!isValid) {
 		this.value = getInvalidValue();
 	    } else {
@@ -85,6 +85,7 @@ public abstract class InputTagBase extends UITagBase {
 		this.value = getInvalidValue();
 	    }
 	}
+
 	if (this.id == null) {
 	    this.id = HtmlUtils.toValueTagId(this.name);
 	}
