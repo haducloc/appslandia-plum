@@ -22,6 +22,7 @@ package com.appslandia.plum.utils;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Map;
 
 import com.appslandia.common.utils.XmlEscaper;
 
@@ -103,5 +104,22 @@ public class HtmlUtils {
 	    buf[i] = ((c == '.') || (c == '[') || (c == ']')) ? ('_') : c;
 	}
 	return new String(buf);
+    }
+
+    public static void writeAttributes(Writer out, Map<String, Object> attributes, boolean excludeValueAttribute) throws IOException {
+	for (Map.Entry<String, Object> attr : attributes.entrySet()) {
+	    if (attr.getValue() == null) {
+		continue;
+	    }
+	    if (excludeValueAttribute && "value".equals(attr.getKey())) {
+		continue;
+	    }
+
+	    out.write(' ');
+	    out.write(attr.getKey());
+	    out.write("=\"");
+	    XmlEscaper.escapeXml(out, attr.getValue().toString());
+	    out.write('"');
+	}
     }
 }
