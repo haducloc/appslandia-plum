@@ -36,7 +36,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class ValueTagBase extends UITagBase {
+public abstract class InputTagBase extends UITagBase {
 
     protected String form;
     protected String name;

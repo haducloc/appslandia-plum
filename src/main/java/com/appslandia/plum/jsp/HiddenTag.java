@@ -33,7 +33,7 @@ import jakarta.servlet.jsp.JspWriter;
  *
  */
 @Tag(name = "hidden")
-public class HiddenTag extends ValueTagBase {
+public class HiddenTag extends InputTagBase {
 
     @Override
     protected String getTagName() {

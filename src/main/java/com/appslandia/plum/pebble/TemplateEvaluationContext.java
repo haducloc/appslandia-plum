@@ -81,6 +81,11 @@ public class TemplateEvaluationContext {
 	return (T) this.arguments.get(name);
     }
 
+    public <T> T getArgument(String name, T defaultValue) {
+	T value = (T) this.arguments.get(name);
+	return (value != null) ? value : defaultValue;
+    }
+
     public <T> T getRequiredArgument(String name) {
 	return Asserts.notNull((T) this.arguments.get(name));
     }

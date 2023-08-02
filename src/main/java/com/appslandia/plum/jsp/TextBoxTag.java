@@ -33,7 +33,7 @@ import jakarta.servlet.jsp.JspWriter;
  *
  */
 @Tag(name = "textBox")
-public class TextBoxTag extends ValueTagBase {
+public class TextBoxTag extends InputTagBase {
 
     protected String type = "text";
     protected String maxlength;

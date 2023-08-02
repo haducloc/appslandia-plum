@@ -40,7 +40,7 @@ import jakarta.servlet.jsp.JspWriter;
  *
  */
 @Tag(name = "select", bodyContent = "scriptless")
-public class SelectTag extends ValueTagBase {
+public class SelectTag extends InputTagBase {
 
     protected Iterable<SelectItem> items;
     protected String var = "item";

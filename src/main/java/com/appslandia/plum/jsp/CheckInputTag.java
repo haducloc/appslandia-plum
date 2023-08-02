@@ -33,7 +33,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class CheckInputTag extends ValueTagBase {
+public abstract class CheckInputTag extends InputTagBase {
 
     protected Object submitValue;
     protected boolean triggerSubmit = false;
