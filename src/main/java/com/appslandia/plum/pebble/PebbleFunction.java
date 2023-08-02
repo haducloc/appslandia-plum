@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.pebble;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Map;
 
 import io.pebbletemplates.pebble.extension.Function;
@@ -35,8 +37,13 @@ public abstract class PebbleFunction implements Function {
 
     @Override
     public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
-	return doExecute(new TemplateEvaluationContext(args, self, context), lineNumber);
+	try {
+	    return doExecute(new TemplateEvaluationContext(args, self, context), lineNumber);
+
+	} catch (IOException ex) {
+	    throw new UncheckedIOException(ex);
+	}
     }
 
-    protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber);
+    protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException;
 }

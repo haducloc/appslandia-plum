@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.pebble;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -46,10 +48,15 @@ public abstract class DynArgsFunction implements Function {
 	    dynArgs = Collections.emptyMap();
 	}
 
-	return doExecute(new TemplateEvaluationContext(dynArgs, self, context), lineNumber);
+	try {
+	    return doExecute(new TemplateEvaluationContext(dynArgs, self, context), lineNumber);
+
+	} catch (IOException ex) {
+	    throw new UncheckedIOException(ex);
+	}
     }
 
-    protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber);
+    protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException;
 
     @Override
     public List<String> getArgumentNames() {
