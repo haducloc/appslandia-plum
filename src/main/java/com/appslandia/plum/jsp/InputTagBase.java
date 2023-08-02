@@ -103,13 +103,14 @@ public abstract class InputTagBase extends UITagBase {
 	super.writeTag(out);
 
 	if (writeHiddenTag()) {
+	    out.newLine();
 	    out.write(" <input name=\"");
 	    out.write(this.name);
 
 	    out.write("\" value=\"");
-	    if (this.value != null) {
+	    if (this.value != null)
 		XmlEscaper.escapeXml(out, format(this.value, this.converter));
-	    }
+
 	    out.write("\" type=\"hidden\" />");
 	}
     }
