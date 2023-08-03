@@ -50,7 +50,7 @@ public abstract class Pipe {
 
     public abstract Object apply(Object value, String arg);
 
-    private static Map<String, Pipe> PIPES = new HashMap<>();
+    private static final Map<String, Pipe> PIPES = new HashMap<>();
 
     static {
 	PIPES.put("upper", new Pipe() {
