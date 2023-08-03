@@ -45,6 +45,10 @@ public class JspResult extends ViewResult {
 	super(path);
     }
 
+    public JspResult(Map<String, Object> model) {
+	super(model);
+    }
+
     public JspResult(String path, Map<String, Object> model) {
 	super(path, model);
     }

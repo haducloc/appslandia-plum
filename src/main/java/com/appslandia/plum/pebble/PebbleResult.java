@@ -49,6 +49,10 @@ public class PebbleResult extends ViewResult {
 	super(path);
     }
 
+    public PebbleResult(Map<String, Object> model) {
+	super(model);
+    }
+
     public PebbleResult(String path, Map<String, Object> model) {
 	super(path, model);
     }

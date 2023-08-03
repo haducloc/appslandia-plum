@@ -68,6 +68,7 @@ public abstract class PebbleTemplateProvider {
 	builder.defaultLocale(this.languageProvider.getDefaultLanguage().getLocale());
 	builder.extension(new ExtensionProvider());
 
+	this.configurePebbleEngine(builder);
 	this.pebbleEngine = builder.build();
     }
 

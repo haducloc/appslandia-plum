@@ -48,6 +48,10 @@ public abstract class ViewResult implements ActionResult {
 	this(path, null);
     }
 
+    public ViewResult(Map<String, Object> model) {
+	this(null, model);
+    }
+
     public ViewResult(String path, Map<String, Object> model) {
 	this.path = path;
 	this.model = model;
