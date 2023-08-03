@@ -20,12 +20,16 @@
 
 package com.appslandia.plum.pebble;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.LanguageProvider;
 
 import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 
 /**
@@ -42,6 +46,9 @@ public abstract class PebbleTemplateProvider {
 
     @Inject
     protected LanguageProvider languageProvider;
+
+    @Inject
+    protected Instance<PebbleExtensionProvider> extensionProvider;
 
     @PostConstruct
     protected void initialize() {
@@ -62,10 +69,21 @@ public abstract class PebbleTemplateProvider {
 	}
 
 	builder.defaultLocale(this.languageProvider.getDefaultLanguage().getLocale());
-	builder.extension(new ExtensionProvider());
+
+	// extensionProviders
+	List<PebbleExtensionProvider> extensionProviders = new ArrayList<>();
+	this.extensionProvider.forEach(extensionProvider -> {
+
+	    builder.extension(extensionProvider);
+	    extensionProviders.add(extensionProvider);
+	});
 
 	this.configurePebbleEngine(builder);
-	this.pebbleEngine = builder.build();
+	PebbleEngine engine = builder.build();
+
+	// Destroy extensionProvider
+	extensionProviders.forEach(extensionProvider -> this.extensionProvider.destroy(extensionProvider));
+	this.pebbleEngine = engine;
     }
 
     public PebbleTemplate getTemplate(String name) {

@@ -27,5 +27,5 @@ import io.pebbletemplates.pebble.extension.AbstractExtension;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ExtensionProvider extends AbstractExtension {
+public abstract class PebbleExtensionProvider extends AbstractExtension {
 }
