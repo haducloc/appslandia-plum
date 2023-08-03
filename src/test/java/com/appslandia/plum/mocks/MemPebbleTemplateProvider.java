@@ -23,6 +23,7 @@ package com.appslandia.plum.mocks;
 import com.appslandia.plum.pebble.PebbleTemplateProvider;
 
 import io.pebbletemplates.pebble.PebbleEngine.Builder;
+import io.pebbletemplates.pebble.loader.Loader;
 import io.pebbletemplates.pebble.loader.MemoryLoader;
 
 /**
@@ -35,8 +36,12 @@ public class MemPebbleTemplateProvider extends PebbleTemplateProvider {
     final MemoryLoader loader = new MemoryLoader();
 
     @Override
-    protected void configurePebbleEngine(Builder builder) {
-	builder.loader(this.loader);
+    protected Loader<?> getLoader() {
+	return this.loader;
+    }
+
+    @Override
+    protected void configure(Builder builder) {
     }
 
     public void addTemplate(String templateLocation, String templateContent) {

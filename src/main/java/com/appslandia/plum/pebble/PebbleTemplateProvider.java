@@ -27,6 +27,7 @@ import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.LanguageProvider;
 
 import io.pebbletemplates.pebble.PebbleEngine;
+import io.pebbletemplates.pebble.loader.Loader;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.inject.Instance;
@@ -53,6 +54,7 @@ public abstract class PebbleTemplateProvider {
     @PostConstruct
     protected void initialize() {
 	PebbleEngine.Builder builder = new PebbleEngine.Builder();
+	builder.loader(getLoader());
 
 	builder.autoEscaping(this.appConfig.getBool("pebble.auto_escaping", true));
 	builder.cacheActive(this.appConfig.getBool("pebble.cache_active", true));
@@ -78,7 +80,7 @@ public abstract class PebbleTemplateProvider {
 	    extensionProviders.add(extensionProvider);
 	});
 
-	this.configurePebbleEngine(builder);
+	this.configure(builder);
 	PebbleEngine engine = builder.build();
 
 	// Destroy extensionProvider
@@ -90,5 +92,7 @@ public abstract class PebbleTemplateProvider {
 	return this.pebbleEngine.getTemplate(name);
     }
 
-    protected abstract void configurePebbleEngine(PebbleEngine.Builder builder);
+    protected abstract Loader<?> getLoader();
+
+    protected abstract void configure(PebbleEngine.Builder builder);
 }
