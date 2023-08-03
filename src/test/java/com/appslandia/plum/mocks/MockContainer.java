@@ -88,6 +88,7 @@ import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
 import com.appslandia.plum.defaults.DefaultServletModuleParser;
 import com.appslandia.plum.defaults.MemAppCacheManager;
 import com.appslandia.plum.defaults.MemAuthTokenManager;
+import com.appslandia.plum.pebble.PebbleTemplateProvider;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.security.enterprise.AuthenticationException;
@@ -146,6 +147,8 @@ public class MockContainer extends InitializeObject {
 
 	putBeanInst(ModelBinder.class, beanInstances);
 	putBeanInst(ExceptionHandler.class, beanInstances);
+
+	putBeanInst(PebbleTemplateProvider.class, beanInstances);
     }
 
     protected <T> void putBeanInst(Class<T> type, Map<Class<?>, BeanInstance<?>> beanInstances) {
@@ -230,14 +233,12 @@ public class MockContainer extends InitializeObject {
 	HttpAuthenticationMechanism authenticationMechanism = this.objectFactory.getObject(HttpAuthenticationMechanism.class);
 
 	MockHttpMessageContext httpMessageContext = new MockHttpMessageContext().withRequest(request).withResponse(response).withAuthParameters(new AuthenticationParameters());
-
 	authenticationMechanism.validateRequest(request, response, httpMessageContext);
     }
 
     public void execute(MockHttpServletRequest request, MockHttpServletResponse response) throws Exception {
 	initialize();
 	executeAuthenticationMechanism(request, response);
-
 	new MockFilterChain().addFilter(getInitializerHandler()).setServlet(getExecutorHandler()).doFilter(request, response);
 
 	if (response.getStatus() < 300 || response.getStatus() >= 400) {
@@ -314,6 +315,9 @@ public class MockContainer extends InitializeObject {
 	factory.register(CookieHandler.class, CookieHandler.class);
 	factory.register(PrefCookieHandler.class, PrefCookieHandler.class);
 	factory.register(TagCookieHandler.class, TagCookieHandler.class);
+
+	// PebbleTemplateProvider
+	factory.register(PebbleTemplateProvider.class, MemPebbleTemplateProvider.class);
 
 	factory.register(JwtSigner.class, new ObjectProducer<JwtSigner>() {
 
