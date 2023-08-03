@@ -23,6 +23,8 @@ package com.appslandia.plum.pebble;
 import io.pebbletemplates.pebble.PebbleEngine.Builder;
 import io.pebbletemplates.pebble.loader.Servlet5Loader;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -31,6 +33,9 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class DefaultPebbleTemplateProvider extends PebbleTemplateProvider {
+
+    @Inject
+    protected ServletContext servletContext;
 
     @Override
     protected void configurePebbleEngine(Builder builder) {

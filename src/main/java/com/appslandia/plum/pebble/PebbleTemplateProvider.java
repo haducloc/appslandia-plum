@@ -27,7 +27,6 @@ import io.pebbletemplates.pebble.PebbleEngine;
 import io.pebbletemplates.pebble.template.PebbleTemplate;
 import jakarta.annotation.PostConstruct;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -37,9 +36,6 @@ import jakarta.servlet.ServletContext;
 public abstract class PebbleTemplateProvider {
 
     protected PebbleEngine pebbleEngine;
-
-    @Inject
-    protected ServletContext servletContext;
 
     @Inject
     protected AppConfig appConfig;
