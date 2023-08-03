@@ -59,7 +59,7 @@ public abstract class DynArgsFunction implements Function {
     protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException;
 
     @Override
-    public List<String> getArgumentNames() {
+    public final List<String> getArgumentNames() {
 	return Arrays.asList(ARGUMENT_DYN_ARGS);
     }
 }
