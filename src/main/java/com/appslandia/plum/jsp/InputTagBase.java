@@ -51,13 +51,17 @@ public abstract class InputTagBase extends UITagBase {
     protected String enterFn;
     protected String enterBtn;
 
+    protected boolean cssFieldError() {
+	return true;
+    }
+
     protected Object getInvalidValue() {
 	return StringUtils.trimToNull(this.getRequest().getParameter(this.name));
     }
 
-    protected boolean cssFieldError() {
-	return true;
-    }
+    protected abstract String format(Object value, String converter);
+
+    protected abstract boolean writeHiddenTag();
 
     @Override
     protected void initTag() throws JspException, IOException {
@@ -95,10 +99,6 @@ public abstract class InputTagBase extends UITagBase {
 	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";
 	}
     }
-
-    protected abstract String format(Object value, String converter);
-
-    protected abstract boolean writeHiddenTag();
 
     @Override
     protected void writeTag(JspWriter out) throws JspException, IOException {

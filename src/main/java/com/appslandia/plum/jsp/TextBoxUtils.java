@@ -30,7 +30,7 @@ import com.appslandia.plum.base.RequestContext;
  */
 public class TextBoxUtils {
 
-    public static String formatValue(RequestContext requestContext, String type, Object value, String converter) {
+    public static String formatValue(RequestContext requestContext, Object value, String converter, String type) {
 	if (value == null) {
 	    return null;
 	}
