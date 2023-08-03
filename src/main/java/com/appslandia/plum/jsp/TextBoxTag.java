@@ -53,11 +53,6 @@ public class TextBoxTag extends InputTagBase {
     }
 
     @Override
-    protected boolean writeHiddenTag() {
-	return false;
-    }
-
-    @Override
     protected String format(Object value, String converter) {
 	return TextBoxUtils.formatValue(getRequestContext(), value, converter, this.type);
     }

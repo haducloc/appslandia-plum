@@ -61,7 +61,9 @@ public abstract class InputTagBase extends UITagBase {
 
     protected abstract String format(Object value, String converter);
 
-    protected abstract boolean writeHiddenTag();
+    protected boolean writeHiddenTag() {
+	return false;
+    }
 
     @Override
     protected void initTag() throws JspException, IOException {

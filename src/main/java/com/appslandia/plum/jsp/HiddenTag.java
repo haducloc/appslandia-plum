@@ -41,11 +41,6 @@ public class HiddenTag extends InputTagBase {
     }
 
     @Override
-    protected boolean writeHiddenTag() {
-	return false;
-    }
-
-    @Override
     protected String format(Object value, String converter) {
 	return getRequestContext().fmt(value, converter, false);
     }

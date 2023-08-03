@@ -60,11 +60,6 @@ public class TextAreaTag extends InputTagBase {
     }
 
     @Override
-    protected boolean writeHiddenTag() {
-	return false;
-    }
-
-    @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
 	    HtmlUtils.escAttribute(out, "id", this.id);
