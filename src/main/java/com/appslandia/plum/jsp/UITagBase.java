@@ -83,11 +83,12 @@ public abstract class UITagBase extends TagBase implements DynamicAttributes {
     protected void writeTag(JspWriter out) throws JspException, IOException {
 	out.write('<');
 	out.write(this.getTagName());
-
 	this.writeAttributes(out);
+
 	if (this.dynamicAttributes != null) {
-	    HtmlUtils.writeAttributes(out, this.dynamicAttributes, true);
+	    HtmlUtils.writeAttributes(out, this.dynamicAttributes);
 	}
+
 	if (this.hasBody()) {
 	    out.write('>');
 	    out.newLine();

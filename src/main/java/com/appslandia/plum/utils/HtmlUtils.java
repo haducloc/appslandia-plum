@@ -83,12 +83,9 @@ public class HtmlUtils {
 	out.write('"');
     }
 
-    public static void writeAttributes(Writer out, Map<String, Object> attributes, boolean valueAttribute) throws IOException {
+    public static void writeAttributes(Writer out, Map<String, Object> attributes) throws IOException {
 	for (Map.Entry<String, Object> attr : attributes.entrySet()) {
 	    if (attr.getValue() == null) {
-		continue;
-	    }
-	    if (!valueAttribute && "value".equals(attr.getKey())) {
 		continue;
 	    }
 

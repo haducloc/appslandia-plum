@@ -66,11 +66,10 @@ public abstract class InputTagBase extends UITagBase {
 	// Path Expression?
 	if (this.path != null) {
 	    int nameIdx = this.path.indexOf('.');
-	    Asserts.isTrue(nameIdx > 0);
-
+	    Asserts.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
 	    this.name = this.path.substring(nameIdx + 1);
-	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
 
+	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
 	    if (!isValid) {
 		this.value = getInvalidValue();
 	    } else {
@@ -78,7 +77,7 @@ public abstract class InputTagBase extends UITagBase {
 	    }
 	} else {
 	    // name/value
-	    Asserts.notNull(this.name, "name is required.");
+	    Asserts.isTrue(!StringUtils.isNullOrEmpty(this.name), "name is required.");
 
 	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
 	    if (!isValid) {
@@ -86,9 +85,12 @@ public abstract class InputTagBase extends UITagBase {
 	    }
 	}
 
+	// id
 	if (this.id == null) {
 	    this.id = HtmlUtils.toValueTagId(this.name);
 	}
+
+	// class
 	if (!isValid && cssFieldError()) {
 	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";
 	}
@@ -102,6 +104,7 @@ public abstract class InputTagBase extends UITagBase {
     protected void writeTag(JspWriter out) throws JspException, IOException {
 	super.writeTag(out);
 
+	// Hidden Input
 	if (writeHiddenTag()) {
 	    out.newLine();
 	    out.write(" <input name=\"");
