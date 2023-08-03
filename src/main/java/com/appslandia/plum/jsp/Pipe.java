@@ -50,10 +50,12 @@ public abstract class Pipe {
 
     public abstract Object apply(Object value, String arg);
 
-    private static final Map<String, Pipe> PIPES = new HashMap<>();
+    private static final Map<String, Pipe> PIPES;
 
     static {
-	PIPES.put("upper", new Pipe() {
+	Map<String, Pipe> pipes = new HashMap<>();
+
+	pipes.put("upper", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -66,7 +68,7 @@ public abstract class Pipe {
 		return StringUtils.toUpperCase((String) value, Locale.ROOT);
 	    }
 	});
-	PIPES.put("lower", new Pipe() {
+	pipes.put("lower", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -79,7 +81,7 @@ public abstract class Pipe {
 		return StringUtils.toLowerCase((String) value, Locale.ROOT);
 	    }
 	});
-	PIPES.put("trunc", new Pipe() {
+	pipes.put("trunc", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -97,7 +99,7 @@ public abstract class Pipe {
 		return (s.length() > len) ? s.substring(0, len) + "..." : s;
 	    }
 	});
-	PIPES.put("fmtDate", new Pipe() {
+	pipes.put("fmtDate", new Pipe() {
 
 	    final ConcurrentMap<String, DateTimeFormatter> formatters = new ConcurrentHashMap<>();
 
@@ -118,7 +120,7 @@ public abstract class Pipe {
 		throw new IllegalArgumentException("fmtDate: value must be temporal.");
 	    }
 	});
-	PIPES.put("fmtGroup", new Pipe() {
+	pipes.put("fmtGroup", new Pipe() {
 
 	    final ConcurrentMap<String, GroupFormat> formats = new ConcurrentHashMap<>();
 
@@ -133,7 +135,7 @@ public abstract class Pipe {
 		return this.formats.computeIfAbsent(arg, (f) -> new GroupFormat(f)).format((String) value);
 	    }
 	});
-	PIPES.put("fmtNumber", new Pipe() {
+	pipes.put("fmtNumber", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -149,7 +151,7 @@ public abstract class Pipe {
 		return String.format(arg, value);
 	    }
 	});
-	PIPES.put("maskStart", new Pipe() {
+	pipes.put("maskStart", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -171,7 +173,7 @@ public abstract class Pipe {
 		return new String(maskChars) + s.substring(len, s.length());
 	    }
 	});
-	PIPES.put("maskEnd", new Pipe() {
+	pipes.put("maskEnd", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -193,7 +195,7 @@ public abstract class Pipe {
 		return s.substring(0, s.length() - len) + new String(maskChars);
 	    }
 	});
-	PIPES.put("toString", new Pipe() {
+	pipes.put("toString", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -207,7 +209,7 @@ public abstract class Pipe {
 		return new ToStringBuilder(level).toString(value);
 	    }
 	});
-	PIPES.put("asString", new Pipe() {
+	pipes.put("asString", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -226,7 +228,7 @@ public abstract class Pipe {
 		throw new IllegalArgumentException("asString requires Iterable/Array/Enumeration parameter.");
 	    }
 	});
-	PIPES.put("escCt", new Pipe() {
+	pipes.put("escCt", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -239,7 +241,7 @@ public abstract class Pipe {
 		return XmlEscaper.escapeXmlContent((String) value);
 	    }
 	});
-	PIPES.put("esc", new Pipe() {
+	pipes.put("esc", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {
@@ -252,20 +254,18 @@ public abstract class Pipe {
 		return XmlEscaper.escapeXml((String) value);
 	    }
 	});
+
+	PIPES = pipes;
     }
 
-    public static void register(String name, Pipe pipe) {
-	PIPES.put(name, pipe);
-    }
-
-    private static final ConcurrentMap<String, PipeInfo[]> PIPE_INFOS = new ConcurrentHashMap<>();
+    private static final ConcurrentMap<String, PipeNode[]> PIPE_CACHE = new ConcurrentHashMap<>();
 
     @Function(name = "pipe")
     public static String transform(Object value, String pipes) {
 	Asserts.notNull(pipes);
 
-	PipeInfo[] pis = PIPE_INFOS.computeIfAbsent(pipes, (c) -> parsePipes(c));
-	for (PipeInfo pipe : pis) {
+	PipeNode[] nodes = PIPE_CACHE.computeIfAbsent(pipes, (c) -> parsePipes(c));
+	for (PipeNode pipe : nodes) {
 
 	    Pipe impl = PIPES.get(pipe.name);
 	    Asserts.notNull(impl);
@@ -276,10 +276,10 @@ public abstract class Pipe {
     }
 
     // pipe:param|another_pipe:param
-    static PipeInfo[] parsePipes(String pipes) {
+    static PipeNode[] parsePipes(String pipes) {
 	int startIdx = 0;
 	int endIdx;
-	List<PipeInfo> list = new ArrayList<>(5);
+	List<PipeNode> list = new ArrayList<>(5);
 
 	while ((endIdx = pipes.indexOf('|', startIdx)) != -1) {
 	    String pipe = pipes.substring(startIdx, endIdx).trim();
@@ -294,23 +294,24 @@ public abstract class Pipe {
 		list.add(parsePipe(pipe));
 	    }
 	}
+
 	Asserts.hasElements(list, "No pipe provided.");
-	return list.toArray(new PipeInfo[list.size()]);
+	return list.toArray(new PipeNode[list.size()]);
     }
 
-    static PipeInfo parsePipe(String pipe) {
+    static PipeNode parsePipe(String pipe) {
 	int idx = pipe.indexOf(':');
 	if (idx < 0) {
-	    return new PipeInfo(pipe, null);
+	    return new PipeNode(pipe, null);
 	}
-	return new PipeInfo(StringUtils.trimToNull(pipe.substring(0, idx)), StringUtils.trimToNull(pipe.substring(idx + 1)));
+	return new PipeNode(StringUtils.trimToNull(pipe.substring(0, idx)), StringUtils.trimToNull(pipe.substring(idx + 1)));
     }
 
-    static class PipeInfo {
+    static class PipeNode {
 	final String name;
 	final String arg;
 
-	PipeInfo(String name, String arg) {
+	PipeNode(String name, String arg) {
 	    this.name = Asserts.notNull(name);
 	    this.arg = arg;
 	}
