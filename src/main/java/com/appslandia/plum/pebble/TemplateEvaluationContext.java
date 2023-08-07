@@ -53,7 +53,7 @@ public class TemplateEvaluationContext {
 	this.evaluationContext = evaluationContext;
     }
 
-    public Map<String, Object> buildParameterMap() {
+    public Map<String, Object> parseParameters() {
 	return this.arguments.entrySet().stream().filter(entry -> TagUtils.isForParameter(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
