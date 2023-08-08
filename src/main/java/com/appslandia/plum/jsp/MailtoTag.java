@@ -53,12 +53,8 @@ public class MailtoTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	StringBuilder sb = new StringBuilder(255);
-	sb.append("mailto:");
-
-	if (!StringUtils.isNullOrEmpty(this.to)) {
-	    sb.append(this.to);
-	}
+	StringBuilder sb = new StringBuilder(256);
+	sb.append("mailto:").append(this.to);
 	sb.append("?t=").append(System.currentTimeMillis());
 
 	if (!StringUtils.isNullOrEmpty(this.cc)) {
@@ -93,7 +89,7 @@ public class MailtoTag extends UITagBase {
 	}
     }
 
-    @Attribute(required = false, rtexprvalue = true)
+    @Attribute(required = true, rtexprvalue = true)
     public void setTo(String to) {
 	this.to = to;
     }

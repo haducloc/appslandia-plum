@@ -2610,7 +2610,7 @@
 		<attribute>
 			<description>to|type=java.lang.String|expression</description>
 			<name>to</name>
-			<required>false</required>
+			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
