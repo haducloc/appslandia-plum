@@ -122,7 +122,7 @@ public class ActionLinkTag extends UITagBase {
     public void setAction(String action) {
 	this.action = action;
     }
-    
+
     @Attribute(required = false, rtexprvalue = false)
     public void setAbsUrl(boolean absUrl) {
 	this.absUrl = absUrl;

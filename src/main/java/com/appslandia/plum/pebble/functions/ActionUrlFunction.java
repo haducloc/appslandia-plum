@@ -43,11 +43,11 @@ public class ActionUrlFunction extends DynPebbleFunction {
 	    controller = context.getRequestContext().getActionDesc().getController();
 	}
 
-	boolean absolute = context.getBool("absolute", false);
+	boolean absUrl = context.getBool("absUrl", false);
 	Map<String, Object> parameters = context.parseParameters();
 
 	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, absolute);
+	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, absUrl);
 
 	return context.getResponse().encodeURL(url);
     }
