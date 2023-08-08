@@ -1981,7 +1981,7 @@
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>boolean</type>
-		</attribute>		
+		</attribute>
 		<attribute>
 			<description>action|type=java.lang.String</description>
 			<name>action</name>
@@ -2659,6 +2659,14 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
+		<dynamic-attributes>false</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>deployEnv|body=empty</description>
+		<name>deployEnv</name>
+		<tag-class>com.appslandia.plum.jsp.DeployEnvTag</tag-class>
+		<body-content>empty</body-content>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 
