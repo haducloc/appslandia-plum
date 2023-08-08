@@ -42,6 +42,7 @@ public class ActionImageTag extends UITagBase {
 
     protected String controller;
     protected String action;
+    protected boolean absUrl;
 
     protected String width;
     protected String height;
@@ -73,7 +74,7 @@ public class ActionImageTag extends UITagBase {
 	    this.controller = getRequestContext().getActionDesc().getController();
 	}
 	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
-	this._src = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
+	this._src = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, this.absUrl);
 	this._src = this.getResponse().encodeURL(this._src);
     }
 
@@ -110,6 +111,11 @@ public class ActionImageTag extends UITagBase {
     @Attribute(required = true, rtexprvalue = false)
     public void setAction(String action) {
 	this.action = action;
+    }
+
+    @Attribute(required = false, rtexprvalue = false)
+    public void setAbsUrl(boolean absUrl) {
+	this.absUrl = absUrl;
     }
 
     @Attribute(required = false, rtexprvalue = false)

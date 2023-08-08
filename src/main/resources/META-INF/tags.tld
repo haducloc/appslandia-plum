@@ -2061,6 +2061,13 @@
 		<tag-class>com.appslandia.plum.jsp.ActionImageTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
+			<description>absUrl|type=boolean</description>
+			<name>absUrl</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
+		<attribute>
 			<description>action|type=java.lang.String</description>
 			<name>action</name>
 			<required>true</required>
