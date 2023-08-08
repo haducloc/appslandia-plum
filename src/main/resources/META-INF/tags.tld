@@ -2648,9 +2648,9 @@
 	</tag>
 
 	<tag>
-		<description>deployEnv|body=scriptless</description>
-		<name>deployEnv</name>
-		<tag-class>com.appslandia.plum.jsp.DeployEnvTag</tag-class>
+		<description>ifEnv|body=scriptless</description>
+		<name>ifEnv</name>
+		<tag-class>com.appslandia.plum.jsp.IfEnvTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>name|type=java.lang.String</description>
