@@ -1976,6 +1976,13 @@
 		<tag-class>com.appslandia.plum.jsp.ActionLinkTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
+			<description>absUrl|type=boolean</description>
+			<name>absUrl</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>boolean</type>
+		</attribute>		
+		<attribute>
 			<description>action|type=java.lang.String</description>
 			<name>action</name>
 			<required>true</required>

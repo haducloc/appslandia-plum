@@ -41,6 +41,7 @@ public class ActionLinkTag extends UITagBase {
 
     protected String controller;
     protected String action;
+    protected boolean absUrl;
     protected String target;
 
     protected String _href;
@@ -73,7 +74,7 @@ public class ActionLinkTag extends UITagBase {
 	    this.controller = getRequestContext().getActionDesc().getController();
 	}
 	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
-	this._href = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
+	this._href = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, this.absUrl);
 	this._href = this.getResponse().encodeURL(this._href);
     }
 
@@ -120,6 +121,11 @@ public class ActionLinkTag extends UITagBase {
     @Attribute(required = true, rtexprvalue = false)
     public void setAction(String action) {
 	this.action = action;
+    }
+    
+    @Attribute(required = false, rtexprvalue = false)
+    public void setAbsUrl(boolean absUrl) {
+	this.absUrl = absUrl;
     }
 
     @Attribute(required = false, rtexprvalue = false)
