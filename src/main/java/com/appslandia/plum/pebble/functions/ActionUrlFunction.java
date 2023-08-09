@@ -22,10 +22,13 @@ package com.appslandia.plum.pebble.functions;
 
 import java.util.Map;
 
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.ActionParser;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.ServletUtils;
+
+import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
@@ -48,7 +51,9 @@ public class ActionUrlFunction extends DynPebbleFunction {
 
 	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
 	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, absUrl);
+	url = context.getResponse().encodeURL(url);
 
-	return context.getResponse().encodeURL(url);
+	boolean esc = context.getBool("esc", true);
+	return new SafeString(esc ? XmlEscaper.escapeXml(url) : url);
     }
 }

@@ -24,8 +24,11 @@ import java.io.IOException;
 
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.URLEncoding;
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
+
+import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
@@ -60,6 +63,8 @@ public class MailtoFunction extends DynPebbleFunction {
 	if (!StringUtils.isNullOrEmpty(body)) {
 	    mailto.append("&body=").append(URLEncoding.encodeParam(body, false));
 	}
-	return mailto.toString();
+
+	boolean esc = context.getBool("esc", true);
+	return new SafeString(esc ? XmlEscaper.escapeXml(mailto.toString()) : mailto.toString());
     }
 }
