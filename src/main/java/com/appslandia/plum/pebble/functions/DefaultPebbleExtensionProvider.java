@@ -42,7 +42,7 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 
 	impls.put("actionUrl", new ActionUrlFunction());
 	impls.put("mailto", new MailtoFunction());
-	impls.put("verBar", new VerBarFunction());
+	impls.put("symbol", new SymbolFunction());
 
 	impls.put("deployEnv", new DeployEnvFunction());
 	return impls;

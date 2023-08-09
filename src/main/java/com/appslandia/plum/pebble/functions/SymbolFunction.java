@@ -22,28 +22,25 @@ package com.appslandia.plum.pebble.functions;
 
 import java.io.IOException;
 
-import com.appslandia.common.base.StringWriter;
-import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.jsp.SymbolUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
+
+import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class VerBarFunction extends DynPebbleFunction {
+public class SymbolFunction extends DynPebbleFunction {
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String clazz = context.getArgument("class", "ver-bar");
+	String name = context.getRequiredArgument("name");
+	String value = SymbolUtils.getHtmlCode(name);
 
-	StringWriter html = new StringWriter(32);
-	html.append("<span class=\"");
-	XmlEscaper.escapeXml(html, clazz);
-
-	html.append("\">&#124;</span>");
-	return html.toString();
+	boolean render = context.getBool("render", true);
+	return render ? new SafeString(value) : null;
     }
-
 }
