@@ -32,7 +32,7 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class CurrentTimeMsFunction implements Function {
+public class NowMsFunction implements Function {
 
     @Override
     public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {

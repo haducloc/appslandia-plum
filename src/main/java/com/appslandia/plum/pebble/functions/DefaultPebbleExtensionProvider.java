@@ -47,7 +47,7 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 	impls.put("symbol", new SymbolFunction());
 
 	impls.put("deployEnv", new DeployEnvFunction());
-	impls.put("currentTimeMs", new CurrentTimeMsFunction());
+	impls.put("nowMs", new NowMsFunction());
 	return impls;
     }
 }
