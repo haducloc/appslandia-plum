@@ -18,10 +18,10 @@
 	</function>
 
 	<function>
-		<description>java.lang.String copyrightYears(int, java.lang.String)</description>
-		<name>copyrightYears</name>
+		<description>java.lang.String copyright(int, java.lang.String)</description>
+		<name>copyright</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String copyrightYears(int, java.lang.String)</function-signature>
+		<function-signature>java.lang.String copyright(int, java.lang.String)</function-signature>
 	</function>
 
 	<function>
@@ -74,10 +74,10 @@
 	</function>
 
 	<function>
-		<description>boolean hasCookie(jakarta.servlet.jsp.PageContext, java.lang.String)</description>
+		<description>boolean hasCookie(jakarta.servlet.http.HttpServletRequest, java.lang.String)</description>
 		<name>hasCookie</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>boolean hasCookie(jakarta.servlet.jsp.PageContext, java.lang.String)</function-signature>
+		<function-signature>boolean hasCookie(jakarta.servlet.http.HttpServletRequest, java.lang.String)</function-signature>
 	</function>
 
 	<function>
@@ -123,10 +123,10 @@
 	</function>
 
 	<function>
-		<description>long now()</description>
-		<name>now</name>
+		<description>long nowMs()</description>
+		<name>nowMs</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>long now()</function-signature>
+		<function-signature>long nowMs()</function-signature>
 	</function>
 
 	<function>

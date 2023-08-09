@@ -29,7 +29,6 @@ import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.jsp.PageContext;
 
 /**
  *
@@ -188,12 +187,12 @@ public class Functions {
     }
 
     @Function
-    public static long now() {
+    public static long nowMs() {
 	return System.currentTimeMillis();
     }
 
     @Function
-    public static String copyrightYears(int startYear, String offsetId) {
+    public static String copyright(int startYear, String offsetId) {
 	LocalDate ld = (offsetId != null) ? DateUtils.nowAt(offsetId).toLocalDate() : LocalDate.now();
 
 	if (startYear == ld.getYear()) {
@@ -208,7 +207,7 @@ public class Functions {
     }
 
     @Function
-    public static boolean hasCookie(PageContext ctx, String cookieName) {
-	return ServletUtils.getCookieValue((HttpServletRequest) ctx.getRequest(), cookieName) != null;
+    public static boolean hasCookie(HttpServletRequest request, String cookieName) {
+	return ServletUtils.getCookieValue(request, cookieName) != null;
     }
 }
