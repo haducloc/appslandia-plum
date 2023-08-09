@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.pebble;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import io.pebbletemplates.pebble.extension.DynamicNamedArguments;
@@ -32,8 +32,10 @@ import io.pebbletemplates.pebble.extension.DynamicNamedArguments;
  */
 public abstract class DynPebbleFunction extends PebbleFunction implements DynamicNamedArguments {
 
+    private static final List<String> DYN_NAMED_ARGS = Arrays.asList("dynamicNamedArguments");
+
     @Override
     public List<String> getArgumentNames() {
-	return Collections.emptyList();
+	return DYN_NAMED_ARGS;
     }
 }
