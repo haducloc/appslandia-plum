@@ -23,10 +23,9 @@ package com.appslandia.plum.pebble;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
-import com.appslandia.plum.base.AppConfig;
+import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.results.ViewResult;
-import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,6 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class PebbleResult extends ViewResult {
 
+    private String contentType;
     private String characterEncoding;
 
     public PebbleResult() {
@@ -57,8 +57,13 @@ public class PebbleResult extends ViewResult {
 	super(path, model);
     }
 
-    public PebbleResult characterEncoding(String encoding) {
-	this.characterEncoding = encoding;
+    public PebbleResult contentType(String contentType) {
+	this.contentType = contentType;
+	return this;
+    }
+
+    public PebbleResult characterEncoding(String characterEncoding) {
+	this.characterEncoding = characterEncoding;
 	return this;
     }
 
@@ -74,15 +79,22 @@ public class PebbleResult extends ViewResult {
 
     @Override
     protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	if (this.characterEncoding != null) {
-	    response.setCharacterEncoding(this.characterEncoding);
+	response.setContentType(this.contentType != null ? this.contentType : MimeTypes.TEXT_HTML);
+	response.setCharacterEncoding(this.characterEncoding != null ? this.characterEncoding : StandardCharsets.UTF_8.name());
 
-	} else {
-	    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-	    response.setCharacterEncoding(appConfig.getString("pebble.character_encoding", StandardCharsets.UTF_8.name()));
-	}
 	PebbleUtils.executePebble(request, response, response.getWriter(), this.resolvedPath, this.model, requestContext.getLanguage().getLocale());
     }
 
-    public static final PebbleResult DEFAULT = new PebbleResult();
+    public static final PebbleResult DEFAULT = new PebbleResult() {
+
+	@Override
+	public PebbleResult contentType(String contentType) {
+	    throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public PebbleResult characterEncoding(String encoding) {
+	    throw new UnsupportedOperationException();
+	}
+    };
 }
