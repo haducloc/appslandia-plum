@@ -18,13 +18,6 @@
 	</function>
 
 	<function>
-		<description>java.lang.String copyright(int, java.lang.String)</description>
-		<name>copyright</name>
-		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String copyright(int, java.lang.String)</function-signature>
-	</function>
-
-	<function>
 		<description>java.lang.String deployEnv()</description>
 		<name>deployEnv</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>

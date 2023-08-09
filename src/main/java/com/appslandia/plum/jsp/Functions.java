@@ -20,10 +20,7 @@
 
 package com.appslandia.plum.jsp;
 
-import java.time.LocalDate;
-
 import com.appslandia.common.base.DeployEnv;
-import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.ServletUtils;
@@ -189,16 +186,6 @@ public class Functions {
     @Function
     public static long nowMs() {
 	return System.currentTimeMillis();
-    }
-
-    @Function
-    public static String copyright(int startYear, String offsetId) {
-	LocalDate ld = (offsetId != null) ? DateUtils.nowAt(offsetId).toLocalDate() : LocalDate.now();
-
-	if (startYear == ld.getYear()) {
-	    return Integer.toString(startYear);
-	}
-	return String.format("%d-%d", startYear, ld.getYear());
     }
 
     @Function
