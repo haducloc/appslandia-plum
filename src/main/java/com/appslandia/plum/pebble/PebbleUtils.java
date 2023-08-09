@@ -23,13 +23,13 @@ package com.appslandia.plum.pebble;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import com.appslandia.common.base.MapAccessor;
 import com.appslandia.common.utils.ArrayUtils;
+import com.appslandia.common.utils.StreamUtils;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -39,6 +39,7 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -89,14 +90,7 @@ public class PebbleUtils {
 
 	    @Override
 	    public int size() {
-		Enumeration<String> enumer = request.getAttributeNames();
-		int count = 0;
-
-		while (enumer.hasMoreElements()) {
-		    enumer.nextElement();
-		    count++;
-		}
-		return count;
+		return (int) StreamUtils.stream(request.getAttributeNames()).count();
 	    }
 
 	    @Override
@@ -106,15 +100,7 @@ public class PebbleUtils {
 
 	    @Override
 	    public boolean containsKey(Object key) {
-		Enumeration<String> enumer = request.getAttributeNames();
-		while (enumer.hasMoreElements()) {
-
-		    String attribute = enumer.nextElement();
-		    if (attribute.equals(key)) {
-			return true;
-		    }
-		}
-		return false;
+		return StreamUtils.stream(request.getAttributeNames()).anyMatch(a -> a.equals(key));
 	    }
 
 	    @Override
@@ -127,14 +113,11 @@ public class PebbleUtils {
 
 	    @Override
 	    public int size() {
-		Enumeration<String> enumer = request.getSession().getAttributeNames();
-		int count = 0;
-
-		while (enumer.hasMoreElements()) {
-		    enumer.nextElement();
-		    count++;
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+		    return 0;
 		}
-		return count;
+		return (int) StreamUtils.stream(session.getAttributeNames()).count();
 	    }
 
 	    @Override
@@ -144,20 +127,20 @@ public class PebbleUtils {
 
 	    @Override
 	    public boolean containsKey(Object key) {
-		Enumeration<String> enumer = request.getSession().getAttributeNames();
-		while (enumer.hasMoreElements()) {
-
-		    String attribute = enumer.nextElement();
-		    if (attribute.equals(key)) {
-			return true;
-		    }
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+		    return false;
 		}
-		return false;
+		return StreamUtils.stream(session.getAttributeNames()).anyMatch(a -> a.equals(key));
 	    }
 
 	    @Override
 	    public Object get(Object key) {
-		return request.getSession().getAttribute((String) key);
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+		    return null;
+		}
+		return session.getAttribute((String) key);
 	    }
 	});
 
@@ -165,14 +148,7 @@ public class PebbleUtils {
 
 	    @Override
 	    public int size() {
-		Enumeration<String> enumer = request.getServletContext().getAttributeNames();
-		int count = 0;
-
-		while (enumer.hasMoreElements()) {
-		    enumer.nextElement();
-		    count++;
-		}
-		return count;
+		return (int) StreamUtils.stream(request.getServletContext().getAttributeNames()).count();
 	    }
 
 	    @Override
@@ -182,15 +158,7 @@ public class PebbleUtils {
 
 	    @Override
 	    public boolean containsKey(Object key) {
-		Enumeration<String> enumer = request.getServletContext().getAttributeNames();
-		while (enumer.hasMoreElements()) {
-
-		    String attribute = enumer.nextElement();
-		    if (attribute.equals(key)) {
-			return true;
-		    }
-		}
-		return false;
+		return StreamUtils.stream(request.getServletContext().getAttributeNames()).anyMatch(a -> a.equals(key));
 	    }
 
 	    @Override
