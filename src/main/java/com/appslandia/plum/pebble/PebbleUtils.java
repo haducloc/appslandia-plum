@@ -23,6 +23,7 @@ package com.appslandia.plum.pebble;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -38,7 +39,6 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 
 /**
  *
@@ -88,6 +88,36 @@ public class PebbleUtils {
 	variables.put("requestScope", new MapAccessor<String, Object>() {
 
 	    @Override
+	    public int size() {
+		Enumeration<String> enumer = request.getAttributeNames();
+		int count = 0;
+
+		while (enumer.hasMoreElements()) {
+		    enumer.nextElement();
+		    count++;
+		}
+		return count;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		Enumeration<String> enumer = request.getAttributeNames();
+		while (enumer.hasMoreElements()) {
+
+		    String attribute = enumer.nextElement();
+		    if (attribute.equals(key)) {
+			return true;
+		    }
+		}
+		return false;
+	    }
+
+	    @Override
 	    public Object get(Object key) {
 		return request.getAttribute((String) key);
 	    }
@@ -96,13 +126,72 @@ public class PebbleUtils {
 	variables.put("sessionScope", new MapAccessor<String, Object>() {
 
 	    @Override
+	    public int size() {
+		Enumeration<String> enumer = request.getSession().getAttributeNames();
+		int count = 0;
+
+		while (enumer.hasMoreElements()) {
+		    enumer.nextElement();
+		    count++;
+		}
+		return count;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		Enumeration<String> enumer = request.getSession().getAttributeNames();
+		while (enumer.hasMoreElements()) {
+
+		    String attribute = enumer.nextElement();
+		    if (attribute.equals(key)) {
+			return true;
+		    }
+		}
+		return false;
+	    }
+
+	    @Override
 	    public Object get(Object key) {
-		HttpSession session = request.getSession(false);
-		return (session != null) ? session.getAttribute((String) key) : null;
+		return request.getSession().getAttribute((String) key);
 	    }
 	});
 
 	variables.put("applicationScope", new MapAccessor<String, Object>() {
+
+	    @Override
+	    public int size() {
+		Enumeration<String> enumer = request.getServletContext().getAttributeNames();
+		int count = 0;
+
+		while (enumer.hasMoreElements()) {
+		    enumer.nextElement();
+		    count++;
+		}
+		return count;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		Enumeration<String> enumer = request.getServletContext().getAttributeNames();
+		while (enumer.hasMoreElements()) {
+
+		    String attribute = enumer.nextElement();
+		    if (attribute.equals(key)) {
+			return true;
+		    }
+		}
+		return false;
+	    }
 
 	    @Override
 	    public Object get(Object key) {
@@ -113,12 +202,42 @@ public class PebbleUtils {
 	variables.put("param", new MapAccessor<String, String>() {
 
 	    @Override
+	    public int size() {
+		return request.getParameterMap().size();
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		return request.getParameterMap().containsKey(key);
+	    }
+
+	    @Override
 	    public String get(Object key) {
 		return request.getParameter((String) key);
 	    }
 	});
 
 	variables.put("paramValues", new MapAccessor<String, String[]>() {
+
+	    @Override
+	    public int size() {
+		return request.getParameterMap().size();
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		return request.getParameterMap().containsKey(key);
+	    }
 
 	    @Override
 	    public String[] get(Object key) {
@@ -128,6 +247,23 @@ public class PebbleUtils {
 
 	variables.put("header", new MapAccessor<String, String>() {
 
+	    final String[] headers = ArrayUtils.toArray(request.getHeaderNames(), String.class);
+
+	    @Override
+	    public int size() {
+		return this.headers.length;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		return Arrays.stream(this.headers).anyMatch(h -> h.equalsIgnoreCase((String) key));
+	    }
+
 	    @Override
 	    public String get(Object key) {
 		return request.getHeader((String) key);
@@ -135,6 +271,23 @@ public class PebbleUtils {
 	});
 
 	variables.put("headerValues", new MapAccessor<String, String[]>() {
+
+	    final String[] headers = ArrayUtils.toArray(request.getHeaderNames(), String.class);
+
+	    @Override
+	    public int size() {
+		return this.headers.length;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		return Arrays.stream(this.headers).anyMatch(h -> h.equalsIgnoreCase((String) key));
+	    }
 
 	    @Override
 	    public String[] get(Object key) {
@@ -144,6 +297,23 @@ public class PebbleUtils {
 
 	variables.put("initParam", new MapAccessor<String, String>() {
 
+	    final String[] initParams = ArrayUtils.toArray(request.getServletContext().getInitParameterNames(), String.class);
+
+	    @Override
+	    public int size() {
+		return this.initParams.length;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		return Arrays.stream(this.initParams).anyMatch(h -> h.equals(key));
+	    }
+
 	    @Override
 	    public String get(Object key) {
 		return request.getServletContext().getInitParameter((String) key);
@@ -151,6 +321,24 @@ public class PebbleUtils {
 	});
 
 	variables.put("cookie", new MapAccessor<String, Cookie>() {
+
+	    @Override
+	    public int size() {
+		return (request.getCookies() != null) ? request.getCookies().length : 0;
+	    }
+
+	    @Override
+	    public boolean isEmpty() {
+		return size() == 0;
+	    }
+
+	    @Override
+	    public boolean containsKey(Object key) {
+		if (request.getCookies() == null) {
+		    return false;
+		}
+		return Arrays.stream(request.getCookies()).anyMatch(c -> c.getName().equalsIgnoreCase((String) key));
+	    }
 
 	    @Override
 	    public Cookie get(Object key) {
