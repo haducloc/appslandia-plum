@@ -22,63 +22,60 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
-import com.appslandia.plum.utils.HtmlUtils;
-
+import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.JspWriter;
+import jakarta.servlet.jsp.PageContext;
+import jakarta.servlet.jsp.tagext.JspFragment;
+import jakarta.servlet.jsp.tagext.JspTag;
+import jakarta.servlet.jsp.tagext.SimpleTag;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "checkMark", dynamicAttributes = false)
-public class CheckMarkTag extends UITagBase {
+@Tag(name = "symbol", dynamicAttributes = false)
+public class SymbolTag implements SimpleTag {
+
+    protected String name;
+    protected boolean render = true;
+
+    protected PageContext pageContext;
 
     @Override
-    protected String getTagName() {
-	return "span";
-    }
+    public void doTag() throws JspException, IOException {
+	String code = SymbolUtils.getHtmlCode(this.name);
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (this.clazz == null) {
-	    this.clazz = "check-mark";
+	if (this.render) {
+	    this.pageContext.getOut().write(code);
 	}
     }
 
     @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "class", this.clazz);
+    public void setParent(JspTag parent) {
     }
 
     @Override
-    protected boolean hasBody() {
-	return true;
+    public JspTag getParent() {
+	throw new UnsupportedOperationException();
     }
 
     @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	out.write("&#10003;");
+    public void setJspContext(JspContext pc) {
+	this.pageContext = (PageContext) pc;
     }
 
     @Override
-    public void setId(String id) {
+    public void setJspBody(JspFragment jspBody) {
     }
 
-    @Override
-    public void setDatatag(Object datatag) {
+    @Attribute(required = true, rtexprvalue = false)
+    public void setName(String name) {
+	this.name = name;
     }
 
-    @Override
-    public void setHidden(boolean hidden) {
-    }
-
-    @Override
-    public void setStyle(String style) {
-    }
-
-    @Override
-    public void setTitle(String title) {
+    @Attribute(required = false, rtexprvalue = true)
+    public void setRender(boolean render) {
+	this.render = render;
     }
 }

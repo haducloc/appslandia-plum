@@ -78,11 +78,7 @@ public class TagTldGenerator {
 	generateTag(UrlTag.class, sb);
 
 	generateTag(MessagesTag.class, sb);
-	generateTag(VerBarTag.class, sb);
-	generateTag(CheckMarkTag.class, sb);
-
 	generateTag(ControlTag.class, sb);
-	generateTag(EvalTag.class, sb);
 	generateTag(UserDNameTag.class, sb);
 
 	generateTag(TemplateTag.class, sb);
@@ -90,10 +86,11 @@ public class TagTldGenerator {
 	generateTag(NewLineTag.class, sb);
 	generateTag(MailtoTag.class, sb);
 
-	generateTag(FmtDateTag.class, sb);
+	generateTag(DaysTag.class, sb);
 	generateTag(PageUrlTag.class, sb);
 	generateTag(IfEnvTag.class, sb);
 	generateTag(DeployEnvTag.class, sb);
+	generateTag(SymbolTag.class, sb);
 
 	System.out.println(sb);
     }

@@ -2301,43 +2301,6 @@
 	</tag>
 
 	<tag>
-		<description>verBar|body=empty</description>
-		<name>verBar</name>
-		<tag-class>com.appslandia.plum.jsp.VerBarTag</tag-class>
-		<body-content>empty</body-content>
-		<attribute>
-			<description>clazz|type=java.lang.String|expression</description>
-			<name>clazz</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
-	</tag>
-
-	<tag>
-		<description>checkMark|body=empty</description>
-		<name>checkMark</name>
-		<tag-class>com.appslandia.plum.jsp.CheckMarkTag</tag-class>
-		<body-content>empty</body-content>
-		<attribute>
-			<description>clazz|type=java.lang.String|expression</description>
-			<name>clazz</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>render|type=boolean|expression</description>
-			<name>render</name>
-			<required>false</required>
-			<rtexprvalue>true</rtexprvalue>
-			<type>boolean</type>
-		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
-	</tag>
-
-	<tag>
 		<description>c|body=scriptless|dynamicAttributes</description>
 		<name>c</name>
 		<tag-class>com.appslandia.plum.jsp.ControlTag</tag-class>
@@ -2399,28 +2362,6 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<dynamic-attributes>true</dynamic-attributes>
-	</tag>
-
-	<tag>
-		<description>eval|body=empty</description>
-		<name>eval</name>
-		<tag-class>com.appslandia.plum.jsp.EvalTag</tag-class>
-		<body-content>empty</body-content>
-		<attribute>
-			<description>esc|type=boolean</description>
-			<name>esc</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>boolean</type>
-		</attribute>
-		<attribute>
-			<description>path|type=java.lang.String</description>
-			<name>path</name>
-			<required>true</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 
 	<tag>
@@ -2632,9 +2573,9 @@
 	</tag>
 
 	<tag>
-		<description>fmtDate|body=empty</description>
-		<name>fmtDate</name>
-		<tag-class>com.appslandia.plum.jsp.FmtDateTag</tag-class>
+		<description>days|body=empty</description>
+		<name>days</name>
+		<tag-class>com.appslandia.plum.jsp.DaysTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>value|type=java.lang.Object|expression</description>
@@ -2674,6 +2615,28 @@
 		<name>deployEnv</name>
 		<tag-class>com.appslandia.plum.jsp.DeployEnvTag</tag-class>
 		<body-content>empty</body-content>
+		<dynamic-attributes>false</dynamic-attributes>
+	</tag>
+
+	<tag>
+		<description>symbol|body=empty</description>
+		<name>symbol</name>
+		<tag-class>com.appslandia.plum.jsp.SymbolTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>name|type=java.lang.String</description>
+			<name>name</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>render|type=boolean|expression</description>
+			<name>render</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>boolean</type>
+		</attribute>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 

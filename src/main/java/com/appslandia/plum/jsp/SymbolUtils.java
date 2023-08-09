@@ -20,69 +20,42 @@
 
 package com.appslandia.plum.jsp;
 
-import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.appslandia.plum.utils.HtmlUtils;
-
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.JspWriter;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "verBar", dynamicAttributes = false)
-public class VerBarTag extends UITagBase {
+public class SymbolUtils {
 
-    @Override
-    protected String getTagName() {
-	return "span";
+    private static final Map<String, String> SYMBOLS;
+
+    static {
+	Map<String, String> symbols = new HashMap<>();
+
+	symbols.put("ballot_box", "&#9744;");
+	symbols.put("ballot_box_check", "&#9745;");
+	symbols.put("ballot_box_x", "&#9746;");
+
+	symbols.put("check_mark", "&check;");
+	symbols.put("check_mark_heavy", "&#10004;");
+
+	symbols.put("vertical_bar", "&#124;");
+	symbols.put("vertical_bar_broken", "&#166;");
+
+	symbols.put("plus_sign", "&plus;");
+	symbols.put("minus_sign", "&minus;");
+
+	SYMBOLS = Collections.unmodifiableMap(symbols);
     }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (this.clazz == null) {
-	    this.clazz = "ver-bar";
-	}
-    }
-
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "class", this.clazz);
-    }
-
-    @Override
-    protected boolean hasBody() {
-	return true;
-    }
-
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	out.write("&#124;");
-    }
-
-    @Override
-    public void setId(String id) {
-    }
-
-    @Override
-    public void setDatatag(Object datatag) {
-    }
-
-    @Override
-    public void setHidden(boolean hidden) {
-    }
-
-    @Override
-    public void setStyle(String style) {
-    }
-
-    @Override
-    public void setTitle(String title) {
-    }
-
-    @Override
-    public void setRender(boolean render) {
+    public static String getHtmlCode(String symbolName) {
+	String code = SYMBOLS.get(symbolName);
+	return Asserts.notNull(code);
     }
 }

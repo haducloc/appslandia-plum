@@ -39,8 +39,8 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "fmtDate", dynamicAttributes = false)
-public class FmtDateTag extends TagBase {
+@Tag(name = "days", dynamicAttributes = false)
+public class DaysTag extends TagBase {
 
     private Object value;
     private String zoneId;
