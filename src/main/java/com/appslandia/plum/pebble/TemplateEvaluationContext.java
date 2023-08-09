@@ -56,7 +56,8 @@ public class TemplateEvaluationContext {
     }
 
     public Map<String, Object> parseParameters() {
-	return this.arguments.entrySet().stream().filter(entry -> TagUtils.isForParameter(entry.getKey())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+	return this.arguments.entrySet().stream().filter(entry -> TagUtils.isForParameter(entry.getKey()))
+		.collect(Collectors.toMap(e -> TagUtils.getParameterName(e.getKey()), e -> e.getValue()));
     }
 
     public HttpServletRequest getRequest() {
