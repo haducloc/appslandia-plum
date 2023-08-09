@@ -20,34 +20,28 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
-import com.appslandia.plum.pebble.PebbleExtensionProvider;
+import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.base.UserPrincipal;
+import com.appslandia.plum.pebble.DynPebbleFunction;
+import com.appslandia.plum.pebble.TemplateEvaluationContext;
+import com.appslandia.plum.utils.ServletUtils;
 
-import io.pebbletemplates.pebble.extension.Function;
-import jakarta.enterprise.context.ApplicationScoped;
+import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
+public class UserDNameFunction extends DynPebbleFunction {
 
     @Override
-    public Map<String, Function> getFunctions() {
-	Map<String, Function> impls = new HashMap<>();
+    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+	UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
 
-	impls.put("userDName", new UserDNameFunction());
-	impls.put("actionUrl", new ActionUrlFunction());
-
-	impls.put("mailto", new MailtoFunction());
-	impls.put("symbol", new SymbolFunction());
-
-	impls.put("deployEnv", new DeployEnvFunction());
-	impls.put("currentTimeMs", new CurrentTimeMsFunction());
-	return impls;
+	boolean esc = context.getBool("esc", true);
+	return new SafeString(esc ? XmlEscaper.escapeXml(principal.getDisplayName()) : principal.getDisplayName());
     }
 }
