@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appslandia</groupId>
 	<artifactId>appslandia-plum</artifactId>
-	<version>16.8.1</version>
+	<version>16.8.3</version>
 	<name>appslandia-plum</name>
 	<packaging>jar</packaging>
 	<description>AppsLandia Plum - Java Web Framework</description>
