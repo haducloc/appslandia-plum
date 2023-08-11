@@ -46,4 +46,8 @@ public abstract class PebbleFunction implements Function {
     }
 
     protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException;
+
+    public String getDescription() {
+	return null;
+    }
 }
