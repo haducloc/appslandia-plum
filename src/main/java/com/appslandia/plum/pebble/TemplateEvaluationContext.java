@@ -102,7 +102,7 @@ public class TemplateEvaluationContext {
     }
 
     public <T> T getRequiredArgument(String name) {
-	return Asserts.notNull((T) this.arguments.get(name));
+	return Asserts.notNull((T) this.arguments.get(name), () -> STR.fmt("The argument {} is required.", name));
     }
 
     public <T> T getVariable(String name) {
