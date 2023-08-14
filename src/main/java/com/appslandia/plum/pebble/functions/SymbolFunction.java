@@ -36,6 +36,11 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
 public class SymbolFunction extends DynPebbleFunction {
 
     @Override
+    public String getDescription() {
+	return "variables: name*, render";
+    }
+
+    @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String name = context.getRequiredArgument("name");
 	String value = SymbolUtils.getHtmlCode(name);

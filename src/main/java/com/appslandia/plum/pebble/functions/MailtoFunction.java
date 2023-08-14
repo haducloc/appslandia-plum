@@ -38,6 +38,11 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
 public class MailtoFunction extends DynPebbleFunction {
 
     @Override
+    public String getDescription() {
+	return "variables: to*, cc, bcc, subject, body, esc";
+    }
+
+    @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String to = context.getRequiredArgument("to");
 	String cc = context.getArgument("cc");

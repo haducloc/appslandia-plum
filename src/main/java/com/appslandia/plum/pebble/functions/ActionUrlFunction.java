@@ -38,6 +38,11 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
 public class ActionUrlFunction extends DynPebbleFunction {
 
     @Override
+    public String getDescription() {
+	return "variables: action*, controller, absUrl, esc";
+    }
+
+    @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
 	String action = context.getRequiredArgument("action");
 

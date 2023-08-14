@@ -38,6 +38,11 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
 public class UserDNameFunction extends DynPebbleFunction {
 
     @Override
+    public String getDescription() {
+	return "variables: esc";
+    }
+
+    @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
 
