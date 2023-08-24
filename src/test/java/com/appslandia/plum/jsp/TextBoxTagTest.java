@@ -204,8 +204,7 @@ public class TextBoxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = date & browserFeatures is not parsed
-	    Assertions.assertTrue(html.contains("value=\"2005-12-31\""));
+	    Assertions.assertTrue(html.contains("value=\"31/12/2005\""));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -213,9 +212,9 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_inputdate__inputfeature() {
+    public void test_inputdate_browserFeatures() {
 	try {
-	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_NUMBER);
+	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
 
 	    model.setDob(DateUtils.iso8601Date("2005-12-31"));
 	    tag.setPath("model.dob");
@@ -224,8 +223,7 @@ public class TextBoxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = date & browserFeatures is not INPUT_DATE
-	    Assertions.assertTrue(html.contains("value=\"31/12/2005\""));
+	    Assertions.assertTrue(html.contains("value=\"2005-12-31\""));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -260,8 +258,8 @@ public class TextBoxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = number & browserFeatures is not parsed
-	    Assertions.assertTrue(html.contains("value=\"99999.124\""));
+	    // type = number
+	    Assertions.assertTrue(html.contains("value=\"99999,124\""));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -269,9 +267,9 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_inputnumber__inputfeature() {
+    public void test_inputnumber_browserFeatures() {
 	try {
-	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
+	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_NUMBER);
 
 	    model.setSalary(99999.1235);
 	    tag.setPath("model.salary");
@@ -280,8 +278,7 @@ public class TextBoxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = number & browserFeatures is not INPUT_NUMBER
-	    Assertions.assertTrue(html.contains("value=\"99999,124\""));
+	    Assertions.assertTrue(html.contains("value=\"99999.124\""));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
