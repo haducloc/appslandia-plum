@@ -20,6 +20,10 @@
 
 package com.appslandia.plum.jsp;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.appslandia.plum.base.BrowserFeatures;
 import com.appslandia.plum.base.RequestContext;
 
@@ -31,87 +35,44 @@ import com.appslandia.plum.base.RequestContext;
 public class TextBoxUtils {
 
     public static String formatValue(RequestContext requestContext, Object value, String converter, String type) {
-	if (value == null) {
-	    return null;
-	}
-	if (value.getClass() == String.class) {
-	    return (String) value;
-	}
-
-	// hidden
-	if ("hidden".equals(type)) {
-	    return requestContext.fmt(value, converter, false);
-	}
-
-	// text
-	if ("text".equals(type)) {
+	if (type == null) {
 	    return requestContext.fmt(value, converter, true);
-	}
 
-	// number
-	if ("number".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
+	} else if ("hidden".equals(type)) {
+	    return requestContext.fmt(value, converter, false);
+
+	} else {
+	    Integer feature = TextBoxUtils.getBrowserFeature(type);
+	    Integer browserFeatures = requestContext.getBrowserFeatures();
+
+	    if (browserFeatures != null && feature != null && (browserFeatures & feature) == feature) {
 		return requestContext.fmt(value, converter, false);
+
 	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_NUMBER) != BrowserFeatures.INPUT_NUMBER);
+		return requestContext.fmt(value, converter, true);
 	    }
 	}
+    }
 
-	// range
-	if ("range".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
-		return requestContext.fmt(value, converter, false);
-	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_RANGE) != BrowserFeatures.INPUT_RANGE);
-	    }
-	}
+    static final Map<String, Integer> TYPE_FEATURES;
 
-	// date
-	if ("date".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
-		return requestContext.fmt(value, converter, false);
-	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_DATE) != BrowserFeatures.INPUT_DATE);
-	    }
-	}
+    static {
+	Map<String, Integer> map = new HashMap<>();
 
-	// time
-	if ("time".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
-		return requestContext.fmt(value, converter, false);
-	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_TIME) != BrowserFeatures.INPUT_TIME);
-	    }
-	}
+	map.put("number", BrowserFeatures.INPUT_NUMBER);
+	map.put("range", BrowserFeatures.INPUT_RANGE);
 
-	// datetime-local
-	if ("datetime-local".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
-		return requestContext.fmt(value, converter, false);
-	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_DATETIME_LOCAL) != BrowserFeatures.INPUT_DATETIME_LOCAL);
-	    }
-	}
+	map.put("date", BrowserFeatures.INPUT_DATE);
+	map.put("time", BrowserFeatures.INPUT_TIME);
+	map.put("datetime-local", BrowserFeatures.INPUT_DATETIME_LOCAL);
 
-	// month
-	if ("month".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
-		return requestContext.fmt(value, converter, false);
-	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_MONTH) != BrowserFeatures.INPUT_MONTH);
-	    }
-	}
+	map.put("month", BrowserFeatures.INPUT_MONTH);
+	map.put("week", BrowserFeatures.INPUT_WEEK);
 
-	// week
-	if ("week".equals(type)) {
-	    if (requestContext.getBrowserFeatures() == null) {
-		return requestContext.fmt(value, converter, false);
-	    } else {
-		return requestContext.fmt(value, converter, (requestContext.getBrowserFeatures() & BrowserFeatures.INPUT_WEEK) != BrowserFeatures.INPUT_WEEK);
-	    }
-	}
+	TYPE_FEATURES = Collections.unmodifiableMap(map);
+    }
 
-	// Others: localize = true
-	return requestContext.fmt(value, converter, true);
+    public static Integer getBrowserFeature(String inputType) {
+	return TYPE_FEATURES.get(inputType);
     }
 }

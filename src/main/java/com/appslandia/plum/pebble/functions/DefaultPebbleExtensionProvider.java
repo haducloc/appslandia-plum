@@ -26,6 +26,7 @@ import java.util.Map;
 import com.appslandia.plum.pebble.PebbleExtensionProvider;
 
 import io.pebbletemplates.pebble.extension.Function;
+import io.pebbletemplates.pebble.extension.Test;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
@@ -40,6 +41,27 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
     public Map<String, Function> getFunctions() {
 	Map<String, Function> impls = new HashMap<>();
 
+	impls.put("label", new LabelFunction());
+	impls.put("input", new InputFunction());
+	impls.put("checkbox", new CheckboxFunction());
+	impls.put("radio", new RadioFunction());
+	impls.put("textarea", new TextAreaFunction());
+
+	impls.put("select", new SelectFunction());
+	impls.put("selectItems", new SelectItemsFunction());
+	impls.put("datalist", new DatalistFunction());
+
+	impls.put("hiddenCheckbox", new HiddenCheckboxFunction());
+	impls.put("hiddenRadio", new HiddenRadioFunction());
+	impls.put("hiddenSelect", new HiddenSelectFunction());
+
+	impls.put("fieldClass", new FieldClassFunction());
+	impls.put("fieldValue", new FieldValueFunction());
+	impls.put("fieldError", new FieldErrorFunction());
+
+	impls.put("messages", new MessagesFunction());
+	impls.put("formErrors", new FormErrorsFunction());
+
 	impls.put("userDName", new UserDNameFunction());
 	impls.put("actionUrl", new ActionUrlFunction());
 
@@ -48,6 +70,14 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 
 	impls.put("deployEnv", new DeployEnvFunction());
 	impls.put("nowMs", new NowMsFunction());
+	return impls;
+    }
+
+    @Override
+    public Map<String, Test> getTests() {
+	Map<String, Test> impls = new HashMap<>();
+
+	impls.put("env", new IsEnvTest());
 	return impls;
     }
 }

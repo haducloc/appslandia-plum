@@ -20,45 +20,29 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.Map;
+import java.util.List;
 
-import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.ActionParser;
-import com.appslandia.plum.pebble.DynPebbleFunction;
+import com.appslandia.common.base.DeployEnv;
+import com.appslandia.plum.pebble.PebbleTest;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
-import com.appslandia.plum.utils.ServletUtils;
 
-import io.pebbletemplates.pebble.extension.escaper.SafeString;
+import io.pebbletemplates.pebble.error.PebbleException;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ActionUrlFunction extends DynPebbleFunction {
+public class IsEnvTest extends PebbleTest {
 
     @Override
-    public String getDescription() {
-	return "variables: action*, controller, absUrl, esc";
+    protected boolean doExecute(Object input, TemplateEvaluationContext context, int lineNumber) throws PebbleException {
+	String name = (String) input;
+	return DeployEnv.getCurrent().getName().equals(name);
     }
 
     @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
-	String action = context.getRequiredArgument("action");
-
-	String controller = context.getArgument("controller");
-	if (controller == null) {
-	    controller = context.getRequestContext().getActionDesc().getController();
-	}
-
-	boolean abs = context.getBool("abs", false);
-	Map<String, Object> parameters = context.parseParameters();
-
-	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, abs);
-	url = context.getResponse().encodeURL(url);
-
-	boolean esc = context.getBool("esc", true);
-	return new SafeString(esc ? XmlEscaper.escapeXml(url) : url);
+    public List<String> getArgumentNames() {
+	return null;
     }
 }

@@ -88,7 +88,9 @@ import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
 import com.appslandia.plum.defaults.DefaultServletModuleParser;
 import com.appslandia.plum.defaults.MemAppCacheManager;
 import com.appslandia.plum.defaults.MemAuthTokenManager;
+import com.appslandia.plum.pebble.PebbleExtensionProvider;
 import com.appslandia.plum.pebble.PebbleTemplateProvider;
+import com.appslandia.plum.pebble.functions.DefaultPebbleExtensionProvider;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.security.enterprise.AuthenticationException;
@@ -318,6 +320,7 @@ public class MockContainer extends InitializeObject {
 
 	// PebbleTemplateProvider
 	factory.register(PebbleTemplateProvider.class, MemPebbleTemplateProvider.class);
+	factory.register(PebbleExtensionProvider.class, DefaultPebbleExtensionProvider.class);
 
 	factory.register(JwtSigner.class, new ObjectProducer<JwtSigner>() {
 

@@ -21,55 +21,73 @@
 package com.appslandia.plum.pebble.functions;
 
 import java.io.IOException;
+import java.util.List;
 
-import com.appslandia.common.utils.StringUtils;
-import com.appslandia.common.utils.URLEncoding;
+import com.appslandia.common.base.StringWriter;
 import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.base.Message;
+import com.appslandia.plum.base.Messages;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
-
-import io.pebbletemplates.pebble.extension.escaper.SafeString;
+import com.appslandia.plum.utils.HtmlUtils;
 
 /**
  *
- * @author <a href="out:haducloc13@gmail.com">Loc Ha</a>
+ * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MailtoFunction extends DynPebbleFunction {
+public class MessagesFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: to*, cc, bcc, subject, body, esc";
+	return "variables: type*";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String to = context.getRequiredArgument("to");
-	String cc = context.getArgument("cc");
-	String bcc = context.getArgument("bcc");
+	int type = context.getRequiredArgument("type");
 
-	String subject = context.getArgument("subject");
-	String body = context.getArgument("body");
+	List<Message> messages = (Messages) context.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
+	List<Message> msgs = messages.stream().filter(m -> m.getType() == type).toList();
 
-	StringBuilder out = new StringBuilder(256);
+	StringWriter out = new StringWriter(msgs.size() * 128);
+	out.write("<ul class=\"l-messages\">");
 
-	out.append("mailto:").append(to);
-	out.append("?t=").append(System.currentTimeMillis());
+	for (Message msg : msgs) {
+	    String itemClass = getItemClass(type);
 
-	if (!StringUtils.isNullOrEmpty(cc)) {
-	    out.append("&cc=").append(cc);
+	    out.write(System.lineSeparator());
+	    out.write("<li");
+	    HtmlUtils.escAttribute(out, "class", itemClass);
+	    out.write(">");
+
+	    if (msg.isEscXml()) {
+		XmlEscaper.escapeXmlContent(out, msg.getText());
+	    } else {
+		out.write(msg.getText());
+	    }
+	    out.write("</li>");
 	}
-	if (!StringUtils.isNullOrEmpty(bcc)) {
-	    out.append("&bcc=").append(bcc);
-	}
-	if (!StringUtils.isNullOrEmpty(subject)) {
-	    out.append("&subject=").append(URLEncoding.encodeParam(subject, false));
-	}
-	if (!StringUtils.isNullOrEmpty(body)) {
-	    out.append("&body=").append(URLEncoding.encodeParam(body, false));
-	}
 
-	boolean esc = context.getBool("esc", true);
-	return new SafeString(esc ? XmlEscaper.escapeXml(out.toString()) : out.toString());
+	out.write("</ul>");
+	return out.toString();
+    }
+
+    public static String getItemClass(int type) {
+	switch (type) {
+	case Message.TYPE_INFO:
+	    return "l-msg l-msg-info";
+
+	case Message.TYPE_NOTICE:
+	    return "l-msg l-msg-notice";
+
+	case Message.TYPE_WARN:
+	    return "l-msg l-msg-warn";
+
+	case Message.TYPE_ERROR:
+	    return "l-msg l-msg-error";
+	default:
+	    throw new IllegalArgumentException("type is invalid.");
+	}
     }
 }

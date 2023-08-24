@@ -20,13 +20,14 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.Map;
+import java.io.IOException;
+import java.io.StringWriter;
 
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.ActionParser;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
-import com.appslandia.plum.utils.ServletUtils;
+import com.appslandia.plum.utils.HtmlUtils;
 
 import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
@@ -35,30 +36,49 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ActionUrlFunction extends DynPebbleFunction {
+public abstract class CheckInputFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: action*, controller, absUrl, esc";
+	return "variables: path*, codeValue*, converter, readonly";
     }
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
-	String action = context.getRequiredArgument("action");
+    protected abstract boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue);
 
-	String controller = context.getArgument("controller");
-	if (controller == null) {
-	    controller = context.getRequestContext().getActionDesc().getController();
+    @Override
+    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+	String path = context.getRequiredArgument("path");
+	Object codeValue = context.getRequiredArgument("codeValue");
+
+	String converter = context.getArgument("converter");
+	boolean readonly = context.getBool("readonly", false);
+
+	int nameIdx = path.indexOf('.');
+	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+	String name = path.substring(nameIdx + 1);
+
+	Object value = context.getELProcessor().eval(path);
+	String codeVal = context.getRequestContext().fmt(codeValue, converter, false);
+	String fmtValue = context.getRequestContext().fmt(value, converter, false);
+
+	StringWriter out = new StringWriter(128);
+
+	out.write("id=\"");
+	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(name));
+	out.write("\"");
+
+	HtmlUtils.escAttribute(out, "name", name);
+	HtmlUtils.escAttribute(out, "value", codeVal);
+
+	// checked
+	if (isChecked(context, codeVal, fmtValue)) {
+	    HtmlUtils.checked(out);
 	}
 
-	boolean abs = context.getBool("abs", false);
-	Map<String, Object> parameters = context.parseParameters();
+	// readonly
+	if (readonly)
+	    HtmlUtils.disabled(out);
 
-	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, abs);
-	url = context.getResponse().encodeURL(url);
-
-	boolean esc = context.getBool("esc", true);
-	return new SafeString(esc ? XmlEscaper.escapeXml(url) : url);
+	return new SafeString(out.toString());
     }
 }

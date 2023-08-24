@@ -20,13 +20,12 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.Map;
+import java.io.IOException;
+import java.util.Objects;
 
-import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.ActionParser;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
-import com.appslandia.plum.utils.ServletUtils;
 
 import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
@@ -35,30 +34,27 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ActionUrlFunction extends DynPebbleFunction {
+public class FieldClassFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: action*, controller, absUrl, esc";
+	return "variables: path*, form";
     }
 
     @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
-	String action = context.getRequiredArgument("action");
+    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+	String path = context.getRequiredArgument("path");
+	String form = context.getArgument("form");
 
-	String controller = context.getArgument("controller");
-	if (controller == null) {
-	    controller = context.getRequestContext().getActionDesc().getController();
+	int nameIdx = path.indexOf('.');
+	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+	String name = path.substring(nameIdx + 1);
+
+	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
+
+	if (isValid) {
+	    return new SafeString("l-no-op");
 	}
-
-	boolean abs = context.getBool("abs", false);
-	Map<String, Object> parameters = context.parseParameters();
-
-	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, abs);
-	url = context.getResponse().encodeURL(url);
-
-	boolean esc = context.getBool("esc", true);
-	return new SafeString(esc ? XmlEscaper.escapeXml(url) : url);
+	return new SafeString("l-error-field");
     }
 }
