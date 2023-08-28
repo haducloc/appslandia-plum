@@ -20,13 +20,15 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.Map;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.base.Params;
 import com.appslandia.common.base.StringWriter;
+import com.appslandia.common.models.SelectItemImpl;
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
@@ -43,7 +45,7 @@ import jakarta.validation.constraints.NotNull;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SelectFunctionTest extends MockTestBase {
+public class OptionsFunctionTest extends MockTestBase {
 
     protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
@@ -57,7 +59,7 @@ public class SelectFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		{{ select(path='model.userType') }}
+			{{ options(path='model.userType', items=items) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -65,13 +67,41 @@ public class SelectFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userType", "1");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+	    Params model = new Params();
+	    model.set("model", getCurrentRequest().getAttribute("model"));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\"", content);
+	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option> <option value=\"2\">Type2</option>", NormalizeUtils.normalizeString(content));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
+    public void test_unselected() {
+	String templateContent = """
+			{{ options(path='model.userType', items=items) }}
+		""";
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+	try {
+	    getCurrentRequest().addParameter("userType", "4");
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    Params model = new Params();
+	    model.set("model", getCurrentRequest().getAttribute("model"));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals("<option value=\"1\">Type1</option> <option value=\"2\">Type2</option>", NormalizeUtils.normalizeString(content));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -81,7 +111,7 @@ public class SelectFunctionTest extends MockTestBase {
     @Test
     public void test_readonly() {
 	String templateContent = """
-		{{ select(path='model.userType', readonly=true) }}
+			{{ options(path='model.userType', items=items, readonly=true) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -89,13 +119,40 @@ public class SelectFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userType", "1");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+	    Params model = new Params();
+	    model.set("model", getCurrentRequest().getAttribute("model"));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\" disabled=\"disabled\"", content);
+	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option>", NormalizeUtils.normalizeString(content));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
+    public void test_unselected_readonly() {
+	String templateContent = """
+			{{ options(path='model.userType', items=items, readonly=true) }}
+		""";
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+	try {
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    Params model = new Params();
+	    model.set("model", getCurrentRequest().getAttribute("model"));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals("", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

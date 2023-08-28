@@ -57,9 +57,9 @@ public abstract class CheckInputFunction extends DynPebbleFunction {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
-	Object value = context.getELProcessor().eval(path);
-	String codeVal = context.getRequestContext().fmt(codeValue, converter, false);
-	String fmtValue = context.getRequestContext().fmt(value, converter, false);
+	Object value = context.evaluate(path);
+	String codeVal = context.getRequestContext().format(codeValue, converter, false);
+	String fmtValue = context.getRequestContext().format(value, converter, false);
 
 	StringWriter out = new StringWriter(128);
 

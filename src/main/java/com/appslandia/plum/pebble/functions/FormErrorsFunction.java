@@ -39,6 +39,7 @@ import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.SimpleCsrfManager;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
+import com.appslandia.plum.utils.HtmlUtils;
 
 import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
@@ -51,38 +52,46 @@ public class FormErrorsFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: orderBy, modelLevelOnly, form";
+	return "variables: orderBy, fieldErrors, form";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String orderBy = context.getArgument("orderBy");
-	boolean modelLevelOnly = context.getBool("modelLevelOnly", true);
+	boolean fieldErrors = context.getBool("fieldErrors", true);
 	String form = context.getArgument("form");
 
+	String boxClass = context.getArgument("boxClass");
+	String msgClass = context.getArgument("msgClass");
+
 	boolean hasErrors = false;
-	if (modelLevelOnly) {
-	    hasErrors = Objects.equals(form, context.getModelState().getForm()) && !context.getModelState().isValid(ModelState.MODEL_FIELD);
-	} else {
+	if (fieldErrors) {
 	    hasErrors = Objects.equals(form, context.getModelState().getForm()) && !context.getModelState().isValid();
+	} else {
+	    hasErrors = Objects.equals(form, context.getModelState().getForm())
+		    && !(context.getModelState().isValid(ModelState.MODEL_FIELD) && context.getModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
 	}
 
 	if (hasErrors) {
 	    StringWriter out = new StringWriter(context.getModelState().getErrors().size() * 128);
-	    out.write("<ul class=\"l-field-errors\">");
+
+	    out.write("<ul");
+	    if (boxClass != null)
+		HtmlUtils.escAttribute(out, "class", boxClass);
+	    out.write(">");
 
 	    // Write field errors
-	    if (!modelLevelOnly) {
+	    if (fieldErrors) {
 
-		List<Entry<String, List<Message>>> fieldErrors = new ArrayList<>(context.getModelState().getErrors().entrySet());
+		List<Entry<String, List<Message>>> errors = new ArrayList<>(context.getModelState().getErrors().entrySet());
 		if (orderBy != null) {
-		    Collections.sort(fieldErrors, toFieldComparator(orderBy));
+		    Collections.sort(errors, toFieldComparator(orderBy));
 		}
 
-		for (Entry<String, List<Message>> fieldError : fieldErrors) {
+		for (Entry<String, List<Message>> fieldError : errors) {
 		    if (!fieldError.getKey().equals(ModelState.MODEL_FIELD) && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
 
-			this.writeMessages(out, fieldError.getValue());
+			this.writeMessages(out, fieldError.getValue(), msgClass);
 		    }
 		}
 	    }
@@ -90,13 +99,13 @@ public class FormErrorsFunction extends DynPebbleFunction {
 	    // Model errors
 	    List<Message> errors = context.getModelState().getErrors().get(ModelState.MODEL_FIELD);
 	    if (errors != null) {
-		this.writeMessages(out, errors);
+		this.writeMessages(out, errors, msgClass);
 	    }
 
 	    // CSRF
 	    errors = context.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
 	    if (errors != null) {
-		this.writeMessages(out, errors);
+		this.writeMessages(out, errors, msgClass);
 	    }
 
 	    out.write("</ul>");
@@ -105,14 +114,22 @@ public class FormErrorsFunction extends DynPebbleFunction {
 	return null;
     }
 
-    protected void writeMessages(Writer out, List<Message> messages) throws IOException {
-	out.write(System.lineSeparator());
-
+    protected void writeMessages(Writer out, List<Message> messages, String msgClass) throws IOException {
 	for (Message message : messages) {
-	    out.write("<li class=\"l-field-error\">");
+	    out.write(System.lineSeparator());
+
+	    out.write("<li");
+	    if (msgClass == null) {
+		HtmlUtils.escAttribute(out, "class", "l-field-error");
+	    } else {
+		out.write(" class=\"");
+		out.write(msgClass);
+		out.write(" l-field-error\"");
+	    }
+	    out.write(">");
 
 	    if (message.isEscXml()) {
-		XmlEscaper.escapeXmlContent(out, message.getText());
+		XmlEscaper.escapeXml(out, message.getText());
 	    } else {
 		out.write(message.getText());
 	    }

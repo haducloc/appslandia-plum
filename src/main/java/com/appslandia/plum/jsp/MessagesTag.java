@@ -76,7 +76,7 @@ public class MessagesTag extends TagBase {
 	    out.write("<li>");
 
 	    if (msg.isEscXml()) {
-		XmlEscaper.escapeXmlContent(out, msg.getText());
+		XmlEscaper.escapeXml(out, msg.getText());
 	    } else {
 		out.write(msg.getText());
 	    }

@@ -20,15 +20,13 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.Arrays;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.base.Params;
 import com.appslandia.common.base.StringWriter;
-import com.appslandia.common.models.SelectItemImpl;
-import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
@@ -45,7 +43,7 @@ import jakarta.validation.constraints.NotNull;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SelectItemsFunctionTest extends MockTestBase {
+public class CheckboxFunctionTest extends MockTestBase {
 
     protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
@@ -59,23 +57,22 @@ public class SelectItemsFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-			{{ selectItems(path='model.userType', items=items) }}
+			{{ checkbox(path='model.roles', codeValue='admin') }}
 		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 	try {
-	    getCurrentRequest().addParameter("userType", "1");
+	    getCurrentRequest().addParameter("roles", "admin,operator");
+
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Params model = new Params();
-	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2"), new SelectItemImpl(3, "Type3")));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
-	    String content = NormalizeUtils.normalizeString(out.toString());
-	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option> <option value=\"2\">Type2</option> <option value=\"3\">Type3</option>", content);
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" checked=\"checked\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -83,25 +80,23 @@ public class SelectItemsFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_unselected() {
+    public void test_unchecked() {
 	String templateContent = """
-			{{ selectItems(path='model.userType', items=items) }}
+			{{ checkbox(path='model.roles', codeValue='admin') }}
 		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 	try {
-	    getCurrentRequest().addParameter("userType", "4");
+	    getCurrentRequest().addParameter("roles", "operator");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Params model = new Params();
-	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2"), new SelectItemImpl(3, "Type3")));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
-	    String content = NormalizeUtils.normalizeString(out.toString());
-	    Assertions.assertEquals("<option value=\"1\">Type1</option> <option value=\"2\">Type2</option> <option value=\"3\">Type3</option>", content);
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -109,25 +104,48 @@ public class SelectItemsFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_readonly() {
+    public void test_checked_readonly() {
 	String templateContent = """
-			{{ selectItems(path='model.userType', items=items, readonly=true) }}
+			{{ checkbox(path='model.roles', codeValue='admin', readonly=true) }}
 		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 	try {
-	    getCurrentRequest().addParameter("userType", "1");
+	    getCurrentRequest().addParameter("roles", "admin,operator");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Params model = new Params();
-	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2"), new SelectItemImpl(3, "Type3")));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
-	    String content = NormalizeUtils.normalizeString(out.toString());
-	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option>", content);
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\"", content);
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
+    public void test_unchecked_readonly() {
+	String templateContent = """
+			{{ checkbox(path='model.roles', codeValue='admin', readonly=true) }}
+		""";
+
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+	try {
+
+	    getCurrentRequest().addParameter("roles", "operator");
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" disabled=\"disabled\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -148,14 +166,14 @@ public class SelectItemsFunctionTest extends MockTestBase {
     public static class UserModel {
 
 	@NotNull
-	private Integer userType;
+	private String roles;
 
-	public Integer getUserType() {
-	    return userType;
+	public String getRoles() {
+	    return roles;
 	}
 
-	public void setUserType(Integer userType) {
-	    this.userType = userType;
+	public void setRoles(String roles) {
+	    this.roles = roles;
 	}
     }
 }

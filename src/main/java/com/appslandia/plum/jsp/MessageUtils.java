@@ -18,31 +18,51 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.pebble.functions;
+package com.appslandia.plum.jsp;
 
-import java.util.List;
-import java.util.Map;
-
-import com.appslandia.common.base.DeployEnv;
-
-import io.pebbletemplates.pebble.extension.Function;
-import io.pebbletemplates.pebble.template.EvaluationContext;
-import io.pebbletemplates.pebble.template.PebbleTemplate;
+import com.appslandia.common.utils.STR;
+import com.appslandia.plum.base.Message;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class DeployEnvFunction implements Function {
+public class MessageUtils {
 
-    @Override
-    public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
-	return DeployEnv.getCurrent().getName();
+    public static int getMsgType(String type) {
+	switch (type) {
+	case "info":
+	    return Message.TYPE_INFO;
+
+	case "notice":
+	    return Message.TYPE_NOTICE;
+
+	case "warn":
+	    return Message.TYPE_WARN;
+
+	case "error":
+	    return Message.TYPE_ERROR;
+	default:
+	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
+	}
     }
 
-    @Override
-    public List<String> getArgumentNames() {
-	return null;
+    public static String getMsgClass(int type) {
+	switch (type) {
+	case Message.TYPE_INFO:
+	    return "l-msg-info";
+
+	case Message.TYPE_NOTICE:
+	    return "l-msg-notice";
+
+	case Message.TYPE_WARN:
+	    return "l-msg-warn";
+
+	case Message.TYPE_ERROR:
+	    return "l-msg-error";
+	default:
+	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
+	}
     }
 }

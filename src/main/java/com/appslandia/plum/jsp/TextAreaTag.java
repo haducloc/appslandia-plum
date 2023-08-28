@@ -56,7 +56,7 @@ public class TextAreaTag extends InputTagBase {
 
     @Override
     protected String format(Object value, String converter) {
-	return getRequestContext().fmt(value, converter, true);
+	return getRequestContext().format(value, converter, true);
     }
 
     @Override
@@ -106,7 +106,7 @@ public class TextAreaTag extends InputTagBase {
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
 	if (this.value != null) {
-	    XmlEscaper.escapeXmlContent(out, format(this.value, this.converter));
+	    XmlEscaper.escapeXml(out, format(this.value, this.converter));
 	}
     }
 

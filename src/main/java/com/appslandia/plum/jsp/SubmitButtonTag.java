@@ -52,7 +52,7 @@ public class SubmitButtonTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	this._label = getRequestContext().esc(this.labelKey);
+	this._label = getRequestContext().escXml(this.labelKey);
     }
 
     @Override

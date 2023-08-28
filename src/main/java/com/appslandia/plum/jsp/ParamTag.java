@@ -74,6 +74,6 @@ public class ParamTag implements SimpleTag {
     }
 
     @Override
-    public void setJspBody(JspFragment jspBody) {
+    public void setJspBody(JspFragment body) {
     }
 }

@@ -39,8 +39,8 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "days", dynamicAttributes = false)
-public class DaysTag extends TagBase {
+@Tag(name = "fmtDays")
+public class FmtDaysTag extends TagBase {
 
     private Object value;
     private String zoneId;
@@ -61,31 +61,31 @@ public class DaysTag extends TagBase {
 	}
 	// LocalDate
 	else if (val instanceof LocalDate) {
-	    ZoneId zoneId = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
 
 	    ld = (LocalDate) val;
-	    now = LocalDate.now(zoneId);
+	    now = LocalDate.now(zone);
 	}
 	// LocalDateTime
 	else if (val instanceof LocalDateTime) {
-	    ZoneId zoneId = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
 
 	    ld = ((LocalDateTime) val).toLocalDate();
-	    now = LocalDate.now(zoneId);
+	    now = LocalDate.now(zone);
 	}
 	// Date
 	else if (val instanceof java.util.Date) {
-	    ZoneId zoneId = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
 
-	    ld = Instant.ofEpochMilli(((java.util.Date) val).getTime()).atZone(zoneId).toLocalDate();
-	    now = LocalDate.now(zoneId);
+	    ld = Instant.ofEpochMilli(((java.util.Date) val).getTime()).atZone(zone).toLocalDate();
+	    now = LocalDate.now(zone);
 	}
 	// Long
 	else if (val instanceof Long) {
-	    ZoneId zoneId = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
 
-	    ld = Instant.ofEpochMilli((Long) val).atZone(zoneId).toLocalDate();
-	    now = LocalDate.now(zoneId);
+	    ld = Instant.ofEpochMilli((Long) val).atZone(zone).toLocalDate();
+	    now = LocalDate.now(zone);
 	}
 	// ZonedDateTime
 	else if (val instanceof ZonedDateTime) {
@@ -118,5 +118,10 @@ public class DaysTag extends TagBase {
     @Attribute(required = true, rtexprvalue = true)
     public void setValue(Object value) {
 	this.value = value;
+    }
+
+    @Attribute(required = false, rtexprvalue = true)
+    public void setZoneId(String zoneId) {
+	this.zoneId = zoneId;
     }
 }

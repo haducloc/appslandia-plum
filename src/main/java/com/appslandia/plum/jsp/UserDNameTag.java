@@ -70,6 +70,6 @@ public class UserDNameTag implements SimpleTag {
     }
 
     @Override
-    public void setJspBody(JspFragment jspBody) {
+    public void setJspBody(JspFragment body) {
     }
 }

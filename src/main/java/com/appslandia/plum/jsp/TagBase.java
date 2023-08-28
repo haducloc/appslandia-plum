@@ -44,17 +44,21 @@ import jakarta.servlet.jsp.tagext.SimpleTag;
  */
 public abstract class TagBase implements SimpleTag {
 
-    protected JspTag parentTag;
+    protected JspTag parent;
     protected PageContext pageContext;
-    protected JspFragment jspBody;
+    protected JspFragment body;
 
     protected String evalJspBody() throws JspException, IOException {
-	if (this.jspBody != null) {
+	if (this.body != null) {
 	    StringWriter out = new StringWriter();
-	    this.jspBody.invoke(out);
+	    this.body.invoke(out);
 	    return out.toString();
 	}
 	return StringUtils.EMPTY_STRING;
+    }
+
+    public Object evaluate(String expression) {
+	return ExpressionEvaluator.getDefault().getValue(this.pageContext, expression);
     }
 
     public PageContext getPageContext() {
@@ -79,12 +83,12 @@ public abstract class TagBase implements SimpleTag {
 
     @Override
     public void setParent(JspTag parent) {
-	this.parentTag = parent;
+	this.parent = parent;
     }
 
     @Override
     public JspTag getParent() {
-	return this.parentTag;
+	return this.parent;
     }
 
     @Override
@@ -93,7 +97,7 @@ public abstract class TagBase implements SimpleTag {
     }
 
     @Override
-    public void setJspBody(JspFragment jspBody) {
-	this.jspBody = jspBody;
+    public void setJspBody(JspFragment body) {
+	this.body = body;
     }
 }

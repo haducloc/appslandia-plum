@@ -42,7 +42,7 @@ public class HiddenTag extends InputTagBase {
 
     @Override
     protected String format(Object value, String converter) {
-	return getRequestContext().fmt(value, converter, false);
+	return getRequestContext().format(value, converter, false);
     }
 
     @Override

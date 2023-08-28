@@ -86,7 +86,7 @@ public class FieldErrorTag extends UITagBase {
 	    Message error = this.getModelState().getFieldErrors(this.field).get(0);
 
 	    if (error.isEscXml()) {
-		XmlEscaper.escapeXmlContent(out, error.getText());
+		XmlEscaper.escapeXml(out, error.getText());
 	    } else {
 		out.write(error.getText());
 	    }

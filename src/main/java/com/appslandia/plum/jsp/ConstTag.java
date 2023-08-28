@@ -33,10 +33,10 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "constDesc", dynamicAttributes = false)
-public class ConstDescTag extends TagBase {
+@Tag(name = "const")
+public class ConstTag extends TagBase {
 
-    protected String constGroup;
+    protected String group;
     protected Object value;
 
     @Override
@@ -45,18 +45,18 @@ public class ConstDescTag extends TagBase {
 	    return;
 	}
 	ConstDescProvider constDescProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ConstDescProvider.class);
-	String descKey = constDescProvider.getDescKey(this.constGroup, this.value);
+	String descKey = constDescProvider.getDescKey(this.group, this.value);
 
 	if (descKey != null) {
-	    this.pageContext.getOut().write(this.getRequestContext().esc(descKey));
+	    this.pageContext.getOut().write(this.getRequestContext().escXml(descKey));
 	} else {
 	    XmlEscaper.escapeXml(this.pageContext.getOut(), this.value.toString());
 	}
     }
 
     @Attribute(required = true, rtexprvalue = false)
-    public void setConstGroup(String constGroup) {
-	this.constGroup = constGroup;
+    public void setGroup(String group) {
+	this.group = group;
     }
 
     @Attribute(required = true, rtexprvalue = true)

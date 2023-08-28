@@ -64,7 +64,7 @@ public class TagTldGenerator {
 	generateTag(ButtonLinkTag.class, sb);
 
 	generateTag(SelectTag.class, sb);
-	generateTag(SelectItemTag.class, sb);
+	generateTag(OptionTag.class, sb);
 
 	generateTag(ActionTag.class, sb);
 	generateTag(ActionLinkTag.class, sb);
@@ -74,7 +74,7 @@ public class TagTldGenerator {
 	generateTag(ParamTag.class, sb);
 
 	generateTag(IterateTag.class, sb);
-	generateTag(ConstDescTag.class, sb);
+	generateTag(ConstTag.class, sb);
 	generateTag(UrlTag.class, sb);
 
 	generateTag(MessagesTag.class, sb);
@@ -83,14 +83,10 @@ public class TagTldGenerator {
 
 	generateTag(TemplateTag.class, sb);
 	generateTag(PagerTag.class, sb);
-	generateTag(NewLineTag.class, sb);
-	generateTag(MailtoTag.class, sb);
 
-	generateTag(DaysTag.class, sb);
+	generateTag(FmtDaysTag.class, sb);
 	generateTag(PageUrlTag.class, sb);
 	generateTag(IfEnvTag.class, sb);
-	generateTag(DeployEnvTag.class, sb);
-	generateTag(SymbolTag.class, sb);
 
 	System.out.println(sb);
     }

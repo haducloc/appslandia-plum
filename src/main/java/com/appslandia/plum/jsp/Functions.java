@@ -79,108 +79,51 @@ public class Functions {
 	return b ? "novalidate=\"novalidate\"" : null;
     }
 
-    @Function(name = "if")
-    public static String out(boolean b, Object value) {
-	if (b) {
-	    if (value != null) {
-		return value.toString();
-	    }
+    @Function
+    public static String escXml(Object value) {
+	if (value != null) {
+	    return XmlEscaper.escapeXml(value.toString());
 	}
 	return null;
     }
 
-    @Function(name = "ifEsc")
-    public static String outEsc(boolean b, String value) {
+    public static String ifEscXml(boolean b, Object value) {
 	if (b) {
 	    if (value != null) {
-		return XmlEscaper.escapeXml(value);
-	    }
-	}
-	return null;
-    }
-
-    @Function(name = "ifEscCt")
-    public static String outEscCt(boolean b, String value) {
-	if (b) {
-	    if (value != null) {
-		return XmlEscaper.escapeXmlContent(value);
+		return XmlEscaper.escapeXml(value.toString());
 	    }
 	}
 	return null;
     }
 
     @Function
-    public static String iif(boolean b, Object trueValue, Object falseValue) {
+    public static String iifEscXml(boolean b, Object trueValue, Object falseValue) {
 	if (b) {
 	    if (trueValue != null) {
-		return trueValue.toString();
+		return XmlEscaper.escapeXml(trueValue.toString());
 	    }
 	} else {
 	    if (falseValue != null) {
-		return falseValue.toString();
+		return XmlEscaper.escapeXml(falseValue.toString());
 	    }
 	}
 	return null;
-    }
-
-    @Function
-    public static String iifEsc(boolean b, String trueValue, String falseValue) {
-	if (b) {
-	    if (trueValue != null) {
-		return XmlEscaper.escapeXml(trueValue);
-	    }
-	} else {
-	    if (falseValue != null) {
-		return XmlEscaper.escapeXml(falseValue);
-	    }
-	}
-	return null;
-    }
-
-    @Function
-    public static String iifEscCt(boolean b, String trueValue, String falseValue) {
-	if (b) {
-	    if (trueValue != null) {
-		return XmlEscaper.escapeXmlContent(trueValue);
-	    }
-	} else {
-	    if (falseValue != null) {
-		return XmlEscaper.escapeXmlContent(falseValue);
-	    }
-	}
-	return null;
-    }
-
-    @Function
-    public static String esc(Object value) {
-	if (value == null) {
-	    return null;
-	}
-	return XmlEscaper.escapeXml(value.toString());
-    }
-
-    @Function
-    public static String escCt(Object value) {
-	if (value == null) {
-	    return null;
-	}
-	return XmlEscaper.escapeXmlContent(value.toString());
     }
 
     @Function
     public static String encParam(String value) {
-	if (value == null) {
-	    return null;
+	if (value != null) {
+	    return URLEncoding.encodeParam(value);
 	}
-	return URLEncoding.encodeParam(value);
+	return null;
     }
 
     @Function
     public static String encPath(String value) {
-	if (value == null) {
-	    return null;
+	if (value != null) {
+	    return URLEncoding.encodePath(value);
 	}
-	return URLEncoding.encodePath(value);
+	return null;
     }
 
     @Function
@@ -189,8 +132,16 @@ public class Functions {
     }
 
     @Function
-    public static String deployEnv() {
+    public static String envName() {
 	return DeployEnv.getCurrent().getName();
+    }
+
+    @Function
+    public static String ifClass(boolean b, String clazz) {
+	if (b) {
+	    return clazz;
+	}
+	return TagUtils.CSS_NOOP;
     }
 
     @Function

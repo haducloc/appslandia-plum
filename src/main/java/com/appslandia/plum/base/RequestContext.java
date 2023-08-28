@@ -168,41 +168,6 @@ public class RequestContext {
 	this.browserFeatures = browserFeatures;
     }
 
-    public String fmt(Object value, boolean localize) {
-	if (value == null) {
-	    return null;
-	}
-	return fmt(value, null, localize);
-    }
-
-    public String fmt(Object value, String converter, boolean localize) {
-	if (value == null) {
-	    return null;
-	}
-	if (value.getClass() == String.class) {
-	    return (String) value;
-	}
-	Converter<Object> strConverter = this.converterProvider.getConverter(converter, value.getClass());
-	if (strConverter == null) {
-	    return value.toString();
-	}
-	return strConverter.format(value, this.formatProvider, localize);
-    }
-
-    public String fmtEsc(Object value, String converter, boolean localize) {
-	if (value == null) {
-	    return null;
-	}
-	return XmlEscaper.escapeXml(fmt(value, converter, localize));
-    }
-
-    public String fmtEscCt(Object value, String converter, boolean localize) {
-	if (value == null) {
-	    return null;
-	}
-	return XmlEscaper.escapeXmlContent(fmt(value, converter, localize));
-    }
-
     public String res(String key) {
 	return this.resources.get(key);
     }
@@ -219,105 +184,80 @@ public class RequestContext {
 	return this.resources.get(key, p1, p2, p3);
     }
 
-    public String esc(String key) {
+    public String format(Object value, String converter, boolean localize) {
+	if (value == null) {
+	    return null;
+	}
+	if (value.getClass() == String.class) {
+	    return (String) value;
+	}
+	Converter<Object> converterObj = this.converterProvider.getConverter(converter, value.getClass());
+	if (converterObj == null) {
+	    return value.toString();
+	}
+	return converterObj.format(value, this.formatProvider, localize);
+    }
+
+    public String escVal(Object value, String converter) {
+	return escVal(value, converter, true);
+    }
+
+    public String escVal(Object value, String converter, boolean localize) {
+	String fmtValue = format(value, converter, localize);
+	if (fmtValue != null) {
+	    return XmlEscaper.escapeXml(fmtValue);
+	}
+	return null;
+    }
+
+    public String escXml(String key) {
 	return XmlEscaper.escapeXml(this.resources.get(key));
     }
 
-    public String esc(String key, Object p1) {
+    public String escXml(String key, Object p1) {
 	return XmlEscaper.escapeXml(this.resources.get(key, p1));
     }
 
-    public String esc(String key, Object p1, Object p2) {
+    public String escXml(String key, Object p1, Object p2) {
 	return XmlEscaper.escapeXml(this.resources.get(key, p1, p2));
     }
 
-    public String esc(String key, Object p1, Object p2, Object p3) {
+    public String escXml(String key, Object p1, Object p2, Object p3) {
 	return XmlEscaper.escapeXml(this.resources.get(key, p1, p2, p3));
     }
 
-    public String ifEsc(boolean b, String trueKey) {
+    public String ifEscXml(boolean b, String trueKey) {
 	if (b) {
 	    return XmlEscaper.escapeXml(this.resources.get(trueKey));
 	}
 	return null;
     }
 
-    public String ifEsc(boolean b, String trueKey, Object p1) {
+    public String ifEscXml(boolean b, String trueKey, Object p1) {
 	if (b) {
 	    return XmlEscaper.escapeXml(this.resources.get(trueKey, p1));
 	}
 	return null;
     }
 
-    public String ifEsc(boolean b, String trueKey, Object p1, Object p2) {
+    public String ifEscXml(boolean b, String trueKey, Object p1, Object p2) {
 	if (b) {
 	    return XmlEscaper.escapeXml(this.resources.get(trueKey, p1, p2));
 	}
 	return null;
     }
 
-    public String ifEsc(boolean b, String trueKey, Object p1, Object p2, Object p3) {
+    public String ifEscXml(boolean b, String trueKey, Object p1, Object p2, Object p3) {
 	if (b) {
 	    return XmlEscaper.escapeXml(this.resources.get(trueKey, p1, p2, p3));
 	}
 	return null;
     }
 
-    public String iifEsc(boolean b, String trueKey, String falseKey) {
+    public String iifEscXml(boolean b, String trueKey, String falseKey) {
 	if (b) {
 	    return XmlEscaper.escapeXml(this.resources.get(trueKey));
 	}
 	return XmlEscaper.escapeXml(this.resources.get(falseKey));
-    }
-
-    public String escCt(String key) {
-	return XmlEscaper.escapeXmlContent(this.resources.get(key));
-    }
-
-    public String escCt(String key, Object p1) {
-	return XmlEscaper.escapeXmlContent(this.resources.get(key, p1));
-    }
-
-    public String escCt(String key, Object p1, Object p2) {
-	return XmlEscaper.escapeXmlContent(this.resources.get(key, p1, p2));
-    }
-
-    public String escCt(String key, Object p1, Object p2, Object p3) {
-	return XmlEscaper.escapeXmlContent(this.resources.get(key, p1, p2, p3));
-    }
-
-    public String ifEscCt(boolean b, String trueKey) {
-	if (b) {
-	    return XmlEscaper.escapeXmlContent(this.resources.get(trueKey));
-	}
-	return null;
-    }
-
-    public String ifEscCt(boolean b, String trueKey, Object p1) {
-	if (b) {
-	    return XmlEscaper.escapeXmlContent(this.resources.get(trueKey, p1));
-	}
-	return null;
-    }
-
-    public String ifEscCt(boolean b, String trueKey, Object p1, Object p2) {
-	if (b) {
-	    return XmlEscaper.escapeXmlContent(this.resources.get(trueKey, p1, p2));
-	}
-	return null;
-    }
-
-    public String ifEscCt(boolean b, String trueKey, Object p1, Object p2, Object p3) {
-	if (b) {
-	    return XmlEscaper.escapeXmlContent(this.resources.get(trueKey, p1, p2, p3));
-	}
-	return null;
-    }
-
-    public String iifEscCt(boolean b, String trueKey, String falseKey) {
-	if (b) {
-	    return XmlEscaper.escapeXmlContent(this.resources.get(trueKey));
-	}
-	return XmlEscaper.escapeXmlContent(this.resources.get(falseKey));
     }
 }

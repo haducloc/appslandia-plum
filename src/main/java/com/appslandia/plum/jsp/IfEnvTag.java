@@ -23,7 +23,6 @@ package com.appslandia.plum.jsp;
 import java.io.IOException;
 
 import com.appslandia.common.base.DeployEnv;
-import com.appslandia.common.utils.Asserts;
 
 import jakarta.servlet.jsp.JspException;
 
@@ -32,18 +31,17 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "ifEnv", dynamicAttributes = false, bodyContent = "scriptless")
+@Tag(name = "env", bodyContent = "scriptless")
 public class IfEnvTag extends TagBase {
 
     protected String name;
 
     @Override
     public void doTag() throws JspException, IOException {
-	Asserts.notNull(this.name);
-
 	if (DeployEnv.getCurrent().getName().equalsIgnoreCase(this.name)) {
-	    if (this.jspBody != null) {
-		this.jspBody.invoke(null);
+
+	    if (this.body != null) {
+		this.body.invoke(null);
 	    }
 	}
     }

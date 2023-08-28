@@ -34,6 +34,7 @@ import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.base.Model;
 import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.jsp.TagUtils;
 import com.appslandia.plum.mocks.MemPebbleTemplateProvider;
 import com.appslandia.plum.pebble.PebbleUtils;
 
@@ -66,13 +67,13 @@ public class FieldClassFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("dob", "1980-01-01");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("l-no-op", content);
+	    Assertions.assertEquals(TagUtils.CSS_NOOP, content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -89,7 +90,7 @@ public class FieldClassFunctionTest extends MockTestBase {
 	try {
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());

@@ -48,7 +48,7 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 	impls.put("textarea", new TextAreaFunction());
 
 	impls.put("select", new SelectFunction());
-	impls.put("selectItems", new SelectItemsFunction());
+	impls.put("options", new OptionsFunction());
 	impls.put("datalist", new DatalistFunction());
 
 	impls.put("hiddenCheckbox", new HiddenCheckboxFunction());
@@ -56,19 +56,19 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 	impls.put("hiddenSelect", new HiddenSelectFunction());
 
 	impls.put("fieldClass", new FieldClassFunction());
+	impls.put("labelClass", new LabelClassFunction());
+
 	impls.put("fieldValue", new FieldValueFunction());
 	impls.put("fieldError", new FieldErrorFunction());
 
 	impls.put("messages", new MessagesFunction());
 	impls.put("formErrors", new FormErrorsFunction());
+	impls.put("ifClass", new IfClassFunction());
 
-	impls.put("userDName", new UserDNameFunction());
 	impls.put("actionUrl", new ActionUrlFunction());
+	impls.put("userDName", new UserDNameFunction());
 
-	impls.put("mailto", new MailtoFunction());
-	impls.put("symbol", new SymbolFunction());
-
-	impls.put("deployEnv", new DeployEnvFunction());
+	impls.put("envName", new EnvNameFunction());
 	impls.put("nowMs", new NowMsFunction());
 	return impls;
     }

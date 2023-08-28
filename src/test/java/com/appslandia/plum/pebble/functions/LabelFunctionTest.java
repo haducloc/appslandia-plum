@@ -58,20 +58,20 @@ public class LabelFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		<label {{ label(path='model.dob') }}>DoB</label>
+		{{ label(path='model.dob') }}>
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
 	try {
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<label for=\"dob\">DoB</label>", content);
+	    Assertions.assertEquals("for=\"dob\">", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

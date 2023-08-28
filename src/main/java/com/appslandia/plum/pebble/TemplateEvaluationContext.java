@@ -60,6 +60,10 @@ public class TemplateEvaluationContext {
 		.collect(Collectors.toMap(e -> TagUtils.getParameterName(e.getKey()), e -> e.getValue()));
     }
 
+    public Object evaluate(String expression) {
+	return getELProcessor().eval(expression);
+    }
+
     public HttpServletRequest getRequest() {
 	return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST);
     }
@@ -119,8 +123,7 @@ public class TemplateEvaluationContext {
 	    return ((Boolean) value).booleanValue();
 	}
 	if (value.getClass() == String.class) {
-	    String sv = (String) value;
-	    return ParseUtils.parseBool(sv);
+	    return ParseUtils.parseBool((String) value);
 	}
 	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to boolean.", value));
     }
@@ -146,8 +149,7 @@ public class TemplateEvaluationContext {
 	    return ((Number) value).intValue();
 	}
 	if (value.getClass() == String.class) {
-	    String sv = (String) value;
-	    return ParseUtils.parseInt(sv);
+	    return ParseUtils.parseInt((String) value);
 	}
 	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to int.", value));
     }
@@ -173,8 +175,7 @@ public class TemplateEvaluationContext {
 	    return ((Number) value).longValue();
 	}
 	if (value.getClass() == String.class) {
-	    String sv = (String) value;
-	    return ParseUtils.parseLong(sv);
+	    return ParseUtils.parseLong((String) value);
 	}
 	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to long.", value));
     }
@@ -200,8 +201,7 @@ public class TemplateEvaluationContext {
 	    return ((Number) value).doubleValue();
 	}
 	if (value.getClass() == String.class) {
-	    String sv = (String) value;
-	    return ParseUtils.parseDouble(sv);
+	    return ParseUtils.parseDouble((String) value);
 	}
 	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to double.", value));
     }

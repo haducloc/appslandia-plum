@@ -24,9 +24,11 @@ import java.io.IOException;
 import java.util.List;
 
 import com.appslandia.common.base.StringWriter;
+import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.base.Messages;
+import com.appslandia.plum.jsp.MessageUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -45,24 +47,44 @@ public class MessagesFunction extends DynPebbleFunction {
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	int type = context.getRequiredArgument("type");
-
 	List<Message> messages = (Messages) context.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
-	List<Message> msgs = messages.stream().filter(m -> m.getType() == type).toList();
+	if (!CollectionUtils.hasElements(messages)) {
+	    return null;
+	}
+
+	String type = context.getRequiredArgument("type");
+	String boxClass = context.getArgument("boxClass");
+	String msgClass = context.getArgument("msgClass");
+
+	int typeId = MessageUtils.getMsgType(type);
+	List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
 
 	StringWriter out = new StringWriter(msgs.size() * 128);
-	out.write("<ul class=\"l-messages\">");
+
+	out.write("<ul");
+	if (boxClass != null)
+	    HtmlUtils.escAttribute(out, "class", boxClass);
+	out.write(">");
 
 	for (Message msg : msgs) {
-	    String itemClass = getItemClass(type);
-
 	    out.write(System.lineSeparator());
+
+	    String typeClass = MessageUtils.getMsgClass(typeId);
 	    out.write("<li");
-	    HtmlUtils.escAttribute(out, "class", itemClass);
+
+	    if (msgClass == null) {
+		HtmlUtils.escAttribute(out, "class", typeClass);
+	    } else {
+		out.write(" class=\"");
+		out.write(msgClass);
+		out.write(" ");
+		out.write(typeClass);
+		out.write("\"");
+	    }
 	    out.write(">");
 
 	    if (msg.isEscXml()) {
-		XmlEscaper.escapeXmlContent(out, msg.getText());
+		XmlEscaper.escapeXml(out, msg.getText());
 	    } else {
 		out.write(msg.getText());
 	    }
@@ -71,23 +93,5 @@ public class MessagesFunction extends DynPebbleFunction {
 
 	out.write("</ul>");
 	return out.toString();
-    }
-
-    public static String getItemClass(int type) {
-	switch (type) {
-	case Message.TYPE_INFO:
-	    return "l-msg l-msg-info";
-
-	case Message.TYPE_NOTICE:
-	    return "l-msg l-msg-notice";
-
-	case Message.TYPE_WARN:
-	    return "l-msg l-msg-warn";
-
-	case Message.TYPE_ERROR:
-	    return "l-msg l-msg-error";
-	default:
-	    throw new IllegalArgumentException("type is invalid.");
-	}
     }
 }

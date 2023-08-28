@@ -39,26 +39,26 @@ public class ActionUrlFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: action*, controller, absUrl, esc";
+	return "variables: action*, controller, absUrl, escXml";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
 	String action = context.getRequiredArgument("action");
-
 	String controller = context.getArgument("controller");
+
+	boolean absUrl = context.getBool("absUrl", false);
+	boolean escXml = context.getBool("escXml", true);
+
 	if (controller == null) {
 	    controller = context.getRequestContext().getActionDesc().getController();
 	}
-
-	boolean abs = context.getBool("abs", false);
 	Map<String, Object> parameters = context.parseParameters();
 
 	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, abs);
-	url = context.getResponse().encodeURL(url);
+	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, absUrl);
 
-	boolean esc = context.getBool("esc", true);
-	return new SafeString(esc ? XmlEscaper.escapeXml(url) : url);
+	url = context.getResponse().encodeURL(url);
+	return new SafeString(escXml ? XmlEscaper.escapeXml(url) : url);
     }
 }

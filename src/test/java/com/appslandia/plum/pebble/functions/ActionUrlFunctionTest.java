@@ -69,9 +69,9 @@ public class ActionUrlFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_esc() {
+    public void test_not_escXml() {
 	String templateContent = """
-		{{ actionUrl(action='index', __par1='value1', __par2='value 2', esc=false) }}
+		{{ actionUrl(action='index', __par1='value1', __par2='value 2', escXml=false) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -90,9 +90,9 @@ public class ActionUrlFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_abs() {
+    public void test_absUrl() {
 	String templateContent = """
-		{{ actionUrl(action='index', __par1='value1', __par2='value 2', abs=true) }}
+		{{ actionUrl(action='index', __par1='value1', __par2='value 2', absUrl=true) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 

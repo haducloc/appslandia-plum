@@ -132,8 +132,8 @@ public class FormTag extends UITagBase {
 	if (this.actionType) {
 	    out.println("<input type=\"hidden\" id=\"actionType\" name=\"actionType\" value=\"\" />");
 	}
-	if (this.jspBody != null) {
-	    this.jspBody.invoke(out);
+	if (this.body != null) {
+	    this.body.invoke(out);
 	}
     }
 

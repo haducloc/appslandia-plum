@@ -18,13 +18,6 @@
 	</function>
 
 	<function>
-		<description>java.lang.String deployEnv()</description>
-		<name>deployEnv</name>
-		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String deployEnv()</function-signature>
-	</function>
-
-	<function>
 		<description>java.lang.String disabled(boolean)</description>
 		<name>disabled</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
@@ -46,17 +39,17 @@
 	</function>
 
 	<function>
-		<description>java.lang.String esc(java.lang.Object)</description>
-		<name>esc</name>
+		<description>java.lang.String envName()</description>
+		<name>envName</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String esc(java.lang.Object)</function-signature>
+		<function-signature>java.lang.String envName()</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String escCt(java.lang.Object)</description>
-		<name>escCt</name>
+		<description>java.lang.String escXml(java.lang.Object)</description>
+		<name>escXml</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String escCt(java.lang.Object)</function-signature>
+		<function-signature>java.lang.String escXml(java.lang.Object)</function-signature>
 	</function>
 
 	<function>
@@ -81,24 +74,17 @@
 	</function>
 
 	<function>
-		<description>java.lang.String iif(boolean, java.lang.Object, java.lang.Object)</description>
-		<name>iif</name>
+		<description>java.lang.String ifClass(boolean, java.lang.String)</description>
+		<name>ifClass</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String iif(boolean, java.lang.Object, java.lang.Object)</function-signature>
+		<function-signature>java.lang.String ifClass(boolean, java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String iifEsc(boolean, java.lang.String, java.lang.String)</description>
-		<name>iifEsc</name>
+		<description>java.lang.String iifEscXml(boolean, java.lang.Object, java.lang.Object)</description>
+		<name>iifEscXml</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String iifEsc(boolean, java.lang.String, java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<description>java.lang.String iifEscCt(boolean, java.lang.String, java.lang.String)</description>
-		<name>iifEscCt</name>
-		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String iifEscCt(boolean, java.lang.String, java.lang.String)</function-signature>
+		<function-signature>java.lang.String iifEscXml(boolean, java.lang.Object, java.lang.Object)</function-signature>
 	</function>
 
 	<function>
@@ -120,27 +106,6 @@
 		<name>nowMs</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>long nowMs()</function-signature>
-	</function>
-
-	<function>
-		<description>java.lang.String out(boolean, java.lang.Object)</description>
-		<name>if</name>
-		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String out(boolean, java.lang.Object)</function-signature>
-	</function>
-
-	<function>
-		<description>java.lang.String outEsc(boolean, java.lang.String)</description>
-		<name>ifEsc</name>
-		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String outEsc(boolean, java.lang.String)</function-signature>
-	</function>
-
-	<function>
-		<description>java.lang.String outEscCt(boolean, java.lang.String)</description>
-		<name>ifEscCt</name>
-		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String outEscCt(boolean, java.lang.String)</function-signature>
 	</function>
 
 	<function>

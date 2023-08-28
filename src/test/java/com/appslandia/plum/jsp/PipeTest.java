@@ -23,8 +23,6 @@ package com.appslandia.plum.jsp;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.DateUtils;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -58,23 +56,7 @@ public class PipeTest {
     public void test_trunc() {
 	try {
 	    Object v = Pipe.transform("123456789", "trunc:4");
-	    Assertions.assertEquals("1234...", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_fmtDate() {
-	try {
-	    Object v = Pipe.transform(DateUtils.iso8601Date("2018-06-07"), "fmtDate:MM/dd/yyyy");
-	    Assertions.assertEquals("06/07/2018", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-	try {
-	    Object v = Pipe.transform(DateUtils.iso8601LocalDate("2018-06-07"), "fmtDate:MM/dd/yyyy");
-	    Assertions.assertEquals("06/07/2018", v);
+	    Assertions.assertEquals("1234&ellipsis;", v);
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
 	}
@@ -85,16 +67,6 @@ public class PipeTest {
 	try {
 	    Object v = Pipe.transform("4028888888", "fmtGroup:{3}-{3}-{4}");
 	    Assertions.assertEquals("402-888-8888", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_fmtNumber() {
-	try {
-	    Object v = Pipe.transform(123, "fmtNumber:%05d");
-	    Assertions.assertEquals("00123", v);
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
 	}

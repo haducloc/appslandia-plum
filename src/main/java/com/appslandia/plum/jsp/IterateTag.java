@@ -46,7 +46,7 @@ public class IterateTag extends TagBase {
 
     @Override
     public void doTag() throws JspException, IOException {
-	if ((!this.render) || (this.items == null) || (this.jspBody == null)) {
+	if ((!this.render) || (this.items == null) || (this.body == null)) {
 	    return;
 	}
 	final Object bakVar = this.pageContext.getAttribute(this.var);
@@ -69,7 +69,7 @@ public class IterateTag extends TagBase {
 		this.pageContext.setAttribute(FIRST_INDEX_VAR, index == 0);
 		this.pageContext.setAttribute(LAST_INDEX_VAR, !iter.hasNext());
 
-		this.jspBody.invoke(null);
+		this.body.invoke(null);
 	    }
 	} finally {
 	    this.pageContext.setAttribute(this.var, bakVar);

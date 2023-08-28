@@ -63,14 +63,14 @@ public class SelectTag extends InputTagBase {
     protected void initTag() throws JspException, IOException {
 	super.initTag();
 
-	if (this.jspBody != null) {
-	    this.jspBody.invoke(null);
+	if (this.body != null) {
+	    this.body.invoke(null);
 	}
     }
 
     @Override
     protected String format(Object value, String converter) {
-	return getRequestContext().fmt(value, converter, false);
+	return getRequestContext().format(value, converter, false);
     }
 
     @Override
@@ -152,7 +152,7 @@ public class SelectTag extends InputTagBase {
 	out.write('>');
 
 	if (item.getDisplayName() != null) {
-	    XmlEscaper.escapeXmlContent(out, item.getDisplayName());
+	    XmlEscaper.escapeXml(out, item.getDisplayName());
 	}
 	out.write("</option>");
     }

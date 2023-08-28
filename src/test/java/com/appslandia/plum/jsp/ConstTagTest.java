@@ -18,69 +18,93 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.pebble.functions;
-
-import java.util.Map;
+package com.appslandia.plum.jsp;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.base.Params;
-import com.appslandia.common.base.StringWriter;
-import com.appslandia.plum.base.ActionResult;
+import com.appslandia.common.base.ConstDesc;
+import com.appslandia.plum.base.ConstDescProvider;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
-import com.appslandia.plum.mocks.MemPebbleTemplateProvider;
-import com.appslandia.plum.pebble.PebbleUtils;
+import com.appslandia.plum.mocks.MockJspContext;
+import com.appslandia.plum.utils.TestUtils;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class EnvTestTest extends MockTestBase {
+public class ConstTagTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+    ConstTag tag = new ConstTag();
+    ConstDescProvider constDescProvider;
+
+    @BeforeAll
+    public static void beforeAllTests() {
+	TestUtils.initExpressionEvaluator();
+    }
 
     @Override
     protected void initialize() {
 	container.register(TestController.class, TestController.class);
+	constDescProvider = container.getObject(ConstDescProvider.class);
+    }
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    @BeforeEach
+    public void beforeEachTest() {
+	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+	executeCurrent("GET", "http://localhost/app/testController/index");
     }
 
     @Test
     public void test() {
-	String templateContent = """
-			{% if 'Development' is env %}
-				Development Environment
-			{% endif %}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
 	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
+	    constDescProvider.addConstClass(Actives.class);
+	    tag.setGroup("actives");
+	    tag.setValue(Actives.ACTIVE);
 
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString().trim();
-	    Assertions.assertEquals("Development Environment", content);
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+	    Assertions.assertTrue(html.contains(":actives.active"));
 
 	} catch (Exception ex) {
-	    Assertions.fail(ex);
+	    Assertions.fail(ex.getMessage());
 	}
+    }
+
+    @Test
+    public void test_notConfigured() {
+	try {
+	    tag.setGroup("actives");
+	    tag.setValue(Actives.INACTIVE);
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+	    Assertions.assertEquals(Integer.toString(Actives.INACTIVE), html);
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    public static final class Actives {
+
+	@ConstDesc("actives")
+	public static final int ACTIVE = 1;
+
+	@ConstDesc("actives")
+	public static final int INACTIVE = 0;
     }
 
     @Controller("testController")
     public static class TestController {
 
 	@HttpGet
-	public ActionResult index() throws Exception {
-	    return ActionResult.EMPTY;
+	public void index() {
 	}
     }
 }

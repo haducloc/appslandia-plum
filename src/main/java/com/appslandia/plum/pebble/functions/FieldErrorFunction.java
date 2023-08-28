@@ -65,7 +65,7 @@ public class FieldErrorFunction extends DynPebbleFunction {
 	    out.append(">");
 
 	    if (error.isEscXml()) {
-		XmlEscaper.escapeXmlContent(out, error.getText());
+		XmlEscaper.escapeXml(out, error.getText());
 	    } else {
 		out.write(error.getText());
 	    }

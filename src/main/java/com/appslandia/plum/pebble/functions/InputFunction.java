@@ -26,7 +26,7 @@ import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.jsp.TextBoxUtils;
+import com.appslandia.plum.jsp.InputUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -42,7 +42,7 @@ public class InputFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, type, readonly, converter, localize, form";
+	return "variables: path*, type, readonly, converter, localize, form, min, max, step";
     }
 
     @Override
@@ -55,53 +55,53 @@ public class InputFunction extends DynPebbleFunction {
 	Boolean localize = context.getBoolObj("localize");
 	String form = context.getArgument("form");
 
+	Object min = context.getArgument("min");
+	Object max = context.getArgument("max");
+	Object step = context.getArgument("step");
+
 	Asserts.isTrue(!"checkbox".equals(type) && !"radio".equals(type), "checkbox|radio type is unsupported.");
 
 	int nameIdx = path.indexOf('.');
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
+	// value
 	Object value = null;
 	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
 
 	if (isValid) {
-	    value = context.getELProcessor().eval(path);
+	    value = context.evaluate(path);
 	} else {
 	    value = context.getRequest().getParameter(name);
 	}
 
-	// Format value
-	String fmtValue = null;
-	if (localize != null) {
-	    fmtValue = context.getRequestContext().fmt(value, converter, localize);
-
-	} else {
-	    if ("hidden".equals(type)) {
-		fmtValue = context.getRequestContext().fmt(value, converter, false);
-
-	    } else {
-		Integer feature = TextBoxUtils.getBrowserFeature(type);
-		Integer browserFeatures = context.getRequestContext().getBrowserFeatures();
-
-		if (browserFeatures != null && feature != null && (browserFeatures & feature) == feature) {
-		    fmtValue = context.getRequestContext().fmt(value, converter, false);
-
-		} else {
-		    type = "text";
-		    fmtValue = context.getRequestContext().fmt(value, converter, true);
-		}
-	    }
+	// localize
+	if (localize == null) {
+	    localize = InputUtils.willLocalize(context.getRequestContext(), value, converter, type);
+	}
+	if (localize && InputUtils.getFeature(type) != null) {
+	    type = "text";
 	}
 
-	StringWriter out = new StringWriter(128);
+	// Write HTML
+	StringWriter out = new StringWriter(160);
 
 	out.write("id=\"");
 	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(name));
 	out.write("\"");
 
 	HtmlUtils.escAttribute(out, "name", name);
-	HtmlUtils.escAttribute(out, "value", fmtValue);
+	HtmlUtils.escAttribute(out, "value", context.getRequestContext().format(value, converter, localize));
 	HtmlUtils.escAttribute(out, "type", type);
+
+	if (min != null)
+	    HtmlUtils.escAttribute(out, "min", context.getRequestContext().format(min, converter, localize));
+
+	if (max != null)
+	    HtmlUtils.escAttribute(out, "max", context.getRequestContext().format(max, converter, localize));
+
+	if (step != null)
+	    HtmlUtils.escAttribute(out, "step", context.getRequestContext().format(step, converter, localize));
 
 	if (readonly)
 	    HtmlUtils.readonly(out);

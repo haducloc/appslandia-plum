@@ -65,7 +65,7 @@ public class HiddenCheckboxFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("roles", "admin,operator");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
@@ -89,7 +89,7 @@ public class HiddenCheckboxFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("roles", "admin,operator");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
@@ -113,7 +113,7 @@ public class HiddenCheckboxFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("roles", "operator");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());

@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.pebble.functions;
 
+import java.time.LocalDate;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -33,6 +34,7 @@ import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.base.Model;
 import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.jsp.TagUtils;
 import com.appslandia.plum.mocks.MemPebbleTemplateProvider;
 import com.appslandia.plum.pebble.PebbleUtils;
 
@@ -43,7 +45,7 @@ import jakarta.validation.constraints.NotNull;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextAreaFunctionTest extends MockTestBase {
+public class LabelClassFunctionTest extends MockTestBase {
 
     protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
@@ -57,7 +59,31 @@ public class TextAreaFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		{{ textarea(path='model.notes') }}
+		{{ labelClass(path='model.dob') }}
+		""";
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+	try {
+	    getCurrentRequest().addParameter("dob", "1980-01-01");
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals(TagUtils.CSS_NOOP, content);
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
+    public void test_error() {
+	String templateContent = """
+		{{ labelClass(path='model.dob') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -70,7 +96,7 @@ public class TextAreaFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("id=\"notes\" name=\"notes\"", content);
+	    Assertions.assertEquals("l-error-label", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -91,14 +117,14 @@ public class TextAreaFunctionTest extends MockTestBase {
     public static class UserModel {
 
 	@NotNull
-	private String notes;
+	private LocalDate dob;
 
-	public String getNotes() {
-	    return notes;
+	public LocalDate getDob() {
+	    return dob;
 	}
 
-	public void setNotes(String notes) {
-	    this.notes = notes;
+	public void setDob(LocalDate dob) {
+	    this.dob = dob;
 	}
     }
 }

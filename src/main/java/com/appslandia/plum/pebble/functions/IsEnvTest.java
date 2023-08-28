@@ -38,7 +38,7 @@ public class IsEnvTest extends PebbleTest {
     @Override
     protected boolean doExecute(Object input, TemplateEvaluationContext context, int lineNumber) throws PebbleException {
 	String name = (String) input;
-	return DeployEnv.getCurrent().getName().equals(name);
+	return DeployEnv.getCurrent().getName().equalsIgnoreCase(name);
     }
 
     @Override

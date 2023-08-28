@@ -54,7 +54,8 @@ public class TextBoxTag extends InputTagBase {
 
     @Override
     protected String format(Object value, String converter) {
-	return TextBoxUtils.formatValue(getRequestContext(), value, converter, this.type);
+	boolean localize = InputUtils.willLocalize(getRequestContext(), value, converter, this.type);
+	return getRequestContext().format(value, converter, localize);
     }
 
     @Override

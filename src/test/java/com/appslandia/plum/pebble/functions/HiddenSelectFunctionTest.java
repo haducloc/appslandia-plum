@@ -68,7 +68,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
 
 	    Params model = new Params();
 	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2"), new SelectItemImpl(3, "Type3")));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
@@ -94,7 +94,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
 
 	    Params model = new Params();
 	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2"), new SelectItemImpl(3, "Type3")));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
@@ -119,7 +119,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
 
 	    Params model = new Params();
 	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2"), new SelectItemImpl(3, "Type3")));
+	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());

@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.plum.jsp.TagUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 
@@ -53,7 +54,7 @@ public class FieldClassFunction extends DynPebbleFunction {
 	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
 
 	if (isValid) {
-	    return new SafeString("l-no-op");
+	    return new SafeString(TagUtils.CSS_NOOP);
 	}
 	return new SafeString("l-error-field");
     }

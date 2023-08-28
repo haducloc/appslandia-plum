@@ -57,13 +57,13 @@ public class HiddenSelectFunction extends DynPebbleFunction {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
-	Object value = context.getELProcessor().eval(path);
-	String fmtValue = context.getRequestContext().fmt(value, converter, false);
+	Object value = context.evaluate(path);
+	String fmtValue = context.getRequestContext().format(value, converter, false);
 
 	// Selected Item
 	SelectItem selectedItem = items.stream().filter(item -> {
 
-	    String codeValue = context.getRequestContext().fmt(item.getValue(), converter, false);
+	    String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
 	    return Objects.equals(codeValue, fmtValue);
 
 	}).findFirst().orElse(null);
@@ -71,7 +71,7 @@ public class HiddenSelectFunction extends DynPebbleFunction {
 	// If readonly & selectedItem
 	if (readonly && selectedItem != null) {
 
-	    StringWriter out = new StringWriter(80);
+	    StringWriter out = new StringWriter(128);
 	    out.append("<input type=\"hidden\"");
 
 	    HtmlUtils.escAttribute(out, "name", name);

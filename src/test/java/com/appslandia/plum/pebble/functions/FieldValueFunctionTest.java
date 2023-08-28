@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import com.appslandia.common.base.Params;
 import com.appslandia.common.base.StringWriter;
 import com.appslandia.plum.base.ActionResult;
-import com.appslandia.plum.base.BrowserFeatures;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
@@ -38,7 +37,6 @@ import com.appslandia.plum.base.RequestAccessor;
 import com.appslandia.plum.mocks.MemPebbleTemplateProvider;
 import com.appslandia.plum.pebble.PebbleUtils;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -68,7 +66,7 @@ public class FieldValueFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("dob", "1980-01-01");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
@@ -82,7 +80,7 @@ public class FieldValueFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_localize() {
+    public void test_not_localize() {
 	String templateContent = """
 		{{ fieldValue(path='model.dob', localize=false) }}
 		""";
@@ -92,60 +90,7 @@ public class FieldValueFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("dob", "1980-01-01");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("1980-01-01", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_type_date() {
-	String templateContent = """
-		{{ fieldValue(path='model.dob', type='date') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    // No BrowserFeatures.INPUT_DATE
-	    getCurrentRequest().addParameter("dob", "1980-01-01");
-
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("01/01/1980", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_type_date_browserFeatures() {
-	String templateContent = """
-		{{ fieldValue(path='model.dob', type='date') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    // BrowserFeatures.INPUT_DATE
-	    getCurrentRequest().addCookie(new Cookie("browserFeatures", String.valueOf(BrowserFeatures.INPUT_DATE)));
-	    getCurrentRequest().addParameter("dob", "1980-01-01");
-
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());

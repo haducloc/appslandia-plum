@@ -117,8 +117,8 @@ public class ButtonLinkTag extends UITagBase {
 
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
-	if (this.jspBody != null) {
-	    this.jspBody.invoke(out);
+	if (this.body != null) {
+	    this.body.invoke(out);
 	} else {
 	    out.write(this.action);
 	}

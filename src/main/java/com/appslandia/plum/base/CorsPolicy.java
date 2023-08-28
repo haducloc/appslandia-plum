@@ -103,7 +103,7 @@ public class CorsPolicy extends InitializeObject {
 	if (this.allowHeaders == null) {
 	    return false;
 	}
-	for (String header : SplitUtils.split(headers, ',')) {
+	for (String header : SplitUtils.splitByComma(headers)) {
 	    if (!this.allowHeaders.contains(header)) {
 		return false;
 	    }

@@ -47,8 +47,8 @@ public class DataListTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	if (this.jspBody != null) {
-	    this.jspBody.invoke(null);
+	if (this.body != null) {
+	    this.body.invoke(null);
 	}
     }
 

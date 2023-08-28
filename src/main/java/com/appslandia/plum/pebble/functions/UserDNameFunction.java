@@ -39,14 +39,14 @@ public class UserDNameFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: esc";
+	return "variables: escXml";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
 
-	boolean esc = context.getBool("esc", true);
-	return new SafeString(esc ? XmlEscaper.escapeXml(principal.getDisplayName()) : principal.getDisplayName());
+	boolean escXml = context.getBool("escXml", true);
+	return new SafeString(escXml ? XmlEscaper.escapeXml(principal.getDisplayName()) : principal.getDisplayName());
     }
 }

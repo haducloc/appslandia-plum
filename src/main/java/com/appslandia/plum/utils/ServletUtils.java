@@ -168,7 +168,7 @@ public class ServletUtils {
 	    if (httpPorts != null) {
 		Asserts.isTrue(X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches(), STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
 
-		String[] ports = SplitUtils.split(httpPorts, ',');
+		String[] ports = SplitUtils.splitByComma(httpPorts);
 		port = "https".equals(scheme) ? ports[1] : ports[0];
 
 	    } else {

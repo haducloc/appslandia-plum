@@ -77,7 +77,7 @@ public class TagCookieHandler {
 	    String decodedTags = URLEncoding.decodeParam(tagsCookie);
 	    Out<Boolean> tagValid = new Out<>();
 
-	    for (String tag : SplitUtils.split(decodedTags, ',')) {
+	    for (String tag : SplitUtils.splitByComma(decodedTags)) {
 		if (tagList.isPreTag(tag)) {
 		    continue;
 		}

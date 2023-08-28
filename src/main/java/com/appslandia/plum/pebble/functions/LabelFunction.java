@@ -51,7 +51,7 @@ public class LabelFunction extends DynPebbleFunction {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
-	StringWriter out = new StringWriter(32);
+	StringWriter out = new StringWriter(80);
 
 	out.write("for=\"");
 	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(name));

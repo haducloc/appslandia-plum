@@ -65,12 +65,12 @@ public class ControlTag extends UITagBase {
 
     @Override
     protected boolean hasBody() {
-	return this.jspBody != null;
+	return this.body != null;
     }
 
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
-	this.jspBody.invoke(out);
+	this.body.invoke(out);
     }
 
     @Attribute(required = true, rtexprvalue = false)

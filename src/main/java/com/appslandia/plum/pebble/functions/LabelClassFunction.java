@@ -21,8 +21,10 @@
 package com.appslandia.plum.pebble.functions;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import com.appslandia.plum.jsp.SymbolUtils;
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.plum.jsp.TagUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 
@@ -33,19 +35,27 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SymbolFunction extends DynPebbleFunction {
+public class LabelClassFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: name*, render";
+	return "variables: path*, form";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String name = context.getRequiredArgument("name");
-	String value = SymbolUtils.getHtmlCode(name);
+	String path = context.getRequiredArgument("path");
+	String form = context.getArgument("form");
 
-	boolean render = context.getBool("render", true);
-	return render ? new SafeString(value) : null;
+	int nameIdx = path.indexOf('.');
+	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+	String name = path.substring(nameIdx + 1);
+
+	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
+
+	if (isValid) {
+	    return new SafeString(TagUtils.CSS_NOOP);
+	}
+	return new SafeString("l-error-label");
     }
 }

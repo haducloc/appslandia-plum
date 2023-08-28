@@ -18,44 +18,36 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.jsp;
+package com.appslandia.plum.pebble.functions;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.plum.jsp.TagUtils;
+import com.appslandia.plum.pebble.DynPebbleFunction;
+import com.appslandia.plum.pebble.TemplateEvaluationContext;
+
+import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SymbolUtils {
+public class IfClassFunction extends DynPebbleFunction {
 
-    private static final Map<String, String> SYMBOLS;
-
-    static {
-	Map<String, String> symbols = new HashMap<>();
-
-	symbols.put("ballot_box", "&#9744;");
-	symbols.put("ballot_box_check", "&#9745;");
-	symbols.put("ballot_box_x", "&#9746;");
-
-	symbols.put("check_mark", "&check;");
-	symbols.put("check_mark_heavy", "&#10004;");
-
-	symbols.put("vertical_bar", "&#124;");
-	symbols.put("vertical_bar_broken", "&#166;");
-
-	symbols.put("plus_sign", "&plus;");
-	symbols.put("minus_sign", "&minus;");
-
-	SYMBOLS = Collections.unmodifiableMap(symbols);
+    @Override
+    public String getDescription() {
+	return "variables: test*, value*";
     }
 
-    public static String getHtmlCode(String symbolName) {
-	String code = SYMBOLS.get(symbolName);
-	return Asserts.notNull(code);
+    @Override
+    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+	boolean test = context.getBool("test");
+	String clazz = context.getRequiredArgument("value");
+
+	if (test) {
+	    return new SafeString(clazz);
+	}
+	return new SafeString(TagUtils.CSS_NOOP);
     }
 }

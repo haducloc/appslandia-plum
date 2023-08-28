@@ -39,16 +39,16 @@ import jakarta.servlet.jsp.tagext.SimpleTag;
 public class TemplateTag implements SimpleTag {
 
     protected JspTag parent;
-    protected JspFragment jspBody;
+    protected JspFragment body;
 
     protected String type;
 
     @Override
     public void doTag() throws JspException, IOException {
 	Asserts.notNull(this.parent);
-	Asserts.notNull(this.jspBody);
+	Asserts.notNull(this.body);
 
-	((TemplateSupport) this.parent).setTemplate(this.type, this.jspBody);
+	((TemplateSupport) this.parent).setTemplate(this.type, this.body);
     }
 
     @Override
@@ -66,8 +66,8 @@ public class TemplateTag implements SimpleTag {
     }
 
     @Override
-    public void setJspBody(JspFragment jspBody) {
-	this.jspBody = jspBody;
+    public void setJspBody(JspFragment body) {
+	this.body = body;
     }
 
     @Attribute(required = true, rtexprvalue = false)

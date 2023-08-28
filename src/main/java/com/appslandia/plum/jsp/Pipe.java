@@ -20,12 +20,8 @@
 
 package com.appslandia.plum.jsp;
 
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -96,28 +92,7 @@ public abstract class Pipe {
 		}
 		int len = Integer.parseInt(arg);
 		String s = (String) value;
-		return (s.length() > len) ? s.substring(0, len) + "..." : s;
-	    }
-	});
-	pipes.put("fmtDate", new Pipe() {
-
-	    final ConcurrentMap<String, DateTimeFormatter> formatters = new ConcurrentHashMap<>();
-
-	    @Override
-	    public Object apply(Object value, String arg) {
-		if (value == null) {
-		    return null;
-		}
-		if (arg == null) {
-		    throw new IllegalArgumentException("fmtDate: pattern is required.");
-		}
-		if (value instanceof Date) {
-		    return new SimpleDateFormat(arg).format((Date) value);
-		}
-		if (value instanceof TemporalAccessor) {
-		    return this.formatters.computeIfAbsent(arg, p -> DateTimeFormatter.ofPattern(p)).format((TemporalAccessor) value);
-		}
-		throw new IllegalArgumentException("fmtDate: value must be temporal.");
+		return (s.length() > len) ? s.substring(0, len) + "&ellipsis;" : s;
 	    }
 	});
 	pipes.put("fmtGroup", new Pipe() {
@@ -133,22 +108,6 @@ public abstract class Pipe {
 		    throw new IllegalArgumentException("fmtGroup: value must be a string.");
 		}
 		return this.formats.computeIfAbsent(arg, (f) -> new GroupFormat(f)).format((String) value);
-	    }
-	});
-	pipes.put("fmtNumber", new Pipe() {
-
-	    @Override
-	    public Object apply(Object value, String arg) {
-		if (value == null) {
-		    return null;
-		}
-		if (!(value instanceof Number)) {
-		    throw new IllegalArgumentException("fmtNumber: value must be a number.");
-		}
-		if (arg == null) {
-		    throw new IllegalArgumentException("fmtNumber: format is required.");
-		}
-		return String.format(arg, value);
 	    }
 	});
 	pipes.put("maskStart", new Pipe() {
@@ -228,20 +187,7 @@ public abstract class Pipe {
 		throw new IllegalArgumentException("asString requires Iterable/Array/Enumeration parameter.");
 	    }
 	});
-	pipes.put("escCt", new Pipe() {
-
-	    @Override
-	    public Object apply(Object value, String arg) {
-		if (value == null) {
-		    return null;
-		}
-		if (value.getClass() != String.class) {
-		    throw new IllegalArgumentException("escCt: value must be a string.");
-		}
-		return XmlEscaper.escapeXmlContent((String) value);
-	    }
-	});
-	pipes.put("esc", new Pipe() {
+	pipes.put("escXml", new Pipe() {
 
 	    @Override
 	    public Object apply(Object value, String arg) {

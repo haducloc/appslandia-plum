@@ -20,8 +20,6 @@
 
 package com.appslandia.plum.jsp;
 
-import jakarta.servlet.jsp.PageContext;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -29,22 +27,7 @@ import jakarta.servlet.jsp.PageContext;
  */
 public class TagUtils {
 
-    public static final String REQUEST = "request";
-    public static final String SESSION = "session";
-    public static final String APPLICATION = "application";
-
-    public static int getScope(String scope) {
-	if (REQUEST.equalsIgnoreCase(scope)) {
-	    return PageContext.REQUEST_SCOPE;
-	}
-	if (SESSION.equalsIgnoreCase(scope)) {
-	    return PageContext.SESSION_SCOPE;
-	}
-	if (APPLICATION.equalsIgnoreCase(scope)) {
-	    return PageContext.APPLICATION_SCOPE;
-	}
-	return PageContext.PAGE_SCOPE;
-    }
+    public static final String CSS_NOOP = "l-noop";
 
     public static boolean isForParameter(String attribute) {
 	return attribute.startsWith("__");

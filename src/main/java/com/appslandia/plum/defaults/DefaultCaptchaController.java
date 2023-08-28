@@ -70,7 +70,7 @@ public class DefaultCaptchaController {
 	this.captchaManager.initCaptcha(request);
 
 	String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
-	Map<String, Object> params = Params.of(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
+	Map<String, Object> params = new Params().set(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
 
 	String wordsUrl = this.actionParser.toActionUrl(request, "captcha", "words", params, false);
 	return new Result().setData(captchaId).setLink(response.encodeURL(wordsUrl));

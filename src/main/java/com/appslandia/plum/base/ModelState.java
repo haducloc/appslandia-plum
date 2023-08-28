@@ -40,7 +40,7 @@ public class ModelState implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public static final String REQUEST_ATTRIBUTE_ID = "modelState";
-    public static final String MODEL_FIELD = "_";
+    public static final String MODEL_FIELD = "__model";
 
     private String form;
     final Map<String, List<Message>> errors = new HashMap<>();

@@ -50,7 +50,7 @@ public class FieldLabelTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	Asserts.isTrue((this.labelKey != null) || (this.jspBody != null));
+	Asserts.isTrue((this.labelKey != null) || (this.body != null));
 
 	if (this.forId == null) {
 	    this.forId = HtmlUtils.toValueTagId(this.field);
@@ -89,9 +89,9 @@ public class FieldLabelTag extends UITagBase {
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
 	if (this.labelKey != null) {
-	    out.write(this.getRequestContext().escCt(this.labelKey));
+	    out.write(this.getRequestContext().escXml(this.labelKey));
 	} else {
-	    this.jspBody.invoke(out);
+	    this.body.invoke(out);
 	}
 	if (this.required) {
 	    out.write(" <span class=\"label-required\">*</span>");

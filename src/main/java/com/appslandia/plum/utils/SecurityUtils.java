@@ -35,8 +35,6 @@ import jakarta.security.enterprise.identitystore.CredentialValidationResult;
  */
 public class SecurityUtils {
 
-    private static final String USER_ROLE_SEPARATOR = ",";
-
     public static CredentialValidationResult createIdentityStoreResult(CallerPrincipal callerPrincipal, String userRoles) {
 	if (userRoles == null) {
 	    return new CredentialValidationResult(callerPrincipal, null);
@@ -50,10 +48,10 @@ public class SecurityUtils {
     }
 
     public static String[] parseUserRoles(String userRoles) {
-	return SplitUtils.split(userRoles, USER_ROLE_SEPARATOR.charAt(0));
+	return SplitUtils.splitByComma(userRoles);
     }
 
     public static String toUserRoles(Set<String> userRoles) {
-	return (userRoles != null) && !userRoles.isEmpty() ? String.join(USER_ROLE_SEPARATOR, userRoles) : null;
+	return (userRoles != null) && !userRoles.isEmpty() ? String.join(",", userRoles) : null;
     }
 }

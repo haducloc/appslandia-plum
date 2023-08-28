@@ -124,7 +124,7 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 
     protected void handleException(Exception ex) throws JspException, IOException {
 	if (this.errorKey != null) {
-	    this.pageContext.getOut().write(this.getRequestContext().escCt(this.errorKey));
+	    this.pageContext.getOut().write(this.getRequestContext().escXml(this.errorKey));
 	} else {
 	    if (ex instanceof RuntimeException) {
 		throw (RuntimeException) ex;

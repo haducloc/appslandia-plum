@@ -22,9 +22,10 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
+import com.appslandia.common.utils.Asserts;
+
 import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.PageContext;
 import jakarta.servlet.jsp.tagext.JspFragment;
 import jakarta.servlet.jsp.tagext.JspTag;
 import jakarta.servlet.jsp.tagext.SimpleTag;
@@ -34,48 +35,44 @@ import jakarta.servlet.jsp.tagext.SimpleTag;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "symbol", dynamicAttributes = false)
-public class SymbolTag implements SimpleTag {
+@Tag(name = "option", dynamicAttributes = false)
+public class OptionTag implements SimpleTag {
+    protected JspTag parent;
 
     protected String name;
-    protected boolean render = true;
-
-    protected PageContext pageContext;
+    protected Object value;
 
     @Override
     public void doTag() throws JspException, IOException {
-	String code = SymbolUtils.getHtmlCode(this.name);
-
-	if (this.render) {
-	    this.pageContext.getOut().write(code);
-	}
+	Asserts.notNull(this.parent);
+	((SelectTag) this.parent).addItem(this.name, this.value);
     }
 
-    @Override
-    public void setParent(JspTag parent) {
-    }
-
-    @Override
-    public JspTag getParent() {
-	throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setJspContext(JspContext pc) {
-	this.pageContext = (PageContext) pc;
-    }
-
-    @Override
-    public void setJspBody(JspFragment jspBody) {
-    }
-
-    @Attribute(required = true, rtexprvalue = false)
+    @Attribute(required = true, rtexprvalue = true)
     public void setName(String name) {
 	this.name = name;
     }
 
     @Attribute(required = false, rtexprvalue = true)
-    public void setRender(boolean render) {
-	this.render = render;
+    public void setValue(Object value) {
+	this.value = value;
+    }
+
+    @Override
+    public void setParent(JspTag parent) {
+	this.parent = parent;
+    }
+
+    @Override
+    public JspTag getParent() {
+	return this.parent;
+    }
+
+    @Override
+    public void setJspContext(JspContext pc) {
+    }
+
+    @Override
+    public void setJspBody(JspFragment body) {
     }
 }

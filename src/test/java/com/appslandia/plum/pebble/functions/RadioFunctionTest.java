@@ -57,7 +57,7 @@ public class RadioFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-			<input type=\"radio\" {{ radio(path='model.userType', codeValue=1) }} />
+			{{ radio(path='model.userType', codeValue=1) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -65,13 +65,13 @@ public class RadioFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userType", "1");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<input type=\"radio\" id=\"userType\" name=\"userType\" value=\"1\" checked=\"checked\" />", content);
+	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\" checked=\"checked\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -81,7 +81,7 @@ public class RadioFunctionTest extends MockTestBase {
     @Test
     public void test_unchecked() {
 	String templateContent = """
-			<input type=\"radio\" {{ radio(path='model.userType', codeValue=1) }} />
+			{{ radio(path='model.userType', codeValue=1) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -89,13 +89,13 @@ public class RadioFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userType", "2");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<input type=\"radio\" id=\"userType\" name=\"userType\" value=\"1\" />", content);
+	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -105,7 +105,7 @@ public class RadioFunctionTest extends MockTestBase {
     @Test
     public void test_checked_readonly() {
 	String templateContent = """
-			<input type=\"radio\" {{ radio(path='model.userType', codeValue=1, readonly=true) }} />
+			{{ radio(path='model.userType', codeValue=1, readonly=true) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -113,13 +113,13 @@ public class RadioFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userType", "1");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<input type=\"radio\" id=\"userType\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" />", content);
+	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -129,7 +129,7 @@ public class RadioFunctionTest extends MockTestBase {
     @Test
     public void test_unchecked_readonly() {
 	String templateContent = """
-			<input type=\"radio\" {{ radio(path='model.userType', codeValue=1, readonly=true) }} />
+			{{ radio(path='model.userType', codeValue=1, readonly=true) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -137,13 +137,13 @@ public class RadioFunctionTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userType", "2");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    Map<String, Object> model = Params.of("model", getCurrentRequest().getAttribute("model"));
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<input type=\"radio\" id=\"userType\" name=\"userType\" value=\"1\" disabled=\"disabled\" />", content);
+	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\" disabled=\"disabled\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

@@ -24,11 +24,9 @@ import java.io.IOException;
 import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.jsp.TextBoxUtils;
+import com.appslandia.plum.jsp.InputUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
-
-import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
@@ -45,7 +43,7 @@ public class FieldValueFunction extends DynPebbleFunction {
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String path = context.getRequiredArgument("path");
-	String type = context.getArgument("type");
+	String type = context.getArgument("type", "text");
 
 	String converter = context.getArgument("converter");
 	Boolean localize = context.getBoolObj("localize");
@@ -55,39 +53,22 @@ public class FieldValueFunction extends DynPebbleFunction {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
+	// value
 	Object value = null;
 	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
 
 	if (isValid) {
-	    value = context.getELProcessor().eval(path);
+	    value = context.evaluate(path);
 	} else {
 	    value = context.getRequest().getParameter(name);
 	}
 
-	// Format value
-	String fmtValue = null;
-	if (localize != null) {
-	    fmtValue = context.getRequestContext().fmt(value, converter, localize);
-
-	} else {
-	    if (type == null) {
-		fmtValue = context.getRequestContext().fmt(value, converter, true);
-
-	    } else if ("hidden".equals(type)) {
-		fmtValue = context.getRequestContext().fmt(value, converter, false);
-
-	    } else {
-		Integer feature = TextBoxUtils.getBrowserFeature(type);
-		Integer browserFeatures = context.getRequestContext().getBrowserFeatures();
-
-		if (browserFeatures != null && feature != null && (browserFeatures & feature) == feature) {
-		    fmtValue = context.getRequestContext().fmt(value, converter, false);
-
-		} else {
-		    fmtValue = context.getRequestContext().fmt(value, converter, true);
-		}
-	    }
+	// localize
+	if (localize == null) {
+	    localize = InputUtils.willLocalize(context.getRequestContext(), value, converter, type);
 	}
-	return fmtValue != null ? new SafeString(fmtValue) : null;
+
+	String fmtValue = context.getRequestContext().format(value, converter, localize);
+	return fmtValue;
     }
 }

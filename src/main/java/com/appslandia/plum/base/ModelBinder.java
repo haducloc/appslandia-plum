@@ -145,7 +145,7 @@ public class ModelBinder {
 			String[] paramValues = request.getParameterValues(propertyPath);
 
 			if ((paramValues == null) || Arrays.stream(paramValues).allMatch(v -> StringUtils.isNullOrEmpty(v))) {
-			    paramValues = SplitUtils.split(fieldDesc.getDefaultValue(), ',');
+			    paramValues = SplitUtils.splitByComma(fieldDesc.getDefaultValue());
 			}
 			Out<String> msgKey = new Out<>();
 			Object parsedValue = parseArray(paramValues, elementType, msgKey, converter, ServletUtils.getFormatProvider(request));

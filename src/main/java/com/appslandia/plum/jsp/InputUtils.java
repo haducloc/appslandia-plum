@@ -20,59 +20,59 @@
 
 package com.appslandia.plum.jsp;
 
-import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.appslandia.common.utils.Asserts;
-
-import jakarta.servlet.jsp.JspContext;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.JspFragment;
-import jakarta.servlet.jsp.tagext.JspTag;
-import jakarta.servlet.jsp.tagext.SimpleTag;
+import com.appslandia.plum.base.BrowserFeatures;
+import com.appslandia.plum.base.RequestContext;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "selectItem", dynamicAttributes = false)
-public class SelectItemTag implements SimpleTag {
-    protected JspTag parent;
+public class InputUtils {
 
-    protected String name;
-    protected Object value;
+    static final Map<String, Integer> TYPE_FEATURES;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	Asserts.notNull(this.parent);
-	((SelectTag) this.parent).addItem(this.name, this.value);
+    static {
+	Map<String, Integer> map = new HashMap<>();
+
+	map.put("number", BrowserFeatures.INPUT_NUMBER);
+	map.put("range", BrowserFeatures.INPUT_RANGE);
+
+	map.put("date", BrowserFeatures.INPUT_DATE);
+	map.put("time", BrowserFeatures.INPUT_TIME);
+	map.put("datetime-local", BrowserFeatures.INPUT_DATETIME_LOCAL);
+
+	map.put("month", BrowserFeatures.INPUT_MONTH);
+	map.put("week", BrowserFeatures.INPUT_WEEK);
+
+	TYPE_FEATURES = Collections.unmodifiableMap(map);
     }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setName(String name) {
-	this.name = name;
+    public static Integer getFeature(String inputType) {
+	return TYPE_FEATURES.get(inputType);
     }
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
-    }
+    public static boolean willLocalize(RequestContext context, Object value, String converter, String type) {
+	if ("hidden".equals(type)) {
+	    return false;
+	}
 
-    @Override
-    public void setParent(JspTag parent) {
-	this.parent = parent;
-    }
+	// BrowserFeature unparsed
+	Integer browserFeatures = context.getBrowserFeatures();
+	if (browserFeatures == null) {
+	    return true;
+	}
 
-    @Override
-    public JspTag getParent() {
-	return this.parent;
-    }
+	Integer feature = getFeature(type);
+	if (feature == null) {
+	    return true;
+	}
 
-    @Override
-    public void setJspContext(JspContext pc) {
-    }
-
-    @Override
-    public void setJspBody(JspFragment jspBody) {
+	// HTML5 types
+	return (browserFeatures & feature) != feature;
     }
 }

@@ -75,7 +75,7 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 	Asserts.notNull(this.tag);
 	Asserts.notNull(this.model);
 
-	this.jspBody.invoke(null);
+	this.body.invoke(null);
 
 	Asserts.notNull(this.pageTpl);
 	Asserts.notNull(this.dotsTpl);

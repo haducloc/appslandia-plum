@@ -80,8 +80,8 @@ public class FormErrorsTag extends UITagBase {
 	}
 	if (hasErrors) {
 	    // Parse field orders
-	    if (!this.modelLevelOnly && (this.jspBody != null)) {
-		this.jspBody.invoke(null);
+	    if (!this.modelLevelOnly && (this.body != null)) {
+		this.body.invoke(null);
 	    }
 	} else {
 	    this.style = (this.style == null) ? "display:none" : (this.style + "display:none");
@@ -151,7 +151,7 @@ public class FormErrorsTag extends UITagBase {
 	    out.write("<li>");
 
 	    if (error.isEscXml()) {
-		XmlEscaper.escapeXmlContent(out, error.getText());
+		XmlEscaper.escapeXml(out, error.getText());
 	    } else {
 		out.write(error.getText());
 	    }

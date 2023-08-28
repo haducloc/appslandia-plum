@@ -53,8 +53,8 @@ public class SelectFunction extends DynPebbleFunction {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
-	Object value = context.getELProcessor().eval(path);
-	String fmtValue = context.getRequestContext().fmt(value, converter, false);
+	Object value = context.evaluate(path);
+	String fmtValue = context.getRequestContext().format(value, converter, false);
 
 	StringWriter out = new StringWriter(128);
 

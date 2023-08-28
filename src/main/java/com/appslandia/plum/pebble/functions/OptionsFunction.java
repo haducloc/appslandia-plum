@@ -38,7 +38,7 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SelectItemsFunction extends DynPebbleFunction {
+public class OptionsFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
@@ -50,26 +50,24 @@ public class SelectItemsFunction extends DynPebbleFunction {
 	String path = context.getRequiredArgument("path");
 	String converter = context.getArgument("converter");
 	boolean readonly = context.getBool("readonly", false);
-
 	List<SelectItem> items = context.getRequiredArgument("items");
 
-	Object value = context.getELProcessor().eval(path);
-	String fmtValue = context.getRequestContext().fmt(value, converter, false);
+	Object value = context.evaluate(path);
+	String fmtValue = context.getRequestContext().format(value, converter, false);
 
 	StringWriter out = new StringWriter(items.size() * 80);
 
 	// readonly
 	if (readonly) {
-
 	    SelectItem selectedItem = items.stream().filter(item -> {
 
-		String codeValue = context.getRequestContext().fmt(item.getValue(), converter, false);
+		String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
 		return Objects.equals(codeValue, fmtValue);
 
 	    }).findFirst().orElse(null);
 
 	    if (selectedItem != null) {
-		String codeValue = context.getRequestContext().fmt(selectedItem.getValue(), converter, false);
+		String codeValue = context.getRequestContext().format(selectedItem.getValue(), converter, false);
 		out.write(System.lineSeparator());
 
 		out.write("<option");
@@ -78,7 +76,7 @@ public class SelectItemsFunction extends DynPebbleFunction {
 		out.write(">");
 
 		if (selectedItem.getDisplayName() != null) {
-		    XmlEscaper.escapeXmlContent(out, selectedItem.getDisplayName());
+		    XmlEscaper.escapeXml(out, selectedItem.getDisplayName());
 		}
 		out.write("</option>");
 	    }
@@ -86,7 +84,7 @@ public class SelectItemsFunction extends DynPebbleFunction {
 	} else {
 	    // Not readonly
 	    for (SelectItem item : items) {
-		String codeValue = context.getRequestContext().fmt(item.getValue(), converter, false);
+		String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
 		out.write(System.lineSeparator());
 
 		out.write("<option");
@@ -98,7 +96,7 @@ public class SelectItemsFunction extends DynPebbleFunction {
 		out.write(">");
 
 		if (item.getDisplayName() != null) {
-		    XmlEscaper.escapeXmlContent(out, item.getDisplayName());
+		    XmlEscaper.escapeXml(out, item.getDisplayName());
 		}
 		out.write("</option>");
 	    }

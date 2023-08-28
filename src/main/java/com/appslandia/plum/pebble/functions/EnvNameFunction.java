@@ -18,47 +18,31 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.jsp;
+package com.appslandia.plum.pebble.functions;
 
-import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import jakarta.servlet.jsp.JspContext;
-import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.PageContext;
-import jakarta.servlet.jsp.tagext.JspFragment;
-import jakarta.servlet.jsp.tagext.JspTag;
-import jakarta.servlet.jsp.tagext.SimpleTag;
+import com.appslandia.common.base.DeployEnv;
+
+import io.pebbletemplates.pebble.extension.Function;
+import io.pebbletemplates.pebble.template.EvaluationContext;
+import io.pebbletemplates.pebble.template.PebbleTemplate;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "newline", dynamicAttributes = false)
-public class NewLineTag implements SimpleTag {
-
-    protected PageContext pageContext;
+public class EnvNameFunction implements Function {
 
     @Override
-    public void doTag() throws JspException, IOException {
-	this.pageContext.getOut().newLine();
+    public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
+	return DeployEnv.getCurrent().getName();
     }
 
     @Override
-    public void setParent(JspTag parent) {
-    }
-
-    @Override
-    public JspTag getParent() {
+    public List<String> getArgumentNames() {
 	return null;
-    }
-
-    @Override
-    public void setJspContext(JspContext pc) {
-	this.pageContext = (PageContext) pc;
-    }
-
-    @Override
-    public void setJspBody(JspFragment jspBody) {
     }
 }
