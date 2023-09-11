@@ -44,7 +44,7 @@ public class TextBoxTag extends InputTagBase {
 
     protected String placeholder;
     protected String alt;
-    protected String autocomplete;
+    protected String autocomplete = "off";
 
     @Override
     protected String getTagName() {

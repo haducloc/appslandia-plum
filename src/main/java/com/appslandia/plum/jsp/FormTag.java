@@ -51,7 +51,7 @@ public class FormTag extends UITagBase {
     protected String enctype;
 
     protected boolean novalidate;
-    protected String autocomplete;
+    protected String autocomplete = "off";
 
     protected String _action;
     protected Map<String, Object> _parameters;
