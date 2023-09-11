@@ -2024,8 +2024,8 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>tag|type=java.lang.String</description>
-			<name>tag</name>
+			<description>t|type=java.lang.String</description>
+			<name>t</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>

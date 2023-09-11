@@ -146,7 +146,7 @@ public class PagerTag extends UITagBase implements TemplateSupport {
     }
 
     @Attribute(required = true, rtexprvalue = false)
-    public void setTag(String tag) {
+    public void setT(String tag) {
 	this.tag = tag;
     }
 
