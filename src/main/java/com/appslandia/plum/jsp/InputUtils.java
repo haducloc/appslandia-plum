@@ -60,9 +60,9 @@ public class InputUtils {
 	if ("hidden".equals(type)) {
 	    return false;
 	}
-
-	// BrowserFeature unparsed
 	Integer browserFeatures = context.getBrowserFeatures();
+
+	// BrowserFeature unparsed: localize
 	if (browserFeatures == null) {
 	    return true;
 	}
