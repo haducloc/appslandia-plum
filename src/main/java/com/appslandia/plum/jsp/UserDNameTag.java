@@ -27,49 +27,20 @@ import com.appslandia.plum.base.UserPrincipal;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.PageContext;
-import jakarta.servlet.jsp.tagext.JspFragment;
-import jakarta.servlet.jsp.tagext.JspTag;
-import jakarta.servlet.jsp.tagext.SimpleTag;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "userDName", dynamicAttributes = false)
-public class UserDNameTag implements SimpleTag {
-
-    protected PageContext pageContext;
+@Tag(name = "userDName")
+public class UserDNameTag extends TagBase {
 
     @Override
     public void doTag() throws JspException, IOException {
 	UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
 
 	XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
-    }
-
-    @Override
-    public void setParent(JspTag parent) {
-    }
-
-    @Override
-    public JspTag getParent() {
-	throw new UnsupportedOperationException();
-    }
-
-    public PageContext getPageContext() {
-	return this.pageContext;
-    }
-
-    @Override
-    public void setJspContext(JspContext pc) {
-	this.pageContext = (PageContext) pc;
-    }
-
-    @Override
-    public void setJspBody(JspFragment body) {
     }
 }

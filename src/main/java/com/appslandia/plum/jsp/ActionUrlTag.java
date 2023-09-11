@@ -37,8 +37,8 @@ import jakarta.servlet.jsp.tagext.DynamicAttributes;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "action")
-public class ActionTag extends TagBase implements DynamicAttributes {
+@Tag(name = "actionUrl", dynamicAttributes = true)
+public class ActionUrlTag extends TagBase implements DynamicAttributes {
 
     protected String controller;
     protected String action;

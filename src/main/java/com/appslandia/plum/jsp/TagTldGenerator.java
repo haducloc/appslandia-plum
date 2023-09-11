@@ -42,12 +42,10 @@ public class TagTldGenerator {
 
 	generateTag(FormTag.class, sb);
 	generateTag(FormErrorsTag.class, sb);
-	generateTag(FieldOrdersTag.class, sb);
 
 	generateTag(FieldLabelTag.class, sb);
 	generateTag(FieldErrorTag.class, sb);
 
-	generateTag(HiddenTag.class, sb);
 	generateTag(TextBoxTag.class, sb);
 	generateTag(DataListTag.class, sb);
 	generateTag(DataItemTag.class, sb);
@@ -56,8 +54,7 @@ public class TagTldGenerator {
 
 	generateTag(RadioTag.class, sb);
 	generateTag(CheckboxTag.class, sb);
-	generateTag(BitMaskCheckTag.class, sb);
-	generateTag(CheckGroupTag.class, sb);
+	generateTag(FieldGroupTag.class, sb);
 
 	generateTag(ButtonTag.class, sb);
 	generateTag(SubmitButtonTag.class, sb);
@@ -66,16 +63,14 @@ public class TagTldGenerator {
 	generateTag(SelectTag.class, sb);
 	generateTag(OptionTag.class, sb);
 
-	generateTag(ActionTag.class, sb);
+	generateTag(ActionUrlTag.class, sb);
 	generateTag(ActionLinkTag.class, sb);
 	generateTag(ActionImageTag.class, sb);
 
 	generateTag(IncludeTag.class, sb);
-	generateTag(ParamTag.class, sb);
 
 	generateTag(IterateTag.class, sb);
 	generateTag(ConstTag.class, sb);
-	generateTag(UrlTag.class, sb);
 
 	generateTag(MessagesTag.class, sb);
 	generateTag(ControlTag.class, sb);
@@ -85,7 +80,6 @@ public class TagTldGenerator {
 	generateTag(PagerTag.class, sb);
 
 	generateTag(FmtDaysTag.class, sb);
-	generateTag(PageUrlTag.class, sb);
 	generateTag(IfEnvTag.class, sb);
 
 	System.out.println(sb);

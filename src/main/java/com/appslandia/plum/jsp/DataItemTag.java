@@ -24,20 +24,15 @@ import java.io.IOException;
 
 import com.appslandia.common.utils.Asserts;
 
-import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.JspFragment;
-import jakarta.servlet.jsp.tagext.JspTag;
-import jakarta.servlet.jsp.tagext.SimpleTag;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "dataItem", dynamicAttributes = false)
-public class DataItemTag implements SimpleTag {
-    protected JspTag parent;
+@Tag(name = "dataitem")
+public class DataItemTag extends TagBase {
 
     protected Object value;
 
@@ -50,23 +45,5 @@ public class DataItemTag implements SimpleTag {
     @Attribute(required = true, rtexprvalue = true)
     public void setValue(Object value) {
 	this.value = value;
-    }
-
-    @Override
-    public void setParent(JspTag parent) {
-	this.parent = parent;
-    }
-
-    @Override
-    public JspTag getParent() {
-	return this.parent;
-    }
-
-    @Override
-    public void setJspContext(JspContext pc) {
-    }
-
-    @Override
-    public void setJspBody(JspFragment body) {
     }
 }

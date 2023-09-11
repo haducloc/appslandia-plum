@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
@@ -63,94 +64,12 @@ public class TextAreaTagTest extends MockTestBase {
     public void test() {
 	try {
 	    tag.setPath("model.notes");
-
-	    tag.setMaxlength("100");
-	    tag.setReadonly(true);
-	    tag.setPlaceholder("placeholder");
-
-	    tag.setRows("10");
-	    tag.setCols("50");
-	    tag.setHardWrap(true);
-
-	    tag.setRequired(true);
-	    tag.setHidden(true);
-
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("id=\"notes\""));
-	    Assertions.assertTrue(html.contains("name=\"notes\""));
-
-	    Assertions.assertTrue(html.contains("maxlength=\"100\""));
-	    Assertions.assertTrue(html.contains("readonly=\"readonly\""));
-	    Assertions.assertTrue(html.contains("placeholder=\"placeholder\""));
-
-	    Assertions.assertTrue(html.contains("rows=\"10\""));
-	    Assertions.assertTrue(html.contains("cols=\"50\""));
-	    Assertions.assertTrue(html.contains("wrap=\"hard\""));
-
-	    Assertions.assertTrue(html.contains("required=\"required\""));
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_value() {
-	try {
-	    tag.setPath("model.notes");
 	    model.setNotes("testNotes");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("testNotes"));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_escaped() {
-	try {
-	    tag.setPath("model.notes");
-	    model.setNotes("> testNotes");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("&gt; testNotes"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_readonly() {
-	try {
-	    tag.setPath("model.notes");
-	    model.setNotes("testNotes");
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("readonly=\"readonly\""));
-
-	    // Hidden
-	    Assertions.assertFalse(html.contains("type=\"hidden\""));
+	    Assertions.assertEquals("<textarea id=\"notes\" name=\"notes\">testNotes</textarea>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

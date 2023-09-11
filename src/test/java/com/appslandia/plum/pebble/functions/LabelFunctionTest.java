@@ -20,7 +20,6 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +57,7 @@ public class LabelFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		{{ label(path='model.dob') }}>
+		{{ label(path='model.username') }}>
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -71,7 +70,7 @@ public class LabelFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("for=\"dob\">", content);
+	    Assertions.assertEquals("for=\"username\">", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -92,14 +91,14 @@ public class LabelFunctionTest extends MockTestBase {
     public static class UserModel {
 
 	@NotNull
-	private LocalDate dob;
+	private String username;
 
-	public LocalDate getDob() {
-	    return dob;
+	public String getUsername() {
+	    return username;
 	}
 
-	public void setDob(LocalDate dob) {
-	    this.dob = dob;
+	public void setUsername(String username) {
+	    this.username = username;
 	}
     }
 }

@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpPost;
 import com.appslandia.plum.base.MockTestBase;
@@ -59,13 +60,12 @@ public class FieldErrorTest extends MockTestBase {
     @Test
     public void test() {
 	try {
-	    tag.setField("userName");
-
+	    tag.setFieldName("userName");
 	    tag.doTag();
+
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("field-error-msg"));
-	    Assertions.assertTrue(html.contains("display:none"));
+	    Assertions.assertEquals("", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -75,17 +75,14 @@ public class FieldErrorTest extends MockTestBase {
     @Test
     public void test_error() {
 	try {
-	    getCurrentModelState().addError("userName", "userName is required.");
+	    getCurrentModelState().addError("userName", "The userName field is required.");
 
-	    tag.setField("userName");
-	    tag.setClazz("class1");
-
+	    tag.setFieldName("userName");
 	    tag.doTag();
+
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("field-error-msg"));
-	    Assertions.assertFalse(html.contains("display:none"));
-	    Assertions.assertTrue(html.contains("userName is required."));
+	    Assertions.assertEquals("<div class=\"l-field-error\">The userName field is required.</div>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

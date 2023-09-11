@@ -33,7 +33,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "textArea")
+@Tag(name = "textarea")
 public class TextAreaTag extends InputTagBase {
 
     protected String maxlength;
@@ -43,6 +43,10 @@ public class TextAreaTag extends InputTagBase {
     protected String cols;
     protected String rows;
     protected boolean hardWrap;
+
+    public TextAreaTag() {
+	this.type = "textarea";
+    }
 
     @Override
     protected String getTagName() {
@@ -55,15 +59,9 @@ public class TextAreaTag extends InputTagBase {
     }
 
     @Override
-    protected String format(Object value, String converter) {
-	return getRequestContext().format(value, converter, true);
-    }
-
-    @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "name", this.name);
+	HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "name", this._name);
 
 	if (this.maxlength != null)
 	    HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
@@ -105,8 +103,8 @@ public class TextAreaTag extends InputTagBase {
 
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
-	if (this.value != null) {
-	    XmlEscaper.escapeXml(out, format(this.value, this.converter));
+	if (this._value != null) {
+	    XmlEscaper.escapeXml(out, (String) this._value);
 	}
     }
 

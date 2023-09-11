@@ -20,6 +20,11 @@
 
 package com.appslandia.plum.pebble.functions;
 
+import java.util.Arrays;
+import java.util.Objects;
+
+import com.appslandia.common.utils.SplitOptions;
+import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 
 /**
@@ -30,6 +35,10 @@ import com.appslandia.plum.pebble.TemplateEvaluationContext;
 public class HiddenCheckboxFunction extends HiddenCheckInputFunction {
 
     protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
-	return (modelValue != null) && modelValue.contains(codeValue);
+	if (modelValue == null) {
+	    return false;
+	}
+	String[] values = SplitUtils.split(modelValue, ',', SplitOptions.NONE);
+	return Arrays.stream(values).anyMatch(value -> Objects.equals(codeValue, value));
     }
 }

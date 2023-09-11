@@ -42,7 +42,6 @@ public class SubmitButtonTag extends UITagBase {
     protected boolean autofocus;
 
     protected boolean handleWait = true;
-
     protected String _label;
 
     @Override
@@ -57,7 +56,8 @@ public class SubmitButtonTag extends UITagBase {
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
+	if (this.id != null)
+	    HtmlUtils.escAttribute(out, "id", this.id);
 	HtmlUtils.escAttribute(out, "type", "button");
 
 	if (this.hidden)
@@ -97,11 +97,6 @@ public class SubmitButtonTag extends UITagBase {
 	out.write(this._label);
     }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setId(String id) {
-	super.setId(id);
-    }
-
     @Attribute(required = true, rtexprvalue = false)
     public void setLabelKey(String labelKey) {
 	this.labelKey = labelKey;
@@ -117,7 +112,7 @@ public class SubmitButtonTag extends UITagBase {
 	this.disabled = disabled;
     }
 
-    @Attribute(required = false, rtexprvalue = true)
+    @Attribute(required = false, rtexprvalue = false)
     public void setAutofocus(boolean autofocus) {
 	this.autofocus = autofocus;
     }

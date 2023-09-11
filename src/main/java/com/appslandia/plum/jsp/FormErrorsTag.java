@@ -31,7 +31,6 @@ import java.util.Map.Entry;
 import java.util.Objects;
 
 import com.appslandia.common.utils.SplitUtils;
-import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.base.ModelState;
@@ -47,122 +46,94 @@ import jakarta.servlet.jsp.JspWriter;
  *
  */
 @Tag(name = "formErrors", bodyContent = "scriptless")
-public class FormErrorsTag extends UITagBase {
+public class FormErrorsTag extends TagBase {
 
     protected String form;
-    protected boolean modelLevelOnly;
+    protected String fieldOrders;
+    protected boolean fieldErrors = true;
 
-    protected String _fieldOrders;
-    protected ModelState _modelState;
-
-    @Override
-    protected String getTagName() {
-	return "ul";
-    }
-
-    public void setFieldOrders(String fieldOrders) {
-	this._fieldOrders = fieldOrders;
-    }
+    protected String listClass;
+    protected String itemClass;
 
     @Override
-    protected void initTag() throws JspException, IOException {
-	this._modelState = getModelState();
-	if (this.clazz == null) {
-	    this.clazz = "messages";
-	}
-	this.clazz = this.clazz + " " + MessagesTag.getClassName(Message.TYPE_ERROR);
-
+    public void doTag() throws JspException, IOException {
 	boolean hasErrors = false;
-	if (this.modelLevelOnly) {
-	    hasErrors = Objects.equals(this.form, this._modelState.getForm()) && !this._modelState.isValid(ModelState.MODEL_FIELD);
+	if (this.fieldErrors) {
+	    hasErrors = Objects.equals(this.form, this.getModelState().getForm()) && !this.getModelState().isValid();
 	} else {
-	    hasErrors = Objects.equals(this.form, this._modelState.getForm()) && !this._modelState.isValid();
+	    hasErrors = Objects.equals(this.form, this.getModelState().getForm())
+		    && !(this.getModelState().isValid(ModelState.MODEL_FIELD) && this.getModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
 	}
+
 	if (hasErrors) {
-	    // Parse field orders
-	    if (!this.modelLevelOnly && (this.body != null)) {
-		this.body.invoke(null);
+	    JspWriter out = this.pageContext.getOut();
+
+	    out.write("<ul");
+	    if (this.listClass != null) {
+		HtmlUtils.escAttribute(out, "class", this.listClass);
 	    }
-	} else {
-	    this.style = (this.style == null) ? "display:none" : (this.style + "display:none");
-	}
-    }
+	    out.write(">");
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
-
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-    }
-
-    @Override
-    protected boolean hasBody() {
-	return true;
-    }
-
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	// Field errors
-	if (!this.modelLevelOnly) {
-	    if ((this._modelState.getErrors().size() > 1) && !StringUtils.isNullOrEmpty(this._fieldOrders)) {
-
-		List<Entry<String, List<Message>>> entries = new ArrayList<>(this._modelState.getErrors().entrySet());
-		Collections.sort(entries, buildFieldComparator(this._fieldOrders));
-
-		for (Entry<String, List<Message>> entry : entries) {
-		    if (!entry.getKey().equals(ModelState.MODEL_FIELD) && !entry.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
-			this.writeMessages(out, entry.getValue());
-		    }
+	    // Write field errors
+	    if (this.fieldErrors) {
+		List<Entry<String, List<Message>>> errors = new ArrayList<>(this.getModelState().getErrors().entrySet());
+		if (this.fieldOrders != null) {
+		    Collections.sort(errors, toFieldComparator(this.fieldOrders));
 		}
-	    } else {
-		for (Entry<String, List<Message>> entry : this._modelState.getErrors().entrySet()) {
-		    if (!entry.getKey().equals(ModelState.MODEL_FIELD) && !entry.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
-			this.writeMessages(out, entry.getValue());
+
+		for (Entry<String, List<Message>> fieldError : errors) {
+		    if (!fieldError.getKey().equals(ModelState.MODEL_FIELD) && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
+			this.writeMessages(out, fieldError.getValue());
 		    }
 		}
 	    }
-	}
 
-	// Model errors
-	List<Message> errors = this._modelState.getErrors().get(ModelState.MODEL_FIELD);
-	if (errors != null) {
-	    this.writeMessages(out, errors);
-	}
+	    // Model errors
+	    List<Message> errors = this.getModelState().getErrors().get(ModelState.MODEL_FIELD);
+	    if (errors != null) {
+		this.writeMessages(out, errors);
+	    }
 
-	// CSRF
-	errors = this._modelState.getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
-	if (errors != null) {
-	    this.writeMessages(out, errors);
+	    // CSRF
+	    errors = this.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
+	    if (errors != null) {
+		this.writeMessages(out, errors);
+	    }
+
+	    out.newLine();
+	    out.write("</ul>");
 	}
     }
 
-    protected void writeMessages(JspWriter out, List<Message> fieldErrors) throws IOException {
-	for (Message error : fieldErrors) {
-	    out.write("<li>");
+    protected void writeMessages(JspWriter out, List<Message> messages) throws IOException {
+	for (Message message : messages) {
+	    out.newLine();
 
-	    if (error.isEscXml()) {
-		XmlEscaper.escapeXml(out, error.getText());
+	    out.write("<li");
+	    if (this.itemClass == null) {
+		HtmlUtils.escAttribute(out, "class", "l-fi-error");
 	    } else {
-		out.write(error.getText());
+		out.write(" class=\"");
+		out.write(this.itemClass);
+		out.write(" l-fi-error\"");
+	    }
+	    out.write(">");
+
+	    if (message.isEscXml()) {
+		XmlEscaper.escapeXml(out, message.getText());
+	    } else {
+		out.write(message.getText());
 	    }
 	    out.write("</li>");
 	}
     }
 
-    protected static Comparator<Map.Entry<String, List<Message>>> buildFieldComparator(String fieldOrders) {
+    public static Comparator<Map.Entry<String, List<Message>>> toFieldComparator(String fieldOrders) {
 	final Map<String, Integer> posMap = new HashMap<>();
 	int pos = 0;
-	for (String fieldName : SplitUtils.split(fieldOrders, ',')) {
+	String[] fieldNames = SplitUtils.splitByComma(fieldOrders);
+
+	for (String fieldName : fieldNames) {
 	    posMap.put(fieldName, ++pos);
 	}
 	return new Comparator<Map.Entry<String, List<Message>>>() {
@@ -171,6 +142,7 @@ public class FormErrorsTag extends UITagBase {
 	    public int compare(Entry<String, List<Message>> f1, Entry<String, List<Message>> f2) {
 		Integer p1 = posMap.get(f1.getKey());
 		Integer p2 = posMap.get(f2.getKey());
+
 		if (p1 == null) {
 		    p1 = Integer.MAX_VALUE;
 		}
@@ -188,11 +160,22 @@ public class FormErrorsTag extends UITagBase {
     }
 
     @Attribute(required = false, rtexprvalue = false)
-    public void setModelLevelOnly(boolean modelLevelOnly) {
-	this.modelLevelOnly = modelLevelOnly;
+    public void setFieldOrders(String fieldOrders) {
+	this.fieldOrders = fieldOrders;
     }
 
-    @Override
-    public void setRender(boolean render) {
+    @Attribute(required = false, rtexprvalue = false)
+    public void setFieldErrors(boolean fieldErrors) {
+	this.fieldErrors = fieldErrors;
+    }
+
+    @Attribute(required = false, rtexprvalue = false)
+    public void setListClass(String listClass) {
+	this.listClass = listClass;
+    }
+
+    @Attribute(required = false, rtexprvalue = false)
+    public void setItemClass(String itemClass) {
+	this.itemClass = itemClass;
     }
 }

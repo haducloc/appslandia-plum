@@ -63,13 +63,16 @@ public class ConstTagTest extends MockTestBase {
     @Test
     public void test() {
 	try {
+	    // Register Actives.class
 	    constDescProvider.addConstClass(Actives.class);
+
 	    tag.setGroup("actives");
 	    tag.setValue(Actives.ACTIVE);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains(":actives.active"));
+
+	    Assertions.assertEquals("en:actives.active", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -77,13 +80,14 @@ public class ConstTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_notConfigured() {
+    public void test_unregistered() {
 	try {
 	    tag.setGroup("actives");
 	    tag.setValue(Actives.INACTIVE);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
+
 	    Assertions.assertEquals(Integer.toString(Actives.INACTIVE), html);
 
 	} catch (Exception ex) {

@@ -34,7 +34,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "dataList", bodyContent = "scriptless", dynamicAttributes = false)
+@Tag(name = "datalist", bodyContent = "scriptless")
 public class DataListTag extends UITagBase {
 
     protected Iterable<Object> items;
@@ -52,7 +52,6 @@ public class DataListTag extends UITagBase {
 	}
     }
 
-    // @Override
     public void addItem(Object value) {
 	if (this._items == null) {
 	    this._items = new ArrayList<>();
@@ -77,9 +76,11 @@ public class DataListTag extends UITagBase {
 	    if (item == null) {
 		continue;
 	    }
+	    out.newLine();
+
 	    out.write("<option");
 	    HtmlUtils.escAttribute(out, "value", item.toString());
-	    out.write("/>");
+	    out.write(" />");
 	}
     }
 
@@ -91,6 +92,7 @@ public class DataListTag extends UITagBase {
 	if (this.items != null) {
 	    writeItems(out, this.items);
 	}
+	out.newLine();
     }
 
     @Attribute(required = true, rtexprvalue = false)

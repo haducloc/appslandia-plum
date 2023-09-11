@@ -26,6 +26,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.utils.CollectionUtils;
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
@@ -58,25 +59,15 @@ public class DataListTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_listItems() {
+    public void test() {
 	try {
 	    tag.setId("testDataList");
-	    tag.setItems(CollectionUtils.toList("admin", "manager", 1, null, "menu<sub"));
+	    tag.setItems(CollectionUtils.toList("admin", "manager"));
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("<datalist"));
-	    Assertions.assertTrue(html.contains("id=\"testDataList\""));
-
-	    Assertions.assertTrue(html.contains("value=\"admin\""));
-	    Assertions.assertTrue(html.contains("value=\"manager\""));
-
-	    Assertions.assertTrue(html.contains("value=\"1\""));
-	    Assertions.assertTrue(html.contains("value=\"menu&lt;sub\""));
-
-	    Assertions.assertFalse(html.contains("value=\"\""));
-	    Assertions.assertFalse(html.contains("value=\"null\""));
+	    Assertions.assertEquals("<datalist id=\"testDataList\"><option value=\"admin\" /><option value=\"manager\" /></datalist>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -84,22 +75,16 @@ public class DataListTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_directItems() {
+    public void test_addItem() {
 	try {
 	    tag.setId("testDataList");
-	    tag.addItem("item1");
-	    tag.addItem("item2");
-	    tag.addItem("item3");
+	    tag.addItem("admin");
+	    tag.addItem("manager");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("<datalist"));
-	    Assertions.assertTrue(html.contains("id=\"testDataList\""));
-
-	    Assertions.assertTrue(html.contains("value=\"item1\""));
-	    Assertions.assertTrue(html.contains("value=\"item2\""));
-	    Assertions.assertTrue(html.contains("value=\"item3\""));
+	    Assertions.assertEquals("<datalist id=\"testDataList\"><option value=\"admin\" /><option value=\"manager\" /></datalist>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

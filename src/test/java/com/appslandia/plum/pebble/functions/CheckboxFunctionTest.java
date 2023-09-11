@@ -63,7 +63,6 @@ public class CheckboxFunctionTest extends MockTestBase {
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 	try {
 	    getCurrentRequest().addParameter("roles", "admin,operator");
-
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
 	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
@@ -135,7 +134,6 @@ public class CheckboxFunctionTest extends MockTestBase {
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 	try {
-
 	    getCurrentRequest().addParameter("roles", "operator");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 

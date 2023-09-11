@@ -25,11 +25,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.mocks.MockJspContext;
+import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.TestUtils;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  *
@@ -39,6 +43,7 @@ import com.appslandia.plum.utils.TestUtils;
 public class RadioTagTest extends MockTestBase {
 
     RadioTag tag = new RadioTag();
+    TestModel model = new TestModel();
 
     @BeforeAll
     public static void beforeAllTests() {
@@ -53,34 +58,23 @@ public class RadioTagTest extends MockTestBase {
     @BeforeEach
     public void beforeEachTest() {
 	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+
 	executeCurrent("GET", "http://localhost/app/testController/index");
     }
 
     @Test
     public void test() {
 	try {
-	    tag.setId("id1");
-	    tag.setName("name1");
-	    tag.setSubmitValue("submitValue");
+	    model.setUserType(1);
 
-	    tag.setHidden(true);
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
+	    tag.setPath("model.userType");
+	    tag.setCodeValue(1);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("id=\"id1\""));
-	    Assertions.assertTrue(html.contains("name=\"name1\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
+	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -88,24 +82,17 @@ public class RadioTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_readonly_checked() {
+    public void test_unchecked() {
 	try {
-	    tag.setId("name1");
-	    tag.setName("name1");
-	    tag.setReadonly(true);
+	    model.setUserType(2);
 
-	    tag.setSubmitValue("submitValue");
-	    tag.setValue("submitValue");
+	    tag.setPath("model.userType");
+	    tag.setCodeValue("1");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("type=\"hidden\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-	    Assertions.assertTrue(html.contains("checked=\"checked\""));
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
 
-	    // Has hidden
-	    Assertions.assertTrue(html.contains("type=\"hidden\""));
+	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -113,27 +100,55 @@ public class RadioTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_readonly_notChecked() {
+    public void test_checked_readonly() {
 	try {
-	    tag.setId("name1");
-	    tag.setName("name1");
-	    tag.setReadonly(true);
+	    model.setUserType(1);
 
-	    tag.setSubmitValue("submitValue");
-	    tag.setValue("invalidValue");
+	    tag.setPath("model.userType");
+	    tag.setCodeValue("1");
+	    tag.setReadonly(true);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("type=\"radio\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-	    Assertions.assertFalse(html.contains("checked=\"checked\""));
 
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
-	    Assertions.assertFalse(html.contains("type=\"hidden\""));
-	    Assertions.assertFalse(html.contains("value=\"invalidValue\""));
+	    Assertions.assertEquals(
+		    "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /><input name=\"userType\" value=\"1\" type=\"hidden\" />",
+		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_unchecked_readonly() {
+	try {
+	    model.setUserType(2);
+
+	    tag.setPath("model.userType");
+	    tag.setCodeValue("1");
+	    tag.setReadonly(true);
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" disabled=\"disabled\" />", NormalizeUtils.removeCrLf(html));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    public static class TestModel {
+	@NotNull
+	private int userType;
+
+	public int getUserType() {
+	    return userType;
+	}
+
+	public void setUserType(int userType) {
+	    this.userType = userType;
 	}
     }
 

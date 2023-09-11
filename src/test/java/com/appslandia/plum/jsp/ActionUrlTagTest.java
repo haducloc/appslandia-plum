@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
+import com.appslandia.plum.base.PathParams;
 import com.appslandia.plum.mocks.MockJspContext;
 import com.appslandia.plum.utils.TestUtils;
 
@@ -36,9 +37,9 @@ import com.appslandia.plum.utils.TestUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class SubmitButtonTagTest extends MockTestBase {
+public class ActionUrlTagTest extends MockTestBase {
 
-    SubmitButtonTag tag = new SubmitButtonTag();
+    ActionUrlTag tag = new ActionUrlTag();
 
     @BeforeAll
     public static void beforeAllTests() {
@@ -59,27 +60,32 @@ public class SubmitButtonTagTest extends MockTestBase {
     @Test
     public void test() {
 	try {
-	    tag.setId("id1");
-	    tag.setLabelKey("labelKey");
-	    tag.setActionType("delete");
-
-	    tag.setHidden(true);
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
+	    tag.setAction("index");
+	    tag.setController("testController");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("id=\"id1\""));
-	    Assertions.assertTrue(html.contains("onclick"));
+	    Assertions.assertEquals("/app/testController/?encodeURL=true", html);
 
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_actionPathParams() {
+	try {
+	    tag.setAction("actionPathParams");
+	    tag.setController("testController");
+
+	    tag.setDynamicAttribute(null, "__p1", "param1");
+	    tag.setDynamicAttribute(null, "__p2", "param2");
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("/app/testController/actionPathParams/param1/?p2=param2&encodeURL=true", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -91,6 +97,11 @@ public class SubmitButtonTagTest extends MockTestBase {
 
 	@HttpGet
 	public void index() {
+	}
+
+	@HttpGet
+	@PathParams("/{p1}")
+	public void actionPathParams() {
 	}
     }
 }

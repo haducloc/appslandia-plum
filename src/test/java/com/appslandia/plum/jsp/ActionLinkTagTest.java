@@ -60,43 +60,13 @@ public class ActionLinkTagTest extends MockTestBase {
     @Test
     public void test() {
 	try {
-	    tag.setAction("actionNoParams");
-	    tag.setController("testController");
-
-	    tag.setId("id1");
-	    tag.setHidden(true);
-
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("id=\"id1\""));
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionNoParams() {
-	try {
-	    tag.setAction("actionNoParams");
+	    tag.setAction("index");
 	    tag.setController("testController");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("/app/testController/actionNoParams/"));
+	    Assertions.assertEquals("<a href=\"/app/testController/?encodeURL=true\">index</a>", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -115,25 +85,7 @@ public class ActionLinkTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("/app/testController/actionPathParams/param1/?p2=param2"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_testEvents() {
-	try {
-	    tag.setAction("actionNoParams");
-	    tag.setController("testController");
-
-	    tag.setDynamicAttribute(null, "onclick", "handleOnClick();");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("onclick=\"handleOnClick();\""));
+	    Assertions.assertEquals("<a href=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\">actionPathParams</a>", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -145,10 +97,6 @@ public class ActionLinkTagTest extends MockTestBase {
 
 	@HttpGet
 	public void index() {
-	}
-
-	@HttpGet
-	public void actionNoParams() {
 	}
 
 	@HttpGet

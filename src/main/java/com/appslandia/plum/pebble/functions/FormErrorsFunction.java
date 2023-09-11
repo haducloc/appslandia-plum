@@ -24,19 +24,16 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
 import com.appslandia.common.base.StringWriter;
-import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.SimpleCsrfManager;
+import com.appslandia.plum.jsp.FormErrorsTag;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -52,17 +49,17 @@ public class FormErrorsFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: orderBy, fieldErrors, form";
+	return "variables: fieldOrders, fieldErrors, form, listClass, itemClass";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String orderBy = context.getArgument("orderBy");
+	String fieldOrders = context.getArgument("fieldOrders");
 	boolean fieldErrors = context.getBool("fieldErrors", true);
 	String form = context.getArgument("form");
 
-	String boxClass = context.getArgument("boxClass");
-	String msgClass = context.getArgument("msgClass");
+	String listClass = context.getArgument("listClass");
+	String itemClass = context.getArgument("itemClass");
 
 	boolean hasErrors = false;
 	if (fieldErrors) {
@@ -76,22 +73,22 @@ public class FormErrorsFunction extends DynPebbleFunction {
 	    StringWriter out = new StringWriter(context.getModelState().getErrors().size() * 128);
 
 	    out.write("<ul");
-	    if (boxClass != null)
-		HtmlUtils.escAttribute(out, "class", boxClass);
+	    if (listClass != null)
+		HtmlUtils.escAttribute(out, "class", listClass);
 	    out.write(">");
 
 	    // Write field errors
 	    if (fieldErrors) {
 
 		List<Entry<String, List<Message>>> errors = new ArrayList<>(context.getModelState().getErrors().entrySet());
-		if (orderBy != null) {
-		    Collections.sort(errors, toFieldComparator(orderBy));
+		if (fieldOrders != null) {
+		    Collections.sort(errors, FormErrorsTag.toFieldComparator(fieldOrders));
 		}
 
 		for (Entry<String, List<Message>> fieldError : errors) {
 		    if (!fieldError.getKey().equals(ModelState.MODEL_FIELD) && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
 
-			this.writeMessages(out, fieldError.getValue(), msgClass);
+			this.writeMessages(out, fieldError.getValue(), itemClass);
 		    }
 		}
 	    }
@@ -99,32 +96,33 @@ public class FormErrorsFunction extends DynPebbleFunction {
 	    // Model errors
 	    List<Message> errors = context.getModelState().getErrors().get(ModelState.MODEL_FIELD);
 	    if (errors != null) {
-		this.writeMessages(out, errors, msgClass);
+		this.writeMessages(out, errors, itemClass);
 	    }
 
 	    // CSRF
 	    errors = context.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
 	    if (errors != null) {
-		this.writeMessages(out, errors, msgClass);
+		this.writeMessages(out, errors, itemClass);
 	    }
 
+	    out.write(System.lineSeparator());
 	    out.write("</ul>");
 	    return new SafeString(out.toString());
 	}
 	return null;
     }
 
-    protected void writeMessages(Writer out, List<Message> messages, String msgClass) throws IOException {
+    protected void writeMessages(Writer out, List<Message> messages, String itemClass) throws IOException {
 	for (Message message : messages) {
 	    out.write(System.lineSeparator());
 
 	    out.write("<li");
-	    if (msgClass == null) {
-		HtmlUtils.escAttribute(out, "class", "l-field-error");
+	    if (itemClass == null) {
+		HtmlUtils.escAttribute(out, "class", "l-fi-error");
 	    } else {
 		out.write(" class=\"");
-		out.write(msgClass);
-		out.write(" l-field-error\"");
+		out.write(itemClass);
+		out.write(" l-fi-error\"");
 	    }
 	    out.write(">");
 
@@ -135,30 +133,5 @@ public class FormErrorsFunction extends DynPebbleFunction {
 	    }
 	    out.write("</li>");
 	}
-    }
-
-    protected static Comparator<Map.Entry<String, List<Message>>> toFieldComparator(String orderBy) {
-	final Map<String, Integer> posMap = new HashMap<>();
-	int pos = 0;
-
-	for (String fieldName : SplitUtils.splitByComma(orderBy)) {
-	    posMap.put(fieldName, ++pos);
-	}
-	return new Comparator<Map.Entry<String, List<Message>>>() {
-
-	    @Override
-	    public int compare(Entry<String, List<Message>> f1, Entry<String, List<Message>> f2) {
-		Integer p1 = posMap.get(f1.getKey());
-		Integer p2 = posMap.get(f2.getKey());
-
-		if (p1 == null) {
-		    p1 = Integer.MAX_VALUE;
-		}
-		if (p2 == null) {
-		    p2 = Integer.MAX_VALUE;
-		}
-		return p1.compareTo(p2);
-	    }
-	};
     }
 }

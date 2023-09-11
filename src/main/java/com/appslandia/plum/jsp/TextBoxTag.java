@@ -32,10 +32,9 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "textBox")
+@Tag(name = "textbox")
 public class TextBoxTag extends InputTagBase {
 
-    protected String type = "text";
     protected String maxlength;
 
     protected Object min;
@@ -53,27 +52,20 @@ public class TextBoxTag extends InputTagBase {
     }
 
     @Override
-    protected String format(Object value, String converter) {
-	boolean localize = InputUtils.willLocalize(getRequestContext(), value, converter, this.type);
-	return getRequestContext().format(value, converter, localize);
-    }
-
-    @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "id", this.id);
 	HtmlUtils.escAttribute(out, "type", this.type);
-	HtmlUtils.escAttribute(out, "name", this.name);
+	HtmlUtils.escAttribute(out, "name", this._name);
 
-	HtmlUtils.escAttribute(out, "value", format(this.value, this.converter));
+	HtmlUtils.escAttribute(out, "value", (String) this._value);
 	if (this.min != null)
-	    HtmlUtils.escAttribute(out, "min", format(this.min, this.converter));
+	    HtmlUtils.escAttribute(out, "min", getRequestContext().format(this.min, this.converter, this._localize));
 
 	if (this.max != null)
-	    HtmlUtils.escAttribute(out, "max", format(this.max, this.converter));
+	    HtmlUtils.escAttribute(out, "max", getRequestContext().format(this.max, this.converter, this._localize));
 
 	if (this.step != null)
-	    HtmlUtils.escAttribute(out, "step", format(this.step, this.converter));
+	    HtmlUtils.escAttribute(out, "step", getRequestContext().format(this.step, this.converter, this._localize));
 
 	if (this.pattern != null)
 	    HtmlUtils.escAttribute(out, "pattern", this.pattern);

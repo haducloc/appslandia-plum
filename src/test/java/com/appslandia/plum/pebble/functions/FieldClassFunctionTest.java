@@ -20,7 +20,6 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.time.LocalDate;
 import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
@@ -59,12 +58,12 @@ public class FieldClassFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		{{ fieldClass(path='model.dob') }}
+		{{ fieldClass(fieldName='username') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
 	try {
-	    getCurrentRequest().addParameter("dob", "1980-01-01");
+	    getCurrentRequest().addParameter("username", "user1");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
 	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
@@ -83,13 +82,12 @@ public class FieldClassFunctionTest extends MockTestBase {
     @Test
     public void test_error() {
 	String templateContent = """
-		{{ fieldClass(path='model.dob') }}
+		{{ fieldClass(fieldName='username') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
 	try {
 	    executeCurrent("GET", "http://localhost/app/testController/index");
-
 	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
@@ -117,14 +115,14 @@ public class FieldClassFunctionTest extends MockTestBase {
     public static class UserModel {
 
 	@NotNull
-	private LocalDate dob;
+	private String username;
 
-	public LocalDate getDob() {
-	    return dob;
+	public String getUsername() {
+	    return username;
 	}
 
-	public void setDob(LocalDate dob) {
-	    this.dob = dob;
+	public void setUsername(String username) {
+	    this.username = username;
 	}
     }
 }

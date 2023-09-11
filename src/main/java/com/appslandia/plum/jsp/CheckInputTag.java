@@ -35,7 +35,7 @@ import jakarta.servlet.jsp.JspWriter;
  */
 public abstract class CheckInputTag extends InputTagBase {
 
-    protected Object submitValue;
+    protected Object codeValue;
     protected boolean triggerSubmit = false;
 
     protected String autocomplete;
@@ -45,20 +45,13 @@ public abstract class CheckInputTag extends InputTagBase {
 	return "input";
     }
 
-    protected abstract String getType();
-
     protected abstract boolean isChecked();
 
     @Override
     protected void initTag() throws JspException, IOException {
-	Asserts.notNull(this.submitValue, "submitValue is required.");
+	Asserts.notNull(this.codeValue, "codeValue is required.");
 
 	super.initTag();
-    }
-
-    @Override
-    protected String format(Object value, String converter) {
-	return getRequestContext().format(value, converter, false);
     }
 
     @Override
@@ -67,12 +60,21 @@ public abstract class CheckInputTag extends InputTagBase {
     }
 
     @Override
+    protected Object getInvalidValue() {
+	return this.evaluate(this.path);
+    }
+
+    @Override
+    protected Object getHiddenValue() {
+	return this.codeValue;
+    }
+
+    @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "type", this.getType());
-	HtmlUtils.escAttribute(out, "name", this.name);
-	HtmlUtils.escAttribute(out, "value", format(this.submitValue, this.converter));
+	HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "type", this.type);
+	HtmlUtils.escAttribute(out, "name", this._name);
+	HtmlUtils.escAttribute(out, "value", getRequestContext().format(this.codeValue, this.converter, this._localize));
 
 	if (this.isChecked())
 	    HtmlUtils.checked(out);
@@ -116,8 +118,8 @@ public abstract class CheckInputTag extends InputTagBase {
     }
 
     @Attribute(required = true, rtexprvalue = true)
-    public void setSubmitValue(Object submitValue) {
-	this.submitValue = submitValue;
+    public void setCodeValue(Object codeValue) {
+	this.codeValue = codeValue;
     }
 
     @Attribute(required = false, rtexprvalue = false)

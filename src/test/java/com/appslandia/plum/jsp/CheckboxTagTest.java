@@ -25,11 +25,15 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.mocks.MockJspContext;
+import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.TestUtils;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  *
@@ -39,6 +43,7 @@ import com.appslandia.plum.utils.TestUtils;
 public class CheckboxTagTest extends MockTestBase {
 
     CheckboxTag tag = new CheckboxTag();
+    TestModel model = new TestModel();
 
     @BeforeAll
     public static void beforeAllTests() {
@@ -53,41 +58,23 @@ public class CheckboxTagTest extends MockTestBase {
     @BeforeEach
     public void beforeEachTest() {
 	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+
 	executeCurrent("GET", "http://localhost/app/testController/index");
     }
 
     @Test
     public void test() {
 	try {
-	    tag.setId("id1");
-	    tag.setName("name1");
-	    tag.setSubmitValue("submitValue");
+	    model.setRoles("admin,operator");
 
-	    tag.setReadonly(true);
-	    tag.setRequired(true);
-
-	    tag.setHidden(true);
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
+	    tag.setPath("model.roles");
+	    tag.setCodeValue("admin");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("id=\"id1\""));
-	    Assertions.assertTrue(html.contains("name=\"name1\""));
-	    Assertions.assertTrue(html.contains("type=\"checkbox\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
-	    Assertions.assertTrue(html.contains("required=\"required\""));
-
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
+	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -95,20 +82,17 @@ public class CheckboxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_checked() {
+    public void test_unchecked() {
 	try {
-	    tag.setId("name1");
-	    tag.setName("name1");
-	    tag.setReadonly(true);
+	    model.setRoles("operator");
 
-	    tag.setSubmitValue("submitValue");
-	    tag.setChecked(true);
+	    tag.setPath("model.roles");
+	    tag.setCodeValue("admin");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("type=\"checkbox\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-	    Assertions.assertTrue(html.contains("checked=\"checked\""));
+
+	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -116,19 +100,20 @@ public class CheckboxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_notChecked() {
+    public void test_checked_readonly() {
 	try {
-	    tag.setId("name1");
-	    tag.setName("name1");
+	    model.setRoles("admin,operator");
+
+	    tag.setPath("model.roles");
+	    tag.setCodeValue("admin");
 	    tag.setReadonly(true);
-	    tag.setSubmitValue("submitValue");
-	    tag.setChecked(false);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("type=\"checkbox\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-	    Assertions.assertFalse(html.contains("checked=\"checked\""));
+
+	    Assertions.assertEquals(
+		    "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /><input name=\"roles\" value=\"admin\" type=\"hidden\" />",
+		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -136,52 +121,34 @@ public class CheckboxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_readonly_checked() {
+    public void test_unchecked_readonly() {
 	try {
-	    tag.setId("name1");
-	    tag.setName("name1");
+	    model.setRoles("operator");
+
+	    tag.setPath("model.roles");
+	    tag.setCodeValue("admin");
 	    tag.setReadonly(true);
-	    tag.setSubmitValue("submitValue");
-	    tag.setChecked(true);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("type=\"checkbox\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-	    Assertions.assertTrue(html.contains("checked=\"checked\""));
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
 
-	    // Has hidden
-	    Assertions.assertTrue(html.contains("type=\"hidden\""));
+	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" disabled=\"disabled\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
 	}
     }
 
-    @Test
-    public void test_readonly_notChecked() {
-	try {
-	    tag.setId("name1");
-	    tag.setName("name1");
-	    tag.setReadonly(true);
-	    tag.setSubmitValue("submitValue");
-	    tag.setValue("invalidValue");
-	    tag.setChecked(false);
+    public static class TestModel {
+	@NotNull
+	private String roles;
 
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
+	public String getRoles() {
+	    return roles;
+	}
 
-	    Assertions.assertTrue(html.contains("type=\"checkbox\""));
-	    Assertions.assertTrue(html.contains("value=\"submitValue\""));
-	    Assertions.assertFalse(html.contains("checked=\"checked\""));
-
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
-	    Assertions.assertFalse(html.contains("type=\"hidden\""));
-	    Assertions.assertFalse(html.contains("value=\"invalidValue\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
+	public void setRoles(String roles) {
+	    this.roles = roles;
 	}
     }
 

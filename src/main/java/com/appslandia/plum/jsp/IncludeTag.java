@@ -47,7 +47,7 @@ import jakarta.servlet.jsp.tagext.DynamicAttributes;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "include")
+@Tag(name = "include", dynamicAttributes = true)
 public class IncludeTag extends TagBase implements DynamicAttributes {
 
     public static final String REQUEST_ATTRIBUTE_INCLUDE_PARAMS = "includeParams";
@@ -56,14 +56,14 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
     protected String action;
     protected String errorKey;
 
-    protected Map<String, Object> params;
+    protected Map<String, Object> _params;
 
     @Override
     public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	if (this.params == null) {
-	    this.params = new LinkedHashMap<>();
+	if (this._params == null) {
+	    this._params = new LinkedHashMap<>();
 	}
-	this.params.put(name, value);
+	this._params.put(name, value);
     }
 
     protected RequestAttributes backupAttributes(HttpServletRequest request) {
@@ -75,7 +75,7 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 	HttpServletResponse response = getResponse();
 
 	RequestAttributes backupAttributes = backupAttributes(request);
-	request.setAttribute(REQUEST_ATTRIBUTE_INCLUDE_PARAMS, this.params);
+	request.setAttribute(REQUEST_ATTRIBUTE_INCLUDE_PARAMS, this._params);
 	request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, childContext);
 
 	try {

@@ -37,7 +37,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "buttonLink", bodyContent = "scriptless")
+@Tag(name = "buttonLink", dynamicAttributes = true, bodyContent = "scriptless")
 public class ButtonLinkTag extends UITagBase {
 
     protected String controller;
@@ -86,7 +86,6 @@ public class ButtonLinkTag extends UITagBase {
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	if (this.id != null)
 	    HtmlUtils.escAttribute(out, "id", this.id);
-
 	HtmlUtils.escAttribute(out, "type", "button");
 
 	if (this.autofocus)
@@ -139,7 +138,7 @@ public class ButtonLinkTag extends UITagBase {
 	this.disabled = disabled;
     }
 
-    @Attribute(required = false, rtexprvalue = true)
+    @Attribute(required = false, rtexprvalue = false)
     public void setAutofocus(boolean autofocus) {
 	this.autofocus = autofocus;
     }

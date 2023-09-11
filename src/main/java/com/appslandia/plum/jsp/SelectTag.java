@@ -23,11 +23,11 @@ package com.appslandia.plum.jsp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 import com.appslandia.common.models.SelectItem;
 import com.appslandia.common.models.SelectItemImpl;
-import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.HtmlUtils;
 
@@ -52,7 +52,11 @@ public class SelectTag extends InputTagBase {
     protected boolean triggerSubmit = false;
 
     protected List<SelectItem> _items;
-    protected boolean _hasSelected = false;
+    protected SelectItem _selItem;
+
+    public SelectTag() {
+	this.type = "select";
+    }
 
     @Override
     protected String getTagName() {
@@ -69,16 +73,21 @@ public class SelectTag extends InputTagBase {
     }
 
     @Override
-    protected String format(Object value, String converter) {
-	return getRequestContext().format(value, converter, false);
+    protected boolean writeHiddenTag() {
+	return this.readonly && (this._selItem != null);
     }
 
     @Override
-    protected boolean writeHiddenTag() {
-	return this.readonly && this._hasSelected;
+    protected Object getInvalidValue() {
+	return this.evaluate(this.path);
     }
 
-    public void addItem(String name, Object value) {
+    @Override
+    protected Object getHiddenValue() {
+	return this._selItem.getValue();
+    }
+
+    public void addOption(String name, Object value) {
 	if (this._items == null) {
 	    this._items = new ArrayList<>();
 	}
@@ -87,9 +96,8 @@ public class SelectTag extends InputTagBase {
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "name", this.name);
+	HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "name", this._name);
 
 	if (this.size != null)
 	    HtmlUtils.escAttribute(out, "size", this.size);
@@ -140,8 +148,10 @@ public class SelectTag extends InputTagBase {
     }
 
     protected void writeOption(JspWriter out, SelectItem item, boolean selected, boolean disabled) throws JspException, IOException {
+	out.newLine();
+
 	out.write("<option");
-	HtmlUtils.escAttribute(out, "value", format(item.getValue(), this.converter));
+	HtmlUtils.escAttribute(out, "value", getRequestContext().format(item.getValue(), this.converter, this._localize));
 
 	if (selected) {
 	    HtmlUtils.selected(out);
@@ -157,30 +167,37 @@ public class SelectTag extends InputTagBase {
 	out.write("</option>");
     }
 
-    protected boolean writeItems(JspWriter out, Iterable<SelectItem> items) throws JspException, IOException {
+    protected SelectItem writeItems(JspWriter out, Iterable<SelectItem> items) throws JspException, IOException {
 	final Object bakVar = this.pageContext.getAttribute(this.var);
 
 	// READONLY
 	if (this.readonly) {
 
-	    SelectItem selected = StreamSupport.stream(items.spliterator(), false).filter(item -> ObjectUtils.strEquals(item.getValue(), this.value)).findFirst().orElse(null);
-	    if (selected != null) {
+	    SelectItem selItem = StreamSupport.stream(items.spliterator(), false).filter(item -> {
+		String itemVal = getRequestContext().format(item.getValue(), this.converter, this._localize);
+		return Objects.equals(itemVal, this._value);
 
-		writeOption(out, selected, true, false);
-		return true;
+	    }).findFirst().orElse(null);
+
+	    if (selItem != null) {
+
+		writeOption(out, selItem, true, false);
+		return selItem;
 	    }
-	    return false;
+	    return null;
 	}
 
 	// NOT READONLY
 	try {
-	    boolean hasSelected = false;
+	    SelectItem selItem = null;
 	    for (SelectItem item : items) {
 		this.pageContext.setAttribute(this.var, item);
 
-		boolean selected = ObjectUtils.strEquals(item.getValue(), this.value);
+		String itemVal = getRequestContext().format(item.getValue(), this.converter, this._localize);
+		boolean selected = Objects.equals(itemVal, this._value);
+
 		if (selected) {
-		    hasSelected = true;
+		    selItem = item;
 		}
 		boolean disabled = false;
 		if (this.disabledExpr != null) {
@@ -188,7 +205,7 @@ public class SelectTag extends InputTagBase {
 		}
 		writeOption(out, item, selected, disabled);
 	    }
-	    return hasSelected;
+	    return selItem;
 
 	} finally {
 	    this.pageContext.setAttribute(this.var, bakVar);
@@ -197,15 +214,18 @@ public class SelectTag extends InputTagBase {
 
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
-	boolean hasSelected1 = false;
+	SelectItem selItem1 = null;
 	if (this._items != null) {
-	    hasSelected1 = writeItems(out, this._items);
+	    selItem1 = writeItems(out, this._items);
 	}
-	boolean hasSelected2 = false;
+
+	SelectItem selItem2 = null;
 	if (this.items != null) {
-	    hasSelected2 = writeItems(out, this.items);
+	    selItem2 = writeItems(out, this.items);
 	}
-	this._hasSelected = hasSelected1 || hasSelected2;
+
+	this._selItem = (selItem1 != null) ? selItem1 : selItem2;
+	out.newLine();
     }
 
     @Attribute(required = false, rtexprvalue = true)

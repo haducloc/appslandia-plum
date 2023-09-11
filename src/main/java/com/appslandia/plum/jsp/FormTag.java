@@ -21,13 +21,10 @@
 package com.appslandia.plum.jsp;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.base.ActionParser;
-import com.appslandia.plum.base.HttpMethod;
 import com.appslandia.plum.utils.HtmlUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -39,7 +36,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "form", bodyContent = "scriptless")
+@Tag(name = "form", dynamicAttributes = true, bodyContent = "scriptless")
 public class FormTag extends UITagBase {
 
     protected String name;
@@ -49,9 +46,9 @@ public class FormTag extends UITagBase {
     protected boolean actionType;
     protected boolean csrf;
 
-    protected String method = HttpMethod.POST;
-    protected String acceptCharset = StandardCharsets.UTF_8.name();
-    protected String enctype = MimeTypes.APP_FORM_URLENCODED;
+    protected String method;
+    protected String acceptCharset;
+    protected String enctype;
 
     protected boolean novalidate;
     protected String autocomplete;

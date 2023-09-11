@@ -42,7 +42,7 @@ public class MessagesFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: type*";
+	return "variables: type*, listClass, itemClass";
     }
 
     @Override
@@ -53,17 +53,20 @@ public class MessagesFunction extends DynPebbleFunction {
 	}
 
 	String type = context.getRequiredArgument("type");
-	String boxClass = context.getArgument("boxClass");
-	String msgClass = context.getArgument("msgClass");
+	String listClass = context.getArgument("listClass");
+	String itemClass = context.getArgument("itemClass");
 
 	int typeId = MessageUtils.getMsgType(type);
-	List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
 
+	List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
+	if (msgs.isEmpty()) {
+	    return null;
+	}
 	StringWriter out = new StringWriter(msgs.size() * 128);
 
 	out.write("<ul");
-	if (boxClass != null)
-	    HtmlUtils.escAttribute(out, "class", boxClass);
+	if (listClass != null)
+	    HtmlUtils.escAttribute(out, "class", listClass);
 	out.write(">");
 
 	for (Message msg : msgs) {
@@ -72,11 +75,11 @@ public class MessagesFunction extends DynPebbleFunction {
 	    String typeClass = MessageUtils.getMsgClass(typeId);
 	    out.write("<li");
 
-	    if (msgClass == null) {
+	    if (itemClass == null) {
 		HtmlUtils.escAttribute(out, "class", typeClass);
 	    } else {
 		out.write(" class=\"");
-		out.write(msgClass);
+		out.write(itemClass);
 		out.write(" ");
 		out.write(typeClass);
 		out.write("\"");
@@ -91,6 +94,7 @@ public class MessagesFunction extends DynPebbleFunction {
 	    out.write("</li>");
 	}
 
+	out.write(System.lineSeparator());
 	out.write("</ul>");
 	return out.toString();
     }

@@ -25,10 +25,12 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.mocks.MockJspContext;
+import com.appslandia.plum.mocks.MockJspFragment;
 import com.appslandia.plum.utils.TestUtils;
 
 /**
@@ -36,9 +38,9 @@ import com.appslandia.plum.utils.TestUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class UrlTagTest extends MockTestBase {
+public class FieldGroupTagTest extends MockTestBase {
 
-    UrlTag tag = new UrlTag();
+    FieldGroupTag tag = new FieldGroupTag();
 
     @BeforeAll
     public static void beforeAllTests() {
@@ -57,17 +59,15 @@ public class UrlTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_params() {
+    public void test() {
 	try {
-	    tag.setBaseUri("http://server.com/app");
-	    tag.setDynamicAttribute(null, "param1", "value1");
-	    tag.setDynamicAttribute(null, "param2", "value2");
+	    tag.setFieldName("userName");
+	    tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("http://server.com/app?"));
-	    Assertions.assertTrue(html.contains("param1=value1"));
-	    Assertions.assertTrue(html.contains("param2=value2"));
+
+	    Assertions.assertEquals("<div>fields</div>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -75,16 +75,17 @@ public class UrlTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_pathParams() {
+    public void test_error() {
 	try {
-	    tag.setBaseUri("http://server.com/app/{controller}");
-	    tag.setDynamicAttribute(null, "controller", "user");
-	    tag.setDynamicAttribute(null, "param1", "value1");
-	    tag.setFmtUri(true);
+
+	    getCurrentModelState().addError("userName", "The userName field is required.");
+	    tag.setFieldName("userName");
+	    tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertEquals("http://server.com/app/user?param1=value1", html);
+
+	    Assertions.assertEquals("<div class=\"l-error-group\">fields</div>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.HtmlUtils;
 
@@ -38,9 +37,8 @@ import jakarta.servlet.jsp.JspWriter;
  */
 public abstract class InputTagBase extends UITagBase {
 
+    protected String type;
     protected String form;
-    protected String name;
-    protected Object value;
     protected String path;
 
     protected String converter;
@@ -51,54 +49,53 @@ public abstract class InputTagBase extends UITagBase {
     protected String enterFn;
     protected String enterBtn;
 
-    protected boolean cssFieldError() {
-	return true;
-    }
-
-    protected Object getInvalidValue() {
-	return StringUtils.trimToNull(this.getRequest().getParameter(this.name));
-    }
-
-    protected abstract String format(Object value, String converter);
+    protected String _name;
+    protected Object _value;
+    protected boolean _localize;
 
     protected boolean writeHiddenTag() {
 	return false;
     }
 
+    protected Object getInvalidValue() {
+	return this.getRequest().getParameter(this._name);
+    }
+
+    protected Object getHiddenValue() {
+	throw new UnsupportedOperationException();
+    }
+
     @Override
     protected void initTag() throws JspException, IOException {
-	boolean isValid = false;
+	int nameIdx = this.path.indexOf('.');
+	Asserts.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
+	this._name = this.path.substring(nameIdx + 1);
 
-	// Path Expression?
-	if (this.path != null) {
-	    int nameIdx = this.path.indexOf('.');
-	    Asserts.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
-	    this.name = this.path.substring(nameIdx + 1);
+	// value
+	boolean isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this._name);
 
-	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
-	    if (!isValid) {
-		this.value = getInvalidValue();
-	    } else {
-		this.value = ExpressionEvaluator.getDefault().getValue(this.pageContext, this.path);
-	    }
+	if (isValid) {
+	    this._value = this.evaluate(this.path);
 	} else {
-	    // name/value
-	    Asserts.isTrue(!StringUtils.isNullOrEmpty(this.name), "name is required.");
-
-	    isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(this.name);
-	    if (!isValid) {
-		this.value = getInvalidValue();
-	    }
+	    this._value = getInvalidValue();
 	}
+
+	// localize
+	this._localize = InputUtils.willLocalize(this.getRequestContext(), this.converter, this.type);
+
+	if ((this.type == null) || (this._localize && InputUtils.getFeature(this.type) != null)) {
+	    this.type = "text";
+	}
+
+	// Format value
+	this._value = getRequestContext().format(this._value, this.converter, this._localize);
 
 	// id
-	if (this.id == null) {
-	    this.id = HtmlUtils.toValueTagId(this.name);
-	}
+	this.id = HtmlUtils.toValueTagId(this._name);
 
 	// class
-	if (!isValid && cssFieldError()) {
-	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";
+	if (!isValid) {
+	    this.clazz = (this.clazz == null) ? "l-error-field" : this.clazz + " l-error-field";
 	}
     }
 
@@ -106,18 +103,24 @@ public abstract class InputTagBase extends UITagBase {
     protected void writeTag(JspWriter out) throws JspException, IOException {
 	super.writeTag(out);
 
-	// Hidden Input
+	// Write hidden?
 	if (writeHiddenTag()) {
 	    out.newLine();
-	    out.write(" <input name=\"");
-	    XmlEscaper.escapeXml(out, this.name);
+
+	    out.write("<input name=\"");
+	    XmlEscaper.escapeXml(out, this._name);
 
 	    out.write("\" value=\"");
-	    if (this.value != null)
-		XmlEscaper.escapeXml(out, format(this.value, this.converter));
+	    if (this._value != null)
+		XmlEscaper.escapeXml(out, getRequestContext().format(getHiddenValue(), this.converter, this._localize));
 
 	    out.write("\" type=\"hidden\" />");
 	}
+    }
+
+    @Override
+    public void setId(String id) {
+	throw new UnsupportedOperationException();
     }
 
     @Attribute(required = false, rtexprvalue = false)
@@ -125,17 +128,7 @@ public abstract class InputTagBase extends UITagBase {
 	this.form = form;
     }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setName(String name) {
-	this.name = name;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
+    @Attribute(required = true, rtexprvalue = true)
     public void setPath(String path) {
 	this.path = path;
     }

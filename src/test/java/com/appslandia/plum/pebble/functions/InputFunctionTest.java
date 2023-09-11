@@ -104,7 +104,6 @@ public class InputFunctionTest extends MockTestBase {
 	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"01/01/1980\" type=\"text\"", content);
 
 	} catch (Exception ex) {
-	    ex.printStackTrace();
 	    Assertions.fail(ex);
 	}
     }

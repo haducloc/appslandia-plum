@@ -56,7 +56,7 @@ public class InputUtils {
 	return TYPE_FEATURES.get(inputType);
     }
 
-    public static boolean willLocalize(RequestContext context, Object value, String converter, String type) {
+    public static boolean willLocalize(RequestContext context, String converter, String type) {
 	if ("hidden".equals(type)) {
 	    return false;
 	}

@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.jsp;
 
-import com.appslandia.common.utils.ObjectUtils;
+import java.util.Objects;
 
 /**
  *
@@ -30,24 +30,13 @@ import com.appslandia.common.utils.ObjectUtils;
 @Tag(name = "radio")
 public class RadioTag extends CheckInputTag {
 
-    protected boolean cssFieldError;
-
-    protected String getType() {
-	return "radio";
+    public RadioTag() {
+	this.type = "radio";
     }
 
     @Override
     protected boolean isChecked() {
-	return ObjectUtils.strEquals(this.submitValue, this.value);
-    }
-
-    @Override
-    protected boolean cssFieldError() {
-	return this.cssFieldError;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setCssFieldError(boolean cssFieldError) {
-	this.cssFieldError = cssFieldError;
+	String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
+	return Objects.equals(codeVal, this._value);
     }
 }

@@ -22,11 +22,12 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.base.Messages;
+import com.appslandia.plum.utils.HtmlUtils;
 
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
@@ -36,44 +37,49 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "messages", dynamicAttributes = false)
+@Tag(name = "messages")
 public class MessagesTag extends TagBase {
 
-    protected Messages _messages;
-    protected String clazz;
+    protected String type;
+    protected String listClass;
+    protected String itemClass;
 
     @Override
     public void doTag() throws JspException, IOException {
-	this._messages = (Messages) getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
-	if (this._messages == null) {
+	List<Message> messages = (Messages) this.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
+	if (!CollectionUtils.hasElements(messages)) {
 	    return;
 	}
-	if (this.clazz == null) {
-	    this.clazz = "messages";
-	}
-	writeTypedMessages(Message.TYPE_ERROR);
-	writeTypedMessages(Message.TYPE_WARN);
-	writeTypedMessages(Message.TYPE_NOTICE);
-	writeTypedMessages(Message.TYPE_INFO);
-    }
 
-    protected void writeTypedMessages(int typeId) throws JspException, IOException {
-	List<Message> messages = this._messages.stream().filter(r -> r.getType() == typeId).collect(Collectors.toList());
-	if (messages.isEmpty()) {
+	int typeId = MessageUtils.getMsgType(this.type);
+	List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
+	if (msgs.isEmpty()) {
 	    return;
 	}
-	String typedClass = getClassName(typeId);
 	JspWriter out = this.pageContext.getOut();
 
-	out.println();
-	out.write("<ul class=\"");
-	out.write(this.clazz);
-	out.write(" ");
-	out.write(typedClass);
-	out.write("\">");
+	out.write("<ul");
+	if (this.listClass != null) {
+	    HtmlUtils.escAttribute(out, "class", this.listClass);
+	}
+	out.write(">");
 
-	for (Message msg : messages) {
-	    out.write("<li>");
+	for (Message msg : msgs) {
+	    out.newLine();
+
+	    String typeClass = MessageUtils.getMsgClass(typeId);
+	    out.write("<li");
+
+	    if (this.itemClass == null) {
+		HtmlUtils.escAttribute(out, "class", typeClass);
+	    } else {
+		out.write(" class=\"");
+		out.write(this.itemClass);
+		out.write(" ");
+		out.write(typeClass);
+		out.write("\"");
+	    }
+	    out.write(">");
 
 	    if (msg.isEscXml()) {
 		XmlEscaper.escapeXml(out, msg.getText());
@@ -82,29 +88,23 @@ public class MessagesTag extends TagBase {
 	    }
 	    out.write("</li>");
 	}
+
+	out.newLine();
 	out.write("</ul>");
     }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setClazz(String clazz) {
-	this.clazz = clazz;
+    @Attribute(required = true, rtexprvalue = false)
+    public void setType(String type) {
+	this.type = type;
     }
 
-    public static String getClassName(int typeId) {
-	switch (typeId) {
-	case Message.TYPE_INFO:
-	    return "messages-info";
+    @Attribute(required = false, rtexprvalue = false)
+    public void setListClass(String listClass) {
+	this.listClass = listClass;
+    }
 
-	case Message.TYPE_NOTICE:
-	    return "messages-notice";
-
-	case Message.TYPE_WARN:
-	    return "messages-warn";
-
-	case Message.TYPE_ERROR:
-	    return "messages-error";
-	default:
-	    throw new IllegalArgumentException("typeId is invalid.");
-	}
+    @Attribute(required = false, rtexprvalue = false)
+    public void setItemClass(String itemClass) {
+	this.itemClass = itemClass;
     }
 }

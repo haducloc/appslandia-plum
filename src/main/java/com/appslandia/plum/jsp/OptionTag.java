@@ -24,20 +24,15 @@ import java.io.IOException;
 
 import com.appslandia.common.utils.Asserts;
 
-import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.JspFragment;
-import jakarta.servlet.jsp.tagext.JspTag;
-import jakarta.servlet.jsp.tagext.SimpleTag;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "option", dynamicAttributes = false)
-public class OptionTag implements SimpleTag {
-    protected JspTag parent;
+@Tag(name = "option")
+public class OptionTag extends TagBase {
 
     protected String name;
     protected Object value;
@@ -45,7 +40,7 @@ public class OptionTag implements SimpleTag {
     @Override
     public void doTag() throws JspException, IOException {
 	Asserts.notNull(this.parent);
-	((SelectTag) this.parent).addItem(this.name, this.value);
+	((SelectTag) this.parent).addOption(this.name, this.value);
     }
 
     @Attribute(required = true, rtexprvalue = true)
@@ -56,23 +51,5 @@ public class OptionTag implements SimpleTag {
     @Attribute(required = false, rtexprvalue = true)
     public void setValue(Object value) {
 	this.value = value;
-    }
-
-    @Override
-    public void setParent(JspTag parent) {
-	this.parent = parent;
-    }
-
-    @Override
-    public JspTag getParent() {
-	return this.parent;
-    }
-
-    @Override
-    public void setJspContext(JspContext pc) {
-    }
-
-    @Override
-    public void setJspBody(JspFragment body) {
     }
 }

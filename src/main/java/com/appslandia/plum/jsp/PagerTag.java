@@ -37,7 +37,7 @@ import jakarta.servlet.jsp.tagext.JspFragment;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "pager", bodyContent = "scriptless", description = "pager|template=page,dots")
+@Tag(name = "pager", bodyContent = "scriptless", description = "pager|template=page,3dots")
 public class PagerTag extends UITagBase implements TemplateSupport {
 
     static final String VAR_ITEM = "item";
@@ -51,7 +51,7 @@ public class PagerTag extends UITagBase implements TemplateSupport {
     protected PagerModel model;
 
     protected JspFragment pageTpl;
-    protected JspFragment dotsTpl;
+    protected JspFragment threedotsTpl;
 
     @Override
     protected String getTagName() {
@@ -63,8 +63,8 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 	if ("page".equalsIgnoreCase(type)) {
 	    this.pageTpl = tpl;
 
-	} else if ("dots".equalsIgnoreCase(type)) {
-	    this.dotsTpl = tpl;
+	} else if ("3dots".equalsIgnoreCase(type)) {
+	    this.threedotsTpl = tpl;
 	} else {
 	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
 	}
@@ -78,7 +78,7 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 	this.body.invoke(null);
 
 	Asserts.notNull(this.pageTpl);
-	Asserts.notNull(this.dotsTpl);
+	Asserts.notNull(this.threedotsTpl);
     }
 
     @Override
@@ -129,7 +129,7 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 
 		// page.dotType
 		if (page.isDotType()) {
-		    this.dotsTpl.invoke(out);
+		    this.threedotsTpl.invoke(out);
 		}
 
 		// page.nextType

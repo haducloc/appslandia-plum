@@ -20,7 +20,11 @@
 
 package com.appslandia.plum.jsp;
 
-import com.appslandia.common.utils.ObjectUtils;
+import java.util.Arrays;
+import java.util.Objects;
+
+import com.appslandia.common.utils.SplitOptions;
+import com.appslandia.common.utils.SplitUtils;
 
 /**
  *
@@ -30,34 +34,17 @@ import com.appslandia.common.utils.ObjectUtils;
 @Tag(name = "checkbox")
 public class CheckboxTag extends CheckInputTag {
 
-    protected Boolean checked;
-    protected boolean cssFieldError;
-
-    @Override
-    protected String getType() {
-	return "checkbox";
+    public CheckboxTag() {
+	this.type = "checkbox";
     }
 
     @Override
     protected boolean isChecked() {
-	if (this.checked != null) {
-	    return this.checked;
+	String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
+	if (this._value == null) {
+	    return false;
 	}
-	return ObjectUtils.strEquals(this.submitValue, this.value);
-    }
-
-    @Override
-    protected boolean cssFieldError() {
-	return this.cssFieldError;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setChecked(boolean checked) {
-	this.checked = checked;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setCssFieldError(boolean cssFieldError) {
-	this.cssFieldError = cssFieldError;
+	String[] values = SplitUtils.split((String) this._value, ',', SplitOptions.TRIM_NULL);
+	return Arrays.stream(values).anyMatch(value -> Objects.equals(codeVal, value));
     }
 }

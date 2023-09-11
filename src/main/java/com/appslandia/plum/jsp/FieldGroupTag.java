@@ -33,24 +33,23 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "checkGroup", bodyContent = "scriptless")
-public class CheckGroupTag extends UITagBase {
+@Tag(name = "fieldGroup", bodyContent = "scriptless")
+public class FieldGroupTag extends UITagBase {
 
-    protected boolean asDiv = true;
     protected String form;
-    protected String field;
+    protected String fieldName;
 
     @Override
     protected String getTagName() {
-	return asDiv ? "div" : "ul";
+	return "div";
     }
 
     @Override
     protected void initTag() throws JspException, IOException {
-	boolean isInvalid = Objects.equals(this.form, getModelState().getForm()) && !getModelState().isValid(this.field);
+	boolean isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this.fieldName);
 
-	if (isInvalid) {
-	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";
+	if (!isValid) {
+	    this.clazz = (this.clazz == null) ? "l-error-group" : this.clazz + " l-error-group";
 	}
     }
 
@@ -82,17 +81,12 @@ public class CheckGroupTag extends UITagBase {
     }
 
     @Attribute(required = false, rtexprvalue = false)
-    public void setAsDiv(boolean asDiv) {
-	this.asDiv = asDiv;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
     public void setForm(String form) {
 	this.form = form;
     }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setField(String field) {
-	this.field = field;
+    @Attribute(required = true, rtexprvalue = true)
+    public void setFieldName(String fieldName) {
+	this.fieldName = fieldName;
     }
 }

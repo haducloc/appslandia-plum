@@ -24,22 +24,15 @@ import java.io.IOException;
 
 import com.appslandia.common.utils.Asserts;
 
-import jakarta.servlet.jsp.JspContext;
 import jakarta.servlet.jsp.JspException;
-import jakarta.servlet.jsp.tagext.JspFragment;
-import jakarta.servlet.jsp.tagext.JspTag;
-import jakarta.servlet.jsp.tagext.SimpleTag;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "tpl", bodyContent = "scriptless", dynamicAttributes = false)
-public class TemplateTag implements SimpleTag {
-
-    protected JspTag parent;
-    protected JspFragment body;
+@Tag(name = "tpl", bodyContent = "scriptless")
+public class TemplateTag extends TagBase {
 
     protected String type;
 
@@ -49,25 +42,6 @@ public class TemplateTag implements SimpleTag {
 	Asserts.notNull(this.body);
 
 	((TemplateSupport) this.parent).setTemplate(this.type, this.body);
-    }
-
-    @Override
-    public void setParent(JspTag parent) {
-	this.parent = parent;
-    }
-
-    @Override
-    public JspTag getParent() {
-	return this.parent;
-    }
-
-    @Override
-    public void setJspContext(JspContext pc) {
-    }
-
-    @Override
-    public void setJspBody(JspFragment body) {
-	this.body = body;
     }
 
     @Attribute(required = true, rtexprvalue = false)

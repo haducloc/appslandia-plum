@@ -39,29 +39,29 @@ import jakarta.servlet.jsp.JspWriter;
 public class FieldErrorTag extends UITagBase {
 
     protected String form;
-    protected String field;
-    protected boolean _isInvalid;
+    protected String fieldName;
+
+    protected boolean _isValid;
 
     @Override
     protected String getTagName() {
-	return "span";
+	return "div";
     }
 
     @Override
     protected void initTag() throws JspException, IOException {
-	this.id = "err_" + HtmlUtils.toValueTagId(this.field);
-	this.clazz = (this.clazz == null) ? "field-error-msg" : this.clazz + " field-error-msg";
+	this._isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this.fieldName);
 
-	this._isInvalid = Objects.equals(this.form, getModelState().getForm()) && !getModelState().isValid(this.field);
-
-	if (!this._isInvalid) {
-	    this.style = (this.style == null) ? "display:none" : (this.style + "display:none");
+	if (!this._isValid) {
+	    this.clazz = (this.clazz == null) ? "l-field-error" : (this.clazz + " l-field-error");
 	}
+	this.render = !this._isValid;
     }
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
+	if (this.id != null)
+	    HtmlUtils.escAttribute(out, "id", this.id);
 	if (this.hidden)
 	    HtmlUtils.hidden(out);
 
@@ -82,8 +82,8 @@ public class FieldErrorTag extends UITagBase {
 
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
-	if (this._isInvalid) {
-	    Message error = this.getModelState().getFieldErrors(this.field).get(0);
+	if (!this._isValid) {
+	    Message error = this.getModelState().getFieldErrors(this.fieldName).get(0);
 
 	    if (error.isEscXml()) {
 		XmlEscaper.escapeXml(out, error.getText());
@@ -93,21 +93,13 @@ public class FieldErrorTag extends UITagBase {
 	}
     }
 
-    @Override
-    public void setId(String id) {
-    }
-
     @Attribute(required = false, rtexprvalue = false)
     public void setForm(String form) {
 	this.form = form;
     }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setField(String field) {
-	this.field = field;
-    }
-
-    @Override
-    public void setRender(boolean render) {
+    @Attribute(required = true, rtexprvalue = true)
+    public void setFieldName(String fieldName) {
+	this.fieldName = fieldName;
     }
 }

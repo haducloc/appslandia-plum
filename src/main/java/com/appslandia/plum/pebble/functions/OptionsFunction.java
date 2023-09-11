@@ -59,15 +59,15 @@ public class OptionsFunction extends DynPebbleFunction {
 
 	// readonly
 	if (readonly) {
-	    SelectItem selectedItem = items.stream().filter(item -> {
+	    SelectItem selItem = items.stream().filter(item -> {
 
 		String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
 		return Objects.equals(codeValue, fmtValue);
 
 	    }).findFirst().orElse(null);
 
-	    if (selectedItem != null) {
-		String codeValue = context.getRequestContext().format(selectedItem.getValue(), converter, false);
+	    if (selItem != null) {
+		String codeValue = context.getRequestContext().format(selItem.getValue(), converter, false);
 		out.write(System.lineSeparator());
 
 		out.write("<option");
@@ -75,8 +75,8 @@ public class OptionsFunction extends DynPebbleFunction {
 		HtmlUtils.selected(out);
 		out.write(">");
 
-		if (selectedItem.getDisplayName() != null) {
-		    XmlEscaper.escapeXml(out, selectedItem.getDisplayName());
+		if (selItem.getDisplayName() != null) {
+		    XmlEscaper.escapeXml(out, selItem.getDisplayName());
 		}
 		out.write("</option>");
 	    }

@@ -54,7 +54,8 @@ public class ButtonTag extends UITagBase {
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
+	if (this.id != null)
+	    HtmlUtils.escAttribute(out, "id", this.id);
 	HtmlUtils.escAttribute(out, "type", this.type);
 
 	if (this.hidden)
@@ -88,12 +89,6 @@ public class ButtonTag extends UITagBase {
 	out.write(this._label);
     }
 
-    @Attribute(required = true, rtexprvalue = true)
-    @Override
-    public void setId(String id) {
-	super.setId(id);
-    }
-
     @Attribute(required = false, rtexprvalue = false)
     public void setType(String type) {
 	this.type = type;
@@ -109,7 +104,7 @@ public class ButtonTag extends UITagBase {
 	this.disabled = disabled;
     }
 
-    @Attribute(required = false, rtexprvalue = true)
+    @Attribute(required = false, rtexprvalue = false)
     public void setAutofocus(boolean autofocus) {
 	this.autofocus = autofocus;
     }

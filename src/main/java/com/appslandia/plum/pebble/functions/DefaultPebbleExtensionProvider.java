@@ -57,8 +57,6 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 
 	impls.put("fieldClass", new FieldClassFunction());
 	impls.put("labelClass", new LabelClassFunction());
-
-	impls.put("fieldValue", new FieldValueFunction());
 	impls.put("fieldError", new FieldErrorFunction());
 
 	impls.put("messages", new MessagesFunction());

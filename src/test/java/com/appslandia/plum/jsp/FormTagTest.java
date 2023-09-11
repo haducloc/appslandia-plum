@@ -25,9 +25,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
+import com.appslandia.plum.base.PathParams;
 import com.appslandia.plum.mocks.MockJspContext;
 import com.appslandia.plum.mocks.MockJspFragment;
 import com.appslandia.plum.utils.TestUtils;
@@ -64,40 +66,10 @@ public class FormTagTest extends MockTestBase {
 	    tag.setAction("index");
 	    tag.setController("testController");
 
-	    tag.setId("form1");
-	    tag.setName("form1");
-
-	    tag.setAcceptCharset("UTF-8");
-	    tag.setEnctype("application/x-www-form-urlencoded");
-	    tag.setMethod("POST");
-
-	    tag.setNovalidate(true);
-	    tag.setAutocomplete("off");
-
-	    tag.setHidden(true);
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
-
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("id=\"form1\""));
-	    Assertions.assertTrue(html.contains("name=\"form1\""));
-
-	    Assertions.assertTrue(html.contains("accept-charset=\"UTF-8\""));
-	    Assertions.assertTrue(html.contains("enctype=\"application/x-www-form-urlencoded\""));
-	    Assertions.assertTrue(html.contains("method=\"POST\""));
-
-	    Assertions.assertTrue(html.contains("novalidate=\"novalidate\""));
-	    Assertions.assertTrue(html.contains("autocomplete"));
-
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
+	    Assertions.assertEquals("<form action=\"/app/testController/?encodeURL=true\"></form>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -105,14 +77,18 @@ public class FormTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_index() {
+    public void test_actionPathParams() {
 	try {
-	    tag.setAction("index");
+	    tag.setAction("actionPathParams");
 	    tag.setController("testController");
+
+	    tag.setDynamicAttribute(null, "__p1", "param1");
+	    tag.setDynamicAttribute(null, "__p2", "param2");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("/app/testController/"));
+
+	    Assertions.assertEquals("<form action=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\"></form>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -124,6 +100,11 @@ public class FormTagTest extends MockTestBase {
 
 	@HttpGet
 	public void index() {
+	}
+
+	@HttpGet
+	@PathParams("/{p1}")
+	public void actionPathParams() {
 	}
     }
 }

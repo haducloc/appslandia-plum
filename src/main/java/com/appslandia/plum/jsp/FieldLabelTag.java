@@ -21,8 +21,8 @@
 package com.appslandia.plum.jsp;
 
 import java.io.IOException;
+import java.util.Objects;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.utils.HtmlUtils;
 
 import jakarta.servlet.jsp.JspException;
@@ -37,11 +37,11 @@ import jakarta.servlet.jsp.JspWriter;
 public class FieldLabelTag extends UITagBase {
 
     protected String form;
-    protected String field;
+    protected String fieldName;
     protected String labelKey;
-
-    protected String forId;
     protected boolean required;
+
+    protected String _for;
 
     @Override
     protected String getTagName() {
@@ -50,21 +50,23 @@ public class FieldLabelTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	Asserts.isTrue((this.labelKey != null) || (this.body != null));
+	this._for = HtmlUtils.toValueTagId(this.fieldName);
 
-	if (this.forId == null) {
-	    this.forId = HtmlUtils.toValueTagId(this.field);
+	if (this.required) {
+	    this.clazz = (this.clazz == null) ? "l-required-label" : (this.clazz + " l-required-label");
 	}
-	if (this.id == null) {
-	    this.id = "lbl_" + this.forId;
+
+	boolean isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this.fieldName);
+	if (!isValid) {
+	    this.clazz = (this.clazz == null) ? "l-error-label" : (this.clazz + " l-error-label");
 	}
-	this.clazz = (this.clazz == null) ? "field-label" : this.clazz + " field-label";
     }
 
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "for", this.forId);
+	if (this.id != null)
+	    HtmlUtils.escAttribute(out, "id", this.id);
+	HtmlUtils.escAttribute(out, "for", this._for);
 	if (this.hidden)
 	    HtmlUtils.hidden(out);
 
@@ -93,14 +95,6 @@ public class FieldLabelTag extends UITagBase {
 	} else {
 	    this.body.invoke(out);
 	}
-	if (this.required) {
-	    out.write(" <span class=\"label-required\">*</span>");
-	}
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setForId(String forId) {
-	this.forId = forId;
     }
 
     @Attribute(required = false, rtexprvalue = false)
@@ -108,9 +102,9 @@ public class FieldLabelTag extends UITagBase {
 	this.form = form;
     }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setField(String field) {
-	this.field = field;
+    @Attribute(required = true, rtexprvalue = true)
+    public void setFieldName(String fieldName) {
+	this.fieldName = fieldName;
     }
 
     @Attribute(required = false, rtexprvalue = false)

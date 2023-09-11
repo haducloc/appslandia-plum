@@ -52,7 +52,7 @@ public class CaptchaWordsTag extends UITagBase {
 	boolean isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
 	if (!isValid) {
 
-	    this.clazz = (this.clazz == null) ? "field-error" : this.clazz + " field-error";
+	    this.clazz = (this.clazz == null) ? "l-field-error" : this.clazz + " l-field-error";
 	}
     }
 

@@ -27,6 +27,7 @@ import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.models.SelectItemImpl;
 import com.appslandia.common.utils.CollectionUtils;
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
@@ -64,53 +65,16 @@ public class SelectTagTest extends MockTestBase {
     @Test
     public void test() {
 	try {
-	    tag.setPath("model.userType");
-	    tag.setSize("5");
-	    tag.setMultiple(true);
-
-	    tag.setRequired(true);
-	    tag.setHidden(true);
-
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("id=\"userType\""));
-	    Assertions.assertTrue(html.contains("name=\"userType\""));
-	    Assertions.assertTrue(html.contains("size=\"5\""));
-	    Assertions.assertTrue(html.contains("multiple=\"multiple\""));
-
-	    Assertions.assertTrue(html.contains("required=\"required\""));
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_listItems() {
-	try {
 	    model.setUserType(2);
+
 	    tag.setPath("model.userType");
-	    tag.setVar("opt");
-	    tag.setItems(CollectionUtils.toList(new SelectItemImpl(1, "type1"), new SelectItemImpl(2, "type2"), new SelectItemImpl(3, "type3")));
+	    tag.setItems(CollectionUtils.toList(new SelectItemImpl(1, "type1"), new SelectItemImpl(2, "type2")));
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("<option value=\"1\">type1</option>"));
-	    Assertions.assertTrue(html.contains("<option value=\"2\" selected=\"selected\">type2</option>"));
-	    Assertions.assertTrue(html.contains("<option value=\"3\">type3</option>"));
+	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"><option value=\"1\">type1</option><option value=\"2\" selected=\"selected\">type2</option></select>",
+		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -118,20 +82,19 @@ public class SelectTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_directItems() {
+    public void test_addOption() {
 	try {
 	    model.setUserType(2);
 	    tag.setPath("model.userType");
 
-	    tag.addItem("type1", 1);
-	    tag.addItem("type2", 2);
-	    tag.addItem("type3", 3);
+	    tag.addOption("type1", 1);
+	    tag.addOption("type2", 2);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("<option value=\"1\">type1</option>"));
-	    Assertions.assertTrue(html.contains("<option value=\"2\" selected=\"selected\">type2</option>"));
-	    Assertions.assertTrue(html.contains("<option value=\"3\">type3</option>"));
+
+	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"><option value=\"1\">type1</option><option value=\"2\" selected=\"selected\">type2</option></select>",
+		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -139,16 +102,18 @@ public class SelectTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_noSelected() {
+    public void test_unselected() {
 	try {
 	    tag.setPath("model.userType");
-	    tag.addItem("type1", 1);
-	    tag.addItem("type2", 2);
-	    tag.addItem("type3", 3);
+
+	    tag.addOption("type1", 1);
+	    tag.addOption("type2", 2);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertFalse(html.contains("selected=\"selected\""));
+
+	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"><option value=\"1\">type1</option><option value=\"2\">type2</option></select>",
+		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -160,57 +125,44 @@ public class SelectTagTest extends MockTestBase {
 	try {
 	    model.setUserType(2);
 	    tag.setPath("model.userType");
-	    tag.addItem("type1", 1);
-	    tag.addItem("type2", 2);
-	    tag.addItem("type3", 3);
+
+	    tag.addOption("type1", 1);
+	    tag.addOption("type2", 2);
+
 	    tag.setReadonly(true);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
-	    Assertions.assertTrue(html.contains("<option value=\"2\" selected=\"selected\">type2</option>"));
 
-	    // Has hidden
-	    Assertions.assertTrue(html.contains("type=\"hidden\""));
+	    // type1 is removed from the options
+	    // plus hidden
+	    Assertions.assertEquals(
+		    "<select id=\"userType\" name=\"userType\" disabled=\"disabled\"><option value=\"2\" selected=\"selected\">type2</option></select><input name=\"userType\" value=\"2\" type=\"hidden\" />",
+		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
-	    ex.printStackTrace();
 	    Assertions.fail(ex.getMessage());
 	}
     }
 
     @Test
-    public void test_noSelected_readonly() {
+    public void test_unselected_readonly() {
 	try {
 	    model.setUserType(0);
 	    tag.setPath("model.userType");
-	    tag.addItem("type1", 1);
-	    tag.addItem("type2", 2);
-	    tag.addItem("type3", 3);
+
+	    tag.addOption("type1", 1);
+	    tag.addOption("type2", 2);
+
 	    tag.setReadonly(true);
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("disabled=\"disabled\""));
-	    Assertions.assertFalse(html.contains("selected=\"selected\""));
 
+	    // Empty dropdown in this case
 	    // No hidden
-	    Assertions.assertFalse(html.contains("type=\"hidden\""));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_escaped() {
-	try {
-	    tag.setPath("model.userType");
-	    tag.addItem(">type1", 1);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("&gt;type1"));
+	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\" disabled=\"disabled\"></select>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

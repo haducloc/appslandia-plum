@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.base.Params;
 import com.appslandia.common.base.StringWriter;
-import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.Controller;
@@ -63,61 +62,13 @@ public class DatalistFunctionTest extends MockTestBase {
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
 	    Params model = new Params();
-	    model.set("items", Arrays.asList("item1", "item2"));
+	    model.set("items", Arrays.asList("admin", "manager"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"item1\"></option> <option value=\"item2\"></option>", NormalizeUtils.normalizeString(content));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_localize() {
-	String templateContent = """
-			{{ datalist(items=items, localize=true) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Params model = new Params();
-	    model.set("items", Arrays.asList(DateUtils.iso8601LocalDate("2023-01-01"), DateUtils.iso8601LocalDate("2023-07-01")));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"01/01/2023\"></option> <option value=\"07/01/2023\"></option>", NormalizeUtils.normalizeString(content));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_not_localize() {
-	String templateContent = """
-			{{ datalist(items=items, localize=false) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Params model = new Params();
-	    model.set("items", Arrays.asList(DateUtils.iso8601LocalDate("2023-01-01"), DateUtils.iso8601LocalDate("2023-07-01")));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"2023-01-01\"></option> <option value=\"2023-07-01\"></option>", NormalizeUtils.normalizeString(content));
+	    Assertions.assertEquals("<option value=\"admin\"></option><option value=\"manager\"></option>", NormalizeUtils.removeCrLf(content));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

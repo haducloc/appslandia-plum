@@ -348,8 +348,12 @@ public abstract class ActionDescProvider extends InitializeObject {
 	Asserts.isTrue(PATH_PARAMS_PATTERN.matcher(value).matches(), () -> STR.fmt("pathParams '{}' is invalid.", value));
 
 	List<PathParam> pathParams = new ArrayList<>();
-	for (String pathItem : SplitUtils.split(value, '/', SplitOptions.TRIM_REMOVE_NULL)) {
+	String[] parts = SplitUtils.split(value, '/', SplitOptions.NONE);
 
+	for (String pathItem : parts) {
+	    if (pathItem.isEmpty()) {
+		continue;
+	    }
 	    // pathItem: {parameter}
 	    if (PARAM_PATTERN.matcher(pathItem).matches()) {
 		pathParams.add(new PathParam(pathItem.substring(1, pathItem.length() - 1)));
@@ -365,7 +369,10 @@ public abstract class ActionDescProvider extends InitializeObject {
     // value: {parameter}(-{parameter})+
     public static List<PathParam> parseSubParams(String value) {
 	List<PathParam> subParams = new ArrayList<>();
-	for (String subParam : SplitUtils.split(value, '-', SplitOptions.NONE)) {
+	String[] parts = SplitUtils.split(value, '-', SplitOptions.NONE);
+
+	for (String subParam : parts) {
+
 	    // subParam: {parameter}
 	    subParams.add(new PathParam(subParam.substring(1, subParam.length() - 1)));
 	}

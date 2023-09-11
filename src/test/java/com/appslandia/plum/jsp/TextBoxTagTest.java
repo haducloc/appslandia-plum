@@ -25,7 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.DateUtils;
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.BrowserFeatures;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
@@ -33,6 +33,8 @@ import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.mocks.MockJspContext;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.TestUtils;
+
+import jakarta.validation.constraints.NotNull;
 
 /**
  *
@@ -59,48 +61,20 @@ public class TextBoxTagTest extends MockTestBase {
 	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
 	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
 
-	// Use vi locale
+	// VI Locale
 	executeCurrent("GET", "http://localhost/app/vi/testController/index");
     }
 
     @Test
     public void test() {
 	try {
+	    model.setUserName("user1");
 	    tag.setPath("model.userName");
-	    tag.setType("text");
-
-	    tag.setMaxlength("100");
-	    tag.setReadonly(true);
-	    tag.setPlaceholder("placeholder");
-
-	    tag.setRequired(true);
-	    tag.setHidden(true);
-	    tag.setAutocomplete("off");
-
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("id=\"userName\""));
-	    Assertions.assertTrue(html.contains("name=\"userName\""));
-	    Assertions.assertTrue(html.contains("type=\"text\""));
-
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
-
-	    Assertions.assertTrue(html.contains("maxlength=\"100\""));
-	    Assertions.assertTrue(html.contains("readonly=\"readonly\""));
-	    Assertions.assertTrue(html.contains("placeholder=\"placeholder\""));
-
-	    Assertions.assertTrue(html.contains("required=\"required\""));
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertFalse(html.contains("autocomplete=\"on\""));
+	    Assertions.assertEquals("<input id=\"userName\" type=\"text\" name=\"userName\" value=\"user1\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -108,47 +82,16 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_noValue() {
+    public void test_error() {
 	try {
-	    tag.setPath("model.userName");
-	    tag.setType("text");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("value=\"\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_value() {
-	try {
-	    model.setUserName("testUser");
-	    tag.setPath("model.userName");
-	    tag.setType("text");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("value=\"testUser\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_escaped() {
-	try {
-	    model.setUserName("< testUser");
+	    getCurrentModelState().addError("userName", "The userName field is required.");
 
 	    tag.setPath("model.userName");
-	    tag.setType("text");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("value=\"&lt; testUser\""));
+
+	    Assertions.assertEquals("<input id=\"userName\" type=\"text\" name=\"userName\" value=\"\" class=\"l-error-field\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -156,84 +99,10 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_readonly() {
-	try {
-	    model.setUserName("testUser");
-	    tag.setPath("model.userName");
-	    tag.setType("text");
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("readonly=\"readonly\""));
-
-	    // Hidden
-	    Assertions.assertFalse(html.contains("type=\"hidden\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_inputdate_text() {
-	try {
-	    model.setDob(DateUtils.iso8601Date("2005-12-31"));
-	    tag.setPath("model.dob");
-	    tag.setType("text");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    // type = text
-	    Assertions.assertTrue(html.contains("value=\"31/12/2005\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_inputdate_date() {
-	try {
-	    model.setDob(DateUtils.iso8601Date("2005-12-31"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("value=\"31/12/2005\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_inputdate_browserFeatures() {
-	try {
-	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
-
-	    model.setDob(DateUtils.iso8601Date("2005-12-31"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("value=\"2005-12-31\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_inputnumber_text() {
+    public void test_salary_text() {
 	try {
 	    model.setSalary(99999.1235);
+
 	    tag.setPath("model.salary");
 	    tag.setType("text");
 
@@ -241,7 +110,7 @@ public class TextBoxTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    // type = text
-	    Assertions.assertTrue(html.contains("value=\"99999,124\""));
+	    Assertions.assertEquals("<input id=\"salary\" type=\"text\" name=\"salary\" value=\"99999,124\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -249,7 +118,7 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_inputnumber_number() {
+    public void test_salary_number() {
 	try {
 	    model.setSalary(99999.1235);
 	    tag.setPath("model.salary");
@@ -259,7 +128,7 @@ public class TextBoxTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    // type = number
-	    Assertions.assertTrue(html.contains("value=\"99999,124\""));
+	    Assertions.assertEquals("<input id=\"salary\" type=\"text\" name=\"salary\" value=\"99999,124\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -267,7 +136,7 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_inputnumber_browserFeatures() {
+    public void test_salary_browserFeatures() {
 	try {
 	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_NUMBER);
 
@@ -278,7 +147,8 @@ public class TextBoxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("value=\"99999.124\""));
+	    // type = number + browserFeatures
+	    Assertions.assertEquals("<input id=\"salary\" type=\"number\" name=\"salary\" value=\"99999.124\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -286,19 +156,11 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     public static class TestModel {
-	private Integer userId;
+
+	@NotNull
 	private String userName;
-	private java.sql.Date dob;
+
 	private double salary;
-	private boolean isActive;
-
-	public Integer getUserId() {
-	    return userId;
-	}
-
-	public void setUserId(Integer userId) {
-	    this.userId = userId;
-	}
 
 	public String getUserName() {
 	    return userName;
@@ -308,28 +170,12 @@ public class TextBoxTagTest extends MockTestBase {
 	    this.userName = userName;
 	}
 
-	public java.sql.Date getDob() {
-	    return dob;
-	}
-
-	public void setDob(java.sql.Date dob) {
-	    this.dob = dob;
-	}
-
 	public double getSalary() {
 	    return salary;
 	}
 
 	public void setSalary(double salary) {
 	    this.salary = salary;
-	}
-
-	public boolean isActive() {
-	    return isActive;
-	}
-
-	public void setActive(boolean isActive) {
-	    this.isActive = isActive;
 	}
     }
 

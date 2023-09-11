@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Objects;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.pebble.DynPebbleFunction;
@@ -42,25 +41,22 @@ public class FieldErrorFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, form";
+	return "variables: fieldName*, form";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
+	String fieldName = context.getRequiredArgument("fieldName");
 	String form = context.getArgument("form");
 
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
-
-	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
+	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(fieldName);
 	if (!isValid) {
-	    Message error = context.getModelState().getFieldErrors(name).get(0);
+
+	    Message error = context.getModelState().getFieldErrors(fieldName).get(0);
 	    StringWriter out = new StringWriter(128);
 
-	    out.append("<span");
-	    HtmlUtils.escAttribute(out, "for", HtmlUtils.toValueTagId(name));
+	    out.append("<div");
+	    HtmlUtils.escAttribute(out, "for", HtmlUtils.toValueTagId(fieldName));
 	    HtmlUtils.escAttribute(out, "class", "l-field-error");
 	    out.append(">");
 
@@ -70,7 +66,7 @@ public class FieldErrorFunction extends DynPebbleFunction {
 		out.write(error.getText());
 	    }
 
-	    out.append("</span>");
+	    out.append("</div>");
 	    return new SafeString(out.toString());
 	}
 	return null;

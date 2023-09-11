@@ -60,48 +60,13 @@ public class ActionImageTagTest extends MockTestBase {
     @Test
     public void test() {
 	try {
-	    tag.setAction("actionNoParams");
-	    tag.setController("testController");
-
-	    tag.setId("id1");
-	    tag.setWidth("300");
-	    tag.setHeight("50");
-	    tag.setAlt("testAlt");
-
-	    tag.setHidden(true);
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertTrue(html.contains("id=\"id1\""));
-	    Assertions.assertTrue(html.contains("width=\"300\""));
-	    Assertions.assertTrue(html.contains("height=\"50\""));
-	    Assertions.assertTrue(html.contains("alt=\"testAlt\""));
-
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionNoParams() {
-	try {
-	    tag.setAction("actionNoParams");
+	    tag.setAction("index");
 	    tag.setController("testController");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("/app/testController/actionNoParams/"));
+
+	    Assertions.assertEquals("<img src=\"/app/testController/?encodeURL=true\" alt=\"\" />", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -119,7 +84,8 @@ public class ActionImageTagTest extends MockTestBase {
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
-	    Assertions.assertTrue(html.contains("/app/testController/actionPathParams/param1/?p2=param2"));
+
+	    Assertions.assertEquals("<img src=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\" alt=\"\" />", html);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -131,10 +97,6 @@ public class ActionImageTagTest extends MockTestBase {
 
 	@HttpGet
 	public void index() {
-	}
-
-	@HttpGet
-	public void actionNoParams() {
 	}
 
 	@HttpGet

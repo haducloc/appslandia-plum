@@ -25,6 +25,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
@@ -59,27 +60,33 @@ public class FieldLabelTagTest extends MockTestBase {
     @Test
     public void test() {
 	try {
-	    tag.setField("userName");
+	    tag.setFieldName("userName");
 	    tag.setLabelKey("testLabel");
-
-	    tag.setHidden(true);
-	    tag.setDatatag("tag1");
-	    tag.setClazz("class1");
-	    tag.setStyle("prop1:value1");
-	    tag.setTitle("title1");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertTrue(html.contains("id=\"lbl_userName\""));
-	    Assertions.assertTrue(html.contains("for=\"userName\""));
-	    Assertions.assertTrue(html.contains(":testLabel"));
+	    Assertions.assertEquals("<label for=\"userName\">en:testLabel</label>", NormalizeUtils.removeCrLf(html));
 
-	    Assertions.assertTrue(html.contains("hidden=\"hidden\""));
-	    Assertions.assertTrue(html.contains("data-tag=\"tag1\""));
-	    Assertions.assertTrue(html.contains("class=\"class1 field-label\""));
-	    Assertions.assertTrue(html.contains("style=\"prop1:value1\""));
-	    Assertions.assertTrue(html.contains("title=\"title1\""));
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_error() {
+	try {
+
+	    getCurrentModelState().addError("userName", "The userName field is required.");
+
+	    tag.setFieldName("userName");
+	    tag.setLabelKey("testLabel");
+	    tag.setRequired(true);
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("<label for=\"userName\" class=\"l-required-label l-error-label\">en:testLabel</label>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

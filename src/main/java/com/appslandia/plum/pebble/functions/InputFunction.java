@@ -42,7 +42,7 @@ public class InputFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, type, readonly, converter, localize, form, min, max, step";
+	return "variables: path*, type, readonly, converter, form, min, max, step";
     }
 
     @Override
@@ -52,7 +52,6 @@ public class InputFunction extends DynPebbleFunction {
 	boolean readonly = context.getBool("readonly", false);
 
 	String converter = context.getArgument("converter");
-	Boolean localize = context.getBoolObj("localize");
 	String form = context.getArgument("form");
 
 	Object min = context.getArgument("min");
@@ -76,9 +75,7 @@ public class InputFunction extends DynPebbleFunction {
 	}
 
 	// localize
-	if (localize == null) {
-	    localize = InputUtils.willLocalize(context.getRequestContext(), value, converter, type);
-	}
+	boolean localize = InputUtils.willLocalize(context.getRequestContext(), converter, type);
 	if (localize && InputUtils.getFeature(type) != null) {
 	    type = "text";
 	}
