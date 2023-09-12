@@ -111,8 +111,10 @@ public abstract class ValueTagBase extends UITagBase {
 	    XmlEscaper.escapeXml(out, this._name);
 
 	    out.write("\" value=\"");
-	    if (this._value != null)
-		XmlEscaper.escapeXml(out, getRequestContext().format(getHiddenValue(), this.converter, this._localize));
+	    Object hiddenValue = getHiddenValue();
+
+	    if (hiddenValue != null)
+		XmlEscaper.escapeXml(out, getRequestContext().format(hiddenValue, this.converter, this._localize));
 
 	    out.write("\" type=\"hidden\" />");
 	}
