@@ -46,7 +46,7 @@ public class TagTldGenerator {
 	generateTag(FieldLabelTag.class, sb);
 	generateTag(FieldErrorTag.class, sb);
 
-	generateTag(TextBoxTag.class, sb);
+	generateTag(InputTag.class, sb);
 	generateTag(DataListTag.class, sb);
 	generateTag(DataItemTag.class, sb);
 	generateTag(TextAreaTag.class, sb);

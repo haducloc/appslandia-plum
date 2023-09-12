@@ -40,21 +40,17 @@ public class SelectFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, converter, readonly";
+	return "variables: path*, readonly";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String path = context.getRequiredArgument("path");
-	String converter = context.getArgument("converter");
 	boolean readonly = context.getBool("readonly", false);
 
 	int nameIdx = path.indexOf('.');
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
-
-	Object value = context.evaluate(path);
-	String fmtValue = context.getRequestContext().format(value, converter, false);
 
 	StringWriter out = new StringWriter(128);
 
@@ -63,7 +59,6 @@ public class SelectFunction extends DynPebbleFunction {
 	out.write("\"");
 
 	HtmlUtils.escAttribute(out, "name", name);
-	HtmlUtils.escAttribute(out, "value", fmtValue);
 
 	if (readonly)
 	    HtmlUtils.disabled(out);

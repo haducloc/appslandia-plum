@@ -57,7 +57,7 @@ public class LabelFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		{{ label(path='model.username') }}>
+		{{ label(fieldName='username') }}>
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 

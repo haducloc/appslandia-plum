@@ -77,6 +77,25 @@ public class FieldLabelTagTest extends MockTestBase {
     public void test_error() {
 	try {
 
+	    getCurrentModelState().addError("userName", "The userName field is too long.");
+
+	    tag.setFieldName("userName");
+	    tag.setLabelKey("testLabel");
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("<label for=\"userName\" class=\"l-error-label\">en:testLabel</label>", NormalizeUtils.removeCrLf(html));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_required_error() {
+	try {
+
 	    getCurrentModelState().addError("userName", "The userName field is required.");
 
 	    tag.setFieldName("userName");

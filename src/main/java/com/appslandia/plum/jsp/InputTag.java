@@ -32,8 +32,8 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "textbox")
-public class TextBoxTag extends InputTagBase {
+@Tag(name = "input")
+public class InputTag extends ValueTagBase {
 
     protected String maxlength;
 

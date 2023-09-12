@@ -38,7 +38,6 @@ import com.appslandia.plum.base.RequestAccessor;
 import com.appslandia.plum.mocks.MemPebbleTemplateProvider;
 import com.appslandia.plum.pebble.PebbleUtils;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -58,14 +57,14 @@ public class InputFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_text() {
+    public void test() {
 	String templateContent = """
 		{{ input(path='model.dob') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
 	try {
-	    getCurrentRequest().addParameter("dob", "1980-01-01");
+	    getCurrentRequest().addParameter("dob", "2000-01-01");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
 	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
@@ -74,7 +73,7 @@ public class InputFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"01/01/1980\" type=\"text\"", content);
+	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"01/01/2000\" type=\"text\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -82,26 +81,21 @@ public class InputFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_date() {
+    public void test_error() {
 	String templateContent = """
-		{{ input(path='model.dob', type='date') }}
+		{{ input(path='model.dob') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
 	try {
-	    getCurrentRequest().addParameter("dob", "1980-01-01");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
-
 	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
 
 	    StringWriter out = new StringWriter();
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-
-	    // HTML5 date not supported
-	    // date -> text & localize
-	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"01/01/1980\" type=\"text\"", content);
+	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"\" type=\"text\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -109,17 +103,14 @@ public class InputFunctionTest extends MockTestBase {
     }
 
     @Test
-    public void test_date_html5() {
+    public void test_type_text() {
 	String templateContent = """
-		{{ input(path='model.dob', type='date') }}
+		{{ input(path='model.dob', type='text') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
 	try {
-	    // BrowserFeatures.INPUT_DATE
-	    getCurrentRequest().addCookie(new Cookie("browserFeatures", String.valueOf(BrowserFeatures.INPUT_DATE)));
-	    getCurrentRequest().addParameter("dob", "1980-01-01");
-
+	    getCurrentRequest().addParameter("dob", "2000-01-01");
 	    executeCurrent("GET", "http://localhost/app/testController/index");
 
 	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
@@ -128,9 +119,56 @@ public class InputFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
+	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"01/01/2000\" type=\"text\"", content);
 
-	    // HTML5 date supported
-	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"1980-01-01\" type=\"date\"", content);
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
+    public void test_type_date() {
+	String templateContent = """
+		{{ input(path='model.dob', type='date') }}
+		""";
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+	try {
+	    getCurrentRequest().addParameter("dob", "2000-01-01");
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"01/01/2000\" type=\"text\"", content);
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
+    public void test_type_date_browserFeatures() {
+	String templateContent = """
+		{{ input(path='model.dob', type='date') }}
+		""";
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+	try {
+	    getCurrentRequest().addParameter("dob", "2000-01-01");
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"2000-01-01\" type=\"date\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

@@ -71,7 +71,7 @@ public class SelectFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\"", content);
+	    Assertions.assertEquals("id=\"userType\" name=\"userType\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -95,7 +95,7 @@ public class SelectFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("id=\"userType\" name=\"userType\" value=\"1\" disabled=\"disabled\"", content);
+	    Assertions.assertEquals("id=\"userType\" name=\"userType\" disabled=\"disabled\"", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

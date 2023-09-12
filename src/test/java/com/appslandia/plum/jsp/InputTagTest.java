@@ -20,11 +20,14 @@
 
 package com.appslandia.plum.jsp;
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.BrowserFeatures;
 import com.appslandia.plum.base.Controller;
@@ -41,9 +44,9 @@ import jakarta.validation.constraints.NotNull;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextBoxTagTest extends MockTestBase {
+public class InputTagTest extends MockTestBase {
 
-    TextBoxTag tag = new TextBoxTag();
+    InputTag tag = new InputTag();
     TestModel model = new TestModel();
 
     @BeforeAll
@@ -61,20 +64,19 @@ public class TextBoxTagTest extends MockTestBase {
 	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
 	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
 
-	// VI Locale
-	executeCurrent("GET", "http://localhost/app/vi/testController/index");
+	executeCurrent("GET", "http://localhost/app/testController/index");
     }
 
     @Test
     public void test() {
 	try {
-	    model.setUserName("user1");
-	    tag.setPath("model.userName");
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"userName\" type=\"text\" name=\"userName\" value=\"user1\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -84,14 +86,14 @@ public class TextBoxTagTest extends MockTestBase {
     @Test
     public void test_error() {
 	try {
-	    getCurrentModelState().addError("userName", "The userName field is required.");
+	    getCurrentModelState().addError("dob", "The dob field is required.");
 
-	    tag.setPath("model.userName");
+	    tag.setPath("model.dob");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"userName\" type=\"text\" name=\"userName\" value=\"\" class=\"l-error-field\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"\" autocomplete=\"off\" class=\"l-error-field\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -99,18 +101,18 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_salary_text() {
+    public void test_type_text() {
 	try {
-	    model.setSalary(99999.1235);
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
 
-	    tag.setPath("model.salary");
+	    tag.setPath("model.dob");
 	    tag.setType("text");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
 	    // type = text
-	    Assertions.assertEquals("<input id=\"salary\" type=\"text\" name=\"salary\" value=\"99999,124\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -118,17 +120,17 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_salary_number() {
+    public void test_type_date() {
 	try {
-	    model.setSalary(99999.1235);
-	    tag.setPath("model.salary");
-	    tag.setType("number");
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
+	    tag.setType("date");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = number
-	    Assertions.assertEquals("<input id=\"salary\" type=\"text\" name=\"salary\" value=\"99999,124\" />", NormalizeUtils.removeCrLf(html));
+	    // type = date
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -136,19 +138,19 @@ public class TextBoxTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_salary_browserFeatures() {
+    public void test_type_date_browserFeatures() {
 	try {
-	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_NUMBER);
+	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
 
-	    model.setSalary(99999.1235);
-	    tag.setPath("model.salary");
-	    tag.setType("number");
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
+	    tag.setType("date");
 
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = number + browserFeatures
-	    Assertions.assertEquals("<input id=\"salary\" type=\"number\" name=\"salary\" value=\"99999.124\" />", NormalizeUtils.removeCrLf(html));
+	    // type = date + browserFeatures
+	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -158,24 +160,14 @@ public class TextBoxTagTest extends MockTestBase {
     public static class TestModel {
 
 	@NotNull
-	private String userName;
+	private LocalDate dob;
 
-	private double salary;
-
-	public String getUserName() {
-	    return userName;
+	public LocalDate getDob() {
+	    return dob;
 	}
 
-	public void setUserName(String userName) {
-	    this.userName = userName;
-	}
-
-	public double getSalary() {
-	    return salary;
-	}
-
-	public void setSalary(double salary) {
-	    this.salary = salary;
+	public void setDob(LocalDate dob) {
+	    this.dob = dob;
 	}
     }
 

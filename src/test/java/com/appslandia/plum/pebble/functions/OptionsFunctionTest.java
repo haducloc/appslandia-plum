@@ -59,7 +59,7 @@ public class OptionsFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-			{{ options(path='model.userType', items=items) }}
+			{{ options(selectedValue=model.userType, items=items) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -85,7 +85,7 @@ public class OptionsFunctionTest extends MockTestBase {
     @Test
     public void test_unselected() {
 	String templateContent = """
-			{{ options(path='model.userType', items=items) }}
+			{{ options(selectedValue=model.userType, items=items) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -111,7 +111,7 @@ public class OptionsFunctionTest extends MockTestBase {
     @Test
     public void test_readonly() {
 	String templateContent = """
-			{{ options(path='model.userType', items=items, readonly=true) }}
+			{{ options(selectedValue=model.userType, items=items, readonly=true) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -137,7 +137,7 @@ public class OptionsFunctionTest extends MockTestBase {
     @Test
     public void test_unselected_readonly() {
 	String templateContent = """
-			{{ options(path='model.userType', items=items, readonly=true) }}
+			{{ options(selectedValue=model.userType, items=items, readonly=true) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -155,6 +155,7 @@ public class OptionsFunctionTest extends MockTestBase {
 	    Assertions.assertEquals("", content);
 
 	} catch (Exception ex) {
+	    ex.printStackTrace();
 	    Assertions.fail(ex);
 	}
     }

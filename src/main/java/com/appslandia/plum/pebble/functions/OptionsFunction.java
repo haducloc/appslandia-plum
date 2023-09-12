@@ -42,19 +42,17 @@ public class OptionsFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, items*, converter, readonly";
+	return "variables: selectedValue*, items*, converter, readonly";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
+	Object value = context.getArgument("selectedValue");
 	String converter = context.getArgument("converter");
 	boolean readonly = context.getBool("readonly", false);
 	List<SelectItem> items = context.getRequiredArgument("items");
 
-	Object value = context.evaluate(path);
 	String fmtValue = context.getRequestContext().format(value, converter, false);
-
 	StringWriter out = new StringWriter(items.size() * 80);
 
 	// readonly
@@ -101,7 +99,6 @@ public class OptionsFunction extends DynPebbleFunction {
 		out.write("</option>");
 	    }
 	}
-
 	return new SafeString(out.toString());
     }
 }

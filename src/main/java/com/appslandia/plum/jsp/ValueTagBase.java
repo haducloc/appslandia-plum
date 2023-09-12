@@ -35,7 +35,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class InputTagBase extends UITagBase {
+public abstract class ValueTagBase extends UITagBase {
 
     protected String type;
     protected String form;
@@ -62,7 +62,7 @@ public abstract class InputTagBase extends UITagBase {
     }
 
     protected Object getHiddenValue() {
-	throw new UnsupportedOperationException();
+	return this._value;
     }
 
     @Override

@@ -23,7 +23,6 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 import java.util.Objects;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.jsp.TagUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -39,19 +38,15 @@ public class LabelClassFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, form";
+	return "variables: fieldName*, form";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
+	String fieldName = context.getRequiredArgument("fieldName");
 	String form = context.getArgument("form");
 
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
-
-	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
+	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(fieldName);
 
 	if (isValid) {
 	    return new SafeString(TagUtils.CSS_NOOP);

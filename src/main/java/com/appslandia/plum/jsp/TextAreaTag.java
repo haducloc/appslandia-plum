@@ -34,7 +34,7 @@ import jakarta.servlet.jsp.JspWriter;
  *
  */
 @Tag(name = "textarea")
-public class TextAreaTag extends InputTagBase {
+public class TextAreaTag extends ValueTagBase {
 
     protected String maxlength;
     protected String placeholder;

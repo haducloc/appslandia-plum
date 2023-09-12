@@ -23,7 +23,6 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 
 import com.appslandia.common.base.StringWriter;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -40,21 +39,16 @@ public class LabelFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*";
+	return "variables: fieldName*";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
-
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
-
+	String fieldName = context.getRequiredArgument("fieldName");
 	StringWriter out = new StringWriter(80);
 
 	out.write("for=\"");
-	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(name));
+	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(fieldName));
 	out.write("\"");
 
 	return new SafeString(out.toString());
