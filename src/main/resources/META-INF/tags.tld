@@ -511,6 +511,13 @@
 		<tag-class>com.appslandia.plum.jsp.DataListTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
+			<description>converter|type=java.lang.String</description>
+			<name>converter</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<description>datatag|type=java.lang.Object|expression</description>
 			<name>datatag</name>
 			<required>false</required>
@@ -530,6 +537,13 @@
 			<required>true</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.Iterable</type>
+		</attribute>
+		<attribute>
+			<description>localize|type=boolean</description>
+			<name>localize</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>boolean</type>
 		</attribute>
 		<attribute>
 			<description>render|type=boolean|expression</description>
