@@ -58,7 +58,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
     @Test
     public void test_not_readonly() {
 	String templateContent = """
-			{{ hiddenSelect(path='model.userType', items=items, readonly=false) }}
+			{{ hiddenSel(path='model.userType', items=items, readonly=false) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -84,7 +84,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
     @Test
     public void test_selected_readonly() {
 	String templateContent = """
-			{{ hiddenSelect(path='model.userType', items=items, readonly=true) }}
+			{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -110,7 +110,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
     @Test
     public void test_unselected_readonly() {
 	String templateContent = """
-			{{ hiddenSelect(path='model.userType', items=items, readonly=true) }}
+			{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 

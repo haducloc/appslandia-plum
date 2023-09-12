@@ -49,20 +49,20 @@ public class FormErrorsFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: fieldOrders, fieldErrors, form, listClass, itemClass";
+	return "variables: includeFields, fieldOrders, form, listClass, itemClass";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String fieldOrders = context.getArgument("fieldOrders");
-	boolean fieldErrors = context.getBool("fieldErrors", true);
+	boolean includeFields = context.getBool("includeFields", true);
 	String form = context.getArgument("form");
 
 	String listClass = context.getArgument("listClass");
 	String itemClass = context.getArgument("itemClass");
 
 	boolean hasErrors = false;
-	if (fieldErrors) {
+	if (includeFields) {
 	    hasErrors = Objects.equals(form, context.getModelState().getForm()) && !context.getModelState().isValid();
 	} else {
 	    hasErrors = Objects.equals(form, context.getModelState().getForm())
@@ -78,7 +78,7 @@ public class FormErrorsFunction extends DynPebbleFunction {
 	    out.write(">");
 
 	    // Write field errors
-	    if (fieldErrors) {
+	    if (includeFields) {
 
 		List<Entry<String, List<Message>>> errors = new ArrayList<>(context.getModelState().getErrors().entrySet());
 		if (fieldOrders != null) {

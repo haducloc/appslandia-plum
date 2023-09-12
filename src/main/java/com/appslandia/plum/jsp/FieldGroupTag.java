@@ -33,7 +33,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "fieldGroup", bodyContent = "scriptless")
+@Tag(name = "group", bodyContent = "scriptless")
 public class FieldGroupTag extends UITagBase {
 
     protected String form;

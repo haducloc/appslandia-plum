@@ -81,6 +81,7 @@ public class TagTldGenerator {
 
 	generateTag(FmtDaysTag.class, sb);
 	generateTag(IfEnvTag.class, sb);
+	generateTag(OutTag.class, sb);
 
 	System.out.println(sb);
     }

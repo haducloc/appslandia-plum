@@ -45,12 +45,12 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "formErrors", bodyContent = "scriptless")
+@Tag(name = "errors", bodyContent = "scriptless")
 public class FormErrorsTag extends TagBase {
 
     protected String form;
     protected String fieldOrders;
-    protected boolean fieldErrors = true;
+    protected boolean includeFields = true;
 
     protected String listClass;
     protected String itemClass;
@@ -58,7 +58,7 @@ public class FormErrorsTag extends TagBase {
     @Override
     public void doTag() throws JspException, IOException {
 	boolean hasErrors = false;
-	if (this.fieldErrors) {
+	if (this.includeFields) {
 	    hasErrors = Objects.equals(this.form, this.getModelState().getForm()) && !this.getModelState().isValid();
 	} else {
 	    hasErrors = Objects.equals(this.form, this.getModelState().getForm())
@@ -75,7 +75,7 @@ public class FormErrorsTag extends TagBase {
 	    out.write(">");
 
 	    // Write field errors
-	    if (this.fieldErrors) {
+	    if (this.includeFields) {
 		List<Entry<String, List<Message>>> errors = new ArrayList<>(this.getModelState().getErrors().entrySet());
 		if (this.fieldOrders != null) {
 		    Collections.sort(errors, toFieldComparator(this.fieldOrders));
@@ -165,8 +165,8 @@ public class FormErrorsTag extends TagBase {
     }
 
     @Attribute(required = false, rtexprvalue = false)
-    public void setFieldErrors(boolean fieldErrors) {
-	this.fieldErrors = fieldErrors;
+    public void setIncludeFields(boolean includeFields) {
+	this.includeFields = includeFields;
     }
 
     @Attribute(required = false, rtexprvalue = false)

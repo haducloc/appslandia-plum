@@ -57,7 +57,7 @@ public class HiddenCheckboxFunctionTest extends MockTestBase {
     @Test
     public void test_not_readonly() {
 	String templateContent = """
-			{{ hiddenCheckbox(path='model.roles', codeValue='admin', readonly=false) }}
+			{{ hiddenChk(path='model.roles', codeValue='admin', readonly=false) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -81,7 +81,7 @@ public class HiddenCheckboxFunctionTest extends MockTestBase {
     @Test
     public void test_checked_readonly() {
 	String templateContent = """
-			{{ hiddenCheckbox(path='model.roles', codeValue='admin', readonly=true) }}
+			{{ hiddenChk(path='model.roles', codeValue='admin', readonly=true) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -105,7 +105,7 @@ public class HiddenCheckboxFunctionTest extends MockTestBase {
     @Test
     public void test_unchecked_readonly() {
 	String templateContent = """
-			{{ hiddenCheckbox(path='model.roles', codeValue='admin', readonly=true) }}
+			{{ hiddenChk(path='model.roles', codeValue='admin', readonly=true) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());

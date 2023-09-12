@@ -57,7 +57,7 @@ public class HiddenRadioFunctionTest extends MockTestBase {
     @Test
     public void test_not_readonly() {
 	String templateContent = """
-			{{ hiddenRadio(path='model.userType', codeValue=1, readonly=false) }}
+			{{ hiddenRdo(path='model.userType', codeValue=1, readonly=false) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -81,7 +81,7 @@ public class HiddenRadioFunctionTest extends MockTestBase {
     @Test
     public void test_checked_readonly() {
 	String templateContent = """
-			{{ hiddenRadio(path='model.userType', codeValue=1, readonly=true) }}
+			{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
@@ -105,7 +105,7 @@ public class HiddenRadioFunctionTest extends MockTestBase {
     @Test
     public void test_unchecked_readonly() {
 	String templateContent = """
-			{{ hiddenRadio(path='model.userType', codeValue=1, readonly=true) }}
+			{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
 		""";
 
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());

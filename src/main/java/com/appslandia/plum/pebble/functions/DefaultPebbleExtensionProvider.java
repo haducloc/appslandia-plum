@@ -51,17 +51,17 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 	impls.put("options", new OptionsFunction());
 	impls.put("datalist", new DatalistFunction());
 
-	impls.put("hiddenCheckbox", new HiddenCheckboxFunction());
-	impls.put("hiddenRadio", new HiddenRadioFunction());
-	impls.put("hiddenSelect", new HiddenSelectFunction());
+	impls.put("hiddenChk", new HiddenCheckboxFunction());
+	impls.put("hiddenRdo", new HiddenRadioFunction());
+	impls.put("hiddenSel", new HiddenSelectFunction());
 
 	impls.put("fieldClass", new FieldClassFunction());
 	impls.put("labelClass", new LabelClassFunction());
-	impls.put("fieldError", new FieldErrorFunction());
-
-	impls.put("messages", new MessagesFunction());
-	impls.put("formErrors", new FormErrorsFunction());
 	impls.put("ifClass", new IfClassFunction());
+
+	impls.put("error", new FieldErrorFunction());
+	impls.put("errors", new FormErrorsFunction());
+	impls.put("messages", new MessagesFunction());
 
 	impls.put("actionUrl", new ActionUrlFunction());
 	impls.put("userDName", new UserDNameFunction());

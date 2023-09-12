@@ -57,7 +57,7 @@ public class FieldErrorFunctionTest extends MockTestBase {
     @Test
     public void test() {
 	String templateContent = """
-		{{ fieldError(fieldName='username') }}
+		{{ error(fieldName='username') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
@@ -81,7 +81,7 @@ public class FieldErrorFunctionTest extends MockTestBase {
     @Test
     public void test_error() {
 	String templateContent = """
-		{{ fieldError(fieldName='username') }}
+		{{ error(fieldName='username') }}
 		""";
 	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
