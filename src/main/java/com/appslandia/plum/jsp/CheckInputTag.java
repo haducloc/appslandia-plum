@@ -38,8 +38,6 @@ public abstract class CheckInputTag extends ValueTagBase {
     protected Object codeValue;
     protected boolean triggerSubmit = false;
 
-    protected String autocomplete;
-
     @Override
     protected String getTagName() {
 	return "input";
@@ -125,10 +123,5 @@ public abstract class CheckInputTag extends ValueTagBase {
     @Attribute(required = false, rtexprvalue = false)
     public void setTriggerSubmit(boolean triggerSubmit) {
 	this.triggerSubmit = triggerSubmit;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutocomplete(String autocomplete) {
-	this.autocomplete = autocomplete;
     }
 }

@@ -38,7 +38,6 @@ public class TextAreaTag extends ValueTagBase {
 
     protected String maxlength;
     protected String placeholder;
-    protected String autocomplete;
 
     protected String cols;
     protected String rows;
@@ -116,11 +115,6 @@ public class TextAreaTag extends ValueTagBase {
     @Attribute(required = false, rtexprvalue = true)
     public void setPlaceholder(String placeholder) {
 	this.placeholder = placeholder;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutocomplete(String autocomplete) {
-	this.autocomplete = autocomplete;
     }
 
     @Attribute(required = false, rtexprvalue = false)

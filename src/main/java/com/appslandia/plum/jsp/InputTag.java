@@ -44,7 +44,6 @@ public class InputTag extends ValueTagBase {
 
     protected String placeholder;
     protected String alt;
-    protected String autocomplete = "off";
 
     @Override
     protected String getTagName() {
@@ -54,7 +53,9 @@ public class InputTag extends ValueTagBase {
     @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "type", this.type);
+
+	if (this.type != null)
+	    HtmlUtils.escAttribute(out, "type", this.type);
 	HtmlUtils.escAttribute(out, "name", this._name);
 
 	HtmlUtils.escAttribute(out, "value", (String) this._value);
@@ -152,10 +153,5 @@ public class InputTag extends ValueTagBase {
     @Attribute(required = false, rtexprvalue = true)
     public void setAlt(String alt) {
 	this.alt = alt;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutocomplete(String autocomplete) {
-	this.autocomplete = autocomplete;
     }
 }

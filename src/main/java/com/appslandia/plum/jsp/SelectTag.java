@@ -46,7 +46,6 @@ public class SelectTag extends ValueTagBase {
     protected String var = "item";
     protected String size;
     protected boolean multiple;
-    protected String autocomplete;
 
     protected String disabledExpr;
     protected boolean triggerSubmit = false;
@@ -246,11 +245,6 @@ public class SelectTag extends ValueTagBase {
     @Attribute(required = false, rtexprvalue = false)
     public void setMultiple(boolean multiple) {
 	this.multiple = multiple;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutocomplete(String autocomplete) {
-	this.autocomplete = autocomplete;
     }
 
     @Attribute(required = false, rtexprvalue = false)

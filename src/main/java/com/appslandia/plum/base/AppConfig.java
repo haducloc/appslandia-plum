@@ -68,6 +68,8 @@ public class AppConfig extends InitializeObject implements Config {
     public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
     public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
 
+    public static final String CONFIG_INPUT_TYPE_LOCALIZING = "config.input_type_localizing";
+
     protected ConfigMap config;
 
     private boolean enableDebug;
@@ -111,6 +113,8 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
 	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(true));
 	this.config.putIfAbsent(CONFIG_PARSE_PREF_COOKIE, String.valueOf(true));
+
+	this.config.putIfAbsent(CONFIG_INPUT_TYPE_LOCALIZING, String.valueOf(false));
 
 	this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
 	this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);

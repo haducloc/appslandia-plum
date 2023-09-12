@@ -48,7 +48,7 @@ public class InputFunction extends DynPebbleFunction {
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String path = context.getRequiredArgument("path");
-	String type = context.getArgument("type", "text");
+	String type = context.getArgument("type");
 	boolean readonly = context.getBool("readonly", false);
 
 	String converter = context.getArgument("converter");
@@ -75,8 +75,9 @@ public class InputFunction extends DynPebbleFunction {
 	}
 
 	// localize
-	boolean localize = InputUtils.willLocalize(context.getRequestContext(), converter, type);
-	if (localize && InputUtils.getFeature(type) != null) {
+	boolean localize = InputUtils.getLocalize(context.getRequest(), type);
+
+	if ((type == null) || (localize && InputUtils.getFeature(type) != null)) {
 	    type = "text";
 	}
 
@@ -89,7 +90,9 @@ public class InputFunction extends DynPebbleFunction {
 
 	HtmlUtils.escAttribute(out, "name", name);
 	HtmlUtils.escAttribute(out, "value", context.getRequestContext().format(value, converter, localize));
-	HtmlUtils.escAttribute(out, "type", type);
+
+	if (type != null)
+	    HtmlUtils.escAttribute(out, "type", type);
 
 	if (min != null)
 	    HtmlUtils.escAttribute(out, "min", context.getRequestContext().format(min, converter, localize));

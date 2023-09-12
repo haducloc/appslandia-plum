@@ -45,6 +45,7 @@ public abstract class ValueTagBase extends UITagBase {
     protected boolean required;
     protected boolean autofocus;
     protected boolean readonly;
+    protected String autocomplete;
 
     protected String enterFn;
     protected String enterBtn;
@@ -81,7 +82,7 @@ public abstract class ValueTagBase extends UITagBase {
 	}
 
 	// localize
-	this._localize = InputUtils.willLocalize(this.getRequestContext(), this.converter, this.type);
+	this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
 
 	if ((this.type == null) || (this._localize && InputUtils.getFeature(this.type) != null)) {
 	    this.type = "text";
@@ -153,6 +154,11 @@ public abstract class ValueTagBase extends UITagBase {
     @Attribute(required = false, rtexprvalue = true)
     public void setReadonly(boolean readonly) {
 	this.readonly = readonly;
+    }
+
+    @Attribute(required = false, rtexprvalue = false)
+    public void setAutocomplete(String autocomplete) {
+	this.autocomplete = autocomplete;
     }
 
     @Attribute(required = false, rtexprvalue = false)

@@ -76,7 +76,7 @@ public class InputTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -93,7 +93,7 @@ public class InputTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"\" autocomplete=\"off\" class=\"l-error-field\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"\" class=\"l-error-field\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -112,7 +112,7 @@ public class InputTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    // type = text
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -130,7 +130,7 @@ public class InputTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    // type = date
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -150,7 +150,7 @@ public class InputTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    // type = date + browserFeatures
-	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" autocomplete=\"off\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
