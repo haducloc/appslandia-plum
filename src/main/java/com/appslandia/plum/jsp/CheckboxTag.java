@@ -44,6 +44,9 @@ public class CheckboxTag extends CheckInputTag {
 	if (this._value == null) {
 	    return false;
 	}
+	if (Objects.equals(codeVal, this._value)) {
+	    return true;
+	}
 	String[] values = SplitUtils.split((String) this._value, ',', SplitOptions.TRIM_NULL);
 	return Arrays.stream(values).anyMatch(value -> Objects.equals(codeVal, value));
     }

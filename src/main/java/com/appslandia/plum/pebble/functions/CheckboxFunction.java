@@ -38,6 +38,9 @@ public class CheckboxFunction extends CheckInputFunction {
 	if (modelValue == null) {
 	    return false;
 	}
+	if (Objects.equals(codeValue, modelValue)) {
+	    return true;
+	}
 	String[] values = SplitUtils.split(modelValue, ',', SplitOptions.TRIM_NULL);
 	return Arrays.stream(values).anyMatch(value -> Objects.equals(codeValue, value));
     }
