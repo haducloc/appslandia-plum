@@ -1101,7 +1101,7 @@
 	</tag>
 
 	<tag>
-		<description>button|body=empty</description>
+		<description>button|body=empty|dynamicAttributes</description>
 		<name>button</name>
 		<tag-class>com.appslandia.plum.jsp.ButtonTag</tag-class>
 		<body-content>empty</body-content>
@@ -1182,11 +1182,11 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>submitButton|body=empty</description>
+		<description>submitButton|body=empty|dynamicAttributes</description>
 		<name>submitButton</name>
 		<tag-class>com.appslandia.plum.jsp.SubmitButtonTag</tag-class>
 		<body-content>empty</body-content>
@@ -1274,7 +1274,7 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
