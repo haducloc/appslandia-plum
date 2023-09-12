@@ -101,6 +101,23 @@ public class InputTagTest extends MockTestBase {
     }
 
     @Test
+    public void test_hidden() {
+	try {
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
+	    tag.setType("hidden");
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("<input id=\"dob\" type=\"hidden\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.removeCrLf(html));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
     public void test_type_text() {
 	try {
 	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));

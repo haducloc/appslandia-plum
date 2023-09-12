@@ -103,6 +103,30 @@ public class InputFunctionTest extends MockTestBase {
     }
 
     @Test
+    public void test_hidden() {
+	String templateContent = """
+		{{ input(path='model.dob', type='hidden') }}
+		""";
+	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+	try {
+	    getCurrentRequest().addParameter("dob", "2000-01-01");
+	    executeCurrent("GET", "http://localhost/app/testController/index");
+
+	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+	    StringWriter out = new StringWriter();
+	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
+
+	    String content = out.toString();
+	    Assertions.assertEquals("id=\"dob\" name=\"dob\" value=\"2000-01-01\" type=\"hidden\"", content);
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex);
+	}
+    }
+
+    @Test
     public void test_type_text() {
 	String templateContent = """
 		{{ input(path='model.dob', type='text') }}
