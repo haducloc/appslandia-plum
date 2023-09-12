@@ -36,7 +36,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "actionLink", dynamicAttributes = true, bodyContent = "scriptless")
+@Tag(name = "actionLink", bodyContent = "scriptless")
 public class ActionLinkTag extends UITagBase {
 
     protected String controller;

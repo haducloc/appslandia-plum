@@ -34,7 +34,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "userDName")
+@Tag(name = "userDName", dynamicAttributes = false)
 public class UserDNameTag extends TagBase {
 
     @Override

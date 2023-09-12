@@ -33,7 +33,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "const")
+@Tag(name = "const", dynamicAttributes = false)
 public class ConstTag extends TagBase {
 
     protected String group;

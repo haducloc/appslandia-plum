@@ -31,7 +31,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "option")
+@Tag(name = "option", dynamicAttributes = false)
 public class OptionTag extends TagBase {
 
     protected String name;

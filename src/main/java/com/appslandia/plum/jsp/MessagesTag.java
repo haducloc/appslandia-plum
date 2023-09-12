@@ -37,7 +37,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "messages")
+@Tag(name = "messages", dynamicAttributes = false)
 public class MessagesTag extends TagBase {
 
     protected String type;
@@ -93,7 +93,7 @@ public class MessagesTag extends TagBase {
 	out.write("</ul>");
     }
 
-    @Attribute(required = true, rtexprvalue = false)
+    @Attribute(required = true, rtexprvalue = false, description = "error|warn|notice|info")
     public void setType(String type) {
 	this.type = type;
     }

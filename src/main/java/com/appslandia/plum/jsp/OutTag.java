@@ -31,7 +31,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "out", bodyContent = "empty")
+@Tag(name = "out", dynamicAttributes = false, bodyContent = "empty")
 public class OutTag extends TagBase {
 
     protected Object value;

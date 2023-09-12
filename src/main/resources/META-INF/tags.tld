@@ -30,7 +30,7 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>actionType|type=boolean</description>
+			<description>save|delete|etc.|type=boolean</description>
 			<name>actionType</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -143,7 +143,7 @@
 		<tag-class>com.appslandia.plum.jsp.FormErrorsTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
-			<description>fieldOrders|type=java.lang.String</description>
+			<description>username,password,etc.|type=java.lang.String</description>
 			<name>fieldOrders</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -181,7 +181,7 @@
 	</tag>
 
 	<tag>
-		<description>label|body=scriptless</description>
+		<description>label|body=scriptless|dynamicAttributes</description>
 		<name>label</name>
 		<tag-class>com.appslandia.plum.jsp.FieldLabelTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -262,11 +262,11 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>error|body=empty</description>
+		<description>error|body=empty|dynamicAttributes</description>
 		<name>error</name>
 		<tag-class>com.appslandia.plum.jsp.FieldErrorTag</tag-class>
 		<body-content>empty</body-content>
@@ -333,11 +333,11 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>input|body=empty</description>
+		<description>input|body=empty|dynamicAttributes</description>
 		<name>input</name>
 		<tag-class>com.appslandia.plum.jsp.InputTag</tag-class>
 		<body-content>empty</body-content>
@@ -502,11 +502,11 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>datalist|body=scriptless</description>
+		<description>datalist|body=scriptless|dynamicAttributes</description>
 		<name>datalist</name>
 		<tag-class>com.appslandia.plum.jsp.DataListTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -538,7 +538,7 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
@@ -557,7 +557,7 @@
 	</tag>
 
 	<tag>
-		<description>textarea|body=empty</description>
+		<description>textarea|body=empty|dynamicAttributes</description>
 		<name>textarea</name>
 		<tag-class>com.appslandia.plum.jsp.TextAreaTag</tag-class>
 		<body-content>empty</body-content>
@@ -687,11 +687,11 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>captchaWords|body=empty</description>
+		<description>captchaWords|body=empty|dynamicAttributes</description>
 		<name>captchaWords</name>
 		<tag-class>com.appslandia.plum.jsp.CaptchaWordsTag</tag-class>
 		<body-content>empty</body-content>
@@ -772,11 +772,11 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>radio|body=empty</description>
+		<description>radio|body=empty|dynamicAttributes</description>
 		<name>radio</name>
 		<tag-class>com.appslandia.plum.jsp.RadioTag</tag-class>
 		<body-content>empty</body-content>
@@ -899,11 +899,11 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>boolean</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>checkbox|body=empty</description>
+		<description>checkbox|body=empty|dynamicAttributes</description>
 		<name>checkbox</name>
 		<tag-class>com.appslandia.plum.jsp.CheckboxTag</tag-class>
 		<body-content>empty</body-content>
@@ -1026,11 +1026,11 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>boolean</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
-		<description>group|body=scriptless</description>
+		<description>group|body=scriptless|dynamicAttributes</description>
 		<name>group</name>
 		<tag-class>com.appslandia.plum.jsp.FieldGroupTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -1097,7 +1097,7 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
@@ -1363,7 +1363,7 @@
 	</tag>
 
 	<tag>
-		<description>select|body=scriptless</description>
+		<description>select|body=scriptless|dynamicAttributes</description>
 		<name>select</name>
 		<tag-class>com.appslandia.plum.jsp.SelectTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -1514,7 +1514,7 @@
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
@@ -1859,7 +1859,7 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>type|type=java.lang.String</description>
+			<description>error|warn|notice|info|type=java.lang.String</description>
 			<name>type</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -1869,7 +1869,7 @@
 	</tag>
 
 	<tag>
-		<description>c|body=scriptless</description>
+		<description>c|body=scriptless|dynamicAttributes</description>
 		<name>c</name>
 		<tag-class>com.appslandia.plum.jsp.ControlTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -1929,7 +1929,7 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>
@@ -1956,7 +1956,7 @@
 	</tag>
 
 	<tag>
-		<description>pager|template=page,3dots|body=scriptless</description>
+		<description>pager|template=page,3dots|body=scriptless|dynamicAttributes</description>
 		<name>pager</name>
 		<tag-class>com.appslandia.plum.jsp.PagerTag</tag-class>
 		<body-content>scriptless</body-content>
@@ -2037,7 +2037,7 @@
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
 		</attribute>
-		<dynamic-attributes>false</dynamic-attributes>
+		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 
 	<tag>

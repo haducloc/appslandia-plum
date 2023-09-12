@@ -31,7 +31,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "tpl", bodyContent = "scriptless")
+@Tag(name = "tpl", dynamicAttributes = false, bodyContent = "scriptless")
 public class TemplateTag extends TagBase {
 
     protected String type;

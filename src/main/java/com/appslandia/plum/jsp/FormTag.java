@@ -36,7 +36,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "form", dynamicAttributes = true, bodyContent = "scriptless")
+@Tag(name = "form", bodyContent = "scriptless")
 public class FormTag extends UITagBase {
 
     protected String name;
@@ -154,7 +154,7 @@ public class FormTag extends UITagBase {
 	this.csrf = csrf;
     }
 
-    @Attribute(required = false, rtexprvalue = false)
+    @Attribute(required = false, rtexprvalue = false, description = "save|delete|etc.")
     public void setActionType(boolean actionType) {
 	this.actionType = actionType;
     }

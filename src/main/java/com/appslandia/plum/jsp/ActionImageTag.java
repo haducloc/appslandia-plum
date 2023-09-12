@@ -37,7 +37,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "actionImage", dynamicAttributes = true)
+@Tag(name = "actionImage")
 public class ActionImageTag extends UITagBase {
 
     protected String controller;

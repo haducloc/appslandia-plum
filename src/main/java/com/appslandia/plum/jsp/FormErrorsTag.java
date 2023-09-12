@@ -45,7 +45,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "errors", bodyContent = "scriptless")
+@Tag(name = "errors", dynamicAttributes = false, bodyContent = "scriptless")
 public class FormErrorsTag extends TagBase {
 
     protected String form;
@@ -159,7 +159,7 @@ public class FormErrorsTag extends TagBase {
 	this.form = form;
     }
 
-    @Attribute(required = false, rtexprvalue = false)
+    @Attribute(required = false, rtexprvalue = false, description = "username,password,etc.")
     public void setFieldOrders(String fieldOrders) {
 	this.fieldOrders = fieldOrders;
     }

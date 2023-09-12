@@ -42,5 +42,5 @@ public @interface Tag {
 
     String bodyContent() default "empty";
 
-    boolean dynamicAttributes() default false;
+    boolean dynamicAttributes() default true;
 }

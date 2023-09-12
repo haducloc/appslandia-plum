@@ -31,7 +31,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "env", bodyContent = "scriptless")
+@Tag(name = "env", dynamicAttributes = false, bodyContent = "scriptless")
 public class IfEnvTag extends TagBase {
 
     protected String name;

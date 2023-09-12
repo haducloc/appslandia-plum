@@ -32,7 +32,7 @@ import jakarta.servlet.jsp.JspWriter;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "submitButton", dynamicAttributes = true, bodyContent = "empty")
+@Tag(name = "submitButton", bodyContent = "empty")
 public class SubmitButtonTag extends UITagBase {
 
     protected String labelKey;

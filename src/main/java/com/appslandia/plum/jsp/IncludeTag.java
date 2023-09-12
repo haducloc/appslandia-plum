@@ -47,7 +47,7 @@ import jakarta.servlet.jsp.tagext.DynamicAttributes;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "include", dynamicAttributes = true)
+@Tag(name = "include")
 public class IncludeTag extends TagBase implements DynamicAttributes {
 
     public static final String REQUEST_ATTRIBUTE_INCLUDE_PARAMS = "includeParams";

@@ -32,7 +32,7 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "iterate", bodyContent = "scriptless")
+@Tag(name = "iterate", dynamicAttributes = false, bodyContent = "scriptless")
 public class IterateTag extends TagBase {
 
     protected Iterable<?> items;
