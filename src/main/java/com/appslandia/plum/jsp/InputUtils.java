@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.BrowserFeatures;
@@ -59,6 +60,8 @@ public class InputUtils {
     }
 
     public static Integer getFeature(String inputType) {
+	Asserts.notNull(inputType);
+
 	return TYPE_FEATURES.get(inputType);
     }
 

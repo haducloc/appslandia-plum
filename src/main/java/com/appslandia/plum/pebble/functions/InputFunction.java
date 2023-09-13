@@ -22,6 +22,7 @@ package com.appslandia.plum.pebble.functions;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
@@ -41,7 +42,7 @@ public class InputFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, type, readonly, converter, min, max, step";
+	return "variables: path*, type, readonly, converter, form, min, max, step";
     }
 
     @Override
@@ -51,6 +52,7 @@ public class InputFunction extends DynPebbleFunction {
 	boolean readonly = context.getBool("readonly", false);
 
 	String converter = context.getArgument("converter");
+	String form = context.getArgument("form");
 
 	Object min = context.getArgument("min");
 	Object max = context.getArgument("max");
@@ -62,14 +64,21 @@ public class InputFunction extends DynPebbleFunction {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
 
-	// value
-	Object value = context.evaluate(path);
-
 	// localize
 	boolean localize = InputUtils.getLocalize(context.getRequest(), type);
 
 	if ((type == null) || (localize && InputUtils.getFeature(type) != null)) {
 	    type = "text";
+	}
+
+	// value
+	Object value = null;
+	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
+
+	if (isValid || InputUtils.getFeature(type) != null) {
+	    value = context.evaluate(path);
+	} else {
+	    value = context.getRequest().getParameter(name);
 	}
 
 	// Write HTML

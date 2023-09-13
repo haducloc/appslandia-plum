@@ -64,10 +64,8 @@ public abstract class ValueTagBase extends UITagBase {
     }
 
     protected Object getBindingValue() {
-	Object modelValue = this.evaluate(this.path);
-
-	if (this._isValid) {
-	    return modelValue;
+	if (this._isValid || InputUtils.getFeature(this.type) != null) {
+	    return this.evaluate(this.path);
 	}
 	return this.getRequest().getParameter(this._name);
     }
@@ -78,16 +76,16 @@ public abstract class ValueTagBase extends UITagBase {
 	Asserts.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
 	this._name = this.path.substring(nameIdx + 1);
 
-	// value
-	this._isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this._name);
-	this._value = getBindingValue();
-
 	// localize
 	this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
 
 	if ((this.type == null) || (this._localize && InputUtils.getFeature(this.type) != null)) {
 	    this.type = "text";
 	}
+
+	// value
+	this._isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this._name);
+	this._value = getBindingValue();
 
 	// Format value
 	this._value = getRequestContext().format(this._value, this.converter, this._localize);
