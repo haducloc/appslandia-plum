@@ -63,6 +63,15 @@ public abstract class ValueTagBase extends UITagBase {
 	return this._value;
     }
 
+    protected Object getBindingValue() {
+	Object modelValue = this.evaluate(this.path);
+
+	if (this._isValid) {
+	    return modelValue;
+	}
+	return this.getRequest().getParameter(this._name);
+    }
+
     @Override
     protected void initTag() throws JspException, IOException {
 	int nameIdx = this.path.indexOf('.');
@@ -71,7 +80,7 @@ public abstract class ValueTagBase extends UITagBase {
 
 	// value
 	this._isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this._name);
-	this._value = this.evaluate(this.path);
+	this._value = getBindingValue();
 
 	// localize
 	this._localize = InputUtils.getLocalize(this.getRequest(), this.type);

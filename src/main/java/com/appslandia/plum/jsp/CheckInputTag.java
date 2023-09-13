@@ -63,6 +63,11 @@ public abstract class CheckInputTag extends ValueTagBase {
     }
 
     @Override
+    protected Object getBindingValue() {
+	return this.evaluate(this.path);
+    }
+
+    @Override
     protected void writeAttributes(JspWriter out) throws JspException, IOException {
 	HtmlUtils.escAttribute(out, "id", this.id);
 	HtmlUtils.escAttribute(out, "type", this.type);

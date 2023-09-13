@@ -81,6 +81,11 @@ public class SelectTag extends ValueTagBase {
 	return this._selItem.getValue();
     }
 
+    @Override
+    protected Object getBindingValue() {
+	return this.evaluate(this.path);
+    }
+
     public void addOption(String name, Object value) {
 	if (this._items == null) {
 	    this._items = new ArrayList<>();
