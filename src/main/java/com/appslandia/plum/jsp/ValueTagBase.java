@@ -91,7 +91,8 @@ public abstract class ValueTagBase extends UITagBase {
 	this._value = getRequestContext().format(this._value, this.converter, this._localize);
 
 	// id
-	this.id = HtmlUtils.toValueTagId(this._name);
+	if (this.id == null)
+	    this.id = HtmlUtils.toValueTagId(this._name);
 
 	// class
 	if (!this._isValid) {
@@ -120,9 +121,9 @@ public abstract class ValueTagBase extends UITagBase {
 	}
     }
 
-    @Override
+    @Attribute(required = false, rtexprvalue = true)
     public void setId(String id) {
-	throw new UnsupportedOperationException();
+	this.id = id;
     }
 
     @Attribute(required = false, rtexprvalue = false)

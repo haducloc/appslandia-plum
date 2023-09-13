@@ -412,6 +412,13 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<description>id|type=java.lang.String|expression</description>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<description>max|type=java.lang.Object|expression</description>
 			<name>max</name>
 			<required>false</required>
@@ -637,6 +644,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>id|type=java.lang.String|expression</description>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>maxlength|type=java.lang.String</description>
@@ -865,6 +879,13 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<description>id|type=java.lang.String|expression</description>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<description>path|type=java.lang.String|expression</description>
 			<name>path</name>
 			<required>true</required>
@@ -990,6 +1011,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>id|type=java.lang.String|expression</description>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>path|type=java.lang.String|expression</description>
@@ -1450,6 +1478,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>id|type=java.lang.String|expression</description>
+			<name>id</name>
+			<required>false</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>items|type=java.lang.Iterable|expression</description>
