@@ -539,18 +539,18 @@
 			<type>java.lang.Iterable</type>
 		</attribute>
 		<attribute>
-			<description>localize|type=boolean</description>
-			<name>localize</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>boolean</type>
-		</attribute>
-		<attribute>
 			<description>render|type=boolean|expression</description>
 			<name>render</name>
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>type|type=java.lang.String</description>
+			<name>type</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
