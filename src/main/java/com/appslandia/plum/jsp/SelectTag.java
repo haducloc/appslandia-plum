@@ -77,11 +77,6 @@ public class SelectTag extends ValueTagBase {
     }
 
     @Override
-    protected Object getInvalidValue() {
-	return this.evaluate(this.path);
-    }
-
-    @Override
     protected Object getHiddenValue() {
 	return this._selItem.getValue();
     }

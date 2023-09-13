@@ -52,14 +52,11 @@ public abstract class ValueTagBase extends UITagBase {
 
     protected String _name;
     protected Object _value;
+    protected boolean _isValid;
     protected boolean _localize;
 
     protected boolean writeHiddenTag() {
 	return false;
-    }
-
-    protected Object getInvalidValue() {
-	return this.getRequest().getParameter(this._name);
     }
 
     protected Object getHiddenValue() {
@@ -73,13 +70,8 @@ public abstract class ValueTagBase extends UITagBase {
 	this._name = this.path.substring(nameIdx + 1);
 
 	// value
-	boolean isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this._name);
-
-	if (isValid) {
-	    this._value = this.evaluate(this.path);
-	} else {
-	    this._value = getInvalidValue();
-	}
+	this._isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this._name);
+	this._value = this.evaluate(this.path);
 
 	// localize
 	this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
@@ -95,7 +87,7 @@ public abstract class ValueTagBase extends UITagBase {
 	this.id = HtmlUtils.toValueTagId(this._name);
 
 	// class
-	if (!isValid) {
+	if (!this._isValid) {
 	    this.clazz = (this.clazz == null) ? "l-error-field" : this.clazz + " l-error-field";
 	}
     }
