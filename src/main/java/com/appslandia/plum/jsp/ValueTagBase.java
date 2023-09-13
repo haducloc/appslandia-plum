@@ -64,7 +64,7 @@ public abstract class ValueTagBase extends UITagBase {
     }
 
     protected Object getBindingValue() {
-	if (this._isValid || InputUtils.getFeature(this.type) != null) {
+	if (this._isValid || InputUtils.getDTNInputFeature(this.type) != null) {
 	    return this.evaluate(this.path);
 	}
 	return this.getRequest().getParameter(this._name);
@@ -79,7 +79,7 @@ public abstract class ValueTagBase extends UITagBase {
 	// localize
 	this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
 
-	if ((this.type == null) || (this._localize && InputUtils.getFeature(this.type) != null)) {
+	if ((this.type == null) || (this._localize && InputUtils.getDTNInputFeature(this.type) != null)) {
 	    this.type = "text";
 	}
 

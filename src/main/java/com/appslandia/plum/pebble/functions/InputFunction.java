@@ -67,7 +67,7 @@ public class InputFunction extends DynPebbleFunction {
 	// localize
 	boolean localize = InputUtils.getLocalize(context.getRequest(), type);
 
-	if ((type == null) || (localize && InputUtils.getFeature(type) != null)) {
+	if ((type == null) || (localize && InputUtils.getDTNInputFeature(type) != null)) {
 	    type = "text";
 	}
 
@@ -75,7 +75,7 @@ public class InputFunction extends DynPebbleFunction {
 	Object value = null;
 	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
 
-	if (isValid || InputUtils.getFeature(type) != null) {
+	if (isValid || InputUtils.getDTNInputFeature(type) != null) {
 	    value = context.evaluate(path);
 	} else {
 	    value = context.getRequest().getParameter(name);

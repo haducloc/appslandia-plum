@@ -41,7 +41,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class InputUtils {
 
-    static final Map<String, Integer> TYPE_FEATURES;
+    static final Map<String, Integer> DTN_INPUT_FEATURES;
 
     static {
 	Map<String, Integer> map = new HashMap<>();
@@ -56,13 +56,13 @@ public class InputUtils {
 	map.put("month", BrowserFeatures.INPUT_MONTH);
 	map.put("week", BrowserFeatures.INPUT_WEEK);
 
-	TYPE_FEATURES = Collections.unmodifiableMap(map);
+	DTN_INPUT_FEATURES = Collections.unmodifiableMap(map);
     }
 
-    public static Integer getFeature(String inputType) {
-	Asserts.notNull(inputType);
+    public static Integer getDTNInputFeature(String type) {
+	Asserts.notNull(type);
 
-	return TYPE_FEATURES.get(inputType);
+	return DTN_INPUT_FEATURES.get(type);
     }
 
     static final Set<String> UNLOCALIZED_TYPES = CollectionUtils.unmodifiableSet("hidden", "select", "checkbox", "radio");
@@ -75,7 +75,7 @@ public class InputUtils {
 	    return false;
 	}
 
-	Integer feature = getFeature(type);
+	Integer feature = getDTNInputFeature(type);
 	if (feature == null) {
 	    return true;
 	}
