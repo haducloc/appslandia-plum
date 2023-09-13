@@ -94,7 +94,7 @@ public class FieldErrorFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<div for=\"username\" class=\"l-field-error\">en:jakarta.validation.constraints.NotNull.message{}</div>", content);
+	    Assertions.assertEquals("<div class=\"l-field-error\">en:jakarta.validation.constraints.NotNull.message{}</div>", content);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

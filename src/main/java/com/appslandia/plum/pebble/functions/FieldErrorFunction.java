@@ -56,7 +56,6 @@ public class FieldErrorFunction extends DynPebbleFunction {
 	    StringWriter out = new StringWriter(128);
 
 	    out.append("<div");
-	    HtmlUtils.escAttribute(out, "for", HtmlUtils.toValueTagId(fieldName));
 	    HtmlUtils.escAttribute(out, "class", "l-field-error");
 	    out.append(">");
 

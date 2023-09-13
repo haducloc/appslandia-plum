@@ -91,8 +91,9 @@ public abstract class ValueTagBase extends UITagBase {
 	this._value = getRequestContext().format(this._value, this.converter, this._localize);
 
 	// id
-	if (this.id == null)
+	if (this.id == null) {
 	    this.id = HtmlUtils.toValueTagId(this._name);
+	}
 
 	// class
 	if (!this._isValid) {

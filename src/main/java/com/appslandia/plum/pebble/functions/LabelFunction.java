@@ -39,16 +39,22 @@ public class LabelFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: fieldName*";
+	return "variables: fieldName*, for";
     }
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
 	String fieldName = context.getRequiredArgument("fieldName");
+	String _for = context.getArgument("for");
+
+	if (_for == null) {
+	    _for = HtmlUtils.toValueTagId(fieldName);
+	}
+
 	StringWriter out = new StringWriter(80);
 
 	out.write("for=\"");
-	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(fieldName));
+	XmlEscaper.escapeXml(out, _for);
 	out.write("\"");
 
 	return new SafeString(out.toString());

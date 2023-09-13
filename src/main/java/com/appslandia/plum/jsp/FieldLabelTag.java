@@ -50,7 +50,9 @@ public class FieldLabelTag extends UITagBase {
 
     @Override
     protected void initTag() throws JspException, IOException {
-	this._for = HtmlUtils.toValueTagId(this.fieldName);
+	if (this._for == null) {
+	    this._for = HtmlUtils.toValueTagId(this.fieldName);
+	}
 
 	if (this.required) {
 	    this.clazz = (this.clazz == null) ? "l-required-label" : (this.clazz + " l-required-label");
@@ -95,6 +97,11 @@ public class FieldLabelTag extends UITagBase {
 	} else {
 	    this.body.invoke(out);
 	}
+    }
+
+    @Attribute(required = false, rtexprvalue = true)
+    public void setFor(String _for) {
+	this._for = _for;
     }
 
     @Attribute(required = false, rtexprvalue = false)

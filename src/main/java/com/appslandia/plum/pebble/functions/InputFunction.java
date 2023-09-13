@@ -42,7 +42,7 @@ public class InputFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, type, readonly, converter, form, min, max, step";
+	return "variables: path*, id, type, readonly, converter, form, min, max, step";
     }
 
     @Override
@@ -51,6 +51,7 @@ public class InputFunction extends DynPebbleFunction {
 	String type = context.getArgument("type");
 	boolean readonly = context.getBool("readonly", false);
 
+	String id = context.getArgument("id");
 	String converter = context.getArgument("converter");
 	String form = context.getArgument("form");
 
@@ -63,6 +64,10 @@ public class InputFunction extends DynPebbleFunction {
 	int nameIdx = path.indexOf('.');
 	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 	String name = path.substring(nameIdx + 1);
+
+	if (id == null) {
+	    id = HtmlUtils.toValueTagId(name);
+	}
 
 	// localize
 	boolean localize = InputUtils.getLocalize(context.getRequest(), type);
@@ -85,7 +90,7 @@ public class InputFunction extends DynPebbleFunction {
 	StringWriter out = new StringWriter(160);
 
 	out.write("id=\"");
-	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(name));
+	XmlEscaper.escapeXml(out, id);
 	out.write("\"");
 
 	HtmlUtils.escAttribute(out, "name", name);

@@ -40,7 +40,7 @@ public abstract class CheckInputFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: path*, codeValue*, converter, readonly";
+	return "variables: path*, id, codeValue*, converter, readonly";
     }
 
     protected abstract boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue);
@@ -50,6 +50,7 @@ public abstract class CheckInputFunction extends DynPebbleFunction {
 	String path = context.getRequiredArgument("path");
 	Object codeValue = context.getRequiredArgument("codeValue");
 
+	String id = context.getArgument("id");
 	String converter = context.getArgument("converter");
 	boolean readonly = context.getBool("readonly", false);
 
@@ -61,10 +62,13 @@ public abstract class CheckInputFunction extends DynPebbleFunction {
 	String codeVal = context.getRequestContext().format(codeValue, converter, false);
 	String fmtValue = context.getRequestContext().format(value, converter, false);
 
+	if (id == null) {
+	    id = HtmlUtils.toValueTagId(name);
+	}
 	StringWriter out = new StringWriter(128);
 
 	out.write("id=\"");
-	XmlEscaper.escapeXml(out, HtmlUtils.toValueTagId(name));
+	XmlEscaper.escapeXml(out, id);
 	out.write("\"");
 
 	HtmlUtils.escAttribute(out, "name", name);
