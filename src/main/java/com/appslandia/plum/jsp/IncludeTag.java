@@ -102,9 +102,6 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
 	    return ObjectUtils.toStringOrEmpty(result);
 
 	} finally {
-	    request.removeAttribute(REQUEST_ATTRIBUTE_INCLUDE_PARAMS);
-	    // request.removeAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-
 	    backupAttributes.restore(request);
 	}
     }

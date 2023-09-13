@@ -53,6 +53,17 @@ public class RequestAttributes {
     }
 
     public void restore(HttpServletRequest request) {
+	// Remove new attributes added
+	Enumeration<String> attributes = request.getAttributeNames();
+	while (attributes.hasMoreElements()) {
+	    String attribute = attributes.nextElement();
+
+	    if (!this.storedAttributes.containsKey(attribute)) {
+		request.removeAttribute(attribute);
+	    }
+	}
+
+	// Restore attribute values
 	for (Entry<String, Object> attribute : this.storedAttributes.entrySet()) {
 	    request.setAttribute(attribute.getKey(), attribute.getValue());
 	}
