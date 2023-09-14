@@ -125,6 +125,8 @@ public class FormTag extends UITagBase {
 
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
+	out.newLine();
+
 	if (this.csrf) {
 	    out.println(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", SimpleCsrfManager.PARAM_CSRF_ID));
 	}
