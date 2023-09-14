@@ -36,6 +36,7 @@ public class Message implements Serializable {
     public static final int TYPE_NOTICE = 2;
     public static final int TYPE_WARN = 3;
     public static final int TYPE_ERROR = 4;
+    public static final int TYPE_FATAL = 5;
 
     final int type;
     final String text;
@@ -76,6 +77,9 @@ public class Message implements Serializable {
 	    return TYPE_WARN;
 	}
 	if ("error".equalsIgnoreCase(type)) {
+	    return TYPE_ERROR;
+	}
+	if ("fatal".equalsIgnoreCase(type)) {
 	    return TYPE_ERROR;
 	}
 	throw new IllegalArgumentException("type is invalid.");

@@ -54,4 +54,8 @@ public class Messages extends ArrayList<Message> {
     public void addError(String text) {
 	this.add(new Message(Message.TYPE_ERROR, text));
     }
+
+    public void addFatal(String text) {
+	this.add(new Message(Message.TYPE_FATAL, text));
+    }
 }

@@ -31,21 +31,7 @@ import com.appslandia.plum.base.Message;
 public class MessageUtils {
 
     public static int getMsgType(String type) {
-	switch (type) {
-	case "info":
-	    return Message.TYPE_INFO;
-
-	case "notice":
-	    return Message.TYPE_NOTICE;
-
-	case "warn":
-	    return Message.TYPE_WARN;
-
-	case "error":
-	    return Message.TYPE_ERROR;
-	default:
-	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
-	}
+	return Message.parseType(type);
     }
 
     public static String getMsgClass(int type) {
@@ -61,6 +47,9 @@ public class MessageUtils {
 
 	case Message.TYPE_ERROR:
 	    return "l-msg-error";
+
+	case Message.TYPE_FATAL:
+	    return "l-msg-fatal";
 	default:
 	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
 	}
