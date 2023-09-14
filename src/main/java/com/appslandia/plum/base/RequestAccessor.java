@@ -40,8 +40,6 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
  */
 public class RequestAccessor extends HttpServletRequestWrapper {
 
-    public static final String PARAM_FORM_ACTION = "formAction";
-
     public RequestAccessor(HttpServletRequest request) {
 	super(request);
     }
@@ -63,7 +61,7 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     }
 
     public boolean isFormAction(String action) {
-	return action.equalsIgnoreCase(getParamOrNull(PARAM_FORM_ACTION));
+	return action.equalsIgnoreCase(getParamOrNull(ServletUtils.PARAM_FORM_ACTION));
     }
 
     public boolean isGetOrHead() {

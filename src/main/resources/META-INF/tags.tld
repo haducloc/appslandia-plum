@@ -30,13 +30,6 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>save|delete|etc.|type=boolean</description>
-			<name>actionType</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>boolean</type>
-		</attribute>
-		<attribute>
 			<description>autocomplete|type=java.lang.String</description>
 			<name>autocomplete</name>
 			<required>false</required>
@@ -77,6 +70,13 @@
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>save|delete|etc.|type=boolean</description>
+			<name>formAction</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>boolean</type>
 		</attribute>
 		<attribute>
 			<description>hidden|type=boolean|expression</description>
@@ -1240,13 +1240,6 @@
 		<tag-class>com.appslandia.plum.jsp.SubmitButtonTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
-			<description>actionType|type=java.lang.String</description>
-			<name>actionType</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
 			<description>autofocus|type=boolean</description>
 			<name>autofocus</name>
 			<required>false</required>
@@ -1273,6 +1266,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>boolean</type>
+		</attribute>
+		<attribute>
+			<description>formAction|type=java.lang.String</description>
+			<name>formAction</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>handleWait|type=boolean</description>

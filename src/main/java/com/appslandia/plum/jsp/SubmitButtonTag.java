@@ -37,7 +37,7 @@ public class SubmitButtonTag extends UITagBase {
 
     protected String labelKey;
 
-    protected String actionType;
+    protected String formAction;
     protected boolean disabled;
     protected boolean autofocus;
 
@@ -71,11 +71,11 @@ public class SubmitButtonTag extends UITagBase {
 
 	HtmlUtils.escAttribute(out, "data-label", this._label);
 
-	String pActionType = null;
-	if (this.actionType != null) {
-	    pActionType = "'" + actionType + "'";
+	String fAction = null;
+	if (this.formAction != null) {
+	    fAction = "'" + formAction + "'";
 	}
-	HtmlUtils.escAttribute(out, "onclick", String.format("return __click_submit_btn(event, %s, %s);", this.handleWait, pActionType));
+	HtmlUtils.escAttribute(out, "onclick", String.format("return __click_submit_btn(event, %s, %s);", this.handleWait, fAction));
 
 	if (this.datatag != null)
 	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
@@ -103,8 +103,8 @@ public class SubmitButtonTag extends UITagBase {
     }
 
     @Attribute(required = false, rtexprvalue = false)
-    public void setActionType(String actionType) {
-	this.actionType = actionType;
+    public void setFormAction(String formAction) {
+	this.formAction = formAction;
     }
 
     @Attribute(required = false, rtexprvalue = true)

@@ -24,7 +24,9 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.ActionParser;
+import com.appslandia.plum.base.SimpleCsrfManager;
 import com.appslandia.plum.utils.HtmlUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -43,7 +45,7 @@ public class FormTag extends UITagBase {
     protected String controller;
     protected String action;
 
-    protected boolean actionType;
+    protected boolean formAction;
     protected boolean csrf;
 
     protected String method;
@@ -124,10 +126,10 @@ public class FormTag extends UITagBase {
     @Override
     protected void writeBody(JspWriter out) throws JspException, IOException {
 	if (this.csrf) {
-	    out.println("<input type=\"hidden\" id=\"csrfId\" name=\"csrfId\" value=\"\" />");
+	    out.println(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", SimpleCsrfManager.PARAM_CSRF_ID));
 	}
-	if (this.actionType) {
-	    out.println("<input type=\"hidden\" id=\"actionType\" name=\"actionType\" value=\"\" />");
+	if (this.formAction) {
+	    out.println(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", ServletUtils.PARAM_FORM_ACTION));
 	}
 	if (this.body != null) {
 	    this.body.invoke(out);
@@ -155,8 +157,8 @@ public class FormTag extends UITagBase {
     }
 
     @Attribute(required = false, rtexprvalue = false, description = "save|delete|etc.")
-    public void setActionType(boolean actionType) {
-	this.actionType = actionType;
+    public void setFormAction(boolean formAction) {
+	this.formAction = formAction;
     }
 
     @Attribute(required = false, rtexprvalue = false)
