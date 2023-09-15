@@ -40,7 +40,7 @@ public class DatalistFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: items*, type, converter, localize";
+	return "variables: items*, type, converter";
     }
 
     @Override
