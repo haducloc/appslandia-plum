@@ -20,7 +20,6 @@
 
 package com.appslandia.plum.caching;
 
-import java.util.Set;
 import java.util.concurrent.CompletionStage;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -38,27 +37,11 @@ public class CacheChangeEvent {
     @Inject
     protected Event<CacheChange> event;
 
-    public void fire(String cacheName, String key) {
-	this.event.fire(new CacheChange(cacheName, key));
-    }
-
-    public void fire(String cacheName, String key, Object... keyParams) {
-	this.event.fire(new CacheChange(cacheName, CacheUtils.format(key, keyParams)));
-    }
-
-    public void fire(String cacheName, Set<String> keys) {
+    public void fire(String cacheName, String... keys) {
 	this.event.fire(new CacheChange(cacheName, keys));
     }
 
-    public CompletionStage<CacheChange> fireAsync(String cacheName, String key) {
-	return this.event.fireAsync(new CacheChange(cacheName, key));
-    }
-
-    public CompletionStage<CacheChange> fireAsync(String cacheName, String key, Object... keyParams) {
-	return this.event.fireAsync(new CacheChange(cacheName, CacheUtils.format(key, keyParams)));
-    }
-
-    public CompletionStage<CacheChange> fireAsync(String cacheName, Set<String> keys) {
+    public CompletionStage<CacheChange> fireAsync(String cacheName, String... keys) {
 	return this.event.fireAsync(new CacheChange(cacheName, keys));
     }
 }

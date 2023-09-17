@@ -21,7 +21,6 @@
 package com.appslandia.plum.caching;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.Set;
 
 import com.appslandia.common.utils.Asserts;
@@ -38,20 +37,12 @@ public class CacheChange implements Serializable {
     final String cacheName;
     final Set<String> keys;
 
-    public CacheChange(String cacheName) {
-	this(cacheName, Collections.emptySet());
-    }
-
-    public CacheChange(String cacheName, String key) {
-	this(cacheName, CollectionUtils.unmodifiableSet(Asserts.notNull(key)));
-    }
-
-    public CacheChange(String cacheName, Set<String> keys) {
+    public CacheChange(String cacheName, String[] keys) {
 	Asserts.notNull(cacheName);
 	Asserts.notNull(keys);
 
 	this.cacheName = cacheName;
-	this.keys = Collections.unmodifiableSet(keys);
+	this.keys = CollectionUtils.unmodifiableSet(keys);
     }
 
     public String getCacheName() {
