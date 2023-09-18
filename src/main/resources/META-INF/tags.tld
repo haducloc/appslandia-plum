@@ -2119,6 +2119,28 @@
 	</tag>
 
 	<tag>
+		<description>fmtString|body=empty</description>
+		<name>fmtString</name>
+		<tag-class>com.appslandia.plum.jsp.FmtStringTag</tag-class>
+		<body-content>empty</body-content>
+		<attribute>
+			<description>format|type=java.lang.String</description>
+			<name>format</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>value|type=java.lang.String|expression</description>
+			<name>value</name>
+			<required>true</required>
+			<rtexprvalue>true</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<dynamic-attributes>false</dynamic-attributes>
+	</tag>
+
+	<tag>
 		<description>env|body=scriptless</description>
 		<name>env</name>
 		<tag-class>com.appslandia.plum.jsp.IfEnvTag</tag-class>
