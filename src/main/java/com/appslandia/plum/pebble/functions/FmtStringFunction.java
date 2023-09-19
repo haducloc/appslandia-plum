@@ -22,8 +22,9 @@ package com.appslandia.plum.pebble.functions;
 
 import java.io.IOException;
 
+import com.appslandia.common.base.StringFormat;
 import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.UserPrincipal;
+import com.appslandia.plum.base.StringFormatProvider;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.ServletUtils;
@@ -35,12 +36,19 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class UserDNameFunction extends DynPebbleFunction {
+public class FmtStringFunction extends DynPebbleFunction {
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
+	String value = context.getArgument("value");
+	if (value == null) {
+	    return null;
+	}
 
-	return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
+	StringFormatProvider stringFormatProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(), StringFormatProvider.class);
+	String format = context.getRequiredArgument("format");
+	StringFormat stringFormat = stringFormatProvider.getStringFormat(format);
+
+	return new SafeString(XmlEscaper.escapeXml(stringFormat.format(value)));
     }
 }

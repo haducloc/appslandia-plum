@@ -23,7 +23,7 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 
 import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.UserPrincipal;
+import com.appslandia.plum.base.ConstDescProvider;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.ServletUtils;
@@ -35,12 +35,24 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class UserDNameFunction extends DynPebbleFunction {
+public class ConstFunction extends DynPebbleFunction {
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
+	Object value = context.getArgument("value");
+	if (value == null) {
+	    return null;
+	}
 
-	return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
+	ConstDescProvider constDescProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ConstDescProvider.class);
+
+	String group = context.getRequiredArgument("group");
+	String descKey = constDescProvider.getDescKey(group, value);
+
+	if (descKey != null) {
+	    return new SafeString(context.getRequestContext().escXml(descKey));
+	} else {
+	    return new SafeString(XmlEscaper.escapeXml(value.toString()));
+	}
     }
 }

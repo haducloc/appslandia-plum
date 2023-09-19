@@ -68,6 +68,10 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 
 	impls.put("envName", new EnvNameFunction());
 	impls.put("nowMs", new NowMsFunction());
+
+	impls.put("const", new ConstFunction());
+	impls.put("fmtString", new FmtStringFunction());
+
 	return impls;
     }
 
