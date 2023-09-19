@@ -75,6 +75,7 @@ import com.appslandia.plum.base.RemoteClientVerifier;
 import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
 import com.appslandia.plum.base.ServletModuleParser;
+import com.appslandia.plum.base.StringFormatProvider;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.captcha.CaptchaProducer;
@@ -144,8 +145,10 @@ public class MockContainer extends InitializeObject {
 
 	putBeanInst(ConverterProvider.class, beanInstances);
 	putBeanInst(TempDataManager.class, beanInstances);
-	putBeanInst(ConstDescProvider.class, beanInstances);
 	putBeanInst(AppCacheManager.class, beanInstances);
+
+	putBeanInst(ConstDescProvider.class, beanInstances);
+	putBeanInst(StringFormatProvider.class, beanInstances);
 
 	putBeanInst(ModelBinder.class, beanInstances);
 	putBeanInst(ExceptionHandler.class, beanInstances);
@@ -308,6 +311,7 @@ public class MockContainer extends InitializeObject {
 	factory.register(CorsPolicyHandler.class, CorsPolicyHandler.class);
 	factory.register(HeaderPolicyProvider.class, HeaderPolicyProvider.class);
 	factory.register(ConstDescProvider.class, ConstDescProvider.class);
+	factory.register(StringFormatProvider.class, StringFormatProvider.class);
 
 	factory.register(CaptchaManager.class, MockCaptchaManager.class);
 	factory.register(CaptchaProducer.class, MockCaptchaProducer.class);
