@@ -111,17 +111,17 @@ public class Functions {
     }
 
     @Function
-    public static String encParam(String value) {
+    public static String encParam(Object value) {
 	if (value != null) {
-	    return URLEncoding.encodeParam(value);
+	    return URLEncoding.encodeParam(value.toString());
 	}
 	return null;
     }
 
     @Function
-    public static String encPath(String value) {
+    public static String encPath(Object value) {
 	if (value != null) {
-	    return URLEncoding.encodePath(value);
+	    return URLEncoding.encodePath(value.toString());
 	}
 	return null;
     }

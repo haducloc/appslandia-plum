@@ -72,6 +72,9 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 	impls.put("const", new ConstFunction());
 	impls.put("fmtString", new FmtStringFunction());
 
+	impls.put("encParam", new EncodeParamFunction());
+	impls.put("encPath", new EncodePathFunction());
+
 	return impls;
     }
 

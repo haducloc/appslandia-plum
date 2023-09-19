@@ -20,27 +20,22 @@
 
 package com.appslandia.plum.pebble.functions;
 
-import java.util.List;
-import java.util.Map;
+import java.io.IOException;
 
-import io.pebbletemplates.pebble.extension.Function;
-import io.pebbletemplates.pebble.template.EvaluationContext;
-import io.pebbletemplates.pebble.template.PebbleTemplate;
+import com.appslandia.plum.pebble.DynPebbleFunction;
+import com.appslandia.plum.pebble.TemplateEvaluationContext;
+
+import io.pebbletemplates.pebble.error.PebbleException;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class NowMsFunction implements Function {
+public class NowMsFunction extends DynPebbleFunction {
 
     @Override
-    public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) {
+    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
 	return System.currentTimeMillis();
-    }
-
-    @Override
-    public List<String> getArgumentNames() {
-	return null;
     }
 }

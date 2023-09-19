@@ -22,7 +22,7 @@ package com.appslandia.plum.pebble.functions;
 
 import java.io.IOException;
 
-import com.appslandia.common.base.DeployEnv;
+import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 
@@ -33,10 +33,15 @@ import io.pebbletemplates.pebble.error.PebbleException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class EnvNameFunction extends DynPebbleFunction {
+public class EncodePathFunction extends DynPebbleFunction {
 
     @Override
     protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
-	return DeployEnv.getCurrent().getName();
+	Object value = context.getArgument("value");
+	if (value == null) {
+	    return null;
+	}
+
+	return URLEncoding.encodePath(value.toString());
     }
 }
