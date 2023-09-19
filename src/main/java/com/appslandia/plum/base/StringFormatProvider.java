@@ -24,8 +24,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.appslandia.common.base.StringFormat;
 import com.appslandia.common.base.InitializeObject;
+import com.appslandia.common.base.StringFormat;
 import com.appslandia.common.utils.Asserts;
 
 /**
