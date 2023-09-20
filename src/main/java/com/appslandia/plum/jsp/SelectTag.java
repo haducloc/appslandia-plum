@@ -23,11 +23,11 @@ package com.appslandia.plum.jsp;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 import com.appslandia.common.models.SelectItem;
 import com.appslandia.common.models.SelectItemImpl;
+import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.HtmlUtils;
 
@@ -174,7 +174,7 @@ public class SelectTag extends ValueTagBase {
 
 	    SelectItem selItem = StreamSupport.stream(items.spliterator(), false).filter(item -> {
 		String itemVal = getRequestContext().format(item.getValue(), this.converter, this._localize);
-		return Objects.equals(itemVal, this._value);
+		return StringUtils.iequals(itemVal, (String) this._value);
 
 	    }).findFirst().orElse(null);
 
@@ -193,7 +193,7 @@ public class SelectTag extends ValueTagBase {
 		this.pageContext.setAttribute(this.var, item);
 
 		String itemVal = getRequestContext().format(item.getValue(), this.converter, this._localize);
-		boolean selected = Objects.equals(itemVal, this._value);
+		boolean selected = StringUtils.iequals(itemVal, (String) this._value);
 
 		if (selected) {
 		    selItem = item;

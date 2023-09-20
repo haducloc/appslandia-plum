@@ -21,10 +21,10 @@
 package com.appslandia.plum.jsp;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import com.appslandia.common.utils.SplitOptions;
 import com.appslandia.common.utils.SplitUtils;
+import com.appslandia.common.utils.StringUtils;
 
 /**
  *
@@ -44,10 +44,10 @@ public class CheckboxTag extends CheckInputTag {
 	if (this._value == null) {
 	    return false;
 	}
-	if (Objects.equals(codeVal, this._value)) {
+	if (StringUtils.iequals(codeVal, (String) this._value)) {
 	    return true;
 	}
 	String[] values = SplitUtils.split((String) this._value, ',', SplitOptions.TRIM_NULL);
-	return Arrays.stream(values).anyMatch(value -> Objects.equals(codeVal, value));
+	return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeVal, value));
     }
 }

@@ -21,10 +21,10 @@
 package com.appslandia.plum.pebble.functions;
 
 import java.util.Arrays;
-import java.util.Objects;
 
 import com.appslandia.common.utils.SplitOptions;
 import com.appslandia.common.utils.SplitUtils;
+import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 
 /**
@@ -38,10 +38,10 @@ public class CheckboxFunction extends CheckInputFunction {
 	if (modelValue == null) {
 	    return false;
 	}
-	if (Objects.equals(codeValue, modelValue)) {
+	if (StringUtils.iequals(codeValue, modelValue)) {
 	    return true;
 	}
 	String[] values = SplitUtils.split(modelValue, ',', SplitOptions.TRIM_NULL);
-	return Arrays.stream(values).anyMatch(value -> Objects.equals(codeValue, value));
+	return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
     }
 }

@@ -23,9 +23,9 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Objects;
 
 import com.appslandia.common.models.SelectItem;
+import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -60,7 +60,7 @@ public class OptionsFunction extends DynPebbleFunction {
 	    SelectItem selItem = items.stream().filter(item -> {
 
 		String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
-		return Objects.equals(codeValue, fmtValue);
+		return StringUtils.iequals(codeValue, fmtValue);
 
 	    }).findFirst().orElse(null);
 
@@ -88,7 +88,7 @@ public class OptionsFunction extends DynPebbleFunction {
 		out.write("<option");
 		HtmlUtils.escAttribute(out, "value", codeValue);
 
-		if (Objects.equals(codeValue, fmtValue)) {
+		if (StringUtils.iequals(codeValue, fmtValue)) {
 		    HtmlUtils.selected(out);
 		}
 		out.write(">");

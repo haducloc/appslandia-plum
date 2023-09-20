@@ -23,10 +23,10 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
-import java.util.Objects;
 
 import com.appslandia.common.models.SelectItem;
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -64,7 +64,7 @@ public class HiddenSelectFunction extends DynPebbleFunction {
 	SelectItem selectedItem = items.stream().filter(item -> {
 
 	    String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
-	    return Objects.equals(codeValue, fmtValue);
+	    return StringUtils.iequals(codeValue, fmtValue);
 
 	}).findFirst().orElse(null);
 
