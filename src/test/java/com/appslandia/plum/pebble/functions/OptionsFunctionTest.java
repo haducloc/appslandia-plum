@@ -155,7 +155,6 @@ public class OptionsFunctionTest extends MockTestBase {
 	    Assertions.assertEquals("", content);
 
 	} catch (Exception ex) {
-	    ex.printStackTrace();
 	    Assertions.fail(ex);
 	}
     }

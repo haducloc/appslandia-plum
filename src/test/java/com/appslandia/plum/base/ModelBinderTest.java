@@ -27,8 +27,8 @@ import java.util.Map;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.validators.BitMask;
 import com.appslandia.common.validators.MaxLength;
+import com.appslandia.common.validators.MultiValues;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.validation.Valid;
@@ -57,7 +57,7 @@ public class ModelBinderTest extends MockTestBase {
 	    Assertions.assertEquals(0, userModel.userId);
 	    Assertions.assertNull(userModel.name);
 	    Assertions.assertNull(userModel.dob);
-	    Assertions.assertEquals(0, userModel.permissions);
+	    Assertions.assertNull(userModel.permissions);
 
 	    Assertions.assertFalse(getCurrentModelState().isValid("name"));
 
@@ -121,14 +121,31 @@ public class ModelBinderTest extends MockTestBase {
     @Test
     public void test_testUserModel_permissions() {
 	try {
-	    getCurrentRequest().addParameter("permissions", "1", "4");
+	    getCurrentRequest().addParameter("permissions", "1", "2");
 
 	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
 
 	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertEquals(5, userModel.permissions);
+	    Assertions.assertEquals("1,2", userModel.permissions);
 
 	    Assertions.assertTrue(getCurrentModelState().isValid("permissions"));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_testUserModel_permissions_invalid() {
+	try {
+	    getCurrentRequest().addParameter("permissions", "1", "2x");
+
+	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+	    Assertions.assertEquals("1", userModel.permissions);
+
+	    Assertions.assertFalse(getCurrentModelState().isValid("permissions"));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -234,16 +251,14 @@ public class ModelBinderTest extends MockTestBase {
     }
 
     @Test
-    public void test_testExcludePermissions() {
+    public void test_testExcludesName() {
 	try {
 	    getCurrentRequest().addParameter("name", "user1 ");
-	    getCurrentRequest().addParameter("permissions", "1", "4");
 
-	    executeCurrent("POST", "http://localhost/app/testController/testExcludePermissions");
+	    executeCurrent("POST", "http://localhost/app/testController/testExcludesName");
 
 	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertEquals("user1", userModel.name);
-	    Assertions.assertEquals(0, userModel.permissions);
+	    Assertions.assertNull(userModel.name);
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -269,7 +284,7 @@ public class ModelBinderTest extends MockTestBase {
 	}
 
 	@HttpPost
-	public void testExcludePermissions(@Model(excludes = "permissions") UserModel model, RequestAccessor request) throws Exception {
+	public void testExcludesName(@Model(excludes = "name") UserModel model, RequestAccessor request) throws Exception {
 	    request.storeModel(model);
 	}
     }
@@ -284,9 +299,8 @@ public class ModelBinderTest extends MockTestBase {
 
 	protected Date dob;
 
-	// 1|2|4
-	@BitMask(3)
-	protected int permissions;
+	@MultiValues(ints = { 1, 2, 3 }, type = int.class)
+	protected String permissions;
 
 	@Valid
 	protected UserModel manager;
@@ -315,11 +329,11 @@ public class ModelBinderTest extends MockTestBase {
 	    this.dob = dob;
 	}
 
-	public int getPermissions() {
+	public String getPermissions() {
 	    return permissions;
 	}
 
-	public void setPermissions(int permissions) {
+	public void setPermissions(String permissions) {
 	    this.permissions = permissions;
 	}
 

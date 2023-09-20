@@ -28,7 +28,7 @@ import com.appslandia.common.models.SelectItem;
 import com.appslandia.common.models.SelectItemImpl;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.validators.MaxLength;
-import com.appslandia.common.validators.ValidInts;
+import com.appslandia.common.validators.ValidValues;
 import com.appslandia.plum.base.Resources;
 
 import jakarta.validation.constraints.NotNull;
@@ -41,11 +41,11 @@ import jakarta.validation.constraints.NotNull;
 public class ManageSqlModel {
 
     @NotNull
-    @ValidInts({ RESULT_FORMAT_JSON, RESULT_FORMAT_CSV })
+    @ValidValues(ints = { RESULT_FORMAT_JSON, RESULT_FORMAT_CSV })
     private Integer resultFormat;
 
     @NotNull
-    @ValidInts({ SQL_TYPE_QUERY, SQL_TYPE_UPDATE })
+    @ValidValues(ints = { SQL_TYPE_QUERY, SQL_TYPE_UPDATE })
     private Integer sqlType;
 
     private boolean resultFile;

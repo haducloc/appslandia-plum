@@ -154,29 +154,14 @@ public class ModelBinderStaticTest {
     }
 
     @Test
-    public void test_toBitMask() {
-	long bitMask = ModelBinder.toBitMask(new int[] {}, new Out<>());
-	Assertions.assertEquals(0, bitMask);
+    public void test_toMultiValues() {
+	String values = ModelBinder.toMultiValues(null);
+	Assertions.assertNull(values);
 
-	bitMask = ModelBinder.toBitMask(new int[] { 1, 2, 3 }, new Out<>());
-	Assertions.assertEquals(3, bitMask);
-    }
+	values = ModelBinder.toMultiValues(new int[] { 1, 2, 3 });
+	Assertions.assertEquals("1,2,3", values);
 
-    @Test
-    public void test_toBitMask_decimals() {
-	long bitMask = ModelBinder.toBitMask(new double[] {}, new Out<>());
-	Assertions.assertEquals(0, bitMask);
-
-	bitMask = ModelBinder.toBitMask(new double[] { 1.0, 2.1, 2.2 }, new Out<>());
-	Assertions.assertEquals(3, bitMask);
-    }
-
-    @Test
-    public void test_toBitMask_invalids() {
-	Out<Boolean> bitMaskResult = new Out<>();
-	long bitMask = ModelBinder.toBitMask(new int[] { 1, 2, 2, 5 }, bitMaskResult);
-
-	Assertions.assertEquals(3, bitMask);
-	Assertions.assertEquals(Boolean.FALSE, bitMaskResult.value);
+	values = ModelBinder.toMultiValues(new String[] { "1", null, "3" });
+	Assertions.assertEquals("1,3", values);
     }
 }

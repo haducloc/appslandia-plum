@@ -52,15 +52,14 @@ import com.appslandia.common.converters.ConverterProvider;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CharsetUtils;
-import com.appslandia.common.utils.MathUtils;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.TypeUtils;
-import com.appslandia.common.validators.BitMask;
 import com.appslandia.common.validators.G1;
+import com.appslandia.common.validators.MultiValues;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -123,16 +122,20 @@ public class ModelBinder {
 		// Handle Binding?
 		if (request.getParameterMap().containsKey(propertyPath) || (fieldDesc.getDefaultValue() != null)) {
 
-		    // Array || @BitMask
-		    if (field.getType().isArray() || field.getDeclaredAnnotation(BitMask.class) != null) {
-			boolean bitMaskParam = field.getDeclaredAnnotation(BitMask.class) != null;
+		    // @MultiValues
+		    MultiValues multiValues = field.getDeclaredAnnotation(MultiValues.class);
+
+		    // @MultiValues | Array
+		    if ((multiValues != null) || field.getType().isArray()) {
 			Class<?> elementType = null;
 
-			if (!bitMaskParam) {
-			    elementType = field.getType().getComponentType();
+			if (multiValues != null) {
+			    Asserts.isTrue(field.getType() == String.class);
+			    MultiValues.MultiValuesValidator.validate(multiValues);
+
+			    elementType = TypeUtils.wrap(multiValues.type());
 			} else {
-			    elementType = field.getType();
-			    Asserts.isTrue((elementType == long.class) || (elementType == int.class));
+			    elementType = field.getType().getComponentType();
 			}
 
 			// Converter
@@ -150,21 +153,14 @@ public class ModelBinder {
 			Out<String> msgKey = new Out<>();
 			Object parsedValue = parseArray(paramValues, elementType, msgKey, converter, ServletUtils.getFormatProvider(request));
 
-			Out<Boolean> bitMaskResult = new Out<>(Boolean.TRUE);
-			if (!bitMaskParam) {
-			    property.getWriteMethod().invoke(bindNode.model, parsedValue);
-
-			} else if (elementType == long.class) {
-			    property.getWriteMethod().invoke(bindNode.model, toBitMask(parsedValue, bitMaskResult));
+			if (multiValues != null) {
+			    property.getWriteMethod().invoke(bindNode.model, toMultiValues(parsedValue));
 			} else {
-			    property.getWriteMethod().invoke(bindNode.model, (int) toBitMask(parsedValue, bitMaskResult));
+			    property.getWriteMethod().invoke(bindNode.model, parsedValue);
 			}
+
 			if (msgKey.value != null) {
 			    ServletUtils.addError(request, propertyPath, msgKey.value, getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
-
-			} else if (Boolean.FALSE.equals(bitMaskResult.value)) {
-			    ServletUtils.addError(request, propertyPath, Resources.ERROR_FIELD_INVALID,
-				    getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
 			}
 			continue;
 		    }
@@ -178,6 +174,7 @@ public class ModelBinder {
 			if (StringUtils.isNullOrEmpty(paramValue)) {
 			    paramValue = fieldDesc.getDefaultValue();
 			}
+
 			Out<String> msgKey = new Out<>();
 			Object parsedValue = parseValue(paramValue, valueType, msgKey, converter, ServletUtils.getFormatProvider(request));
 
@@ -471,29 +468,6 @@ public class ModelBinder {
 	return result;
     }
 
-    public static long toBitMask(Object numberArray, Out<Boolean> result) {
-	if (numberArray == null) {
-	    return 0l;
-	}
-	int len = Array.getLength(numberArray);
-	if (len == 0) {
-	    return 0l;
-	}
-	Set<Long> numbers = new HashSet<>();
-	for (int i = 0; i < len; i++) {
-	    Number value = (Number) Array.get(numberArray, i);
-	    if (value == null) {
-		continue;
-	    }
-	    if (!MathUtils.isPow2(value.longValue())) {
-		result.value = false;
-	    } else {
-		numbers.add(value.longValue());
-	    }
-	}
-	return numbers.stream().mapToLong(e -> e.longValue()).sum();
-    }
-
     public static Class<?> getValueType(Field field) {
 	if (field.getType() == Out.class) {
 	    Class<?> type = ReflectionUtils.getArgTypes1(field.getGenericType());
@@ -512,6 +486,26 @@ public class ModelBinder {
 	    }
 	}
 	return parameter.getType();
+    }
+
+    public static String toMultiValues(Object parsedValue) {
+	if (parsedValue == null) {
+	    return null;
+	}
+	int len = Array.getLength(parsedValue);
+	StringBuilder sb = new StringBuilder(8 * len);
+
+	for (int i = 0; i < len; i++) {
+	    Object value = Array.get(parsedValue, i);
+	    if (value == null) {
+		continue;
+	    }
+	    if (sb.length() > 0) {
+		sb.append(",");
+	    }
+	    sb.append(value);
+	}
+	return sb.length() > 0 ? sb.toString() : null;
     }
 
     private static class BindingNode {
