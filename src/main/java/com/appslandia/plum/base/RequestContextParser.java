@@ -171,7 +171,7 @@ public class RequestContextParser {
 	if (principal != null) {
 	    return principal.getModule();
 	}
-	return this.appConfig.getRequiredString(AppConfig.CONFIG_DEFAULT_MODULE);
+	return this.appConfig.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
     public static List<String> parsePathItems(HttpServletRequest request) {

@@ -125,7 +125,7 @@ public abstract class ActionDescProvider extends InitializeObject {
 
 	    // Module
 	    Controller controllerAnt = controllerClass.getDeclaredAnnotation(Controller.class);
-	    String module = controllerAnt.module().isEmpty() ? this.appConfig.getRequiredString(AppConfig.CONFIG_DEFAULT_MODULE) : controllerAnt.module();
+	    String module = controllerAnt.module().isEmpty() ? this.appConfig.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE) : controllerAnt.module();
 	    actionDesc.setModule(module);
 
 	    // HTTP Methods

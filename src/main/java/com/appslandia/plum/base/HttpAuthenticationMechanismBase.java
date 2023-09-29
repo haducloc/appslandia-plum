@@ -134,7 +134,7 @@ public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticat
     }
 
     public String rememberMeCookieName() {
-	return this.appConfig.getRequiredString(AppConfig.CONFIG_REMME_COOKIE_NAME);
+	return this.appConfig.getStringReq(AppConfig.CONFIG_REMME_COOKIE_NAME);
     }
 
     public int rememberMeCookieAge() {
