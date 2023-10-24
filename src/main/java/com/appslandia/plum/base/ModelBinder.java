@@ -139,10 +139,8 @@ public class ModelBinder {
 			}
 
 			// Converter
-			Converter<Object> converter = this.converterProvider.getConverter(fieldDesc.getConverter(), elementType);
-			if (converter == null) {
-			    continue;
-			}
+			Converter<Object> converter = (fieldDesc.getConverter() != null) ? this.converterProvider.getConverter(fieldDesc.getConverter())
+				: this.converterProvider.getConverter(elementType);
 
 			// paramValues
 			String[] paramValues = request.getParameterValues(propertyPath);
@@ -167,27 +165,26 @@ public class ModelBinder {
 
 		    // Converter
 		    Class<?> valueType = getValueType(field);
-		    Converter<Object> converter = this.converterProvider.getConverter(fieldDesc.getConverter(), valueType);
-		    if (converter != null) {
+		    Converter<Object> converter = (fieldDesc.getConverter() != null) ? this.converterProvider.getConverter(fieldDesc.getConverter())
+			    : this.converterProvider.getConverter(valueType);
 
-			String paramValue = request.getParameter(propertyPath);
-			if (StringUtils.isNullOrEmpty(paramValue)) {
-			    paramValue = fieldDesc.getDefaultValue();
-			}
-
-			Out<String> msgKey = new Out<>();
-			Object parsedValue = parseValue(paramValue, valueType, msgKey, converter, ServletUtils.getFormatProvider(request));
-
-			if (field.getType() != Out.class) {
-			    property.getWriteMethod().invoke(bindNode.model, parsedValue);
-			} else {
-			    property.getWriteMethod().invoke(bindNode.model, new Out<Object>(parsedValue));
-			}
-			if (msgKey.value != null) {
-			    ServletUtils.addError(request, propertyPath, msgKey.value, getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
-			}
-			continue;
+		    String paramValue = request.getParameter(propertyPath);
+		    if (StringUtils.isNullOrEmpty(paramValue)) {
+			paramValue = fieldDesc.getDefaultValue();
 		    }
+
+		    Out<String> msgKey = new Out<>();
+		    Object parsedValue = parseValue(paramValue, valueType, msgKey, converter, ServletUtils.getFormatProvider(request));
+
+		    if (field.getType() != Out.class) {
+			property.getWriteMethod().invoke(bindNode.model, parsedValue);
+		    } else {
+			property.getWriteMethod().invoke(bindNode.model, new Out<Object>(parsedValue));
+		    }
+		    if (msgKey.value != null) {
+			ServletUtils.addError(request, propertyPath, msgKey.value, getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
+		    }
+		    continue;
 		}
 
 		// List

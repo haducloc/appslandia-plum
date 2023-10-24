@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -158,7 +158,6 @@ public class ModelBinderTest extends MockTestBase {
 	    getCurrentRequest().addParameter("userId", "1");
 	    getCurrentRequest().addParameter("name", "user1");
 
-	    getCurrentRequest().addParameter("manager", "ignore");
 	    getCurrentRequest().addParameter("manager.userId", "100");
 	    getCurrentRequest().addParameter("manager.name", "manager");
 
@@ -192,9 +191,6 @@ public class ModelBinderTest extends MockTestBase {
     @Test
     public void test_testListModel_users() {
 	try {
-	    getCurrentRequest().addParameter("users", "ignore");
-	    getCurrentRequest().addParameter("users[1]", "ignore");
-
 	    getCurrentRequest().addParameter("users[1].userId", "1");
 	    getCurrentRequest().addParameter("users[1].name", "user1");
 	    getCurrentRequest().addParameter("users[2].userId", "2");
@@ -230,9 +226,6 @@ public class ModelBinderTest extends MockTestBase {
     @Test
     public void test_testMapModel_users() {
 	try {
-	    getCurrentRequest().addParameter("users", "ignore");
-	    getCurrentRequest().addParameter("users[1]", "ignore");
-
 	    getCurrentRequest().addParameter("users[1].userId", "1");
 	    getCurrentRequest().addParameter("users[1].name", "user1");
 	    getCurrentRequest().addParameter("users[2].userId", "2");
@@ -297,7 +290,7 @@ public class ModelBinderTest extends MockTestBase {
 	@MaxLength(10)
 	protected String name;
 
-	protected Date dob;
+	protected LocalDate dob;
 
 	@MultiValues(ints = { 1, 2, 3 }, type = int.class)
 	protected String permissions;
@@ -321,11 +314,11 @@ public class ModelBinderTest extends MockTestBase {
 	    this.name = name;
 	}
 
-	public Date getDob() {
+	public LocalDate getDob() {
 	    return dob;
 	}
 
-	public void setDob(Date dob) {
+	public void setDob(LocalDate dob) {
 	    this.dob = dob;
 	}
 

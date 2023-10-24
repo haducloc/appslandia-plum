@@ -112,7 +112,7 @@ public class CheckboxTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    Assertions.assertEquals(
-		    "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /><input name=\"roles\" value=\"admin\" type=\"hidden\" />",
+		    "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"roles\" value=\"admin\" type=\"hidden\" />",
 		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {

@@ -112,7 +112,7 @@ public class RadioTagTest extends MockTestBase {
 	    String html = tag.getPageContext().getOut().toString();
 
 	    Assertions.assertEquals(
-		    "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /><input name=\"userType\" value=\"1\" type=\"hidden\" />",
+		    "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"userType\" value=\"1\" type=\"hidden\" />",
 		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {

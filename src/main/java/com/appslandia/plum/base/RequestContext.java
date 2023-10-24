@@ -184,18 +184,22 @@ public class RequestContext {
 	return this.resources.get(key, p1, p2, p3);
     }
 
-    public String format(Object value, String converter, boolean localize) {
+    public String format(Object value, String converterId, boolean localize) {
 	if (value == null) {
 	    return null;
 	}
 	if (value.getClass() == String.class) {
 	    return (String) value;
 	}
-	Converter<Object> converterObj = this.converterProvider.getConverter(converter, value.getClass());
-	if (converterObj == null) {
-	    return value.toString();
+
+	Converter<Object> converter = null;
+	if (converterId != null) {
+	    converter = this.converterProvider.getConverter(converterId);
+
+	} else if (this.converterProvider.hasConverter(value.getClass())) {
+	    converter = this.converterProvider.getConverter(value.getClass());
 	}
-	return converterObj.format(value, this.formatProvider, localize);
+	return (converter != null) ? converter.format(value, this.formatProvider, localize) : value.toString();
     }
 
     public String escVal(Object value, String converter) {

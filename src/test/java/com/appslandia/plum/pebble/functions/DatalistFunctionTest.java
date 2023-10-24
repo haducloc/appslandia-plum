@@ -68,7 +68,7 @@ public class DatalistFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"admin\"></option><option value=\"manager\"></option>", NormalizeUtils.removeCrLf(content));
+	    Assertions.assertEquals("<option value=\"admin\"></option> <option value=\"manager\"></option>", NormalizeUtils.removeCrLf(content));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

@@ -59,7 +59,7 @@ public abstract class CsvResult<T> extends FilenameResult {
 	    response.setCharacterEncoding(this.contentEncoding);
 	}
 
-	BufferedWriter out = IOUtils.newWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
+	BufferedWriter out = IOUtils.textWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
 
 	for (T r : this.records) {
 	    writeRecord(out, r);

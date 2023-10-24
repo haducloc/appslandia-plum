@@ -34,7 +34,6 @@ import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.ReflectionUtils;
-import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -114,8 +113,8 @@ public class ActionInvoker {
 
 	    // Converter
 	    Class<?> valueType = ModelBinder.getValueType(paramDesc.getParameter());
-	    Converter<Object> converter = this.converterProvider.getConverter(paramDesc.getConverter(), valueType);
-	    Asserts.notNull(converter, () -> STR.fmt("Unsupported data binding for type '{}'.", valueType));
+	    Converter<Object> converter = (paramDesc.getConverter() != null) ? this.converterProvider.getConverter(paramDesc.getConverter())
+		    : this.converterProvider.getConverter(valueType);
 
 	    // paramValue
 	    String paramValue = request.getParameter(paramDesc.getParamName());

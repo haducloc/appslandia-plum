@@ -73,7 +73,8 @@ public class SelectTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"><option value=\"1\">type1</option><option value=\"2\" selected=\"selected\">type2</option></select>",
+	    Assertions.assertEquals(
+		    "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
 		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
@@ -93,7 +94,8 @@ public class SelectTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"><option value=\"1\">type1</option><option value=\"2\" selected=\"selected\">type2</option></select>",
+	    Assertions.assertEquals(
+		    "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
 		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
@@ -112,7 +114,7 @@ public class SelectTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"><option value=\"1\">type1</option><option value=\"2\">type2</option></select>",
+	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\">type2</option> </select>",
 		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
@@ -137,7 +139,7 @@ public class SelectTagTest extends MockTestBase {
 	    // type1 is removed from the options
 	    // plus hidden
 	    Assertions.assertEquals(
-		    "<select id=\"userType\" name=\"userType\" disabled=\"disabled\"><option value=\"2\" selected=\"selected\">type2</option></select><input name=\"userType\" value=\"2\" type=\"hidden\" />",
+		    "<select id=\"userType\" name=\"userType\" disabled=\"disabled\"> <option value=\"2\" selected=\"selected\">type2</option> </select> <input name=\"userType\" value=\"2\" type=\"hidden\" />",
 		    NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
@@ -162,7 +164,7 @@ public class SelectTagTest extends MockTestBase {
 	    // Empty dropdown in this case
 	    // No hidden
 
-	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\" disabled=\"disabled\"></select>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\" disabled=\"disabled\"> </select>", NormalizeUtils.removeCrLf(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
