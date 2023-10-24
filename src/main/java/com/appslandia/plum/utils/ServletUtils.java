@@ -584,11 +584,13 @@ public class ServletUtils {
     }
 
     public static void addError(HttpServletRequest request, String fieldName, String msgKey) {
-	ServletUtils.getModelState(request).addError(fieldName, getResources(request).get(msgKey));
+	String msg = getResources(request).get(msgKey);
+	ServletUtils.getModelState(request).addError(fieldName, msg);
     }
 
     public static void addError(HttpServletRequest request, String fieldName, String msgKey, Map<String, Object> msgParams) {
-	ServletUtils.getModelState(request).addError(fieldName, getResources(request).get(msgKey, msgParams));
+	String msg = getResources(request).get(msgKey, msgParams);
+	ServletUtils.getModelState(request).addError(fieldName, msg);
     }
 
     public static <T> T getAppScoped(ServletContext sc, Class<T> beanType) {

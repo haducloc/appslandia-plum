@@ -90,10 +90,16 @@ public class ModelBinder {
     protected JsonProcessor jsonProcessor;
 
     public ModelState bindModel(HttpServletRequest request, Object model) throws Exception {
-	return bindModel(request, model, null);
+	ModelState modelState = ServletUtils.getModelState(request);
+	bindModel(request, model, modelState, null);
+	return modelState;
     }
 
-    public ModelState bindModel(HttpServletRequest request, Object model, Function<String, Boolean> excludePaths) throws Exception {
+    public void bindModel(HttpServletRequest request, Object model, ModelState modelState) throws Exception {
+	bindModel(request, model, modelState, null);
+    }
+
+    public void bindModel(HttpServletRequest request, Object model, ModelState modelState, Function<String, Boolean> excludePaths) throws Exception {
 	Queue<BindingNode> queue = new LinkedList<>();
 	queue.add(new BindingNode(model, null));
 
@@ -157,8 +163,12 @@ public class ModelBinder {
 			    property.getWriteMethod().invoke(bindNode.model, parsedValue);
 			}
 
+			// Add Error
 			if (msgKey.value != null) {
-			    ServletUtils.addError(request, propertyPath, msgKey.value, getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
+			    Map<String, Object> msgParams = getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request));
+			    String msg = ServletUtils.getResources(request).get(msgKey.value, msgParams);
+
+			    modelState.addError(propertyPath, msg);
 			}
 			continue;
 		    }
@@ -181,8 +191,13 @@ public class ModelBinder {
 		    } else {
 			property.getWriteMethod().invoke(bindNode.model, new Out<Object>(parsedValue));
 		    }
+
+		    // Add Error
 		    if (msgKey.value != null) {
-			ServletUtils.addError(request, propertyPath, msgKey.value, getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request)));
+			Map<String, Object> msgParams = getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request));
+			String msg = ServletUtils.getResources(request).get(msgKey.value, msgParams);
+
+			modelState.addError(propertyPath, msg);
 		    }
 		    continue;
 		}
@@ -273,8 +288,7 @@ public class ModelBinder {
 	}
 
 	// Validate Model
-	validateModel(model, ServletUtils.getModelState(request), ServletUtils.getResources(request));
-	return ServletUtils.getModelState(request);
+	validateModel(model, modelState, ServletUtils.getResources(request));
     }
 
     public <T> T bindModel(HttpServletRequest request, String partName, Class<T> modelType, ModelState modelState) throws Exception {
@@ -309,7 +323,12 @@ public class ModelBinder {
 	    String fieldName = getLeafProp(violation.getPropertyPath(), propertyPath);
 	    Asserts.notNull(fieldName);
 
-	    modelState.addError(fieldName, resources.get(getMsgKey(violation), getMsgParams(violation, fieldName, resources)));
+	    // Add Error
+	    String msgKey = getMsgKey(violation);
+	    Map<String, Object> msgParams = getMsgParams(violation, fieldName, resources);
+	    String msg = resources.get(msgKey, msgParams);
+
+	    modelState.addError(fieldName, msg);
 	}
     }
 
@@ -395,16 +414,19 @@ public class ModelBinder {
     }
 
     private Map<String, Object> getMsgParams(Field field, Class<?> modelType, Resources resources) {
+	String displayName = getDisplayName(field, modelType, resources);
+
 	Map<String, Object> params = new HashMap<>();
-	params.put(Resources.PARAM_FIELD_DN, getDisplayName(field, modelType, resources));
+	params.put(Resources.PARAM_FIELD_DN, displayName);
 	return params;
     }
 
     private Map<String, Object> getMsgParams(ConstraintViolation<?> violation, String fieldName, Resources resources) {
 	Field field = ReflectionUtils.findField(violation.getLeafBean().getClass(), fieldName);
+	String displayName = getDisplayName(field, violation.getLeafBean().getClass(), resources);
 
 	Map<String, Object> params = buildMsgParams(violation.getConstraintDescriptor());
-	params.put(Resources.PARAM_FIELD_DN, getDisplayName(field, violation.getLeafBean().getClass(), resources));
+	params.put(Resources.PARAM_FIELD_DN, displayName);
 	return params;
     }
 
