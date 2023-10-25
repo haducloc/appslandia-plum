@@ -41,7 +41,7 @@ public class FieldErrorFunction extends DynPebbleFunction {
 
     @Override
     public String getDescription() {
-	return "variables: fieldName*, form";
+	return "variables: fieldName*, form, class";
     }
 
     @Override
@@ -55,8 +55,11 @@ public class FieldErrorFunction extends DynPebbleFunction {
 	    Message error = context.getModelState().getFieldErrors(fieldName).get(0);
 	    StringWriter out = new StringWriter(128);
 
+	    String clazz = context.getArgument("class");
+	    clazz = (clazz == null) ? "l-field-error" : (clazz + " l-field-error");
+
 	    out.append("<div");
-	    HtmlUtils.escAttribute(out, "class", "l-field-error");
+	    HtmlUtils.escAttribute(out, "class", clazz);
 	    out.append(">");
 
 	    if (error.isEscXml()) {
