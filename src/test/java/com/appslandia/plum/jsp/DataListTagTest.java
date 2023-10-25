@@ -67,7 +67,7 @@ public class DataListTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -84,7 +84,7 @@ public class DataListTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

@@ -74,7 +74,7 @@ public class CheckboxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -92,7 +92,7 @@ public class CheckboxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -113,7 +113,7 @@ public class CheckboxTagTest extends MockTestBase {
 
 	    Assertions.assertEquals(
 		    "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"roles\" value=\"admin\" type=\"hidden\" />",
-		    NormalizeUtils.removeCrLf(html));
+		    NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -132,7 +132,7 @@ public class CheckboxTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" disabled=\"disabled\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" disabled=\"disabled\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

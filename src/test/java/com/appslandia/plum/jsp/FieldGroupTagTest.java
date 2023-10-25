@@ -67,7 +67,7 @@ public class FieldGroupTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<div>fields</div>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<div>fields</div>", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -85,7 +85,7 @@ public class FieldGroupTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<div class=\"l-error-group\">fields</div>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<div class=\"l-error-group\">fields</div>", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

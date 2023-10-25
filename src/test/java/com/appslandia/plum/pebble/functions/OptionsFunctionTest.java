@@ -75,7 +75,7 @@ public class OptionsFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option> <option value=\"2\">Type2</option>", NormalizeUtils.removeCrLf(content));
+	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option> <option value=\"2\">Type2</option>", NormalizeUtils.toSingleLine(content));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -101,7 +101,7 @@ public class OptionsFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"1\">Type1</option> <option value=\"2\">Type2</option>", NormalizeUtils.removeCrLf(content));
+	    Assertions.assertEquals("<option value=\"1\">Type1</option> <option value=\"2\">Type2</option>", NormalizeUtils.toSingleLine(content));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);
@@ -127,7 +127,7 @@ public class OptionsFunctionTest extends MockTestBase {
 	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
 
 	    String content = out.toString();
-	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option>", NormalizeUtils.removeCrLf(content));
+	    Assertions.assertEquals("<option value=\"1\" selected=\"selected\">Type1</option>", NormalizeUtils.toSingleLine(content));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex);

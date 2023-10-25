@@ -82,7 +82,7 @@ public class FieldErrorTest extends MockTestBase {
 
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<div class=\"l-field-error\">The userName field is required.</div>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<div class=\"l-field-error\">The userName field is required.</div>", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

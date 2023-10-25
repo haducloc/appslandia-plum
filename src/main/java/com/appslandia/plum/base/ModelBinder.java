@@ -90,16 +90,18 @@ public class ModelBinder {
     protected JsonProcessor jsonProcessor;
 
     public ModelState bindModel(HttpServletRequest request, Object model) throws Exception {
-	ModelState modelState = ServletUtils.getModelState(request);
-	bindModel(request, model, modelState, null);
-	return modelState;
+	return bindModel(request, model, ServletUtils.getModelState(request), null);
     }
 
-    public void bindModel(HttpServletRequest request, Object model, ModelState modelState) throws Exception {
-	bindModel(request, model, modelState, null);
+    public ModelState bindModel(HttpServletRequest request, Object model, Function<String, Boolean> excludePaths) throws Exception {
+	return bindModel(request, model, ServletUtils.getModelState(request), excludePaths);
     }
 
-    public void bindModel(HttpServletRequest request, Object model, ModelState modelState, Function<String, Boolean> excludePaths) throws Exception {
+    public ModelState bindModel(HttpServletRequest request, Object model, ModelState modelState) throws Exception {
+	return bindModel(request, model, modelState, null);
+    }
+
+    public ModelState bindModel(HttpServletRequest request, Object model, ModelState modelState, Function<String, Boolean> excludePaths) throws Exception {
 	Queue<BindingNode> queue = new LinkedList<>();
 	queue.add(new BindingNode(model, null));
 
@@ -289,6 +291,7 @@ public class ModelBinder {
 
 	// Validate Model
 	validateModel(model, modelState, ServletUtils.getResources(request));
+	return modelState;
     }
 
     public <T> T bindModel(HttpServletRequest request, String partName, Class<T> modelType, ModelState modelState) throws Exception {

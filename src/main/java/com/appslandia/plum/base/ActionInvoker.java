@@ -97,9 +97,9 @@ public class ActionInvoker {
 		    model = ReflectionUtils.newInstance(paramDesc.getParameter().getType());
 		    String[] excludes = paramDesc.getModel().excludes();
 		    if (excludes.length == 0) {
-			this.modelBinder.bindModel(request, model, ServletUtils.getModelState(request));
+			this.modelBinder.bindModel(request, model);
 		    } else {
-			this.modelBinder.bindModel(request, model, ServletUtils.getModelState(request), p -> Arrays.stream(excludes).anyMatch(path -> p.equals(path)));
+			this.modelBinder.bindModel(request, model, p -> Arrays.stream(excludes).anyMatch(path -> p.equals(path)));
 		    }
 		} else {
 		    model = this.jsonProcessor.read(request.getReader(), paramDesc.getParameter().getType());

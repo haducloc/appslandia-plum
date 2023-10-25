@@ -74,7 +74,7 @@ public class RadioTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -92,7 +92,7 @@ public class RadioTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -113,7 +113,7 @@ public class RadioTagTest extends MockTestBase {
 
 	    Assertions.assertEquals(
 		    "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"userType\" value=\"1\" type=\"hidden\" />",
-		    NormalizeUtils.removeCrLf(html));
+		    NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -132,7 +132,7 @@ public class RadioTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" disabled=\"disabled\" />", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" disabled=\"disabled\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());

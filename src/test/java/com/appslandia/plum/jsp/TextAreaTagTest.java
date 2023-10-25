@@ -69,7 +69,7 @@ public class TextAreaTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    Assertions.assertEquals("<textarea id=\"notes\" name=\"notes\">testNotes</textarea>", NormalizeUtils.removeCrLf(html));
+	    Assertions.assertEquals("<textarea id=\"notes\" name=\"notes\">testNotes</textarea>", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
