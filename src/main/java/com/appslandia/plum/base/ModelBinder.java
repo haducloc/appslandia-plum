@@ -413,7 +413,8 @@ public class ModelBinder {
     }
 
     protected String getDisplayName(Field field, Class<?> modelType, Resources resources) {
-	return resources.get(StringUtils.firstLowerCase(modelType.getSimpleName(), Locale.ENGLISH) + "." + new FieldDesc(field).getFieldName());
+	String key = StringUtils.firstLowerCase(modelType.getSimpleName(), Locale.ENGLISH) + "." + new FieldDesc(field).getFieldName();
+	return resources.get(key);
     }
 
     private Map<String, Object> getMsgParams(Field field, Class<?> modelType, Resources resources) {
