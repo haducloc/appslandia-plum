@@ -35,13 +35,13 @@ import jakarta.validation.constraints.NotNull;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Validate(modelValidator = ResetPasswordModel.CONFIRM_PASSWORD_VALIDATOR, message = ConfirmPasswordValidator.MESSAGE_TEMPLATE, reportProperty = "confirmPassword")
-public class ResetPasswordModel implements ConfirmPasswordModel {
+@Validate(modelValidator = ResetPasswordByEmailModel.CONFIRM_PASSWORD_VALIDATOR, message = ConfirmPasswordValidator.MESSAGE_TEMPLATE, reportProperty = "confirmPassword")
+public class ResetPasswordByEmailModel implements ConfirmPasswordModel {
 
     public static final String CONFIRM_PASSWORD_VALIDATOR = "resetPasswordByEmailModel.confirmPasswordValidator";
 
     static {
-	ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ResetPasswordModel>() {
+	ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ResetPasswordByEmailModel>() {
 	});
     }
     @NotNull

@@ -50,7 +50,7 @@ public class ResetPasswordByEmailModelTest extends MockTestBase {
 
 	    executeCurrent("POST", "http://localhost/app/testController/resetpwd");
 
-	    ResetPasswordModel model = (ResetPasswordModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+	    ResetPasswordByEmailModel model = (ResetPasswordByEmailModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
 	    Assertions.assertNotNull(model);
 	    Assertions.assertFalse(getCurrentModelState().isValid("confirmPassword"));
 
@@ -63,7 +63,7 @@ public class ResetPasswordByEmailModelTest extends MockTestBase {
     public static class TestController {
 
 	@HttpPost
-	public void resetpwd(@Model ResetPasswordModel model, RequestAccessor request) throws Exception {
+	public void resetpwd(@Model ResetPasswordByEmailModel model, RequestAccessor request) throws Exception {
 	    request.storeModel(model);
 	}
     }
