@@ -113,10 +113,9 @@ public class RequestContextParser {
 	context.setModule(getModule(request, actionDesc));
 
 	// Browser Features
-	if (this.appConfig.getBool(AppConfig.CONFIG_PARSE_BROWSER_FEATURES)) {
-	    String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
-	    context.setBrowserFeatures(ParseUtils.parseInt(browserFeatures, 0));
-	}
+	String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
+	context.setBrowserFeatures((browserFeatures != null) ? ParseUtils.parseInt(browserFeatures, 0) : null);
+
 	request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, context);
 	return context;
     }

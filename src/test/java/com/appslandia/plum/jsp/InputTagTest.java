@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 
 import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.NormalizeUtils;
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.BrowserFeatures;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
@@ -137,7 +138,7 @@ public class InputTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_type_date() {
+    public void test_type_date1() {
 	try {
 	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
 	    tag.setPath("model.dob");
@@ -146,8 +147,7 @@ public class InputTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = date
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.toSingleLine(html));
+	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {
 	    Assertions.fail(ex.getMessage());
@@ -155,7 +155,7 @@ public class InputTagTest extends MockTestBase {
     }
 
     @Test
-    public void test_type_date_browserFeatures() {
+    public void test_type_date2() {
 	try {
 	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
 
@@ -166,7 +166,67 @@ public class InputTagTest extends MockTestBase {
 	    tag.doTag();
 	    String html = tag.getPageContext().getOut().toString();
 
-	    // type = date + browserFeatures
+	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_type_date3() {
+	try {
+	    setRequestContextField("browserFeatures", 0);
+
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
+	    tag.setType("date");
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_type_date4() {
+	try {
+
+	    container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+	    setRequestContextField("browserFeatures", 0);
+
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
+	    tag.setType("date");
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
+	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.toSingleLine(html));
+
+	} catch (Exception ex) {
+	    Assertions.fail(ex.getMessage());
+	}
+    }
+
+    @Test
+    public void test_type_date5() {
+	try {
+
+	    container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
+
+	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+	    tag.setPath("model.dob");
+	    tag.setType("date");
+
+	    tag.doTag();
+	    String html = tag.getPageContext().getOut().toString();
+
 	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
 
 	} catch (Exception ex) {

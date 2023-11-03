@@ -71,6 +71,7 @@ public class InputUtils {
 	if (type == null) {
 	    return true;
 	}
+
 	if (UNLOCALIZED_TYPES.contains(type)) {
 	    return false;
 	}
@@ -81,13 +82,13 @@ public class InputUtils {
 	}
 
 	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-	if (appConfig.getBool(AppConfig.CONFIG_INPUT_TYPE_LOCALIZING, false)) {
+	if (!appConfig.getBool(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, false)) {
 	    return false;
 	}
 
 	RequestContext context = ServletUtils.getRequestContext(request);
 	if (context.getBrowserFeatures() == null) {
-	    return true;
+	    return false;
 	}
 	return (context.getBrowserFeatures() & feature) != feature;
     }

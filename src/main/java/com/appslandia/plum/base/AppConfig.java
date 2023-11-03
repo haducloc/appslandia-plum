@@ -61,14 +61,13 @@ public class AppConfig extends InitializeObject implements Config {
     public static final String CONFIG_ASYNC_TIMEOUT_MS = "config.async_timeout_ms";
 
     public static final String CONFIG_DIRECT_JSP_ACCESS = "config.direct_jsp_access";
-    public static final String CONFIG_PARSE_BROWSER_FEATURES = "config.parse_browser_features";
     public static final String CONFIG_PARSE_PREF_COOKIE = "config.parse_pref_cookie";
 
     public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
     public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
     public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
 
-    public static final String CONFIG_INPUT_TYPE_LOCALIZING = "config.input_type_localizing";
+    public static final String CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE = "config.enable_browser_feature_input_type";
 
     protected ConfigMap config;
 
@@ -111,10 +110,9 @@ public class AppConfig extends InitializeObject implements Config {
 	this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS, String.valueOf(TimeUnit.MILLISECONDS.convert(180, TimeUnit.SECONDS)));
 
 	this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
-	this.config.putIfAbsent(CONFIG_PARSE_BROWSER_FEATURES, String.valueOf(true));
 	this.config.putIfAbsent(CONFIG_PARSE_PREF_COOKIE, String.valueOf(true));
 
-	this.config.putIfAbsent(CONFIG_INPUT_TYPE_LOCALIZING, String.valueOf(false));
+	this.config.putIfAbsent(CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, String.valueOf(false));
 
 	this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
 	this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);
