@@ -435,7 +435,7 @@ public class ServletUtils {
 	return !path.isEmpty() ? path : "/";
     }
 
-    public static ZoneOffset getClientZone(HttpServletRequest request) {
+    public static ZoneOffset getClientZoneId(HttpServletRequest request) {
 	String clientZoneId = getCookieValue(request, COOKIE_CLIENT_ZONE_ID);
 	if (clientZoneId == null) {
 	    return null;

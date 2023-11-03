@@ -72,12 +72,11 @@ public class RequestAccessor extends HttpServletRequestWrapper {
 	return ServletUtils.isAjaxRequest(this);
     }
 
-    public ZoneId getClientZone(ZoneId orZone) {
-	ZoneId zone = ServletUtils.getClientZone(this);
-	if (zone != null) {
-	    return zone;
-	}
-	return (orZone != null) ? orZone : ZoneId.systemDefault();
+    public ZoneId getClientZoneId(ZoneId orZoneId) {
+	Asserts.notNull(orZoneId);
+
+	ZoneId zoneId = ServletUtils.getClientZoneId(this);
+	return (zoneId != null) ? zoneId : orZoneId;
     }
 
     public void store(String key, Object value) {

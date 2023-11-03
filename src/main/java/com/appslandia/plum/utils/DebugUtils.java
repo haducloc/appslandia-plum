@@ -149,9 +149,9 @@ public class DebugUtils {
 	out.println();
 	out.append("OffsetTime.now().getOffset().getId(): ").append(OffsetTime.now().getOffset().getId());
 
-	ZoneOffset clientZone = ServletUtils.getClientZone(request);
+	ZoneOffset clientZoneId = ServletUtils.getClientZoneId(request);
 	out.println();
-	out.append("ServletUtils.getClientZone(request): ").append(clientZone != null ? clientZone.getId() : null);
+	out.append("ServletUtils.getClientZoneId(request): ").append(clientZoneId != null ? clientZoneId.getId() : null);
 
 	out.println();
 	out.println();
