@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.CollectionUtils;
 
 import jakarta.security.enterprise.CallerPrincipal;
 
@@ -54,7 +55,7 @@ public abstract class UserPrincipal extends CallerPrincipal {
 
     public UserPrincipal(String username, Map<String, Object> attributes) {
 	super(username);
-	this.attributes = ((attributes != null) && !attributes.isEmpty()) ? Collections.unmodifiableMap(new HashMap<>(attributes)) : Collections.emptyMap();
+	this.attributes = CollectionUtils.hasEntries(attributes) ? Collections.unmodifiableMap(new HashMap<>(attributes)) : Collections.emptyMap();
     }
 
     public Object get(String attributeName) {
