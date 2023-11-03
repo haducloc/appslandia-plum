@@ -103,27 +103,16 @@ public class ModelState implements Serializable {
 	return !this.errors.containsKey(fieldName);
     }
 
+    public boolean isError(String prefixPath) {
+	return this.errors.keySet().stream().anyMatch(k -> k.startsWith(prefixPath));
+    }
+
     public boolean areValid(String... fieldNames) {
 	return !Arrays.stream(fieldNames).anyMatch(fieldName -> this.errors.containsKey(fieldName));
     }
 
     public Map<String, List<Message>> getErrors() {
 	return this.errors;
-    }
-
-    public Message findError(String... fieldNames) {
-	if (this.errors.isEmpty()) {
-	    return null;
-	}
-	if ((fieldNames == null) || (fieldNames.length == 0)) {
-	    return this.errors.values().iterator().next().get(0);
-	}
-	for (String fieldName : fieldNames) {
-	    if (this.errors.containsKey(fieldName)) {
-		return this.errors.get(fieldName).get(0);
-	    }
-	}
-	return this.errors.values().iterator().next().get(0);
     }
 
     public Map<String, String> toErrorMap() {
