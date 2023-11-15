@@ -10,8 +10,6 @@
 	<properties>
 		<module.name>com.appslandia.plum</module.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>11</maven.compiler.source>
-		<maven.compiler.target>11</maven.compiler.target>
 		<version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
 		<version.maven-jar-plugin>3.2.2</version.maven-jar-plugin>
 		<version.maven-source-plugin>3.2.1</version.maven-source-plugin>
@@ -68,7 +66,7 @@
 					<compilerArgs>
 						<arg>-parameters</arg>
 					</compilerArgs>
-					<release>17</release>
+					<release>20</release>
 				</configuration>
 			</plugin>
 			<plugin>

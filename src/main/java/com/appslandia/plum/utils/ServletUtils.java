@@ -295,7 +295,7 @@ public class ServletUtils {
 	while (requestLocales.hasMoreElements()) {
 	    Locale requestLocale = requestLocales.nextElement();
 
-	    String matchedLang = supportedLanguages.stream().filter(sl -> new Locale(sl).getLanguage().equals(requestLocale.getLanguage())).findFirst().orElse(null);
+	    String matchedLang = supportedLanguages.stream().filter(sl -> Locale.of(sl).getLanguage().equals(requestLocale.getLanguage())).findFirst().orElse(null);
 	    if (matchedLang != null) {
 		return matchedLang;
 	    }

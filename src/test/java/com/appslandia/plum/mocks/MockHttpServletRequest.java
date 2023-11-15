@@ -24,6 +24,7 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -255,7 +256,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
     public MockHttpServletRequest setRequestURL(String requestURL) {
 	try {
-	    URL url = new URL(requestURL);
+	    URL url = new URI(requestURL).toURL();
 	    this.serverName = url.getHost();
 
 	    Asserts.isTrue("http".equals(url.getProtocol()) || "https".equals(url.getProtocol()), "http|https is required.");
