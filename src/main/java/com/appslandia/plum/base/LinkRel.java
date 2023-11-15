@@ -85,8 +85,8 @@ public class LinkRel {
     if (!(obj instanceof LinkRel)) {
       return false;
     }
-    LinkRel another = (LinkRel) obj;
-    return Objects.equals(this.rel, another.rel) && Objects.equals(this.hreflang, another.hreflang)
-        && Objects.equals(this.href, another.href);
+    LinkRel other = (LinkRel) obj;
+    return Objects.equals(this.rel, other.rel) && Objects.equals(this.hreflang, other.hreflang)
+        && Objects.equals(this.href, other.href);
   }
 }

@@ -47,8 +47,14 @@ public class ActionRoute {
 
   @Override
   public boolean equals(Object obj) {
-    ActionRoute another = (ActionRoute) obj;
-    return this.controller.equalsIgnoreCase(another.controller) && this.action.equalsIgnoreCase(another.action);
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof ActionRoute)) {
+      return false;
+    }
+    ActionRoute other = (ActionRoute) obj;
+    return this.controller.equalsIgnoreCase(other.controller) && this.action.equalsIgnoreCase(other.action);
   }
 
   @Override

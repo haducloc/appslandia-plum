@@ -100,8 +100,14 @@ public class ConstDescProvider extends InitializeObject {
 
     @Override
     public boolean equals(Object obj) {
-      ConstValue another = (ConstValue) obj;
-      return Objects.equals(this.constGroup, another.constGroup) && Objects.equals(this.value, another.value);
+      if (this == obj) {
+        return true;
+      }
+      if (!(obj instanceof ConstValue)) {
+        return false;
+      }
+      ConstValue other = (ConstValue) obj;
+      return Objects.equals(this.constGroup, other.constGroup) && Objects.equals(this.value, other.value);
     }
 
     @Override
