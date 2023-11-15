@@ -34,32 +34,35 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public interface AuthHandler {
 
-    String getAuthMethod();
+  String getAuthMethod();
 
-    Credential parseCredential(HttpServletRequest request);
+  Credential parseCredential(HttpServletRequest request);
 
-    default boolean getLoginPage() {
-	throw new UnsupportedOperationException();
-    }
+  default boolean getLoginPage() {
+    throw new UnsupportedOperationException();
+  }
 
-    default boolean isReauthentication(HttpServletRequest request) {
-	return false;
-    }
+  default boolean isReauthentication(HttpServletRequest request) {
+    return false;
+  }
 
-    default public AuthenticationStatus secureResponse(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext)
-	    throws AuthenticationException {
-	return AuthenticationStatus.SUCCESS;
-    }
+  default public AuthenticationStatus secureResponse(HttpServletRequest request, HttpServletResponse response,
+      HttpMessageContext httpMessageContext) throws AuthenticationException {
+    return AuthenticationStatus.SUCCESS;
+  }
 
-    default public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
-	httpMessageContext.cleanClientSubject();
-    }
+  default public void cleanSubject(HttpServletRequest request, HttpServletResponse response,
+      HttpMessageContext httpMessageContext) {
+    httpMessageContext.cleanClientSubject();
+  }
 
-    boolean isRememberMe(HttpMessageContext httpMessageContext);
+  boolean isRememberMe(HttpMessageContext httpMessageContext);
 
-    void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception;
+  void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception;
 
-    default public void askReauthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	askAuthenticate(request, response, requestContext);
-    }
+  default public void askReauthenticate(HttpServletRequest request, HttpServletResponse response,
+      RequestContext requestContext) throws Exception {
+    askAuthenticate(request, response, requestContext);
+  }
 }

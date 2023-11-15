@@ -30,65 +30,65 @@ import org.junit.jupiter.api.Test;
  */
 public class PipeTest {
 
-    @Test
-    public void test_upper() {
-	try {
-	    Object v = Pipe.transform("btc", "upper");
-	    Assertions.assertEquals("BTC", v);
+  @Test
+  public void test_upper() {
+    try {
+      Object v = Pipe.transform("btc", "upper");
+      Assertions.assertEquals("BTC", v);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_lower() {
-	try {
-	    Object v = Pipe.transform("JAVAEE-7", "lower");
-	    Assertions.assertEquals("javaee-7", v);
+  @Test
+  public void test_lower() {
+    try {
+      Object v = Pipe.transform("JAVAEE-7", "lower");
+      Assertions.assertEquals("javaee-7", v);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_trunc() {
-	try {
-	    Object v = Pipe.transform("123456789", "trunc:4");
-	    Assertions.assertEquals("1234&ellipsis;", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+  @Test
+  public void test_trunc() {
+    try {
+      Object v = Pipe.transform("123456789", "trunc:4");
+      Assertions.assertEquals("1234&ellipsis;", v);
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_fmtString() {
-	try {
-	    Object v = Pipe.transform("4028888888", "fmtString:{3}-{3}-{4}");
-	    Assertions.assertEquals("402-888-8888", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+  @Test
+  public void test_fmtString() {
+    try {
+      Object v = Pipe.transform("4028888888", "fmtString:{3}-{3}-{4}");
+      Assertions.assertEquals("402-888-8888", v);
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_maskStart() {
-	try {
-	    Object v = Pipe.transform("0123456789", "maskStart:5");
-	    Assertions.assertEquals("*****56789", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+  @Test
+  public void test_maskStart() {
+    try {
+      Object v = Pipe.transform("0123456789", "maskStart:5");
+      Assertions.assertEquals("*****56789", v);
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_maskEnd() {
-	try {
-	    Object v = Pipe.transform("0123456789", "maskEnd:5");
-	    Assertions.assertEquals("01234*****", v);
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+  @Test
+  public void test_maskEnd() {
+    try {
+      Object v = Pipe.transform("0123456789", "maskEnd:5");
+      Assertions.assertEquals("01234*****", v);
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 }

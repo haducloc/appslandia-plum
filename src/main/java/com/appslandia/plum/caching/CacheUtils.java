@@ -30,13 +30,13 @@ import com.appslandia.common.utils.STR;
  */
 public class CacheUtils {
 
-    public static String toKey(String key, Object... params) {
+  public static String toKey(String key, Object... params) {
 
-	return STR.format(key, (pname, expr) -> {
+    return STR.format(key, (pname, expr) -> {
 
-	    int index = ParseUtils.parseInt(pname, -1);
+      int index = ParseUtils.parseInt(pname, -1);
 
-	    return params[index];
-	});
-    }
+      return params[index];
+    });
+  }
 }

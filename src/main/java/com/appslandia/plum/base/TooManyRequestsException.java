@@ -29,78 +29,78 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @NotLog
 public class TooManyRequestsException extends HttpException implements HttpHeaderApply {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final int SC_TOO_MANY_REQUESTS = 429;
+  public static final int SC_TOO_MANY_REQUESTS = 429;
 
-    private String reason;
-    private Long retryAfter;
+  private String reason;
+  private Long retryAfter;
 
-    public TooManyRequestsException() {
-	super(SC_TOO_MANY_REQUESTS);
+  public TooManyRequestsException() {
+    super(SC_TOO_MANY_REQUESTS);
+  }
+
+  public TooManyRequestsException(String message) {
+    super(SC_TOO_MANY_REQUESTS, message);
+  }
+
+  public TooManyRequestsException(String message, Throwable cause) {
+    super(SC_TOO_MANY_REQUESTS, message, cause);
+  }
+
+  public TooManyRequestsException(Throwable cause) {
+    super(SC_TOO_MANY_REQUESTS, cause);
+  }
+
+  @Override
+  public void apply(HttpServletResponse response) {
+    if (this.reason != null) {
+      response.addHeader("TMR-Reason", this.reason);
     }
-
-    public TooManyRequestsException(String message) {
-	super(SC_TOO_MANY_REQUESTS, message);
+    if (this.retryAfter != null) {
+      response.addDateHeader("Retry-After", this.retryAfter);
     }
+  }
 
-    public TooManyRequestsException(String message, Throwable cause) {
-	super(SC_TOO_MANY_REQUESTS, message, cause);
-    }
+  public String getReason() {
+    return this.reason;
+  }
 
-    public TooManyRequestsException(Throwable cause) {
-	super(SC_TOO_MANY_REQUESTS, cause);
-    }
+  public TooManyRequestsException setReason(String reason) {
+    this.reason = reason;
+    return this;
+  }
 
-    @Override
-    public void apply(HttpServletResponse response) {
-	if (this.reason != null) {
-	    response.addHeader("TMR-Reason", this.reason);
-	}
-	if (this.retryAfter != null) {
-	    response.addDateHeader("Retry-After", this.retryAfter);
-	}
-    }
+  public Long getRetryAfter() {
+    return this.retryAfter;
+  }
 
-    public String getReason() {
-	return this.reason;
-    }
+  public TooManyRequestsException setRetryAfter(Long retryAfter) {
+    this.retryAfter = retryAfter;
+    return this;
+  }
 
-    public TooManyRequestsException setReason(String reason) {
-	this.reason = reason;
-	return this;
-    }
+  @Override
+  public TooManyRequestsException setTitleKey(String titleKey) {
+    super.setTitleKey(titleKey);
+    return this;
+  }
 
-    public Long getRetryAfter() {
-	return this.retryAfter;
-    }
+  @Override
+  public TooManyRequestsException setTitleKey(ResKey titleKey) {
+    super.setTitleKey(titleKey);
+    return this;
+  }
 
-    public TooManyRequestsException setRetryAfter(Long retryAfter) {
-	this.retryAfter = retryAfter;
-	return this;
-    }
+  @Override
+  public TooManyRequestsException setDetailKey(String detailKey) {
+    super.setDetailKey(detailKey);
+    return this;
+  }
 
-    @Override
-    public TooManyRequestsException setTitleKey(String titleKey) {
-	super.setTitleKey(titleKey);
-	return this;
-    }
-
-    @Override
-    public TooManyRequestsException setTitleKey(ResKey titleKey) {
-	super.setTitleKey(titleKey);
-	return this;
-    }
-
-    @Override
-    public TooManyRequestsException setDetailKey(String detailKey) {
-	super.setDetailKey(detailKey);
-	return this;
-    }
-
-    @Override
-    public TooManyRequestsException setDetailKey(ResKey detailKey) {
-	super.setDetailKey(detailKey);
-	return this;
-    }
+  @Override
+  public TooManyRequestsException setDetailKey(ResKey detailKey) {
+    super.setDetailKey(detailKey);
+    return this;
+  }
 }

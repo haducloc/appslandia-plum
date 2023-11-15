@@ -31,53 +31,53 @@ import com.appslandia.common.base.Bind;
  */
 public class ParamDesc {
 
-    private Bind bind;
-    private Model model;
+  private Bind bind;
+  private Model model;
 
-    private Parameter parameter;
-    private boolean pathParam;
+  private Parameter parameter;
+  private boolean pathParam;
 
-    public String getParamName() {
-	return ((this.bind != null) && !this.bind.name().isEmpty()) ? this.bind.name() : this.parameter.getName();
-    }
+  public String getParamName() {
+    return ((this.bind != null) && !this.bind.name().isEmpty()) ? this.bind.name() : this.parameter.getName();
+  }
 
-    public String getConverter() {
-	return ((this.bind != null) && !this.bind.converter().isEmpty()) ? this.bind.converter() : null;
-    }
+  public String getConverter() {
+    return ((this.bind != null) && !this.bind.converter().isEmpty()) ? this.bind.converter() : null;
+  }
 
-    public String getDefaultValue() {
-	return ((this.bind != null) && !this.bind.defaultValue().isEmpty()) ? this.bind.defaultValue() : null;
-    }
+  public String getDefaultValue() {
+    return ((this.bind != null) && !this.bind.defaultValue().isEmpty()) ? this.bind.defaultValue() : null;
+  }
 
-    public Bind getBind() {
-	return this.bind;
-    }
+  public Bind getBind() {
+    return this.bind;
+  }
 
-    protected void setBind(Bind bind) {
-	this.bind = bind;
-    }
+  protected void setBind(Bind bind) {
+    this.bind = bind;
+  }
 
-    public Model getModel() {
-	return this.model;
-    }
+  public Model getModel() {
+    return this.model;
+  }
 
-    protected void setModel(Model model) {
-	this.model = model;
-    }
+  protected void setModel(Model model) {
+    this.model = model;
+  }
 
-    public Parameter getParameter() {
-	return this.parameter;
-    }
+  public Parameter getParameter() {
+    return this.parameter;
+  }
 
-    protected void setParameter(Parameter parameter) {
-	this.parameter = parameter;
-    }
+  protected void setParameter(Parameter parameter) {
+    this.parameter = parameter;
+  }
 
-    public boolean isPathParam() {
-	return this.pathParam;
-    }
+  public boolean isPathParam() {
+    return this.pathParam;
+  }
 
-    protected void setPathParam(boolean pathParam) {
-	this.pathParam = pathParam;
-    }
+  protected void setPathParam(boolean pathParam) {
+    this.pathParam = pathParam;
+  }
 }

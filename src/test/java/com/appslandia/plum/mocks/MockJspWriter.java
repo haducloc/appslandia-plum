@@ -34,149 +34,149 @@ import jakarta.servlet.jsp.JspWriter;
  */
 public class MockJspWriter extends JspWriter {
 
-    final StringWriter buffer;
-    final PrintWriter out;
+  final StringWriter buffer;
+  final PrintWriter out;
 
-    public MockJspWriter() {
-	super(0, false);
-	this.buffer = new StringWriter();
-	this.out = new PrintWriter(this.buffer);
-    }
+  public MockJspWriter() {
+    super(0, false);
+    this.buffer = new StringWriter();
+    this.out = new PrintWriter(this.buffer);
+  }
 
-    public String getContent() {
-	return this.buffer.toString();
-    }
+  public String getContent() {
+    return this.buffer.toString();
+  }
 
-    @Override
-    public void newLine() throws IOException {
-	this.out.println();
-    }
+  @Override
+  public void newLine() throws IOException {
+    this.out.println();
+  }
 
-    @Override
-    public void print(boolean b) throws IOException {
-	this.out.print(b);
-    }
+  @Override
+  public void print(boolean b) throws IOException {
+    this.out.print(b);
+  }
 
-    @Override
-    public void print(char c) throws IOException {
-	this.out.print(c);
-    }
+  @Override
+  public void print(char c) throws IOException {
+    this.out.print(c);
+  }
 
-    @Override
-    public void print(int i) throws IOException {
-	this.out.print(i);
-    }
+  @Override
+  public void print(int i) throws IOException {
+    this.out.print(i);
+  }
 
-    @Override
-    public void print(long l) throws IOException {
-	this.out.print(l);
-    }
+  @Override
+  public void print(long l) throws IOException {
+    this.out.print(l);
+  }
 
-    @Override
-    public void print(float f) throws IOException {
-	this.out.print(f);
-    }
+  @Override
+  public void print(float f) throws IOException {
+    this.out.print(f);
+  }
 
-    @Override
-    public void print(double d) throws IOException {
-	this.out.print(d);
-    }
+  @Override
+  public void print(double d) throws IOException {
+    this.out.print(d);
+  }
 
-    @Override
-    public void print(char[] s) throws IOException {
-	this.out.print(s);
-    }
+  @Override
+  public void print(char[] s) throws IOException {
+    this.out.print(s);
+  }
 
-    @Override
-    public void print(String s) throws IOException {
-	this.out.print(s);
-    }
+  @Override
+  public void print(String s) throws IOException {
+    this.out.print(s);
+  }
 
-    @Override
-    public void print(Object obj) throws IOException {
-	this.out.print(obj);
-    }
+  @Override
+  public void print(Object obj) throws IOException {
+    this.out.print(obj);
+  }
 
-    @Override
-    public void println() throws IOException {
-	this.out.println();
-    }
+  @Override
+  public void println() throws IOException {
+    this.out.println();
+  }
 
-    @Override
-    public void println(boolean x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(boolean x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(char x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(char x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(int x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(int x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(long x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(long x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(float x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(float x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(double x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(double x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(char[] x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(char[] x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(String x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(String x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void println(Object x) throws IOException {
-	this.out.println(x);
-    }
+  @Override
+  public void println(Object x) throws IOException {
+    this.out.println(x);
+  }
 
-    @Override
-    public void clear() throws IOException {
-    }
+  @Override
+  public void clear() throws IOException {
+  }
 
-    @Override
-    public void clearBuffer() throws IOException {
-    }
+  @Override
+  public void clearBuffer() throws IOException {
+  }
 
-    @Override
-    public void flush() throws IOException {
-	this.out.flush();
-    }
+  @Override
+  public void flush() throws IOException {
+    this.out.flush();
+  }
 
-    @Override
-    public void close() throws IOException {
-	this.out.close();
-    }
+  @Override
+  public void close() throws IOException {
+    this.out.close();
+  }
 
-    @Override
-    public int getRemaining() {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public int getRemaining() {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public void write(char[] cbuf, int off, int len) throws IOException {
-	this.out.write(cbuf, off, len);
-    }
+  @Override
+  public void write(char[] cbuf, int off, int len) throws IOException {
+    this.out.write(cbuf, off, len);
+  }
 
-    @Override
-    public String toString() {
-	return this.buffer.toString();
-    }
+  @Override
+  public String toString() {
+    return this.buffer.toString();
+  }
 }

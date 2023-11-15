@@ -40,65 +40,65 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class OptionsFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: selectedValue*, items*, converter, readonly";
+  @Override
+  public String getDescription() {
+    return "variables: selectedValue*, items*, converter, readonly";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    Object value = context.getArgument("selectedValue");
+    String converter = context.getArgument("converter");
+    boolean readonly = context.getBool("readonly", false);
+    List<SelectItem> items = context.getRequiredArgument("items");
+
+    String fmtValue = context.getRequestContext().format(value, converter, false);
+    StringWriter out = new StringWriter(items.size() * 80);
+
+    // readonly
+    if (readonly) {
+      SelectItem selItem = items.stream().filter(item -> {
+
+        String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
+        return StringUtils.iequals(codeValue, fmtValue);
+
+      }).findFirst().orElse(null);
+
+      if (selItem != null) {
+        String codeValue = context.getRequestContext().format(selItem.getValue(), converter, false);
+        out.write(System.lineSeparator());
+
+        out.write("<option");
+        HtmlUtils.escAttribute(out, "value", codeValue);
+        HtmlUtils.selected(out);
+        out.write(">");
+
+        if (selItem.getDisplayName() != null) {
+          XmlEscaper.escapeXml(out, selItem.getDisplayName());
+        }
+        out.write("</option>");
+      }
+
+    } else {
+      // Not readonly
+      for (SelectItem item : items) {
+        String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
+        out.write(System.lineSeparator());
+
+        out.write("<option");
+        HtmlUtils.escAttribute(out, "value", codeValue);
+
+        if (StringUtils.iequals(codeValue, fmtValue)) {
+          HtmlUtils.selected(out);
+        }
+        out.write(">");
+
+        if (item.getDisplayName() != null) {
+          XmlEscaper.escapeXml(out, item.getDisplayName());
+        }
+        out.write("</option>");
+      }
     }
-
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	Object value = context.getArgument("selectedValue");
-	String converter = context.getArgument("converter");
-	boolean readonly = context.getBool("readonly", false);
-	List<SelectItem> items = context.getRequiredArgument("items");
-
-	String fmtValue = context.getRequestContext().format(value, converter, false);
-	StringWriter out = new StringWriter(items.size() * 80);
-
-	// readonly
-	if (readonly) {
-	    SelectItem selItem = items.stream().filter(item -> {
-
-		String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
-		return StringUtils.iequals(codeValue, fmtValue);
-
-	    }).findFirst().orElse(null);
-
-	    if (selItem != null) {
-		String codeValue = context.getRequestContext().format(selItem.getValue(), converter, false);
-		out.write(System.lineSeparator());
-
-		out.write("<option");
-		HtmlUtils.escAttribute(out, "value", codeValue);
-		HtmlUtils.selected(out);
-		out.write(">");
-
-		if (selItem.getDisplayName() != null) {
-		    XmlEscaper.escapeXml(out, selItem.getDisplayName());
-		}
-		out.write("</option>");
-	    }
-
-	} else {
-	    // Not readonly
-	    for (SelectItem item : items) {
-		String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
-		out.write(System.lineSeparator());
-
-		out.write("<option");
-		HtmlUtils.escAttribute(out, "value", codeValue);
-
-		if (StringUtils.iequals(codeValue, fmtValue)) {
-		    HtmlUtils.selected(out);
-		}
-		out.write(">");
-
-		if (item.getDisplayName() != null) {
-		    XmlEscaper.escapeXml(out, item.getDisplayName());
-		}
-		out.write("</option>");
-	    }
-	}
-	return new SafeString(out.toString());
-    }
+    return new SafeString(out.toString());
+  }
 }

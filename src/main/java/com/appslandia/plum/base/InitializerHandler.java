@@ -43,259 +43,278 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 public class InitializerHandler extends HttpFilter {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected HeaderPolicyProvider headerPolicyProvider;
+  @Inject
+  protected HeaderPolicyProvider headerPolicyProvider;
 
-    @Inject
-    protected CorsPolicyHandler corsPolicyHandler;
+  @Inject
+  protected CorsPolicyHandler corsPolicyHandler;
 
-    @Inject
-    protected CorsPolicyProvider corsPolicyProvider;
+  @Inject
+  protected CorsPolicyProvider corsPolicyProvider;
 
-    @Inject
-    protected AuthHandlerProvider authHandlerProvider;
+  @Inject
+  protected AuthHandlerProvider authHandlerProvider;
 
-    @Inject
-    protected AuthorizePolicyProvider authorizePolicyProvider;
+  @Inject
+  protected AuthorizePolicyProvider authorizePolicyProvider;
 
-    @Inject
-    protected ExceptionHandler exceptionHandler;
+  @Inject
+  protected ExceptionHandler exceptionHandler;
 
-    @Inject
-    protected RequestContextParser requestContextParser;
+  @Inject
+  protected RequestContextParser requestContextParser;
 
-    @Inject
-    protected RateLimitHandler rateLimitHandler;
+  @Inject
+  protected RateLimitHandler rateLimitHandler;
 
-    @Inject
-    protected RemoteClientVerifier remoteClientVerifier;
+  @Inject
+  protected RemoteClientVerifier remoteClientVerifier;
 
-    protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	if (request.getCharacterEncoding() == null) {
-	    request.setCharacterEncoding(StandardCharsets.UTF_8.name());
-	}
-	for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_HEADER_POLICIES)) {
-	    this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
-	}
+  protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    if (request.getCharacterEncoding() == null) {
+      request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     }
-
-    protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	int status = HttpServletResponse.SC_MOVED_TEMPORARILY;
-
-	String url = ServletUtils.getRequestUrl(request, requestContext.getLanguageId());
-	ServletUtils.sendRedirect(response, this.appConfig.isEnableSession() ? response.encodeRedirectURL(url) : url, status);
+    for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_HEADER_POLICIES)) {
+      this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
+  }
 
-    @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
-	Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
-	try {
-	    // RequestContext
-	    RequestContext requestContext = this.requestContextParser.parse(request, response);
+  protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    int status = HttpServletResponse.SC_MOVED_TEMPORARILY;
 
-	    // Initialize
-	    initialize(request, response, requestContext);
+    String url = ServletUtils.getRequestUrl(request, requestContext.getLanguageId());
+    ServletUtils.sendRedirect(response, this.appConfig.isEnableSession() ? response.encodeRedirectURL(url) : url,
+        status);
+  }
 
-	    // Not Found?
-	    if (requestContext.getActionDesc() == null) {
-		throw new NotFoundException(requestContext.res(Resources.ERROR_NOT_FOUND)).setTitleKey(Resources.ERROR_NOT_FOUND);
-	    }
+  @Override
+  protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
+    Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
+    try {
+      // RequestContext
+      RequestContext requestContext = this.requestContextParser.parse(request, response);
 
-	    // Allow Method?
-	    if (!requestContext.getActionDesc().getAllowMethods().contains(request.getMethod())) {
-		throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED, requestContext.res(Resources.ERROR_METHOD_NOT_ALLOWED))
-			.setTitleKey(Resources.ERROR_METHOD_NOT_ALLOWED);
-	    }
+      // Initialize
+      initialize(request, response, requestContext);
 
-	    // Consume Type
-	    if (requestContext.getActionDesc().getConsumeType() != null) {
-		if (!ServletUtils.allowContentType(request.getContentType(), requestContext.getActionDesc().getConsumeType().value())) {
-		    throw new HttpException(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE, requestContext.res(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE))
-			    .setTitleKey(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE);
-		}
-	    }
+      // Not Found?
+      if (requestContext.getActionDesc() == null) {
+        throw new NotFoundException(requestContext.res(Resources.ERROR_NOT_FOUND))
+            .setTitleKey(Resources.ERROR_NOT_FOUND);
+      }
 
-	    // Language
-	    if (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
-		if (!requestContext.isGetOrHead()) {
-		    throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
-		}
-		redirectLang(request, response, requestContext);
-		return;
-	    }
+      // Allow Method?
+      if (!requestContext.getActionDesc().getAllowMethods().contains(request.getMethod())) {
+        throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+            requestContext.res(Resources.ERROR_METHOD_NOT_ALLOWED)).setTitleKey(Resources.ERROR_METHOD_NOT_ALLOWED);
+      }
 
-	    // Allow Client
-	    if (!this.remoteClientVerifier.allowClient(request)) {
-		throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN));
-	    }
+      // Consume Type
+      if (requestContext.getActionDesc().getConsumeType() != null) {
+        if (!ServletUtils.allowContentType(request.getContentType(),
+            requestContext.getActionDesc().getConsumeType().value())) {
+          throw new HttpException(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
+              requestContext.res(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE))
+              .setTitleKey(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE);
+        }
+      }
 
-	    // HTTP OPTIONS
-	    if (HttpMethod.OPTIONS.equals(request.getMethod())) {
-		doOptions(request, response, requestContext);
-		return;
-	    }
+      // Language
+      if (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+        if (!requestContext.isGetOrHead()) {
+          throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
+        }
+        redirectLang(request, response, requestContext);
+        return;
+      }
 
-	    // RequestWrapper
-	    request = new RequestWrapper(request, requestContext.getPathParamMap());
-	    if (isMockContext()) {
-		request.setAttribute(RequestWrapper.class.getName(), request);
-	    }
+      // Allow Client
+      if (!this.remoteClientVerifier.allowClient(request)) {
+        throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN));
+      }
 
-	    // ResponseWrapperImpl
-	    response = new ResponseWrapperImpl(response);
+      // HTTP OPTIONS
+      if (HttpMethod.OPTIONS.equals(request.getMethod())) {
+        doOptions(request, response, requestContext);
+        return;
+      }
 
-	    // Authorize Origin
-	    String origin = this.corsPolicyHandler.getCrossOrigin(request);
-	    if (origin != null) {
+      // RequestWrapper
+      request = new RequestWrapper(request, requestContext.getPathParamMap());
+      if (isMockContext()) {
+        request.setAttribute(RequestWrapper.class.getName(), request);
+      }
 
-		// Not @EnableCors
-		if (requestContext.getActionDesc().getEnableCors() == null) {
-		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, "No @EnableCors"));
-		}
-		CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
-		CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, origin, corsPolicy);
+      // ResponseWrapperImpl
+      response = new ResponseWrapperImpl(response);
 
-		if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
-		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
-		}
-	    }
+      // Authorize Origin
+      String origin = this.corsPolicyHandler.getCrossOrigin(request);
+      if (origin != null) {
 
-	    // Authorize
-	    Authorize authorize = requestContext.getActionDesc().getAuthorize();
-	    if (authorize != null) {
-		UserPrincipal principal = ServletUtils.getUserPrincipal(request);
+        // Not @EnableCors
+        if (requestContext.getActionDesc().getEnableCors() == null) {
+          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, "No @EnableCors"));
+        }
+        CorsPolicy corsPolicy = this.corsPolicyProvider
+            .getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
+        CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, origin,
+            corsPolicy);
 
-		// Authenticate
-		if (principal == null) {
-		    this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askAuthenticate(request, response, requestContext);
-		    return;
-		}
+        if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
+          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
+        }
+      }
 
-		// Check Module
-		if (authorize.module() && !requestContext.getModule().equalsIgnoreCase(principal.getModule())) {
-		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
-		}
+      // Authorize
+      Authorize authorize = requestContext.getActionDesc().getAuthorize();
+      if (authorize != null) {
+        UserPrincipal principal = ServletUtils.getUserPrincipal(request);
 
-		// REAUTHENTICATE
-		if (authorize.reauth() && !isReauthenticated(principal)) {
-		    this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response, requestContext);
-		    return;
-		}
+        // Authenticate
+        if (principal == null) {
+          this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askAuthenticate(request, response,
+              requestContext);
+          return;
+        }
 
-		// Authorize
-		if (!authorize(request, principal, authorize)) {
-		    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
-		}
-	    }
+        // Check Module
+        if (authorize.module() && !requestContext.getModule().equalsIgnoreCase(principal.getModule())) {
+          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
+              .setTitleKey(Resources.ERROR_FORBIDDEN);
+        }
 
-	    // Rate Limit
-	    this.rateLimitHandler.checkRequest(request, requestContext);
+        // REAUTHENTICATE
+        if (authorize.reauth() && !isReauthenticated(principal)) {
+          this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response,
+              requestContext);
+          return;
+        }
 
-	    // GZIP
-	    final boolean gzipContent = (requestContext.getActionDesc().getEnableGzip() != null) && ServletUtils.isGzipAccepted(request);
+        // Authorize
+        if (!authorize(request, principal, authorize)) {
+          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
+              .setTitleKey(Resources.ERROR_FORBIDDEN);
+        }
+      }
 
-	    // VARY: Accept-Encoding
-	    if (requestContext.getActionDesc().getEnableGzip() != null) {
-		response.addHeader("Vary", "Accept-Encoding");
-	    }
+      // Rate Limit
+      this.rateLimitHandler.checkRequest(request, requestContext);
 
-	    // ETAG
-	    if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
-		ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, gzipContent);
-		chain.doFilter(request, wrapper);
+      // GZIP
+      final boolean gzipContent = (requestContext.getActionDesc().getEnableGzip() != null)
+          && ServletUtils.isGzipAccepted(request);
 
-		if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+      // VARY: Accept-Encoding
+      if (requestContext.getActionDesc().getEnableGzip() != null) {
+        response.addHeader("Vary", "Accept-Encoding");
+      }
 
-		    // If the cacheControl contains 'no-store', skip ETag
-		    String cacheControl = response.getHeader("Cache-Control");
-		    if (cacheControl != null && cacheControl.contains("no-store")) {
-			return;
-		    }
-		}
-		wrapper.finishWrapper();
+      // ETAG
+      if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
+        ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, gzipContent);
+        chain.doFilter(request, wrapper);
 
-		if (!ServletUtils.checkNotModified(request, response, ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
-		    response.setContentLengthLong(wrapper.getContent().size());
-		    wrapper.getContent().writeTo(response.getOutputStream());
-		}
-		return;
-	    }
+        if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
 
-	    // GZIP
-	    if (gzipContent) {
-		GzipResponseWrapper wrapper = new GzipResponseWrapper(response);
-		try {
-		    chain.doFilter(request, wrapper);
+          // If the cacheControl contains 'no-store', skip ETag
+          String cacheControl = response.getHeader("Cache-Control");
+          if (cacheControl != null && cacheControl.contains("no-store")) {
+            return;
+          }
+        }
+        wrapper.finishWrapper();
 
-		    if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
-			return;
-		    }
-		    wrapper.finishWrapper();
+        if (!ServletUtils.checkNotModified(request, response,
+            ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
+          response.setContentLengthLong(wrapper.getContent().size());
+          wrapper.getContent().writeTo(response.getOutputStream());
+        }
+        return;
+      }
 
-		} catch (Exception ex) {
-		    if (response.isCommitted()) {
-			wrapper.finishWrapper();
-		    }
-		    throw ex;
-		}
-		return;
-	    }
+      // GZIP
+      if (gzipContent) {
+        GzipResponseWrapper wrapper = new GzipResponseWrapper(response);
+        try {
+          chain.doFilter(request, wrapper);
 
-	    chain.doFilter(request, response);
+          if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+            return;
+          }
+          wrapper.finishWrapper();
 
-	} catch (Exception ex) {
-	    this.exceptionHandler.handleException(request, response, ex);
-	}
+        } catch (Exception ex) {
+          if (response.isCommitted()) {
+            wrapper.finishWrapper();
+          }
+          throw ex;
+        }
+        return;
+      }
+
+      chain.doFilter(request, response);
+
+    } catch (Exception ex) {
+      this.exceptionHandler.handleException(request, response, ex);
     }
+  }
 
-    protected boolean authorize(HttpServletRequest request, UserPrincipal principal, Authorize authorize) {
-	String[] roles = authorize.roles();
-	String[] policies = authorize.policies();
-	if ((roles.length == 0) && (policies.length == 0)) {
-	    return true;
-	}
-	if (roles.length > 0) {
-	    if (Arrays.stream(roles).anyMatch(role -> request.isUserInRole(role))) {
-		return true;
-	    }
-	}
-	if (policies.length > 0) {
-	    if (this.authorizePolicyProvider.authorize(principal, policies)) {
-		return true;
-	    }
-	}
-	return false;
+  protected boolean authorize(HttpServletRequest request, UserPrincipal principal, Authorize authorize) {
+    String[] roles = authorize.roles();
+    String[] policies = authorize.policies();
+    if ((roles.length == 0) && (policies.length == 0)) {
+      return true;
     }
-
-    protected boolean isReauthenticated(UserPrincipal principal) {
-	if (principal.getReauthAt() == 0) {
-	    return false;
-	}
-	return DateUtils.isFutureTime(principal.getReauthAt() + this.appConfig.getLong(AppConfig.CONFIG_REAUTH_TIMEOUT_MS), 0);
+    if (roles.length > 0) {
+      if (Arrays.stream(roles).anyMatch(role -> request.isUserInRole(role))) {
+        return true;
+      }
     }
-
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	String origin = request.getHeader(CorsPolicyHandler.HEADER_ORIGIN);
-	if ((origin == null) || (request.getHeader(CorsPolicyHandler.HEADER_AC_REQUEST_METHOD) == null)) {
-	    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
-	}
-	CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
-	CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handlePreflight(request, response, corsPolicy);
-
-	if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
-	    throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
-	}
+    if (policies.length > 0) {
+      if (this.authorizePolicyProvider.authorize(principal, policies)) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    public boolean isMockContext() {
-	return false;
+  protected boolean isReauthenticated(UserPrincipal principal) {
+    if (principal.getReauthAt() == 0) {
+      return false;
     }
+    return DateUtils.isFutureTime(principal.getReauthAt() + this.appConfig.getLong(AppConfig.CONFIG_REAUTH_TIMEOUT_MS),
+        0);
+  }
+
+  protected void doOptions(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    String origin = request.getHeader(CorsPolicyHandler.HEADER_ORIGIN);
+    if ((origin == null) || (request.getHeader(CorsPolicyHandler.HEADER_AC_REQUEST_METHOD) == null)) {
+      throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
+          .setTitleKey(Resources.ERROR_FORBIDDEN);
+    }
+    CorsPolicy corsPolicy = this.corsPolicyProvider
+        .getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
+    CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handlePreflight(request, response, corsPolicy);
+
+    if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
+      throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
+    }
+  }
+
+  public boolean isMockContext() {
+    return false;
+  }
 }

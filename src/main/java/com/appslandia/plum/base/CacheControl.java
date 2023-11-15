@@ -38,11 +38,11 @@ import com.appslandia.common.utils.StringUtils;
 @Documented
 public @interface CacheControl {
 
-    public static final String NO_CACHE_POLICY = "noCache";
+  public static final String NO_CACHE_POLICY = "noCache";
 
-    String value() default StringUtils.EMPTY_STRING;
+  String value() default StringUtils.EMPTY_STRING;
 
-    boolean nocache() default false;
+  boolean nocache() default false;
 
-    public static final CacheControl IMPL_NO_CACHE = ActionDescUtils.createCacheControl(NO_CACHE_POLICY);
+  public static final CacheControl IMPL_NO_CACHE = ActionDescUtils.createCacheControl(NO_CACHE_POLICY);
 }

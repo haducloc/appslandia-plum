@@ -27,45 +27,45 @@ package com.appslandia.plum.base;
  */
 public class LoginToken {
 
-    private String series;
-    private String token;
+  private String series;
+  private String token;
 
-    private String module;
-    private String identity;
+  private String module;
+  private String identity;
 
-    public String getSeries() {
-	return this.series;
-    }
+  public String getSeries() {
+    return this.series;
+  }
 
-    public LoginToken setSeries(String series) {
-	this.series = series;
-	return this;
-    }
+  public LoginToken setSeries(String series) {
+    this.series = series;
+    return this;
+  }
 
-    public String getToken() {
-	return this.token;
-    }
+  public String getToken() {
+    return this.token;
+  }
 
-    public LoginToken setToken(String token) {
-	this.token = token;
-	return this;
-    }
+  public LoginToken setToken(String token) {
+    this.token = token;
+    return this;
+  }
 
-    public String getModule() {
-	return this.module;
-    }
+  public String getModule() {
+    return this.module;
+  }
 
-    public LoginToken setModule(String module) {
-	this.module = module;
-	return this;
-    }
+  public LoginToken setModule(String module) {
+    this.module = module;
+    return this;
+  }
 
-    public String getIdentity() {
-	return this.identity;
-    }
+  public String getIdentity() {
+    return this.identity;
+  }
 
-    public LoginToken setIdentity(String identity) {
-	this.identity = identity;
-	return this;
-    }
+  public LoginToken setIdentity(String identity) {
+    this.identity = identity;
+    return this;
+  }
 }

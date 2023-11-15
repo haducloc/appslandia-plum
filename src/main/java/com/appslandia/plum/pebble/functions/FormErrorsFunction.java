@@ -47,91 +47,93 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class FormErrorsFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: includeFields, fieldOrders, form, listClass, itemClass";
+  @Override
+  public String getDescription() {
+    return "variables: includeFields, fieldOrders, form, listClass, itemClass";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String fieldOrders = context.getArgument("fieldOrders");
+    boolean includeFields = context.getBool("includeFields", true);
+    String form = context.getArgument("form");
+
+    String listClass = context.getArgument("listClass");
+    String itemClass = context.getArgument("itemClass");
+
+    boolean hasErrors = false;
+    if (includeFields) {
+      hasErrors = Objects.equals(form, context.getModelState().getForm()) && !context.getModelState().isValid();
+    } else {
+      hasErrors = Objects.equals(form, context.getModelState().getForm())
+          && !(context.getModelState().isValid(ModelState.MODEL_FIELD)
+              && context.getModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
     }
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String fieldOrders = context.getArgument("fieldOrders");
-	boolean includeFields = context.getBool("includeFields", true);
-	String form = context.getArgument("form");
+    if (hasErrors) {
+      StringWriter out = new StringWriter(context.getModelState().getErrors().size() * 128);
 
-	String listClass = context.getArgument("listClass");
-	String itemClass = context.getArgument("itemClass");
+      out.write("<ul");
+      if (listClass != null)
+        HtmlUtils.escAttribute(out, "class", listClass);
+      out.write(">");
 
-	boolean hasErrors = false;
-	if (includeFields) {
-	    hasErrors = Objects.equals(form, context.getModelState().getForm()) && !context.getModelState().isValid();
-	} else {
-	    hasErrors = Objects.equals(form, context.getModelState().getForm())
-		    && !(context.getModelState().isValid(ModelState.MODEL_FIELD) && context.getModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
-	}
+      // Write field errors
+      if (includeFields) {
 
-	if (hasErrors) {
-	    StringWriter out = new StringWriter(context.getModelState().getErrors().size() * 128);
+        List<Entry<String, List<Message>>> errors = new ArrayList<>(context.getModelState().getErrors().entrySet());
+        if (fieldOrders != null) {
+          Collections.sort(errors, FormErrorsTag.toFieldComparator(fieldOrders));
+        }
 
-	    out.write("<ul");
-	    if (listClass != null)
-		HtmlUtils.escAttribute(out, "class", listClass);
-	    out.write(">");
+        for (Entry<String, List<Message>> fieldError : errors) {
+          if (!fieldError.getKey().equals(ModelState.MODEL_FIELD)
+              && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
 
-	    // Write field errors
-	    if (includeFields) {
+            this.writeMessages(out, fieldError.getValue(), itemClass);
+          }
+        }
+      }
 
-		List<Entry<String, List<Message>>> errors = new ArrayList<>(context.getModelState().getErrors().entrySet());
-		if (fieldOrders != null) {
-		    Collections.sort(errors, FormErrorsTag.toFieldComparator(fieldOrders));
-		}
+      // Model errors
+      List<Message> errors = context.getModelState().getErrors().get(ModelState.MODEL_FIELD);
+      if (errors != null) {
+        this.writeMessages(out, errors, itemClass);
+      }
 
-		for (Entry<String, List<Message>> fieldError : errors) {
-		    if (!fieldError.getKey().equals(ModelState.MODEL_FIELD) && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
+      // CSRF
+      errors = context.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
+      if (errors != null) {
+        this.writeMessages(out, errors, itemClass);
+      }
 
-			this.writeMessages(out, fieldError.getValue(), itemClass);
-		    }
-		}
-	    }
-
-	    // Model errors
-	    List<Message> errors = context.getModelState().getErrors().get(ModelState.MODEL_FIELD);
-	    if (errors != null) {
-		this.writeMessages(out, errors, itemClass);
-	    }
-
-	    // CSRF
-	    errors = context.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
-	    if (errors != null) {
-		this.writeMessages(out, errors, itemClass);
-	    }
-
-	    out.write(System.lineSeparator());
-	    out.write("</ul>");
-	    return new SafeString(out.toString());
-	}
-	return null;
+      out.write(System.lineSeparator());
+      out.write("</ul>");
+      return new SafeString(out.toString());
     }
+    return null;
+  }
 
-    protected void writeMessages(Writer out, List<Message> messages, String itemClass) throws IOException {
-	for (Message message : messages) {
-	    out.write(System.lineSeparator());
+  protected void writeMessages(Writer out, List<Message> messages, String itemClass) throws IOException {
+    for (Message message : messages) {
+      out.write(System.lineSeparator());
 
-	    out.write("<li");
-	    if (itemClass == null) {
-		HtmlUtils.escAttribute(out, "class", "l-fi-error");
-	    } else {
-		out.write(" class=\"");
-		out.write(itemClass);
-		out.write(" l-fi-error\"");
-	    }
-	    out.write(">");
+      out.write("<li");
+      if (itemClass == null) {
+        HtmlUtils.escAttribute(out, "class", "l-fi-error");
+      } else {
+        out.write(" class=\"");
+        out.write(itemClass);
+        out.write(" l-fi-error\"");
+      }
+      out.write(">");
 
-	    if (message.isEscXml()) {
-		XmlEscaper.escapeXml(out, message.getText());
-	    } else {
-		out.write(message.getText());
-	    }
-	    out.write("</li>");
-	}
+      if (message.isEscXml()) {
+        XmlEscaper.escapeXml(out, message.getText());
+      } else {
+        out.write(message.getText());
+      }
+      out.write("</li>");
     }
+  }
 }

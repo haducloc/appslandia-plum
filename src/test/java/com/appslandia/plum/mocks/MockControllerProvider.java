@@ -32,11 +32,11 @@ import jakarta.inject.Inject;
  */
 public class MockControllerProvider implements ControllerProvider {
 
-    @Inject
-    protected ObjectFactory factory;
+  @Inject
+  protected ObjectFactory factory;
 
-    @Override
-    public Object getController(Class<?> controllerClass) throws Exception {
-	return this.factory.getObject(controllerClass);
-    }
+  @Override
+  public Object getController(Class<?> controllerClass) throws Exception {
+    return this.factory.getObject(controllerClass);
+  }
 }

@@ -32,20 +32,20 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public abstract class RateLimitHandler extends InitializeObject {
 
-    @Inject
-    protected RateLimitSkipper rateLimitSkipper;
+  @Inject
+  protected RateLimitSkipper rateLimitSkipper;
 
-    @Override
-    protected void init() throws Exception {
+  @Override
+  protected void init() throws Exception {
+  }
+
+  public void checkRequest(HttpServletRequest request, RequestContext requestContext) throws TooManyRequestsException {
+    this.initialize();
+
+    if (!this.rateLimitSkipper.skipRequest(request, requestContext)) {
+      checkClient(requestContext.getClientId());
     }
+  }
 
-    public void checkRequest(HttpServletRequest request, RequestContext requestContext) throws TooManyRequestsException {
-	this.initialize();
-
-	if (!this.rateLimitSkipper.skipRequest(request, requestContext)) {
-	    checkClient(requestContext.getClientId());
-	}
-    }
-
-    protected abstract void checkClient(String clientId) throws TooManyRequestsException;
+  protected abstract void checkClient(String clientId) throws TooManyRequestsException;
 }

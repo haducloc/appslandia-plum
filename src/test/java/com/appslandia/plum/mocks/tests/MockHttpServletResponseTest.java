@@ -39,74 +39,74 @@ import com.appslandia.plum.mocks.MockSessionCookieConfig;
  */
 public class MockHttpServletResponseTest {
 
-    MockServletContext servletContext;
+  MockServletContext servletContext;
 
-    @BeforeEach
-    public void beforeEachTest() {
-	servletContext = new MockServletContext(new MockSessionCookieConfig());
+  @BeforeEach
+  public void beforeEachTest() {
+    servletContext = new MockServletContext(new MockSessionCookieConfig());
+  }
+
+  @Test
+  public void test() {
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+    response.setCharacterEncoding("UTF-8");
+    Assertions.assertEquals("UTF-8", response.getCharacterEncoding());
+
+    try {
+      response.flushBuffer();
+    } catch (IOException ex) {
     }
+    Assertions.assertTrue(response.isCommitted());
 
-    @Test
-    public void test() {
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	response.setCharacterEncoding("UTF-8");
-	Assertions.assertEquals("UTF-8", response.getCharacterEncoding());
+    response.setContentType("text/html");
+    Assertions.assertEquals("text/html", response.getContentType());
+  }
 
-	try {
-	    response.flushBuffer();
-	} catch (IOException ex) {
-	}
-	Assertions.assertTrue(response.isCommitted());
+  @Test
+  public void test_headers() {
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+    response.addHeaderValues("h1", "v1");
+    response.addHeaderValues("h2", "v21", "v22");
 
-	response.setContentType("text/html");
-	Assertions.assertEquals("text/html", response.getContentType());
+    Assertions.assertEquals("v1", response.getHeader("h1"));
+    response.addHeaderValues("h1", "v11");
+    Assertions.assertTrue(response.getHeaders("h1").size() == 2);
+
+    Assertions.assertEquals("v21", response.getHeader("h2"));
+    Assertions.assertEquals("v21", response.getHeaders("h2").iterator().next());
+  }
+
+  @Test
+  public void test_sendError() {
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+    try {
+      response.sendError(500);
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
+    Assertions.assertEquals(500, response.getStatus());
+  }
 
-    @Test
-    public void test_headers() {
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	response.addHeaderValues("h1", "v1");
-	response.addHeaderValues("h2", "v21", "v22");
+  @Test
+  public void test_cookies() {
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+    response.addCookie(MockServletUtils.createCookie(servletContext, "cookie1", "v1", 1000));
 
-	Assertions.assertEquals("v1", response.getHeader("h1"));
-	response.addHeaderValues("h1", "v11");
-	Assertions.assertTrue(response.getHeaders("h1").size() == 2);
+    Assertions.assertNotNull(response.getCookie("cookie1"));
+    Assertions.assertEquals("v1", response.getCookie("cookie1").getValue());
+  }
 
-	Assertions.assertEquals("v21", response.getHeader("h2"));
-	Assertions.assertEquals("v21", response.getHeaders("h2").iterator().next());
+  @Test
+  public void test_writeContent() {
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+    try {
+      response.getWriter().write("data");
+      response.flushBuffer();
+
+      Assertions.assertEquals("data", response.getContent().toString(StandardCharsets.UTF_8));
+
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
-
-    @Test
-    public void test_sendError() {
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	try {
-	    response.sendError(500);
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-	Assertions.assertEquals(500, response.getStatus());
-    }
-
-    @Test
-    public void test_cookies() {
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	response.addCookie(MockServletUtils.createCookie(servletContext, "cookie1", "v1", 1000));
-
-	Assertions.assertNotNull(response.getCookie("cookie1"));
-	Assertions.assertEquals("v1", response.getCookie("cookie1").getValue());
-    }
-
-    @Test
-    public void test_writeContent() {
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	try {
-	    response.getWriter().write("data");
-	    response.flushBuffer();
-
-	    Assertions.assertEquals("data", response.getContent().toString(StandardCharsets.UTF_8));
-
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
+  }
 }

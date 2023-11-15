@@ -30,19 +30,19 @@ import com.appslandia.common.validators.ModelValidator;
  */
 public abstract class ConfirmPasswordValidator<T extends ConfirmPasswordModel> extends ModelValidator<T> {
 
-    public static final String MESSAGE_TEMPLATE = "{com.appslandia.plum.models.ConfirmPasswordValidator.message}";
+  public static final String MESSAGE_TEMPLATE = "{com.appslandia.plum.models.ConfirmPasswordValidator.message}";
 
-    @Override
-    public boolean validate(T model) {
-	if (model.getNewPassword() == null) {
-	    return true;
-	}
-	if (model.getConfirmPassword() == null) {
-	    return true;
-	}
-	if (!PasswordUtil.isValid(model.getNewPassword())) {
-	    return true;
-	}
-	return model.getConfirmPassword().equals(model.getNewPassword());
+  @Override
+  public boolean validate(T model) {
+    if (model.getNewPassword() == null) {
+      return true;
     }
+    if (model.getConfirmPassword() == null) {
+      return true;
+    }
+    if (!PasswordUtil.isValid(model.getNewPassword())) {
+      return true;
+    }
+    return model.getConfirmPassword().equals(model.getNewPassword());
+  }
 }

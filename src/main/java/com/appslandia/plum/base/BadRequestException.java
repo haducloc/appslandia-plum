@@ -29,21 +29,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @NotLog
 public class BadRequestException extends HttpException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public BadRequestException() {
-	super(HttpServletResponse.SC_BAD_REQUEST);
-    }
+  public BadRequestException() {
+    super(HttpServletResponse.SC_BAD_REQUEST);
+  }
 
-    public BadRequestException(String message) {
-	super(HttpServletResponse.SC_BAD_REQUEST, message);
-    }
+  public BadRequestException(String message) {
+    super(HttpServletResponse.SC_BAD_REQUEST, message);
+  }
 
-    public BadRequestException(String message, Throwable cause) {
-	super(HttpServletResponse.SC_BAD_REQUEST, message, cause);
-    }
+  public BadRequestException(String message, Throwable cause) {
+    super(HttpServletResponse.SC_BAD_REQUEST, message, cause);
+  }
 
-    public BadRequestException(Throwable cause) {
-	super(HttpServletResponse.SC_BAD_REQUEST, cause);
-    }
+  public BadRequestException(Throwable cause) {
+    super(HttpServletResponse.SC_BAD_REQUEST, cause);
+  }
 }

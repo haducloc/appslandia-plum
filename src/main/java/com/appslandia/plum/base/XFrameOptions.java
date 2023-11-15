@@ -30,36 +30,36 @@ import com.appslandia.common.utils.StringUtils;
  */
 public class XFrameOptions {
 
-    private boolean deny;
-    private boolean sameOrigin;
-    private String allowFrom;
+  private boolean deny;
+  private boolean sameOrigin;
+  private String allowFrom;
 
-    public XFrameOptions deny() {
-	this.deny = true;
-	return this;
-    }
+  public XFrameOptions deny() {
+    this.deny = true;
+    return this;
+  }
 
-    public XFrameOptions sameOrigin() {
-	this.sameOrigin = true;
-	return this;
-    }
+  public XFrameOptions sameOrigin() {
+    this.sameOrigin = true;
+    return this;
+  }
 
-    public XFrameOptions allowFrom(String value) {
-	this.allowFrom = Asserts.notNull(StringUtils.trimToNull(value));
-	return this;
-    }
+  public XFrameOptions allowFrom(String value) {
+    this.allowFrom = Asserts.notNull(StringUtils.trimToNull(value));
+    return this;
+  }
 
-    @Override
-    public String toString() {
-	if (this.deny) {
-	    return "DENY";
-	}
-	if (this.sameOrigin) {
-	    return "SAMEORIGIN";
-	}
-	if (this.allowFrom != null) {
-	    return "ALLOW-FROM " + this.allowFrom;
-	}
-	return null;
+  @Override
+  public String toString() {
+    if (this.deny) {
+      return "DENY";
     }
+    if (this.sameOrigin) {
+      return "SAMEORIGIN";
+    }
+    if (this.allowFrom != null) {
+      return "ALLOW-FROM " + this.allowFrom;
+    }
+    return null;
+  }
 }

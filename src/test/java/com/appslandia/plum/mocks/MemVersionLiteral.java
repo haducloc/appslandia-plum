@@ -29,10 +29,10 @@ import jakarta.enterprise.util.AnnotationLiteral;
  */
 @SuppressWarnings("all")
 public class MemVersionLiteral extends AnnotationLiteral<MemVersion> implements MemVersion {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final MemVersion IMPL = new MemVersionLiteral();
+  public static final MemVersion IMPL = new MemVersionLiteral();
 
-    private MemVersionLiteral() {
-    }
+  private MemVersionLiteral() {
+  }
 }

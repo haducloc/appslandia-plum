@@ -45,133 +45,138 @@ import jakarta.validation.constraints.NotNull;
  */
 public class CheckboxFunctionTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+  protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+  }
+
+  @Test
+  public void test() {
+    String templateContent = """
+        	{{ checkbox(path='model.roles', codeValue='admin') }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("roles", "admin,operator");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" checked=\"checked\"", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_unchecked() {
+    String templateContent = """
+        	{{ checkbox(path='model.roles', codeValue='admin') }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("roles", "operator");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\"", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_checked_readonly() {
+    String templateContent = """
+        	{{ checkbox(path='model.roles', codeValue='admin', readonly=true) }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("roles", "admin,operator");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\"",
+          content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_unchecked_readonly() {
+    String templateContent = """
+        	{{ checkbox(path='model.roles', codeValue='admin', readonly=true) }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("roles", "operator");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" disabled=\"disabled\"", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
+      request.storeModel(model);
+
+      return ActionResult.EMPTY;
+    }
+  }
+
+  public static class UserModel {
+
+    @NotNull
+    private String roles;
+
+    public String getRoles() {
+      return roles;
     }
 
-    @Test
-    public void test() {
-	String templateContent = """
-			{{ checkbox(path='model.roles', codeValue='admin') }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("roles", "admin,operator");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" checked=\"checked\"", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    public void setRoles(String roles) {
+      this.roles = roles;
     }
-
-    @Test
-    public void test_unchecked() {
-	String templateContent = """
-			{{ checkbox(path='model.roles', codeValue='admin') }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("roles", "operator");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\"", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_checked_readonly() {
-	String templateContent = """
-			{{ checkbox(path='model.roles', codeValue='admin', readonly=true) }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("roles", "admin,operator");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\"", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_unchecked_readonly() {
-	String templateContent = """
-			{{ checkbox(path='model.roles', codeValue='admin', readonly=true) }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("roles", "operator");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("id=\"roles\" name=\"roles\" value=\"admin\" disabled=\"disabled\"", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
-	    request.storeModel(model);
-
-	    return ActionResult.EMPTY;
-	}
-    }
-
-    public static class UserModel {
-
-	@NotNull
-	private String roles;
-
-	public String getRoles() {
-	    return roles;
-	}
-
-	public void setRoles(String roles) {
-	    this.roles = roles;
-	}
-    }
+  }
 }

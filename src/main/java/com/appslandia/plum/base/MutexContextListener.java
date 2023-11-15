@@ -32,15 +32,15 @@ import jakarta.servlet.annotation.WebListener;
 @WebListener
 public class MutexContextListener implements ServletContextListener {
 
-    public static final String ATTRIBUTE_MUTEX = "mutex";
+  public static final String ATTRIBUTE_MUTEX = "mutex";
 
-    @Override
-    public void contextInitialized(ServletContextEvent sce) {
-	sce.getServletContext().setAttribute(ATTRIBUTE_MUTEX, new Object());
-    }
+  @Override
+  public void contextInitialized(ServletContextEvent sce) {
+    sce.getServletContext().setAttribute(ATTRIBUTE_MUTEX, new Object());
+  }
 
-    @Override
-    public void contextDestroyed(ServletContextEvent sce) {
-	sce.getServletContext().removeAttribute(ATTRIBUTE_MUTEX);
-    }
+  @Override
+  public void contextDestroyed(ServletContextEvent sce) {
+    sce.getServletContext().removeAttribute(ATTRIBUTE_MUTEX);
+  }
 }

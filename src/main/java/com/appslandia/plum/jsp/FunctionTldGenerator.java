@@ -35,75 +35,75 @@ import com.appslandia.common.base.TextBuilder;
  */
 public class FunctionTldGenerator {
 
-    public static void main(String[] args) {
-	TextBuilder sb = new TextBuilder();
+  public static void main(String[] args) {
+    TextBuilder sb = new TextBuilder();
 
-	generateFunction(Functions.class, sb);
-	generateFunction(OwaspFunctions.class, sb);
-	generateFunction(Pipe.class, sb);
+    generateFunction(Functions.class, sb);
+    generateFunction(OwaspFunctions.class, sb);
+    generateFunction(Pipe.class, sb);
 
-	System.out.println(sb);
+    System.out.println(sb);
+  }
+
+  public static void generateFunction(Class<?> clazz, TextBuilder sb) {
+    List<Method> functionMths = new ArrayList<>();
+    for (Method method : clazz.getMethods()) {
+      if (Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers())) {
+
+        if (method.getDeclaredAnnotation(Function.class) != null) {
+          functionMths.add(method);
+        }
+      }
     }
+    Collections.sort(functionMths, (m1, m2) -> {
+      int compare = m1.getDeclaringClass().getName().compareTo(m2.getDeclaringClass().getName());
+      if (compare != 0) {
+        return compare;
+      }
+      return m1.getName().compareTo(m2.getName());
+    });
 
-    public static void generateFunction(Class<?> clazz, TextBuilder sb) {
-	List<Method> functionMths = new ArrayList<>();
-	for (Method method : clazz.getMethods()) {
-	    if (Modifier.isPublic(method.getModifiers()) && Modifier.isStatic(method.getModifiers())) {
+    for (Method functionMth : functionMths) {
+      Function function = functionMth.getDeclaredAnnotation(Function.class);
+      String signature = functionSignature(functionMth);
 
-		if (method.getDeclaredAnnotation(Function.class) != null) {
-		    functionMths.add(method);
-		}
-	    }
-	}
-	Collections.sort(functionMths, (m1, m2) -> {
-	    int compare = m1.getDeclaringClass().getName().compareTo(m2.getDeclaringClass().getName());
-	    if (compare != 0) {
-		return compare;
-	    }
-	    return m1.getName().compareTo(m2.getName());
-	});
+      String name = function.name().length() == 0 ? functionMth.getName() : function.name();
+      String desc = function.description().length() == 0 ? signature : function.description();
 
-	for (Method functionMth : functionMths) {
-	    Function function = functionMth.getDeclaredAnnotation(Function.class);
-	    String signature = functionSignature(functionMth);
+      if (sb.length() == 0) {
+        sb.appendtab().append("<function>");
+        sb.appendln();
+      } else {
+        sb.appendln(2).appendtab().append("<function>");
+        sb.appendln();
+      }
+      sb.appendtab(2).append("<description>" + desc + "</description>");
+      sb.appendln();
+      sb.appendtab(2).append("<name>" + name + "</name>");
+      sb.appendln();
+      sb.appendtab(2).append("<function-class>" + clazz.getName() + "</function-class>");
+      sb.appendln();
+      sb.appendtab(2).append("<function-signature>" + signature + "</function-signature>");
+      sb.appendln();
 
-	    String name = function.name().length() == 0 ? functionMth.getName() : function.name();
-	    String desc = function.description().length() == 0 ? signature : function.description();
-
-	    if (sb.length() == 0) {
-		sb.appendtab().append("<function>");
-		sb.appendln();
-	    } else {
-		sb.appendln(2).appendtab().append("<function>");
-		sb.appendln();
-	    }
-	    sb.appendtab(2).append("<description>" + desc + "</description>");
-	    sb.appendln();
-	    sb.appendtab(2).append("<name>" + name + "</name>");
-	    sb.appendln();
-	    sb.appendtab(2).append("<function-class>" + clazz.getName() + "</function-class>");
-	    sb.appendln();
-	    sb.appendtab(2).append("<function-signature>" + signature + "</function-signature>");
-	    sb.appendln();
-
-	    sb.appendtab().append("</function>");
-	}
+      sb.appendtab().append("</function>");
     }
+  }
 
-    public static String functionSignature(Method method) {
-	StringBuilder sb = new StringBuilder();
-	sb.append(method.getReturnType().getName()).append(" ");
-	sb.append(method.getName()).append('(');
-	boolean first = true;
-	for (Class<?> paramType : method.getParameterTypes()) {
-	    if (first) {
-		sb.append(paramType.getName());
-		first = false;
-	    } else {
-		sb.append(", ").append(paramType.getName());
-	    }
-	}
-	sb.append(')');
-	return sb.toString();
+  public static String functionSignature(Method method) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(method.getReturnType().getName()).append(" ");
+    sb.append(method.getName()).append('(');
+    boolean first = true;
+    for (Class<?> paramType : method.getParameterTypes()) {
+      if (first) {
+        sb.append(paramType.getName());
+        first = false;
+      } else {
+        sb.append(", ").append(paramType.getName());
+      }
     }
+    sb.append(')');
+    return sb.toString();
+  }
 }

@@ -37,52 +37,52 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 
-    @Override
-    public Map<String, Function> getFunctions() {
-	Map<String, Function> impls = new HashMap<>();
+  @Override
+  public Map<String, Function> getFunctions() {
+    Map<String, Function> impls = new HashMap<>();
 
-	impls.put("label", new LabelFunction());
-	impls.put("input", new InputFunction());
-	impls.put("checkbox", new CheckboxFunction());
-	impls.put("radio", new RadioFunction());
-	impls.put("textarea", new TextAreaFunction());
+    impls.put("label", new LabelFunction());
+    impls.put("input", new InputFunction());
+    impls.put("checkbox", new CheckboxFunction());
+    impls.put("radio", new RadioFunction());
+    impls.put("textarea", new TextAreaFunction());
 
-	impls.put("select", new SelectFunction());
-	impls.put("options", new OptionsFunction());
-	impls.put("datalist", new DatalistFunction());
+    impls.put("select", new SelectFunction());
+    impls.put("options", new OptionsFunction());
+    impls.put("datalist", new DatalistFunction());
 
-	impls.put("hiddenChk", new HiddenCheckboxFunction());
-	impls.put("hiddenRdo", new HiddenRadioFunction());
-	impls.put("hiddenSel", new HiddenSelectFunction());
+    impls.put("hiddenChk", new HiddenCheckboxFunction());
+    impls.put("hiddenRdo", new HiddenRadioFunction());
+    impls.put("hiddenSel", new HiddenSelectFunction());
 
-	impls.put("fieldClass", new FieldClassFunction());
-	impls.put("labelClass", new LabelClassFunction());
-	impls.put("ifClass", new IfClassFunction());
+    impls.put("fieldClass", new FieldClassFunction());
+    impls.put("labelClass", new LabelClassFunction());
+    impls.put("ifClass", new IfClassFunction());
 
-	impls.put("error", new FieldErrorFunction());
-	impls.put("errors", new FormErrorsFunction());
-	impls.put("messages", new MessagesFunction());
+    impls.put("error", new FieldErrorFunction());
+    impls.put("errors", new FormErrorsFunction());
+    impls.put("messages", new MessagesFunction());
 
-	impls.put("actionUrl", new ActionUrlFunction());
-	impls.put("userDName", new UserDNameFunction());
+    impls.put("actionUrl", new ActionUrlFunction());
+    impls.put("userDName", new UserDNameFunction());
 
-	impls.put("envName", new EnvNameFunction());
-	impls.put("nowMs", new NowMsFunction());
+    impls.put("envName", new EnvNameFunction());
+    impls.put("nowMs", new NowMsFunction());
 
-	impls.put("const", new ConstFunction());
-	impls.put("fmtString", new FmtStringFunction());
+    impls.put("const", new ConstFunction());
+    impls.put("fmtString", new FmtStringFunction());
 
-	impls.put("encParam", new EncodeParamFunction());
-	impls.put("encPath", new EncodePathFunction());
+    impls.put("encParam", new EncodeParamFunction());
+    impls.put("encPath", new EncodePathFunction());
 
-	return impls;
-    }
+    return impls;
+  }
 
-    @Override
-    public Map<String, Test> getTests() {
-	Map<String, Test> impls = new HashMap<>();
+  @Override
+  public Map<String, Test> getTests() {
+    Map<String, Test> impls = new HashMap<>();
 
-	impls.put("env", new IsEnvTest());
-	return impls;
-    }
+    impls.put("env", new IsEnvTest());
+    return impls;
+  }
 }

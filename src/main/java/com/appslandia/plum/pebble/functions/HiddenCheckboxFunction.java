@@ -34,11 +34,11 @@ import com.appslandia.plum.pebble.TemplateEvaluationContext;
  */
 public class HiddenCheckboxFunction extends HiddenCheckInputFunction {
 
-    protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
-	if (modelValue == null) {
-	    return false;
-	}
-	String[] values = SplitUtils.split(modelValue, ',', SplitOptions.NONE);
-	return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
+  protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
+    if (modelValue == null) {
+      return false;
     }
+    String[] values = SplitUtils.split(modelValue, ',', SplitOptions.NONE);
+    return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
+  }
 }

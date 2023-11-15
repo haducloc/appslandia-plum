@@ -33,55 +33,55 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public abstract class SimpleCaptchaManager implements CaptchaManager {
 
-    public static final String PARAM_CAPTCHA_ID = "captchaId";
-    public static final String PARAM_CAPTCHA_WORDS = "captchaWords";
-    public static final String REQUEST_ATTRIBUTE_CAPTCHA_DATA = "captchaData";
+  public static final String PARAM_CAPTCHA_ID = "captchaId";
+  public static final String PARAM_CAPTCHA_WORDS = "captchaWords";
+  public static final String REQUEST_ATTRIBUTE_CAPTCHA_DATA = "captchaData";
 
-    protected abstract TextGenerator getCaptchaIdGenerator();
+  protected abstract TextGenerator getCaptchaIdGenerator();
 
-    protected abstract TextGenerator getWordsGenerator();
+  protected abstract TextGenerator getWordsGenerator();
 
-    protected abstract Object saveCaptcha(HttpServletRequest request, String captchaId, String captchaWords);
+  protected abstract Object saveCaptcha(HttpServletRequest request, String captchaId, String captchaWords);
 
-    protected abstract Object parseCaptchaData(HttpServletRequest request, String captchaId);
+  protected abstract Object parseCaptchaData(HttpServletRequest request, String captchaId);
 
-    @Override
-    public void initCaptcha(HttpServletRequest request) {
-	String captchaId = getCaptchaIdGenerator().generate();
-	String captchaWords = getWordsGenerator().generate();
+  @Override
+  public void initCaptcha(HttpServletRequest request) {
+    String captchaId = getCaptchaIdGenerator().generate();
+    String captchaWords = getWordsGenerator().generate();
 
-	Object captchaData = saveCaptcha(request, captchaId, captchaWords);
-	request.setAttribute(REQUEST_ATTRIBUTE_CAPTCHA_DATA, captchaData);
+    Object captchaData = saveCaptcha(request, captchaId, captchaWords);
+    request.setAttribute(REQUEST_ATTRIBUTE_CAPTCHA_DATA, captchaData);
+  }
+
+  protected abstract String doGetCaptchaWords(HttpServletRequest request, String captchaId);
+
+  public String getCaptchaWords(HttpServletRequest request) {
+    String captchaId = request.getParameter(PARAM_CAPTCHA_ID);
+    if (captchaId == null) {
+      return null;
     }
+    return doGetCaptchaWords(request, captchaId);
+  }
 
-    protected abstract String doGetCaptchaWords(HttpServletRequest request, String captchaId);
+  protected abstract boolean doVerifyCaptcha(HttpServletRequest request, String captchaId, String captchaWords);
 
-    public String getCaptchaWords(HttpServletRequest request) {
-	String captchaId = request.getParameter(PARAM_CAPTCHA_ID);
-	if (captchaId == null) {
-	    return null;
-	}
-	return doGetCaptchaWords(request, captchaId);
+  @Override
+  public boolean verifyCaptcha(HttpServletRequest request) {
+    String captchaId = request.getParameter(PARAM_CAPTCHA_ID);
+    if (captchaId == null) {
+      ServletUtils.addError(request, PARAM_CAPTCHA_WORDS, Resources.ERROR_CAPTCHA_FAILED);
+      return false;
     }
-
-    protected abstract boolean doVerifyCaptcha(HttpServletRequest request, String captchaId, String captchaWords);
-
-    @Override
-    public boolean verifyCaptcha(HttpServletRequest request) {
-	String captchaId = request.getParameter(PARAM_CAPTCHA_ID);
-	if (captchaId == null) {
-	    ServletUtils.addError(request, PARAM_CAPTCHA_WORDS, Resources.ERROR_CAPTCHA_FAILED);
-	    return false;
-	}
-	String captchaWords = StringUtils.trimToNull(request.getParameter(PARAM_CAPTCHA_WORDS));
-	if (captchaWords == null) {
-	    ServletUtils.addError(request, PARAM_CAPTCHA_WORDS, Resources.ERROR_CAPTCHA_FAILED);
-	    return false;
-	}
-	boolean valid = doVerifyCaptcha(request, captchaId, captchaWords);
-	if (!valid) {
-	    ServletUtils.addError(request, PARAM_CAPTCHA_WORDS, Resources.ERROR_CAPTCHA_FAILED);
-	}
-	return valid;
+    String captchaWords = StringUtils.trimToNull(request.getParameter(PARAM_CAPTCHA_WORDS));
+    if (captchaWords == null) {
+      ServletUtils.addError(request, PARAM_CAPTCHA_WORDS, Resources.ERROR_CAPTCHA_FAILED);
+      return false;
     }
+    boolean valid = doVerifyCaptcha(request, captchaId, captchaWords);
+    if (!valid) {
+      ServletUtils.addError(request, PARAM_CAPTCHA_WORDS, Resources.ERROR_CAPTCHA_FAILED);
+    }
+    return valid;
+  }
 }

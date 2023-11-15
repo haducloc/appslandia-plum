@@ -31,15 +31,15 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  */
 public class MockRequestLifecycleExtension implements BeforeEachCallback, AfterEachCallback {
 
-    @Override
-    public void beforeEach(ExtensionContext context) throws Exception {
-	MockContainer.currentRequestHolder.set(MockContainer.containerHolder.get().createRequest());
-	MockContainer.currentResponseHolder.set(MockContainer.containerHolder.get().createResponse());
-    }
+  @Override
+  public void beforeEach(ExtensionContext context) throws Exception {
+    MockContainer.currentRequestHolder.set(MockContainer.containerHolder.get().createRequest());
+    MockContainer.currentResponseHolder.set(MockContainer.containerHolder.get().createResponse());
+  }
 
-    @Override
-    public void afterEach(ExtensionContext context) throws Exception {
-	MockContainer.currentRequestHolder.set(null);
-	MockContainer.currentResponseHolder.set(null);
-    }
+  @Override
+  public void afterEach(ExtensionContext context) throws Exception {
+    MockContainer.currentRequestHolder.set(null);
+    MockContainer.currentResponseHolder.set(null);
+  }
 }

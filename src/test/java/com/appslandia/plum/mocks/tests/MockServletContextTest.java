@@ -33,34 +33,34 @@ import com.appslandia.plum.mocks.MockSessionCookieConfig;
  */
 public class MockServletContextTest {
 
-    @Test
-    public void test() {
-	MockServletContext sc = new MockServletContext(new MockSessionCookieConfig());
+  @Test
+  public void test() {
+    MockServletContext sc = new MockServletContext(new MockSessionCookieConfig());
 
-	Assertions.assertNotNull(sc.getSessionCookieConfig());
-	Assertions.assertEquals("/app", sc.getContextPath());
+    Assertions.assertNotNull(sc.getSessionCookieConfig());
+    Assertions.assertEquals("/app", sc.getContextPath());
 
-	sc.setAppDir("C:/webapps");
-	Assertions.assertEquals("C:/webapps", sc.getAppDir());
-    }
+    sc.setAppDir("C:/webapps");
+    Assertions.assertEquals("C:/webapps", sc.getAppDir());
+  }
 
-    @Test
-    public void test_attributes() {
-	MockServletContext sc = new MockServletContext(new MockSessionCookieConfig());
+  @Test
+  public void test_attributes() {
+    MockServletContext sc = new MockServletContext(new MockSessionCookieConfig());
 
-	sc.setAttribute("location", "location1");
-	Assertions.assertEquals("location1", sc.getAttribute("location"));
+    sc.setAttribute("location", "location1");
+    Assertions.assertEquals("location1", sc.getAttribute("location"));
 
-	sc.removeAttribute("location");
-	Assertions.assertNull(sc.getAttribute("location"));
-    }
+    sc.removeAttribute("location");
+    Assertions.assertNull(sc.getAttribute("location"));
+  }
 
-    @Test
-    public void test_initParameters() {
-	MockServletContext sc = new MockServletContext(new MockSessionCookieConfig());
-	sc.setInitParameter("p1", "v1");
-	sc.setInitParameter("p2", "v2");
+  @Test
+  public void test_initParameters() {
+    MockServletContext sc = new MockServletContext(new MockSessionCookieConfig());
+    sc.setInitParameter("p1", "v1");
+    sc.setInitParameter("p2", "v2");
 
-	Assertions.assertEquals("v1", sc.getInitParameter("p1"));
-    }
+    Assertions.assertEquals("v1", sc.getInitParameter("p1"));
+  }
 }

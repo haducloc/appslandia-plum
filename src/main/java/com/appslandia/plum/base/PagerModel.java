@@ -33,126 +33,128 @@ import com.appslandia.common.utils.ValueUtils;
  */
 public class PagerModel {
 
-    public static final String REQUEST_ATTRIBUTE_ID = "pagerModel";
+  public static final String REQUEST_ATTRIBUTE_ID = "pagerModel";
 
-    final int pageIndex;
-    final int recordCount;
+  final int pageIndex;
+  final int recordCount;
 
-    final int pageCount;
-    final List<PagerItem> items;
+  final int pageCount;
+  final List<PagerItem> items;
 
-    public PagerModel(int pageIndex, int recordCount, int pageSize) {
-	this(pageIndex, recordCount, pageSize, PagerSize.SIZE_9);
+  public PagerModel(int pageIndex, int recordCount, int pageSize) {
+    this(pageIndex, recordCount, pageSize, PagerSize.SIZE_9);
+  }
+
+  public PagerModel(int pageIndex, int recordCount, int pageSize, PagerSize pagerSize) {
+    Asserts.isTrue(pageIndex >= 1);
+    Asserts.isTrue(recordCount >= 0);
+    Asserts.isTrue(pageSize > 0);
+    Asserts.notNull(pagerSize);
+
+    this.pageIndex = pageIndex;
+    this.recordCount = recordCount;
+    this.pageCount = (recordCount > 0) ? (int) Math.ceil(recordCount / (double) pageSize) : 1;
+
+    // Why 6? PREV + 1L + dotL & dotR + 1R + NEXT
+    int beginIndex = ValueUtils.valueOrMin(pageIndex - ((pagerSize.size - 6) / 2), 1);
+    int endIndex = ValueUtils.valueOrMax(pageIndex + ((pagerSize.size - 6) / 2), this.pageCount);
+
+    // PREV
+    List<PagerItem> items = new ArrayList<>();
+    if (pageIndex > 1) {
+      items.add(new PagerItem(PagerItem.TYPE_PREV, pageIndex - 1));
+    }
+    boolean dotL = false, dotR = false;
+
+    // 1 ...
+    if (beginIndex == 2) {
+      items.add(new PagerItem(PagerItem.TYPE_INDEX, 1));
+    } else if (beginIndex > 2) {
+      items.add(new PagerItem(PagerItem.TYPE_INDEX, 1));
+      items.add(new PagerItem(PagerItem.TYPE_DOT, -1));
+      dotL = true;
     }
 
-    public PagerModel(int pageIndex, int recordCount, int pageSize, PagerSize pagerSize) {
-	Asserts.isTrue(pageIndex >= 1);
-	Asserts.isTrue(recordCount >= 0);
-	Asserts.isTrue(pageSize > 0);
-	Asserts.notNull(pagerSize);
-
-	this.pageIndex = pageIndex;
-	this.recordCount = recordCount;
-	this.pageCount = (recordCount > 0) ? (int) Math.ceil(recordCount / (double) pageSize) : 1;
-
-	// Why 6? PREV + 1L + dotL & dotR + 1R + NEXT
-	int beginIndex = ValueUtils.valueOrMin(pageIndex - ((pagerSize.size - 6) / 2), 1);
-	int endIndex = ValueUtils.valueOrMax(pageIndex + ((pagerSize.size - 6) / 2), this.pageCount);
-
-	// PREV
-	List<PagerItem> items = new ArrayList<>();
-	if (pageIndex > 1) {
-	    items.add(new PagerItem(PagerItem.TYPE_PREV, pageIndex - 1));
-	}
-	boolean dotL = false, dotR = false;
-
-	// 1 ...
-	if (beginIndex == 2) {
-	    items.add(new PagerItem(PagerItem.TYPE_INDEX, 1));
-	} else if (beginIndex > 2) {
-	    items.add(new PagerItem(PagerItem.TYPE_INDEX, 1));
-	    items.add(new PagerItem(PagerItem.TYPE_DOT, -1));
-	    dotL = true;
-	}
-
-	// Indexes
-	for (int index = beginIndex; index <= endIndex; index++) {
-	    items.add(new PagerItem(PagerItem.TYPE_INDEX, index));
-	}
-
-	// ... N
-	if (endIndex == this.pageCount - 1) {
-	    items.add(new PagerItem(PagerItem.TYPE_INDEX, this.pageCount));
-	} else if (endIndex < this.pageCount - 1) {
-	    items.add(new PagerItem(PagerItem.TYPE_DOT, -1));
-	    items.add(new PagerItem(PagerItem.TYPE_INDEX, this.pageCount));
-	    dotR = true;
-	}
-
-	// NEXT
-	if (pageIndex < this.pageCount) {
-	    items.add(new PagerItem(PagerItem.TYPE_NEXT, pageIndex + 1));
-	}
-
-	// Add more items
-	if (dotR) {
-	    int addIndex = endIndex + 1;
-	    while ((items.size() < pagerSize.size) && (addIndex + 1 < this.pageCount)) {
-		items.add(items.indexOf(new PagerItem(PagerItem.TYPE_INDEX, addIndex - 1)) + 1, new PagerItem(PagerItem.TYPE_INDEX, addIndex));
-		addIndex++;
-	    }
-	}
-	if (dotL) {
-	    int addIndex = beginIndex - 1;
-	    while ((items.size() < pagerSize.size) && (addIndex - 1 > 1)) {
-		items.add(items.indexOf(new PagerItem(PagerItem.TYPE_INDEX, addIndex + 1)), new PagerItem(PagerItem.TYPE_INDEX, addIndex));
-		addIndex--;
-	    }
-	}
-
-	// Replace dots
-	for (int idx = 0; idx < items.size(); idx++) {
-	    PagerItem curItem = items.get(idx);
-	    if (curItem.isDotType()) {
-
-		PagerItem before = items.get(idx - 1);
-		PagerItem after = items.get(idx + 1);
-
-		if (before.getIndex() + 2 == after.getIndex()) {
-		    items.set(idx, new PagerItem(PagerItem.TYPE_INDEX, before.getIndex() + 1));
-		}
-	    }
-	}
-	this.items = items;
+    // Indexes
+    for (int index = beginIndex; index <= endIndex; index++) {
+      items.add(new PagerItem(PagerItem.TYPE_INDEX, index));
     }
 
-    public int getPageIndex() {
-	return this.pageIndex;
+    // ... N
+    if (endIndex == this.pageCount - 1) {
+      items.add(new PagerItem(PagerItem.TYPE_INDEX, this.pageCount));
+    } else if (endIndex < this.pageCount - 1) {
+      items.add(new PagerItem(PagerItem.TYPE_DOT, -1));
+      items.add(new PagerItem(PagerItem.TYPE_INDEX, this.pageCount));
+      dotR = true;
     }
 
-    public int getRecordCount() {
-	return this.recordCount;
+    // NEXT
+    if (pageIndex < this.pageCount) {
+      items.add(new PagerItem(PagerItem.TYPE_NEXT, pageIndex + 1));
     }
 
-    public int getPageCount() {
-	return this.pageCount;
+    // Add more items
+    if (dotR) {
+      int addIndex = endIndex + 1;
+      while ((items.size() < pagerSize.size) && (addIndex + 1 < this.pageCount)) {
+        items.add(items.indexOf(new PagerItem(PagerItem.TYPE_INDEX, addIndex - 1)) + 1,
+            new PagerItem(PagerItem.TYPE_INDEX, addIndex));
+        addIndex++;
+      }
+    }
+    if (dotL) {
+      int addIndex = beginIndex - 1;
+      while ((items.size() < pagerSize.size) && (addIndex - 1 > 1)) {
+        items.add(items.indexOf(new PagerItem(PagerItem.TYPE_INDEX, addIndex + 1)),
+            new PagerItem(PagerItem.TYPE_INDEX, addIndex));
+        addIndex--;
+      }
     }
 
-    public List<PagerItem> getItems() {
-	return this.items;
+    // Replace dots
+    for (int idx = 0; idx < items.size(); idx++) {
+      PagerItem curItem = items.get(idx);
+      if (curItem.isDotType()) {
+
+        PagerItem before = items.get(idx - 1);
+        PagerItem after = items.get(idx + 1);
+
+        if (before.getIndex() + 2 == after.getIndex()) {
+          items.set(idx, new PagerItem(PagerItem.TYPE_INDEX, before.getIndex() + 1));
+        }
+      }
+    }
+    this.items = items;
+  }
+
+  public int getPageIndex() {
+    return this.pageIndex;
+  }
+
+  public int getRecordCount() {
+    return this.recordCount;
+  }
+
+  public int getPageCount() {
+    return this.pageCount;
+  }
+
+  public List<PagerItem> getItems() {
+    return this.items;
+  }
+
+  public enum PagerSize {
+    SIZE_9(9), SIZE_11(11);
+
+    final int size;
+
+    private PagerSize(int size) {
+      this.size = size;
     }
 
-    public enum PagerSize {
-	SIZE_9(9), SIZE_11(11);
-
-	final int size;
-
-	private PagerSize(int size) {
-	    this.size = size;
-	}
-
-	public int size() {
-	    return this.size;
-	}
+    public int size() {
+      return this.size;
     }
+  }
 }

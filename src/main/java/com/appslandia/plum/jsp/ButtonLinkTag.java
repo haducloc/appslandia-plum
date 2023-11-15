@@ -40,106 +40,106 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "buttonLink", bodyContent = "scriptless")
 public class ButtonLinkTag extends UITagBase {
 
-    protected String controller;
-    protected String action;
+  protected String controller;
+  protected String action;
 
-    protected boolean disabled;
-    protected boolean autofocus;
+  protected boolean disabled;
+  protected boolean autofocus;
 
-    protected String _href;
-    protected Map<String, Object> _parameters;
+  protected String _href;
+  protected Map<String, Object> _parameters;
 
-    @Override
-    protected String getTagName() {
-	return "button";
+  @Override
+  protected String getTagName() {
+    return "button";
+  }
+
+  protected Map<String, Object> getParams() {
+    if (this._parameters == null) {
+      return this._parameters = new LinkedHashMap<>();
     }
+    return this._parameters;
+  }
 
-    protected Map<String, Object> getParams() {
-	if (this._parameters == null) {
-	    return this._parameters = new LinkedHashMap<>();
-	}
-	return this._parameters;
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    if (TagUtils.isForParameter(name)) {
+      getParams().put(TagUtils.getParameterName(name), value);
+    } else {
+      super.setDynamicAttribute(uri, name, value);
     }
+  }
 
-    @Override
-    public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	if (TagUtils.isForParameter(name)) {
-	    getParams().put(TagUtils.getParameterName(name), value);
-	} else {
-	    super.setDynamicAttribute(uri, name, value);
-	}
+  @Override
+  protected void initTag() throws JspException, IOException {
+    if (!this.disabled) {
+      if (this.controller == null) {
+        this.controller = getRequestContext().getActionDesc().getController();
+      }
+      ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
+      this._href = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
+      this._href = this.getResponse().encodeURL(this._href);
     }
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (!this.disabled) {
-	    if (this.controller == null) {
-		this.controller = getRequestContext().getActionDesc().getController();
-	    }
-	    ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
-	    this._href = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
-	    this._href = this.getResponse().encodeURL(this._href);
-	}
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    HtmlUtils.escAttribute(out, "type", "button");
+
+    if (this.autofocus)
+      HtmlUtils.autofocus(out);
+
+    if (!this.disabled) {
+      StringBuilder clickHandler = new StringBuilder();
+      clickHandler.append("window.location.href='").append(XmlEscaper.escapeXml(this._href)).append("';");
+      HtmlUtils.escAttribute(out, "onclick", clickHandler.toString());
     }
+    if (this.hidden)
+      HtmlUtils.hidden(out);
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "type", "button");
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-	if (this.autofocus)
-	    HtmlUtils.autofocus(out);
+  @Override
+  protected boolean hasBody() {
+    return true;
+  }
 
-	if (!this.disabled) {
-	    StringBuilder clickHandler = new StringBuilder();
-	    clickHandler.append("window.location.href='").append(XmlEscaper.escapeXml(this._href)).append("';");
-	    HtmlUtils.escAttribute(out, "onclick", clickHandler.toString());
-	}
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
-
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    if (this.body != null) {
+      this.body.invoke(out);
+    } else {
+      out.write(this.action);
     }
+  }
 
-    @Override
-    protected boolean hasBody() {
-	return true;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setController(String controller) {
+    this.controller = controller;
+  }
 
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	if (this.body != null) {
-	    this.body.invoke(out);
-	} else {
-	    out.write(this.action);
-	}
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setController(String controller) {
-	this.controller = controller;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setDisabled(boolean disabled) {
+    this.disabled = disabled;
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setAction(String action) {
-	this.action = action;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setDisabled(boolean disabled) {
-	this.disabled = disabled;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutofocus(boolean autofocus) {
-	this.autofocus = autofocus;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setAutofocus(boolean autofocus) {
+    this.autofocus = autofocus;
+  }
 }

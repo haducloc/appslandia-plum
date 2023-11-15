@@ -33,13 +33,14 @@ import jakarta.security.enterprise.credential.UsernamePasswordCredential;
  */
 public abstract class UsernamePasswordIdentityStore extends IdentityStoreBase {
 
-    @Inject
-    protected IdentityValidator identityValidator;
+  @Inject
+  protected IdentityValidator identityValidator;
 
-    @Override
-    protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
-	UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
+  @Override
+  protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
+    UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
 
-	return this.identityValidator.validate(module, usernamePasswordCredential.getCaller(), usernamePasswordCredential.getPasswordAsString(), invalidCode);
-    }
+    return this.identityValidator.validate(module, usernamePasswordCredential.getCaller(),
+        usernamePasswordCredential.getPasswordAsString(), invalidCode);
+  }
 }

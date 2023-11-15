@@ -37,22 +37,23 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class ConstFunction extends DynPebbleFunction {
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	Object value = context.getArgument("value");
-	if (value == null) {
-	    return null;
-	}
-
-	ConstDescProvider constDescProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ConstDescProvider.class);
-
-	String group = context.getRequiredArgument("group");
-	String descKey = constDescProvider.getDescKey(group, value);
-
-	if (descKey != null) {
-	    return new SafeString(context.getRequestContext().escXml(descKey));
-	} else {
-	    return new SafeString(XmlEscaper.escapeXml(value.toString()));
-	}
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    Object value = context.getArgument("value");
+    if (value == null) {
+      return null;
     }
+
+    ConstDescProvider constDescProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(),
+        ConstDescProvider.class);
+
+    String group = context.getRequiredArgument("group");
+    String descKey = constDescProvider.getDescKey(group, value);
+
+    if (descKey != null) {
+      return new SafeString(context.getRequestContext().escXml(descKey));
+    } else {
+      return new SafeString(XmlEscaper.escapeXml(value.toString()));
+    }
+  }
 }

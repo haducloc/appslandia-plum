@@ -39,84 +39,86 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class FieldLabelTagTest extends MockTestBase {
 
-    FieldLabelTag tag = new FieldLabelTag();
+  FieldLabelTag tag = new FieldLabelTag();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      tag.setFieldName("userName");
+      tag.setLabelKey("testLabel");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<label for=\"userName\">en:testLabel</label>", NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Test
+  public void test_error() {
+    try {
+
+      getCurrentModelState().addError("userName", "The userName field is too long.");
+
+      tag.setFieldName("userName");
+      tag.setLabelKey("testLabel");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<label for=\"userName\" class=\"l-error-label\">en:testLabel</label>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  @Test
+  public void test_required_error() {
+    try {
+
+      getCurrentModelState().addError("userName", "The userName field is required.");
+
+      tag.setFieldName("userName");
+      tag.setLabelKey("testLabel");
+      tag.setRequired(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<label for=\"userName\" class=\"l-required-label l-error-label\">en:testLabel</label>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test() {
-	try {
-	    tag.setFieldName("userName");
-	    tag.setLabelKey("testLabel");
+  @Controller("testController")
+  public static class TestController {
 
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<label for=\"userName\">en:testLabel</label>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test_error() {
-	try {
-
-	    getCurrentModelState().addError("userName", "The userName field is too long.");
-
-	    tag.setFieldName("userName");
-	    tag.setLabelKey("testLabel");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<label for=\"userName\" class=\"l-error-label\">en:testLabel</label>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_required_error() {
-	try {
-
-	    getCurrentModelState().addError("userName", "The userName field is required.");
-
-	    tag.setFieldName("userName");
-	    tag.setLabelKey("testLabel");
-	    tag.setRequired(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<label for=\"userName\" class=\"l-required-label l-error-label\">en:testLabel</label>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

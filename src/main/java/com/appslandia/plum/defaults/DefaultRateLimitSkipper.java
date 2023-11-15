@@ -34,8 +34,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class DefaultRateLimitSkipper implements RateLimitSkipper {
 
-    @Override
-    public boolean skipRequest(HttpServletRequest request, RequestContext requestContext) {
-	return false;
-    }
+  @Override
+  public boolean skipRequest(HttpServletRequest request, RequestContext requestContext) {
+    return false;
+  }
 }

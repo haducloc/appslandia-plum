@@ -35,19 +35,21 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
  */
 public abstract class PebbleFunction implements Function {
 
-    @Override
-    public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) throws PebbleException {
-	try {
-	    return doExecute(new TemplateEvaluationContext(args, self, context), lineNumber);
+  @Override
+  public Object execute(Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber)
+      throws PebbleException {
+    try {
+      return doExecute(new TemplateEvaluationContext(args, self, context), lineNumber);
 
-	} catch (IOException ex) {
-	    throw new PebbleException(ex, ex.getMessage());
-	}
+    } catch (IOException ex) {
+      throw new PebbleException(ex, ex.getMessage());
     }
+  }
 
-    protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException;
+  protected abstract Object doExecute(TemplateEvaluationContext context, int lineNumber)
+      throws PebbleException, IOException;
 
-    public String getDescription() {
-	return null;
-    }
+  public String getDescription() {
+    return null;
+  }
 }

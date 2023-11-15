@@ -29,7 +29,7 @@ import jakarta.security.enterprise.credential.UsernamePasswordCredential;
  */
 public class MemUserPasswordCredential extends UsernamePasswordCredential {
 
-    public MemUserPasswordCredential(String callerName, String password) {
-	super(callerName, password);
-    }
+  public MemUserPasswordCredential(String callerName, String password) {
+    super(callerName, password);
+  }
 }

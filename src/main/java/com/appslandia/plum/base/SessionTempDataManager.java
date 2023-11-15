@@ -36,48 +36,49 @@ import jakarta.servlet.http.HttpSession;
  */
 public abstract class SessionTempDataManager extends TempDataManager {
 
-    public static final String SESSION_ATTRIBUTE_TEMP_DATA_CACHE = "tempDataCache";
+  public static final String SESSION_ATTRIBUTE_TEMP_DATA_CACHE = "tempDataCache";
 
-    public static final int DEFAULT_CACHE_SIZE = 3;
-    public static final String CONFIG_CACHE_SIZE = SessionTempDataManager.class.getName() + ".cache_size";
+  public static final int DEFAULT_CACHE_SIZE = 3;
+  public static final String CONFIG_CACHE_SIZE = SessionTempDataManager.class.getName() + ".cache_size";
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    protected int getCacheSize() {
-	return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+  protected int getCacheSize() {
+    return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+  }
+
+  @Override
+  protected void doSaveTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId,
+      TempData tempData) {
+    HttpSession session = request.getSession();
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, TempData> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE));
+      if (cache == null) {
+        cache = new LruCache<>(getCacheSize());
+      }
+      cache.put(tempDataId, tempData);
+      session.setAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE, cache);
     }
+  }
 
-    @Override
-    protected void doSaveTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId, TempData tempData) {
-	HttpSession session = request.getSession();
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, TempData> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE));
-	    if (cache == null) {
-		cache = new LruCache<>(getCacheSize());
-	    }
-	    cache.put(tempDataId, tempData);
-	    session.setAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE, cache);
-	}
+  @Override
+  protected TempData doLoadTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return null;
     }
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, TempData> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE));
+      if (cache != null) {
 
-    @Override
-    protected TempData doLoadTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId) {
-	HttpSession session = request.getSession(false);
-	if (session == null) {
-	    return null;
-	}
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, TempData> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE));
-	    if (cache != null) {
-
-		TempData tempData = cache.remove(tempDataId);
-		if (tempData != null) {
-		    session.setAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE, cache);
-		}
-		return tempData;
-	    }
-	    return null;
-	}
+        TempData tempData = cache.remove(tempDataId);
+        if (tempData != null) {
+          session.setAttribute(SESSION_ATTRIBUTE_TEMP_DATA_CACHE, cache);
+        }
+        return tempData;
+      }
+      return null;
     }
+  }
 }

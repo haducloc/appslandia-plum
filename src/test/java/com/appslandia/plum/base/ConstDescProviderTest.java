@@ -32,40 +32,40 @@ import com.appslandia.common.base.ConstDesc;
  */
 public class ConstDescProviderTest {
 
-    @Test
-    public void test() {
-	ConstDescProvider constDescProvider = new ConstDescProvider();
-	constDescProvider.addConstClass(Actives.class);
+  @Test
+  public void test() {
+    ConstDescProvider constDescProvider = new ConstDescProvider();
+    constDescProvider.addConstClass(Actives.class);
 
-	Assertions.assertEquals("actives.active", constDescProvider.getDescKey("actives", Actives.ACTIVE));
-	Assertions.assertEquals("actives.inactive", constDescProvider.getDescKey("actives", Actives.INACTIVE));
-    }
+    Assertions.assertEquals("actives.active", constDescProvider.getDescKey("actives", Actives.ACTIVE));
+    Assertions.assertEquals("actives.inactive", constDescProvider.getDescKey("actives", Actives.INACTIVE));
+  }
 
-    @Test
-    public void test_userTypes() {
-	ConstDescProvider constDescProvider = new ConstDescProvider();
-	constDescProvider.addConstClass(UserTypes.class);
+  @Test
+  public void test_userTypes() {
+    ConstDescProvider constDescProvider = new ConstDescProvider();
+    constDescProvider.addConstClass(UserTypes.class);
 
-	Assertions.assertEquals("userTypes.user", constDescProvider.getDescKey("userTypes", UserTypes.USER));
-	Assertions.assertEquals("userTypes.admin", constDescProvider.getDescKey("userTypes", UserTypes.ADMIN));
-    }
+    Assertions.assertEquals("userTypes.user", constDescProvider.getDescKey("userTypes", UserTypes.USER));
+    Assertions.assertEquals("userTypes.admin", constDescProvider.getDescKey("userTypes", UserTypes.ADMIN));
+  }
 
-    public static final class Actives {
+  public static final class Actives {
 
-	@ConstDesc("actives")
-	public static final int ACTIVE = 1;
+    @ConstDesc("actives")
+    public static final int ACTIVE = 1;
 
-	@ConstDesc("actives")
-	public static final int INACTIVE = 0;
-    }
+    @ConstDesc("actives")
+    public static final int INACTIVE = 0;
+  }
+
+  @ConstDesc
+  public static final class UserTypes {
 
     @ConstDesc
-    public static final class UserTypes {
+    public static final int USER = 1;
 
-	@ConstDesc
-	public static final int USER = 1;
-
-	@ConstDesc
-	public static final int ADMIN = 2;
-    }
+    @ConstDesc
+    public static final int ADMIN = 2;
+  }
 }

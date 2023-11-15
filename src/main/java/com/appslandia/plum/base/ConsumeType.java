@@ -38,7 +38,7 @@ import com.appslandia.common.utils.MimeTypes;
 @Documented
 public @interface ConsumeType {
 
-    String value();
+  String value();
 
-    public static final ConsumeType IMPL = ActionDescUtils.createConsumeType(MimeTypes.APP_JSON);
+  public static final ConsumeType IMPL = ActionDescUtils.createConsumeType(MimeTypes.APP_JSON);
 }

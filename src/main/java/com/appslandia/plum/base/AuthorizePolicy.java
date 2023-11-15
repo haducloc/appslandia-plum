@@ -28,5 +28,5 @@ package com.appslandia.plum.base;
 @FunctionalInterface
 public interface AuthorizePolicy {
 
-    boolean authorize(UserPrincipal principal);
+  boolean authorize(UserPrincipal principal);
 }

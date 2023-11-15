@@ -38,38 +38,40 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class HeaderPolicyProvider extends InitializeObject {
 
-    private Map<String, HeaderPolicy> headerPolicyMap = new HashMap<>();
+  private Map<String, HeaderPolicy> headerPolicyMap = new HashMap<>();
 
-    @Override
-    protected void init() throws Exception {
-	if (!this.headerPolicyMap.containsKey(CacheControl.NO_CACHE_POLICY)) {
-	    this.headerPolicyMap.put(CacheControl.NO_CACHE_POLICY, new HeaderPolicy() {
-		final String noCache = new CacheControlBuilder().maxAge(0, TimeUnit.SECONDS).noCache().noStore().mustRevalidate().toString();
+  @Override
+  protected void init() throws Exception {
+    if (!this.headerPolicyMap.containsKey(CacheControl.NO_CACHE_POLICY)) {
+      this.headerPolicyMap.put(CacheControl.NO_CACHE_POLICY, new HeaderPolicy() {
+        final String noCache = new CacheControlBuilder().maxAge(0, TimeUnit.SECONDS).noCache().noStore()
+            .mustRevalidate().toString();
 
-		@Override
-		public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
-		    response.setHeader("Cache-Control", this.noCache);
-		    response.setHeader("Expires", "0");
-		    response.setHeader("Pragma", "no-cache");
-		}
-	    });
-	}
-	this.headerPolicyMap = Collections.unmodifiableMap(this.headerPolicyMap);
+        @Override
+        public void writePolicy(HttpServletRequest request, HttpServletResponse response,
+            RequestContext requestContext) {
+          response.setHeader("Cache-Control", this.noCache);
+          response.setHeader("Expires", "0");
+          response.setHeader("Pragma", "no-cache");
+        }
+      });
     }
+    this.headerPolicyMap = Collections.unmodifiableMap(this.headerPolicyMap);
+  }
 
-    public Map<String, HeaderPolicy> getHeaderPolicyMap() {
-	this.initialize();
-	return this.headerPolicyMap;
-    }
+  public Map<String, HeaderPolicy> getHeaderPolicyMap() {
+    this.initialize();
+    return this.headerPolicyMap;
+  }
 
-    public HeaderPolicy getHeaderPolicy(String name) {
-	this.initialize();
-	HeaderPolicy impl = this.headerPolicyMap.get(name);
-	return Asserts.notNull(impl);
-    }
+  public HeaderPolicy getHeaderPolicy(String name) {
+    this.initialize();
+    HeaderPolicy impl = this.headerPolicyMap.get(name);
+    return Asserts.notNull(impl);
+  }
 
-    public void addHeaderPolicy(String name, HeaderPolicy impl) {
-	this.assertNotInitialized();
-	this.headerPolicyMap.put(name, impl);
-    }
+  public void addHeaderPolicy(String name, HeaderPolicy impl) {
+    this.assertNotInitialized();
+    this.headerPolicyMap.put(name, impl);
+  }
 }

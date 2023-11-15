@@ -36,101 +36,101 @@ import com.appslandia.common.base.InitializeObject;
  */
 public class CaptchaProducer extends InitializeObject {
 
-    private WordsRenderer wordsRenderer;
-    private BackgroundProducer backgroundProducer;
-    private List<ImageRenderer> imageRenderers = new ArrayList<>();
+  private WordsRenderer wordsRenderer;
+  private BackgroundProducer backgroundProducer;
+  private List<ImageRenderer> imageRenderers = new ArrayList<>();
 
-    private int width = 200;
-    private int height = 50;
-    private boolean borderRendered = false;
-    private Color borderColor;
+  private int width = 200;
+  private int height = 50;
+  private boolean borderRendered = false;
+  private Color borderColor;
 
-    @Override
-    protected void init() throws Exception {
-	if (this.wordsRenderer == null) {
-	    this.wordsRenderer = new WordsRendererImpl();
-	}
-	if (this.backgroundProducer == null) {
-	    this.backgroundProducer = new TransparentBgProducer();
-	}
-	if (this.borderRendered) {
-	    if (this.borderColor == null) {
-		this.borderColor = Color.GRAY;
-	    }
-	}
+  @Override
+  protected void init() throws Exception {
+    if (this.wordsRenderer == null) {
+      this.wordsRenderer = new WordsRendererImpl();
+    }
+    if (this.backgroundProducer == null) {
+      this.backgroundProducer = new TransparentBgProducer();
+    }
+    if (this.borderRendered) {
+      if (this.borderColor == null) {
+        this.borderColor = Color.GRAY;
+      }
+    }
+  }
+
+  public BufferedImage produce(String words) {
+    this.initialize();
+
+    // ARGB
+    BufferedImage img = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
+
+    // Words
+    this.wordsRenderer.render(img, this.width, this.height, words);
+
+    // Renders
+    for (ImageRenderer renderer : imageRenderers) {
+      renderer.render(img, this.width, this.height);
     }
 
-    public BufferedImage produce(String words) {
-	this.initialize();
+    // Background
+    BufferedImage bg = this.backgroundProducer.produce(this.width, this.height);
+    Graphics2D g = bg.createGraphics();
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
+    g.drawImage(img, null, null);
 
-	// ARGB
-	BufferedImage img = new BufferedImage(this.width, this.height, BufferedImage.TYPE_INT_ARGB);
-
-	// Words
-	this.wordsRenderer.render(img, this.width, this.height, words);
-
-	// Renders
-	for (ImageRenderer renderer : imageRenderers) {
-	    renderer.render(img, this.width, this.height);
-	}
-
-	// Background
-	BufferedImage bg = this.backgroundProducer.produce(this.width, this.height);
-	Graphics2D g = bg.createGraphics();
-	g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1.0f));
-	g.drawImage(img, null, null);
-
-	// Border?
-	if (this.borderRendered) {
-	    g.setColor(this.borderColor);
-	    g.drawLine(0, 0, 0, this.height - 1);
-	    g.drawLine(0, 0, this.width - 1, 0);
-	    g.drawLine(0, this.height - 1, this.width, this.height - 1);
-	    g.drawLine(this.width - 1, this.height - 1, this.width - 1, 0);
-	}
-	g.dispose();
-	return bg;
+    // Border?
+    if (this.borderRendered) {
+      g.setColor(this.borderColor);
+      g.drawLine(0, 0, 0, this.height - 1);
+      g.drawLine(0, 0, this.width - 1, 0);
+      g.drawLine(0, this.height - 1, this.width, this.height - 1);
+      g.drawLine(this.width - 1, this.height - 1, this.width - 1, 0);
     }
+    g.dispose();
+    return bg;
+  }
 
-    public CaptchaProducer setWordsRenderer(WordsRenderer wordsRender) {
-	this.assertNotInitialized();
-	this.wordsRenderer = wordsRender;
-	return this;
-    }
+  public CaptchaProducer setWordsRenderer(WordsRenderer wordsRender) {
+    this.assertNotInitialized();
+    this.wordsRenderer = wordsRender;
+    return this;
+  }
 
-    public CaptchaProducer setBackgroundProducer(BackgroundProducer backgroundProducer) {
-	this.assertNotInitialized();
-	this.backgroundProducer = backgroundProducer;
-	return this;
-    }
+  public CaptchaProducer setBackgroundProducer(BackgroundProducer backgroundProducer) {
+    this.assertNotInitialized();
+    this.backgroundProducer = backgroundProducer;
+    return this;
+  }
 
-    public CaptchaProducer addImageRenderer(ImageRenderer noiseRenderer) {
-	this.assertNotInitialized();
-	this.imageRenderers.add(noiseRenderer);
-	return this;
-    }
+  public CaptchaProducer addImageRenderer(ImageRenderer noiseRenderer) {
+    this.assertNotInitialized();
+    this.imageRenderers.add(noiseRenderer);
+    return this;
+  }
 
-    public CaptchaProducer setWidth(int width) {
-	this.assertNotInitialized();
-	this.width = width;
-	return this;
-    }
+  public CaptchaProducer setWidth(int width) {
+    this.assertNotInitialized();
+    this.width = width;
+    return this;
+  }
 
-    public CaptchaProducer setHeight(int height) {
-	this.assertNotInitialized();
-	this.height = height;
-	return this;
-    }
+  public CaptchaProducer setHeight(int height) {
+    this.assertNotInitialized();
+    this.height = height;
+    return this;
+  }
 
-    public CaptchaProducer setBorderRendered(boolean borderRendered) {
-	this.assertNotInitialized();
-	this.borderRendered = borderRendered;
-	return this;
-    }
+  public CaptchaProducer setBorderRendered(boolean borderRendered) {
+    this.assertNotInitialized();
+    this.borderRendered = borderRendered;
+    return this;
+  }
 
-    public CaptchaProducer setBorderColor(Color borderColor) {
-	this.assertNotInitialized();
-	this.borderColor = borderColor;
-	return this;
-    }
+  public CaptchaProducer setBorderColor(Color borderColor) {
+    this.assertNotInitialized();
+    this.borderColor = borderColor;
+    return this;
+  }
 }

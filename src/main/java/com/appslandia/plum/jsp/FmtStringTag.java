@@ -37,27 +37,28 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "fmtString", dynamicAttributes = false)
 public class FmtStringTag extends TagBase {
 
-    protected String format;
-    protected String value;
+  protected String format;
+  protected String value;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	if (this.value == null) {
-	    return;
-	}
-	StringFormatProvider groupFormatProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), StringFormatProvider.class);
-	StringFormat groupFormat = groupFormatProvider.getStringFormat(this.format);
-
-	XmlEscaper.escapeXml(this.pageContext.getOut(), groupFormat.format(this.value));
+  @Override
+  public void doTag() throws JspException, IOException {
+    if (this.value == null) {
+      return;
     }
+    StringFormatProvider groupFormatProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
+        StringFormatProvider.class);
+    StringFormat groupFormat = groupFormatProvider.getStringFormat(this.format);
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setFormat(String format) {
-	this.format = format;
-    }
+    XmlEscaper.escapeXml(this.pageContext.getOut(), groupFormat.format(this.value));
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setValue(String value) {
-	this.value = value;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setFormat(String format) {
+    this.format = format;
+  }
+
+  @Attribute(required = true, rtexprvalue = true)
+  public void setValue(String value) {
+    this.value = value;
+  }
 }

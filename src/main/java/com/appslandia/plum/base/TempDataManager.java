@@ -32,53 +32,55 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class TempDataManager {
 
-    public static final String PARAM_TEMP_DATA_ID = "tempDataId";
+  public static final String PARAM_TEMP_DATA_ID = "tempDataId";
 
-    protected abstract TextGenerator getTempDataIdGenerator();
+  protected abstract TextGenerator getTempDataIdGenerator();
 
-    protected abstract void doSaveTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId, TempData tempData);
+  protected abstract void doSaveTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId,
+      TempData tempData);
 
-    public String saveTempData(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	TempData tempData = buildTempData(request);
-	if ((tempData == null) || tempData.isEmpty()) {
-	    return null;
-	}
-	String tempDataId = getTempDataIdGenerator().generate();
-	doSaveTempData(request, response, tempDataId, tempData);
-	return tempDataId;
+  public String saveTempData(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    TempData tempData = buildTempData(request);
+    if ((tempData == null) || tempData.isEmpty()) {
+      return null;
+    }
+    String tempDataId = getTempDataIdGenerator().generate();
+    doSaveTempData(request, response, tempDataId, tempData);
+    return tempDataId;
+  }
+
+  protected abstract TempData doLoadTempData(HttpServletRequest request, HttpServletResponse response,
+      String tempDataId);
+
+  public TempData loadTempData(HttpServletRequest request, HttpServletResponse response) {
+    String tempDataId = request.getParameter(PARAM_TEMP_DATA_ID);
+    if (tempDataId == null) {
+      return null;
+    }
+    TempData tempData = doLoadTempData(request, response, tempDataId);
+    if ((tempData == null) || tempData.isEmpty()) {
+      return null;
     }
 
-    protected abstract TempData doLoadTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId);
-
-    public TempData loadTempData(HttpServletRequest request, HttpServletResponse response) {
-	String tempDataId = request.getParameter(PARAM_TEMP_DATA_ID);
-	if (tempDataId == null) {
-	    return null;
-	}
-	TempData tempData = doLoadTempData(request, response, tempDataId);
-	if ((tempData == null) || tempData.isEmpty()) {
-	    return null;
-	}
-
-	// Export Messages
-	Messages messages = tempData.exportMessages();
-	if ((messages != null) && !messages.isEmpty()) {
-	    request.setAttribute(Messages.REQUEST_ATTRIBUTE_ID, messages);
-	}
-	request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
-	return tempData;
+    // Export Messages
+    Messages messages = tempData.exportMessages();
+    if ((messages != null) && !messages.isEmpty()) {
+      request.setAttribute(Messages.REQUEST_ATTRIBUTE_ID, messages);
     }
+    request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
+    return tempData;
+  }
 
-    protected TempData buildTempData(HttpServletRequest request) {
-	TempData tempData = (TempData) request.getAttribute(TempData.REQUEST_ATTRIBUTE_ID);
-	Messages messages = (Messages) request.getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
+  protected TempData buildTempData(HttpServletRequest request) {
+    TempData tempData = (TempData) request.getAttribute(TempData.REQUEST_ATTRIBUTE_ID);
+    Messages messages = (Messages) request.getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
 
-	if ((messages != null) && !messages.isEmpty()) {
-	    if (tempData == null) {
-		tempData = new TempData();
-	    }
-	    tempData.importMessages(messages);
-	}
-	return tempData;
+    if ((messages != null) && !messages.isEmpty()) {
+      if (tempData == null) {
+        tempData = new TempData();
+      }
+      tempData.importMessages(messages);
     }
+    return tempData;
+  }
 }

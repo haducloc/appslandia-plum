@@ -33,74 +33,74 @@ import com.appslandia.plum.mocks.MockHttpServletRequest;
  */
 public class EnableCsrfTest extends MockTestBase {
 
-    SimpleCsrfManager csrfManager;
+  SimpleCsrfManager csrfManager;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	csrfManager = container.getObject(CsrfManager.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    csrfManager = container.getObject(CsrfManager.class);
+  }
+
+  @Test
+  public void test_testCsrf() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testCsrf");
+
+      String csrfId = (String) getCurrentRequest().getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
+      Assertions.assertNull(csrfId);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testCsrf() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testCsrf");
+  @Test
+  public void test_testCsrf_POST() {
+    try {
+      MockHttpServletRequest request = container.createRequest("GET");
+      csrfManager.initCsrf(request);
+      String csrfId = (String) request.getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
 
-	    String csrfId = (String) getCurrentRequest().getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
-	    Assertions.assertNull(csrfId);
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().setParameter(SimpleCsrfManager.PARAM_CSRF_ID, csrfId);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      executeCurrent("POST", "http://localhost/app/testController/testCsrf");
+
+      Assertions.assertTrue(getCurrentModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
+
+      // Removed
+      boolean valid = csrfManager.verifyCsrf(getCurrentRequest(), true);
+      Asserts.isTrue(!valid);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testCsrf_POST() {
-	try {
-	    MockHttpServletRequest request = container.createRequest("GET");
-	    csrfManager.initCsrf(request);
-	    String csrfId = (String) request.getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
+  @Test
+  public void test_testCsrf_POST_invalid() {
+    try {
+      MockHttpServletRequest request = container.createRequest("GET");
+      csrfManager.initCsrf(request);
 
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().setParameter(SimpleCsrfManager.PARAM_CSRF_ID, csrfId);
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().setParameter(SimpleCsrfManager.PARAM_CSRF_ID, "invalid");
 
-	    executeCurrent("POST", "http://localhost/app/testController/testCsrf");
+      executeCurrent("POST", "http://localhost/app/testController/testCsrf");
 
-	    Assertions.assertTrue(getCurrentModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
+      Assertions.assertFalse(getCurrentModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
 
-	    // Removed
-	    boolean valid = csrfManager.verifyCsrf(getCurrentRequest(), true);
-	    Asserts.isTrue(!valid);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testCsrf_POST_invalid() {
-	try {
-	    MockHttpServletRequest request = container.createRequest("GET");
-	    csrfManager.initCsrf(request);
+  @Controller("testController")
+  public static class TestController {
 
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().setParameter(SimpleCsrfManager.PARAM_CSRF_ID, "invalid");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testCsrf");
-
-	    Assertions.assertFalse(getCurrentModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGetPost
+    @EnableCsrf
+    public void testCsrf() throws Exception {
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGetPost
-	@EnableCsrf
-	public void testCsrf() throws Exception {
-	}
-    }
+  }
 }

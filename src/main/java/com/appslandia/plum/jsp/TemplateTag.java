@@ -34,18 +34,18 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "tpl", dynamicAttributes = false, bodyContent = "scriptless")
 public class TemplateTag extends TagBase {
 
-    protected String type;
+  protected String type;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	Asserts.notNull(this.parent);
-	Asserts.notNull(this.body);
+  @Override
+  public void doTag() throws JspException, IOException {
+    Asserts.notNull(this.parent);
+    Asserts.notNull(this.body);
 
-	((TemplateSupport) this.parent).setTemplate(this.type, this.body);
-    }
+    ((TemplateSupport) this.parent).setTemplate(this.type, this.body);
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setType(String type) {
-	this.type = type;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setType(String type) {
+    this.type = type;
+  }
 }

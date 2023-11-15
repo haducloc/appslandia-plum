@@ -37,14 +37,14 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultAppLoggerFactory {
 
-    @Inject
-    protected AppLoggerManager appLoggerManager;
+  @Inject
+  protected AppLoggerManager appLoggerManager;
 
-    @Produces
-    public AppLogger produce(InjectionPoint ip) {
-	return this.appLoggerManager.getAppLogger(ip.getMember().getDeclaringClass().getName());
-    }
+  @Produces
+  public AppLogger produce(InjectionPoint ip) {
+    return this.appLoggerManager.getAppLogger(ip.getMember().getDeclaringClass().getName());
+  }
 
-    public void dispose(@Disposes AppLogger impl) {
-    }
+  public void dispose(@Disposes AppLogger impl) {
+  }
 }

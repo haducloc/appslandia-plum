@@ -38,64 +38,64 @@ import com.appslandia.plum.mocks.MockSessionCookieConfig;
  */
 public class ContentResponseWrapperTest {
 
-    MockServletContext servletContext;
+  MockServletContext servletContext;
 
-    @BeforeEach
-    public void beforeEachTest() {
-	servletContext = new MockServletContext(new MockSessionCookieConfig());
+  @BeforeEach
+  public void beforeEachTest() {
+    servletContext = new MockServletContext(new MockSessionCookieConfig());
+  }
+
+  @Test
+  public void test() {
+    try {
+      MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
+
+      wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
+      wrapper.finishWrapper();
+
+      Assertions.assertEquals("data", wrapper.getContent().toString(StandardCharsets.UTF_8.name()));
+
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test() {
-	try {
-	    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	    ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
+  @SuppressWarnings("resource")
+  @Test
+  public void test_reset() {
+    try {
+      MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
 
-	    wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
-	    wrapper.finishWrapper();
+      wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
+      wrapper.setHeader("testHeader", "testValue");
+      wrapper.reset();
 
-	    Assertions.assertEquals("data", wrapper.getContent().toString(StandardCharsets.UTF_8.name()));
+      Assertions.assertNull(wrapper.getHeader("testHeader"));
+      Assertions.assertEquals(0, wrapper.getContent().size());
+      Assertions.assertEquals(0, wrapper.getContent().toByteArray().length);
 
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @SuppressWarnings("resource")
-    @Test
-    public void test_reset() {
-	try {
-	    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	    ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
+  @SuppressWarnings("resource")
+  @Test
+  public void test_resetBuffer() {
+    try {
+      MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
 
-	    wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
-	    wrapper.setHeader("testHeader", "testValue");
-	    wrapper.reset();
+      wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
+      wrapper.resetBuffer();
 
-	    Assertions.assertNull(wrapper.getHeader("testHeader"));
-	    Assertions.assertEquals(0, wrapper.getContent().size());
-	    Assertions.assertEquals(0, wrapper.getContent().toByteArray().length);
+      Assertions.assertEquals(0, wrapper.getContent().size());
+      Assertions.assertEquals(0, wrapper.getContent().toByteArray().length);
 
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
-
-    @SuppressWarnings("resource")
-    @Test
-    public void test_resetBuffer() {
-	try {
-	    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-	    ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
-
-	    wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
-	    wrapper.resetBuffer();
-
-	    Assertions.assertEquals(0, wrapper.getContent().size());
-	    Assertions.assertEquals(0, wrapper.getContent().toByteArray().length);
-
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
+  }
 }

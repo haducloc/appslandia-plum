@@ -34,54 +34,54 @@ import com.appslandia.common.utils.Asserts;
  */
 public class SortConfig extends InitializeObject {
 
-    private Map<String, Boolean> sortBys = new HashMap<>();
-    private String sortDefault;
+  private Map<String, Boolean> sortBys = new HashMap<>();
+  private String sortDefault;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.sortDefault);
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.sortDefault);
 
-	this.sortBys = Collections.unmodifiableMap(this.sortBys);
+    this.sortBys = Collections.unmodifiableMap(this.sortBys);
+  }
+
+  public SortConfig asc(String... ascFields) {
+    assertNotInitialized();
+
+    for (String sortBy : ascFields) {
+      this.sortBys.put(sortBy, true);
     }
+    return this;
+  }
 
-    public SortConfig asc(String... ascFields) {
-	assertNotInitialized();
+  public SortConfig desc(String... descFields) {
+    assertNotInitialized();
 
-	for (String sortBy : ascFields) {
-	    this.sortBys.put(sortBy, true);
-	}
-	return this;
+    for (String sortBy : descFields) {
+      this.sortBys.put(sortBy, false);
     }
+    return this;
+  }
 
-    public SortConfig desc(String... descFields) {
-	assertNotInitialized();
+  public SortConfig sortDefault(String sortDefault) {
+    assertNotInitialized();
 
-	for (String sortBy : descFields) {
-	    this.sortBys.put(sortBy, false);
-	}
-	return this;
-    }
+    Asserts.isTrue(this.sortBys.containsKey(sortDefault));
+    this.sortDefault = sortDefault;
+    return this;
+  }
 
-    public SortConfig sortDefault(String sortDefault) {
-	assertNotInitialized();
+  public String sortDefault() {
+    initialize();
+    return this.sortDefault;
+  }
 
-	Asserts.isTrue(this.sortBys.containsKey(sortDefault));
-	this.sortDefault = sortDefault;
-	return this;
-    }
+  public Boolean sortAsc(String fieldName) {
+    initialize();
+    return this.sortBys.get(fieldName);
+  }
 
-    public String sortDefault() {
-	initialize();
-	return this.sortDefault;
-    }
-
-    public Boolean sortAsc(String fieldName) {
-	initialize();
-	return this.sortBys.get(fieldName);
-    }
-
-    public boolean contains(String fieldName) {
-	initialize();
-	return this.sortBys.containsKey(fieldName);
-    }
+  public boolean contains(String fieldName) {
+    initialize();
+    return this.sortBys.containsKey(fieldName);
+  }
 }

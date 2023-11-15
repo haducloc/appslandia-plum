@@ -41,45 +41,45 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultControllerProvider implements ControllerProvider {
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final Map<Class<?>, BeanInstance<?>> controllers = new HashMap<>();
+  final Map<Class<?>, BeanInstance<?>> controllers = new HashMap<>();
 
-    final Object mutex = new Object();
+  final Object mutex = new Object();
 
-    @Override
-    public Object getController(Class<?> controllerClass) throws Exception {
-	BeanInstance<?> inst = this.controllers.get(controllerClass);
-	if (inst == null) {
+  @Override
+  public Object getController(Class<?> controllerClass) throws Exception {
+    BeanInstance<?> inst = this.controllers.get(controllerClass);
+    if (inst == null) {
 
-	    synchronized (this.mutex) {
-		if ((inst = this.controllers.get(controllerClass)) == null) {
+      synchronized (this.mutex) {
+        if ((inst = this.controllers.get(controllerClass)) == null) {
 
-		    inst = CDIUtils.getReference(this.beanManager, controllerClass);
-		    this.controllers.put(controllerClass, inst);
-		}
-	    }
-	}
-	return inst.get();
+          inst = CDIUtils.getReference(this.beanManager, controllerClass);
+          this.controllers.put(controllerClass, inst);
+        }
+      }
     }
+    return inst.get();
+  }
 
-    @PreDestroy
-    public void dispose() {
-	this.appLogger.info("Destroying controller instances...");
+  @PreDestroy
+  public void dispose() {
+    this.appLogger.info("Destroying controller instances...");
 
-	this.controllers.values().stream().forEach(bi -> {
-	    try {
-		bi.destroy();
+    this.controllers.values().stream().forEach(bi -> {
+      try {
+        bi.destroy();
 
-	    } catch (RuntimeException ex) {
-		this.appLogger.error(ex);
-	    }
-	});
+      } catch (RuntimeException ex) {
+        this.appLogger.error(ex);
+      }
+    });
 
-	this.appLogger.info("Finished destroying controller instances.");
-    }
+    this.appLogger.info("Finished destroying controller instances.");
+  }
 }

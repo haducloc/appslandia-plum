@@ -33,22 +33,22 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class HstsPolicy implements HeaderPolicy {
 
-    final String hsts;
+  final String hsts;
 
-    public HstsPolicy(HstsBuilder builder) {
-	this(builder, true);
+  public HstsPolicy(HstsBuilder builder) {
+    this(builder, true);
+  }
+
+  public HstsPolicy(HstsBuilder builder, boolean enableLocal) {
+    this.hsts = Asserts.notNull(builder.toString());
+  }
+
+  @Override
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
+    String scheme = ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Proto"), request.getScheme());
+
+    if ("https".equals(scheme)) {
+      response.setHeader("Strict-Transport-Security", this.hsts);
     }
-
-    public HstsPolicy(HstsBuilder builder, boolean enableLocal) {
-	this.hsts = Asserts.notNull(builder.toString());
-    }
-
-    @Override
-    public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
-	String scheme = ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Proto"), request.getScheme());
-
-	if ("https".equals(scheme)) {
-	    response.setHeader("Strict-Transport-Security", this.hsts);
-	}
-    }
+  }
 }

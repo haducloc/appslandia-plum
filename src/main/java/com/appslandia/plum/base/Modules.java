@@ -27,7 +27,7 @@ package com.appslandia.plum.base;
  */
 public class Modules {
 
-    public static final String DEFAULT = "default";
+  public static final String DEFAULT = "default";
 
-    public static final String ADMIN = "admin";
+  public static final String ADMIN = "admin";
 }

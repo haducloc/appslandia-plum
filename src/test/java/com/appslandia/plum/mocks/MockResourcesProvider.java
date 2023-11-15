@@ -31,8 +31,8 @@ import com.appslandia.plum.base.ResourcesProvider;
  */
 public class MockResourcesProvider extends ResourcesProvider {
 
-    @Override
-    protected Resources loadResources(String language) throws InitializeException {
-	return new Resources(language);
-    }
+  @Override
+  protected Resources loadResources(String language) throws InitializeException {
+    return new Resources(language);
+  }
 }

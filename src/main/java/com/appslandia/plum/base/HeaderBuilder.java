@@ -33,61 +33,61 @@ import com.appslandia.common.base.InitializeObject;
  */
 public class HeaderBuilder extends InitializeObject {
 
-    protected final Map<String, String> entries = new LinkedHashMap<>();
+  protected final Map<String, String> entries = new LinkedHashMap<>();
 
-    final String entrySep;
-    final char kvSep;
+  final String entrySep;
+  final char kvSep;
 
-    public HeaderBuilder() {
-	this(", ");
+  public HeaderBuilder() {
+    this(", ");
+  }
+
+  public HeaderBuilder(String entrySep) {
+    this(entrySep, '=');
+  }
+
+  public HeaderBuilder(String entrySep, char kvSep) {
+    this.entrySep = entrySep;
+    this.kvSep = kvSep;
+  }
+
+  @Override
+  protected void init() throws Exception {
+  }
+
+  public HeaderBuilder addValue(String key) {
+    assertNotInitialized();
+    this.entries.put(key, null);
+    return this;
+  }
+
+  public HeaderBuilder addValues(String... keys) {
+    assertNotInitialized();
+    for (String key : keys) {
+      this.entries.put(key, null);
     }
+    return this;
+  }
 
-    public HeaderBuilder(String entrySep) {
-	this(entrySep, '=');
-    }
+  public HeaderBuilder addPair(String key, String value) {
+    assertNotInitialized();
+    this.entries.put(key, value);
+    return this;
+  }
 
-    public HeaderBuilder(String entrySep, char kvSep) {
-	this.entrySep = entrySep;
-	this.kvSep = kvSep;
+  @Override
+  public String toString() {
+    initialize();
+    StringBuilder sb = new StringBuilder();
+    for (Entry<String, String> pair : this.entries.entrySet()) {
+      if (sb.length() > 0) {
+        sb.append(this.entrySep);
+      }
+      sb.append(pair.getKey());
+      if (pair.getValue() != null) {
+        sb.append(this.kvSep).append(pair.getValue());
+      }
     }
-
-    @Override
-    protected void init() throws Exception {
-    }
-
-    public HeaderBuilder addValue(String key) {
-	assertNotInitialized();
-	this.entries.put(key, null);
-	return this;
-    }
-
-    public HeaderBuilder addValues(String... keys) {
-	assertNotInitialized();
-	for (String key : keys) {
-	    this.entries.put(key, null);
-	}
-	return this;
-    }
-
-    public HeaderBuilder addPair(String key, String value) {
-	assertNotInitialized();
-	this.entries.put(key, value);
-	return this;
-    }
-
-    @Override
-    public String toString() {
-	initialize();
-	StringBuilder sb = new StringBuilder();
-	for (Entry<String, String> pair : this.entries.entrySet()) {
-	    if (sb.length() > 0) {
-		sb.append(this.entrySep);
-	    }
-	    sb.append(pair.getKey());
-	    if (pair.getValue() != null) {
-		sb.append(this.kvSep).append(pair.getValue());
-	    }
-	}
-	return sb.length() > 0 ? sb.toString() : null;
-    }
+    return sb.length() > 0 ? sb.toString() : null;
+  }
 }

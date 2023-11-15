@@ -42,168 +42,179 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 public class ExecutorHandler extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    protected JsonProcessor jsonProcessor;
+  @Inject
+  protected JsonProcessor jsonProcessor;
 
-    @Inject
-    protected HeaderPolicyProvider headerPolicyProvider;
+  @Inject
+  protected HeaderPolicyProvider headerPolicyProvider;
 
-    @Inject
-    protected ActionInvoker actionInvoker;
+  @Inject
+  protected ActionInvoker actionInvoker;
 
-    @Inject
-    protected ControllerProvider controllerProvider;
+  @Inject
+  protected ControllerProvider controllerProvider;
 
-    @Inject
-    protected CaptchaManager captchaManager;
+  @Inject
+  protected CaptchaManager captchaManager;
 
-    @Inject
-    protected CsrfManager csrfManager;
+  @Inject
+  protected CsrfManager csrfManager;
 
-    @Inject
-    protected TempDataManager tempDataManager;
+  @Inject
+  protected TempDataManager tempDataManager;
 
-    @Inject
-    protected ActionFilterProvider actionFilterProvider;
+  @Inject
+  protected ActionFilterProvider actionFilterProvider;
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected ExceptionHandler exceptionHandler;
+  @Inject
+  protected ExceptionHandler exceptionHandler;
 
-    protected void testErrorStatus(HttpServletRequest request) {
-	String statusValue = request.getParameter("__error_status");
-	if (StringUtils.isNullOrEmpty(statusValue)) {
-	    return;
-	}
-	int status = Integer.parseInt(statusValue);
-	if (status >= 400 && status < 600) {
-
-	    throw new HttpException(status, "__error_status=" + status);
-	} else {
-	    throw new BadRequestException("__error_status is invalid.");
-	}
+  protected void testErrorStatus(HttpServletRequest request) {
+    String statusValue = request.getParameter("__error_status");
+    if (StringUtils.isNullOrEmpty(statusValue)) {
+      return;
     }
+    int status = Integer.parseInt(statusValue);
+    if (status >= 400 && status < 600) {
 
-    protected void doRequest(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws ServletException, IOException {
-	try {
-	    if (this.appConfig.isEnableDebug()) {
-		testErrorStatus(request);
-	    }
-	    getFilterChain(requestContext).doFilter(request, response, requestContext);
-
-	} catch (RuntimeException | ServletException | IOException ex) {
-	    throw ex;
-	} catch (Exception ex) {
-	    throw new ServletException(ex);
-	}
+      throw new HttpException(status, "__error_status=" + status);
+    } else {
+      throw new BadRequestException("__error_status is invalid.");
     }
+  }
 
-    protected ActionFilterChain getFilterChain(RequestContext requestContext) {
-	String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() != null) ? requestContext.getActionDesc().getEnableFilters().value() : StringUtils.EMPTY_ARRAY;
+  protected void doRequest(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws ServletException, IOException {
+    try {
+      if (this.appConfig.isEnableDebug()) {
+        testErrorStatus(request);
+      }
+      getFilterChain(requestContext).doFilter(request, response, requestContext);
 
-	return new ActionFilterChain(actionFilters, this.actionFilterProvider) {
-
-	    @Override
-	    protected void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-		onActionInvoking(request, response, requestContext);
-
-		// Invoke Action
-		Object controller = controllerProvider.getController(requestContext.getActionDesc().getControllerClass());
-		Object result = actionInvoker.invokeAction(request, response, requestContext, controller);
-
-		onResultExecuting(request, response, requestContext, result);
-
-		// Execute Result
-		if (ActionResult.class.isAssignableFrom(requestContext.getActionDesc().getMethod().getReturnType())) {
-		    Asserts.notNull(result);
-		    ((ActionResult) result).execute(request, response, requestContext);
-
-		} else if (requestContext.getActionDesc().getMethod().getReturnType() != void.class) {
-		    writeJsonResult(response, result);
-		}
-	    }
-	};
+    } catch (RuntimeException | ServletException | IOException ex) {
+      throw ex;
+    } catch (Exception ex) {
+      throw new ServletException(ex);
     }
+  }
 
-    protected void onActionInvoking(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	// TempData
-	if (requestContext.isGetOrHead()) {
-	    this.tempDataManager.loadTempData(request, response);
-	}
-	// CSRF
-	if ((requestContext.getActionDesc().getEnableCsrf() != null) && request.getMethod().equals(HttpMethod.POST)) {
-	    this.csrfManager.verifyCsrf(request, true);
-	}
-	// CAPTCHA
-	if ((requestContext.getActionDesc().getEnableCaptcha() != null) && request.getMethod().equals(HttpMethod.POST)) {
-	    this.captchaManager.verifyCaptcha(request);
-	}
-    }
+  protected ActionFilterChain getFilterChain(RequestContext requestContext) {
+    String[] actionFilters = (requestContext.getActionDesc().getEnableFilters() != null)
+        ? requestContext.getActionDesc().getEnableFilters().value()
+        : StringUtils.EMPTY_ARRAY;
 
-    protected void onResultExecuting(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext, Object result) throws Exception {
-	// @CacheControl
-	if ((requestContext.getActionDesc().getCacheControl() != null) && requestContext.isGetOrHead()) {
-	    this.headerPolicyProvider.getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value()).writePolicy(request, response, requestContext);
-	}
-    }
+    return new ActionFilterChain(actionFilters, this.actionFilterProvider) {
 
-    protected void writeJsonResult(HttpServletResponse response, Object result) throws Exception {
-	response.setContentType(MimeTypes.APP_JSON);
-	response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-	this.jsonProcessor.write(response.getWriter(), result);
-    }
+      @Override
+      protected void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+          throws Exception {
+        onActionInvoking(request, response, requestContext);
 
-    @Override
-    protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	if (request.getMethod().equals(HttpMethod.PATCH)) {
-	    doPatch(request, response);
-	} else {
-	    super.service(request, response);
-	}
-    }
+        // Invoke Action
+        Object controller = controllerProvider.getController(requestContext.getActionDesc().getControllerClass());
+        Object result = actionInvoker.invokeAction(request, response, requestContext, controller);
 
-    protected void doPatch(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	doRequest(request, response, ServletUtils.getRequestContext(request));
-    }
+        onResultExecuting(request, response, requestContext, result);
 
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	doRequest(request, response, ServletUtils.getRequestContext(request));
-    }
+        // Execute Result
+        if (ActionResult.class.isAssignableFrom(requestContext.getActionDesc().getMethod().getReturnType())) {
+          Asserts.notNull(result);
+          ((ActionResult) result).execute(request, response, requestContext);
 
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	doRequest(request, response, ServletUtils.getRequestContext(request));
-    }
+        } else if (requestContext.getActionDesc().getMethod().getReturnType() != void.class) {
+          writeJsonResult(response, result);
+        }
+      }
+    };
+  }
 
-    @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	doRequest(request, response, ServletUtils.getRequestContext(request));
+  protected void onActionInvoking(HttpServletRequest request, HttpServletResponse response,
+      RequestContext requestContext) throws Exception {
+    // TempData
+    if (requestContext.isGetOrHead()) {
+      this.tempDataManager.loadTempData(request, response);
     }
+    // CSRF
+    if ((requestContext.getActionDesc().getEnableCsrf() != null) && request.getMethod().equals(HttpMethod.POST)) {
+      this.csrfManager.verifyCsrf(request, true);
+    }
+    // CAPTCHA
+    if ((requestContext.getActionDesc().getEnableCaptcha() != null) && request.getMethod().equals(HttpMethod.POST)) {
+      this.captchaManager.verifyCaptcha(request);
+    }
+  }
 
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	doRequest(request, response, ServletUtils.getRequestContext(request));
+  protected void onResultExecuting(HttpServletRequest request, HttpServletResponse response,
+      RequestContext requestContext, Object result) throws Exception {
+    // @CacheControl
+    if ((requestContext.getActionDesc().getCacheControl() != null) && requestContext.isGetOrHead()) {
+      this.headerPolicyProvider.getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value())
+          .writePolicy(request, response, requestContext);
     }
+  }
 
-    @Override
-    protected void doOptions(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	throw new UnsupportedOperationException();
-    }
+  protected void writeJsonResult(HttpServletResponse response, Object result) throws Exception {
+    response.setContentType(MimeTypes.APP_JSON);
+    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+    this.jsonProcessor.write(response.getWriter(), result);
+  }
 
-    @Override
-    protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-	throw new UnsupportedOperationException();
+  @Override
+  protected void service(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    if (request.getMethod().equals(HttpMethod.PATCH)) {
+      doPatch(request, response);
+    } else {
+      super.service(request, response);
     }
+  }
 
-    public boolean isMockContext() {
-	return false;
-    }
+  protected void doPatch(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    doRequest(request, response, ServletUtils.getRequestContext(request));
+  }
+
+  @Override
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doRequest(request, response, ServletUtils.getRequestContext(request));
+  }
+
+  @Override
+  protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doRequest(request, response, ServletUtils.getRequestContext(request));
+  }
+
+  @Override
+  protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    doRequest(request, response, ServletUtils.getRequestContext(request));
+  }
+
+  @Override
+  protected void doDelete(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    doRequest(request, response, ServletUtils.getRequestContext(request));
+  }
+
+  @Override
+  protected void doOptions(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  protected void doTrace(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    throw new UnsupportedOperationException();
+  }
+
+  public boolean isMockContext() {
+    return false;
+  }
 }

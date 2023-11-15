@@ -35,50 +35,50 @@ import com.appslandia.plum.mocks.MockSessionCookieConfig;
  */
 public class MockHttpSessionTest {
 
-    MockServletContext servletContext;
+  MockServletContext servletContext;
 
-    @BeforeEach
-    public void beforeEachTest() {
-	servletContext = new MockServletContext(new MockSessionCookieConfig());
-    }
+  @BeforeEach
+  public void beforeEachTest() {
+    servletContext = new MockServletContext(new MockSessionCookieConfig());
+  }
 
-    @Test
-    public void test() {
-	MockHttpSession session = new MockHttpSession(servletContext);
-	Assertions.assertNotNull(session.getServletContext());
+  @Test
+  public void test() {
+    MockHttpSession session = new MockHttpSession(servletContext);
+    Assertions.assertNotNull(session.getServletContext());
 
-	session.setMaxInactiveInterval(1800);
-	Assertions.assertEquals(1800, session.getMaxInactiveInterval());
-    }
+    session.setMaxInactiveInterval(1800);
+    Assertions.assertEquals(1800, session.getMaxInactiveInterval());
+  }
 
-    @Test
-    public void test_attributes() {
-	MockHttpSession session = new MockHttpSession(servletContext);
-	session.setAttribute("attr1", "value1");
-	session.setAttribute("attr2", "value2");
+  @Test
+  public void test_attributes() {
+    MockHttpSession session = new MockHttpSession(servletContext);
+    session.setAttribute("attr1", "value1");
+    session.setAttribute("attr2", "value2");
 
-	Assertions.assertEquals("value1", session.getAttribute("attr1"));
-	Assertions.assertNull(session.getAttribute("attr3"));
+    Assertions.assertEquals("value1", session.getAttribute("attr1"));
+    Assertions.assertNull(session.getAttribute("attr3"));
 
-	session.removeAttribute("attr2");
-	Assertions.assertNull(session.getAttribute("attr2"));
-    }
+    session.removeAttribute("attr2");
+    Assertions.assertNull(session.getAttribute("attr2"));
+  }
 
-    @Test
-    public void test_invalidate() {
-	MockHttpSession session = new MockHttpSession(servletContext);
-	Assertions.assertFalse(session.isInvalidated());
+  @Test
+  public void test_invalidate() {
+    MockHttpSession session = new MockHttpSession(servletContext);
+    Assertions.assertFalse(session.isInvalidated());
 
-	session.invalidate();
-	Assertions.assertTrue(session.isInvalidated());
-    }
+    session.invalidate();
+    Assertions.assertTrue(session.isInvalidated());
+  }
 
-    @Test
-    public void test_changeSessionId() {
-	MockHttpSession session = new MockHttpSession(servletContext);
-	String oldId = session.getId();
+  @Test
+  public void test_changeSessionId() {
+    MockHttpSession session = new MockHttpSession(servletContext);
+    String oldId = session.getId();
 
-	session.changeSessionId();
-	Assertions.assertNotEquals(session.getId(), oldId);
-    }
+    session.changeSessionId();
+    Assertions.assertNotEquals(session.getId(), oldId);
+  }
 }

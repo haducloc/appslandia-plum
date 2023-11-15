@@ -29,21 +29,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @NotLog
 public class UnauthorizedException extends HttpException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public UnauthorizedException() {
-	super(HttpServletResponse.SC_UNAUTHORIZED);
-    }
+  public UnauthorizedException() {
+    super(HttpServletResponse.SC_UNAUTHORIZED);
+  }
 
-    public UnauthorizedException(String message) {
-	super(HttpServletResponse.SC_UNAUTHORIZED, message);
-    }
+  public UnauthorizedException(String message) {
+    super(HttpServletResponse.SC_UNAUTHORIZED, message);
+  }
 
-    public UnauthorizedException(String message, Throwable cause) {
-	super(HttpServletResponse.SC_UNAUTHORIZED, message, cause);
-    }
+  public UnauthorizedException(String message, Throwable cause) {
+    super(HttpServletResponse.SC_UNAUTHORIZED, message, cause);
+  }
 
-    public UnauthorizedException(Throwable cause) {
-	super(HttpServletResponse.SC_UNAUTHORIZED, cause);
-    }
+  public UnauthorizedException(Throwable cause) {
+    super(HttpServletResponse.SC_UNAUTHORIZED, cause);
+  }
 }

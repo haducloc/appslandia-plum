@@ -27,13 +27,13 @@ package com.appslandia.plum.jsp;
  */
 public class TagUtils {
 
-    public static final String CSS_NOOP = "l-noop";
+  public static final String CSS_NOOP = "l-noop";
 
-    public static boolean isForParameter(String attribute) {
-	return attribute.startsWith("__");
-    }
+  public static boolean isForParameter(String attribute) {
+    return attribute.startsWith("__");
+  }
 
-    public static String getParameterName(String attribute) {
-	return attribute.substring(2);
-    }
+  public static String getParameterName(String attribute) {
+    return attribute.substring(2);
+  }
 }

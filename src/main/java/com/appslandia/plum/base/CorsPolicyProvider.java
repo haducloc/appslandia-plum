@@ -34,21 +34,21 @@ import com.appslandia.common.utils.Asserts;
  */
 public class CorsPolicyProvider extends InitializeObject {
 
-    private Map<String, CorsPolicy> corsPolicyMap = new HashMap<>();
+  private Map<String, CorsPolicy> corsPolicyMap = new HashMap<>();
 
-    @Override
-    protected void init() throws Exception {
-	this.corsPolicyMap = Collections.unmodifiableMap(this.corsPolicyMap);
-    }
+  @Override
+  protected void init() throws Exception {
+    this.corsPolicyMap = Collections.unmodifiableMap(this.corsPolicyMap);
+  }
 
-    public CorsPolicy getCorsPolicy(String name) {
-	this.initialize();
-	CorsPolicy impl = this.corsPolicyMap.get(name);
-	return Asserts.notNull(impl);
-    }
+  public CorsPolicy getCorsPolicy(String name) {
+    this.initialize();
+    CorsPolicy impl = this.corsPolicyMap.get(name);
+    return Asserts.notNull(impl);
+  }
 
-    public void addCorsPolicy(CorsPolicy impl) {
-	this.assertNotInitialized();
-	this.corsPolicyMap.put(impl.getName(), impl);
-    }
+  public void addCorsPolicy(CorsPolicy impl) {
+    this.assertNotInitialized();
+    this.corsPolicyMap.put(impl.getName(), impl);
+  }
 }

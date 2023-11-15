@@ -31,77 +31,77 @@ import com.appslandia.common.utils.Asserts;
  *
  */
 public class MemUser extends InitializeObject implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String username;
-    private String password;
-    private String email;
-    private String roles;
+  private String username;
+  private String password;
+  private String email;
+  private String roles;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.username);
-	Asserts.notNull(this.password);
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.username);
+    Asserts.notNull(this.password);
 
-	if (this.email == null) {
-	    this.email = createEmail(this.username);
-	}
+    if (this.email == null) {
+      this.email = createEmail(this.username);
     }
+  }
 
-    public String getUsername() {
-	initialize();
-	return this.username;
-    }
+  public String getUsername() {
+    initialize();
+    return this.username;
+  }
 
-    public MemUser setUsername(String username) {
-	assertNotInitialized();
-	this.username = username;
-	return this;
-    }
+  public MemUser setUsername(String username) {
+    assertNotInitialized();
+    this.username = username;
+    return this;
+  }
 
-    public String getPassword() {
-	initialize();
-	return this.password;
-    }
+  public String getPassword() {
+    initialize();
+    return this.password;
+  }
 
-    public MemUser setPassword(String password) {
-	assertNotInitialized();
-	this.password = password;
-	return this;
-    }
+  public MemUser setPassword(String password) {
+    assertNotInitialized();
+    this.password = password;
+    return this;
+  }
 
-    public String getEmail() {
-	initialize();
-	return this.email;
-    }
+  public String getEmail() {
+    initialize();
+    return this.email;
+  }
 
-    public MemUser setEmail(String email) {
-	assertNotInitialized();
-	this.email = email;
-	return this;
-    }
+  public MemUser setEmail(String email) {
+    assertNotInitialized();
+    this.email = email;
+    return this;
+  }
 
-    public String getRoles() {
-	initialize();
-	return this.roles;
-    }
+  public String getRoles() {
+    initialize();
+    return this.roles;
+  }
 
-    public MemUser setRoles(String roles) {
-	assertNotInitialized();
-	this.roles = roles;
-	return this;
-    }
+  public MemUser setRoles(String roles) {
+    assertNotInitialized();
+    this.roles = roles;
+    return this;
+  }
 
-    public MemUser copy() {
-	MemUser copy = new MemUser();
-	copy.username = this.username;
-	copy.password = this.password;
-	copy.email = this.email;
-	copy.roles = this.roles;
-	return copy;
-    }
+  public MemUser copy() {
+    MemUser copy = new MemUser();
+    copy.username = this.username;
+    copy.password = this.password;
+    copy.email = this.email;
+    copy.roles = this.roles;
+    return copy;
+  }
 
-    public static String createEmail(String userName) {
-	return userName + "@memuser.com";
-    }
+  public static String createEmail(String userName) {
+    return userName + "@memuser.com";
+  }
 }

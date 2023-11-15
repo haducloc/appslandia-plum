@@ -28,5 +28,5 @@ package com.appslandia.plum.base;
  */
 public interface ProblemSupport {
 
-    Problem getProblem();
+  Problem getProblem();
 }

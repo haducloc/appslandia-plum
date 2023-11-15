@@ -37,10 +37,10 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class UserDNameFunction extends DynPebbleFunction {
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
 
-	return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
-    }
+    return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
+  }
 }

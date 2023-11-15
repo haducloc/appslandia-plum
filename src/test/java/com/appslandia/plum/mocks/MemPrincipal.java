@@ -31,18 +31,18 @@ import com.appslandia.plum.base.UserPrincipal;
  *
  */
 public class MemPrincipal extends UserPrincipal {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public MemPrincipal(MemUser user) {
-	super(user.getUsername(), createAttributes(user));
-    }
+  public MemPrincipal(MemUser user) {
+    super(user.getUsername(), createAttributes(user));
+  }
 
-    static Map<String, Object> createAttributes(MemUser user) {
-	Map<String, Object> attributes = new HashMap<>();
+  static Map<String, Object> createAttributes(MemUser user) {
+    Map<String, Object> attributes = new HashMap<>();
 
-	attributes.put(ATTRIBUTE_USER_NAME, user.getUsername());
-	attributes.put(ATTRIBUTE_ROLES, user.getRoles());
+    attributes.put(ATTRIBUTE_USER_NAME, user.getUsername());
+    attributes.put(ATTRIBUTE_ROLES, user.getRoles());
 
-	return attributes;
-    }
+    return attributes;
+  }
 }

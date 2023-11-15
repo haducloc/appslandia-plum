@@ -38,53 +38,54 @@ import com.appslandia.plum.mocks.MockHttpServletRequest;
  */
 public class HttpStatus401JwtTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	container.getAppConfig().set(AppConfig.CONFIG_DEFAULT_MODULE, "bearer");
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    container.getAppConfig().set(AppConfig.CONFIG_DEFAULT_MODULE, "bearer");
 
-	MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
-	memUserDatabase.addUser("user1", "password");
+    MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
+    memUserDatabase.addUser("user1", "password");
+  }
+
+  void initAccessToken(MockHttpServletRequest request, JwtPayload payload) {
+    JwtSigner jwtSigner = container.getObject(JwtSigner.class, MemVersionLiteral.IMPL);
+    JoseHeader header = jwtSigner.newHeader();
+    request.setHeader("Authorization", "Bearer " + jwtSigner.sign(new JwtToken(header, payload)));
+  }
+
+  @Test
+  public void test_testAction_unAuthenticated() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(401, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    void initAccessToken(MockHttpServletRequest request, JwtPayload payload) {
-	JwtSigner jwtSigner = container.getObject(JwtSigner.class, MemVersionLiteral.IMPL);
-	JoseHeader header = jwtSigner.newHeader();
-	request.setHeader("Authorization", "Bearer " + jwtSigner.sign(new JwtToken(header, payload)));
+  @Test
+  public void test_testAction_authenticated() {
+    try {
+      initAccessToken(getCurrentRequest(),
+          new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "user1").set(UserPrincipal.ATTRIBUTE_ROLES, "user"));
+
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testAction_unAuthenticated() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+  @Controller("testController")
+  public static class TestController {
 
-	    Assertions.assertEquals(401, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @Authorize
+    public void testAction() throws Exception {
     }
-
-    @Test
-    public void test_testAction_authenticated() {
-	try {
-	    initAccessToken(getCurrentRequest(), new JwtPayload().set(UserPrincipal.ATTRIBUTE_USER_NAME, "user1").set(UserPrincipal.ATTRIBUTE_ROLES, "user"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	@Authorize
-	public void testAction() throws Exception {
-	}
-    }
+  }
 }

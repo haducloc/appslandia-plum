@@ -37,17 +37,17 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
  */
 public class MockIdentityStoreHandler extends IdentityStoreHandlerBase {
 
-    @Inject
-    protected Instance<IdentityStore> storeInstance;
+  @Inject
+  protected Instance<IdentityStore> storeInstance;
 
-    @Override
-    protected void init() throws Exception {
-	List<IdentityStore> stores = this.storeInstance.stream().collect(Collectors.toList());
-	Collections.sort(stores, (s1, s2) -> {
-	    return Integer.valueOf(s1.priority()).compareTo(s2.priority());
-	});
-	this.identityStores.addAll(stores);
+  @Override
+  protected void init() throws Exception {
+    List<IdentityStore> stores = this.storeInstance.stream().collect(Collectors.toList());
+    Collections.sort(stores, (s1, s2) -> {
+      return Integer.valueOf(s1.priority()).compareTo(s2.priority());
+    });
+    this.identityStores.addAll(stores);
 
-	super.init();
-    }
+    super.init();
+  }
 }

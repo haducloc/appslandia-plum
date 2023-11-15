@@ -31,35 +31,35 @@ import java.util.Map;
  */
 public class MockHttpHeader {
 
-    final List<String> values = new ArrayList<>();
+  final List<String> values = new ArrayList<>();
 
-    public void addValues(String... values) {
-	for (String value : values) {
-	    if (!this.values.contains(value)) {
-		this.values.add(value);
-	    }
-	}
+  public void addValues(String... values) {
+    for (String value : values) {
+      if (!this.values.contains(value)) {
+        this.values.add(value);
+      }
     }
+  }
 
-    public void setValues(String... values) {
-	this.values.clear();
-	addValues(values);
-    }
+  public void setValues(String... values) {
+    this.values.clear();
+    addValues(values);
+  }
 
-    public List<String> getValues() {
-	return this.values;
-    }
+  public List<String> getValues() {
+    return this.values;
+  }
 
-    public String getValue() {
-	return !this.values.isEmpty() ? this.values.get(0) : null;
-    }
+  public String getValue() {
+    return !this.values.isEmpty() ? this.values.get(0) : null;
+  }
 
-    public static MockHttpHeader getByName(Map<String, MockHttpHeader> headers, String name) {
-	for (String headerName : headers.keySet()) {
-	    if (headerName.equalsIgnoreCase(name)) {
-		return headers.get(headerName);
-	    }
-	}
-	return null;
+  public static MockHttpHeader getByName(Map<String, MockHttpHeader> headers, String name) {
+    for (String headerName : headers.keySet()) {
+      if (headerName.equalsIgnoreCase(name)) {
+        return headers.get(headerName);
+      }
     }
+    return null;
+  }
 }

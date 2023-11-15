@@ -30,86 +30,86 @@ import org.junit.jupiter.api.Test;
  */
 public class HttpStatus404Test extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_notFound() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/notAction");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionNoPathParams_invalidPathParamsAdded() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/actionNoPathParams/v1");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionWithPathParams_pathParamsMissed() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/actionWithPathParams/v1");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionWithPathParams_invalidPathParamsFormat() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/actionWithPathParams/v1/v2");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionNotFoundException() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/actionNotFoundException");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void actionNoPathParams() throws Exception {
     }
 
-    @Test
-    public void test_notFound() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/notAction");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{p1}/{p2}-{p3}")
+    public void actionWithPathParams() throws Exception {
     }
 
-    @Test
-    public void test_actionNoPathParams_invalidPathParamsAdded() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/actionNoPathParams/v1");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void actionNotFoundException() throws Exception {
+      throw new NotFoundException("actionNotFoundException");
     }
-
-    @Test
-    public void test_actionWithPathParams_pathParamsMissed() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/actionWithPathParams/v1");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionWithPathParams_invalidPathParamsFormat() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/actionWithPathParams/v1/v2");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionNotFoundException() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/actionNotFoundException");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void actionNoPathParams() throws Exception {
-	}
-
-	@HttpGet
-	@PathParams("/{p1}/{p2}-{p3}")
-	public void actionWithPathParams() throws Exception {
-	}
-
-	@HttpGet
-	public void actionNotFoundException() throws Exception {
-	    throw new NotFoundException("actionNotFoundException");
-	}
-    }
+  }
 }

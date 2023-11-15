@@ -44,217 +44,219 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class ActionParser {
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected ActionDescProvider actionDescProvider;
+  @Inject
+  protected ActionDescProvider actionDescProvider;
 
-    @Inject
-    protected LanguageProvider languageProvider;
+  @Inject
+  protected LanguageProvider languageProvider;
 
-    public ActionDesc parse(List<String> pathItems, Map<String, String> pathParamMap) {
-	// /
-	// /language
-	if (pathItems.size() == 0) {
-	    return this.actionDescProvider.getHomeDesc();
-	}
-	ActionDesc actionDesc = null;
-	String controller = pathItems.get(0);
+  public ActionDesc parse(List<String> pathItems, Map<String, String> pathParamMap) {
+    // /
+    // /language
+    if (pathItems.size() == 0) {
+      return this.actionDescProvider.getHomeDesc();
+    }
+    ActionDesc actionDesc = null;
+    String controller = pathItems.get(0);
 
-	// /controller
-	if (pathItems.size() == 1) {
-	    actionDesc = this.actionDescProvider.getActionDesc(controller, ServletUtils.ACTION_INDEX);
-	    if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
-		return null;
-	    }
-	    if (actionDesc.getPathParams().size() > 0) {
-		return null;
-	    }
-	    return actionDesc;
-	}
-	// /controller/action(/parameter)*
-	String action = pathItems.get(1);
-	actionDesc = this.actionDescProvider.getActionDesc(controller, action);
-	if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
-	    return null;
-	}
-
-	// Remove controller/action
-	pathItems.remove(0);
-	pathItems.remove(0);
-
-	List<PathParam> pathParams = actionDesc.getPathParams();
-	if (pathItems.size() != pathParams.size()) {
-	    return null;
-	}
-
-	// pathParamMap
-	for (int i = 0; i < pathParams.size(); i++) {
-	    PathParam pathParm = pathParams.get(i);
-	    if (pathParm.getParamName() != null) {
-		pathParamMap.put(pathParm.getParamName(), URLEncoding.decodePath(pathItems.get(i)));
-	    } else {
-		if (!parseSubParams(pathItems.get(i), pathParm.getSubParams(), pathParamMap)) {
-		    return null;
-		}
-	    }
-	}
-	return actionDesc;
+    // /controller
+    if (pathItems.size() == 1) {
+      actionDesc = this.actionDescProvider.getActionDesc(controller, ServletUtils.ACTION_INDEX);
+      if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
+        return null;
+      }
+      if (actionDesc.getPathParams().size() > 0) {
+        return null;
+      }
+      return actionDesc;
+    }
+    // /controller/action(/parameter)*
+    String action = pathItems.get(1);
+    actionDesc = this.actionDescProvider.getActionDesc(controller, action);
+    if ((actionDesc == null) || (actionDesc.getChildAction() != null)) {
+      return null;
     }
 
-    public String toActionUrl(HttpServletRequest request, String controller, String action, Map<String, Object> parameters, boolean absoluteUrl) throws IllegalArgumentException {
-	ActionDesc actionDesc = this.actionDescProvider.getActionDesc(controller, action);
-	Asserts.notNull(actionDesc);
-	Asserts.isNull(actionDesc.getChildAction());
+    // Remove controller/action
+    pathItems.remove(0);
+    pathItems.remove(0);
 
-	RequestContext requestContext = ServletUtils.getRequestContext(request);
-	StringBuilder url = null;
-
-	if (absoluteUrl) {
-	    url = ServletUtils.absUrlBase(request);
-	} else {
-	    url = ServletUtils.newUrlBuilder();
-	}
-
-	// Context path
-	url.append(request.getServletContext().getContextPath());
-
-	// Language
-	if (requestContext.isPathLanguage() || this.appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
-	    url.append('/').append(requestContext.getLanguageId());
-	}
-
-	// Controller
-	url.append('/').append(controller);
-
-	// Path Parameters
-	if (actionDesc.getPathParams().size() > 0) {
-	    url.append('/').append(action);
-
-	    if (parameters != null) {
-		addPathParams(url, parameters, actionDesc.getPathParams());
-	    } else {
-		throw new IllegalArgumentException("Path parameters are required.");
-	    }
-	} else {
-	    // Index
-	    if (!ServletUtils.ACTION_INDEX.equalsIgnoreCase(action)) {
-		url.append('/').append(action);
-	    }
-	}
-	url.append('/');
-
-	// Query Parameters
-	if ((parameters != null) && (parameters.size() > actionDesc.getPathParamCount())) {
-	    url.append('?');
-	    addQueryParams(url, parameters, actionDesc.getPathParams());
-	}
-	return url.toString();
+    List<PathParam> pathParams = actionDesc.getPathParams();
+    if (pathItems.size() != pathParams.size()) {
+      return null;
     }
 
-    // pathItem: parameter(-parameter)+
-    public static boolean parseSubParams(String pathItem, List<PathParam> subParams, Map<String, String> pathParamMap) {
-	int nextIdx = 0;
-	int startIdx = 0;
-	while (true) {
-	    // Last parameter
-	    if (nextIdx == subParams.size() - 1) {
-		if (startIdx >= pathItem.length()) {
-		    return false;
-		}
-		String value = pathItem.substring(startIdx);
-		if (value.isEmpty()) {
-		    return false;
-		}
-		pathParamMap.put(subParams.get(nextIdx).getParamName(), URLEncoding.decodePath(value));
-		return true;
-	    }
-	    // Not last parameter
-	    int endIdx = pathItem.indexOf('-', startIdx);
-	    if (endIdx < 0) {
-		return false;
-	    }
-	    String value = pathItem.substring(startIdx, endIdx);
-	    if (value.isEmpty()) {
-		return false;
-	    }
-	    pathParamMap.put(subParams.get(nextIdx).getParamName(), URLEncoding.decodePath(value));
+    // pathParamMap
+    for (int i = 0; i < pathParams.size(); i++) {
+      PathParam pathParm = pathParams.get(i);
+      if (pathParm.getParamName() != null) {
+        pathParamMap.put(pathParm.getParamName(), URLEncoding.decodePath(pathItems.get(i)));
+      } else {
+        if (!parseSubParams(pathItems.get(i), pathParm.getSubParams(), pathParamMap)) {
+          return null;
+        }
+      }
+    }
+    return actionDesc;
+  }
 
-	    startIdx = endIdx + 1;
-	    nextIdx++;
-	}
+  public String toActionUrl(HttpServletRequest request, String controller, String action,
+      Map<String, Object> parameters, boolean absoluteUrl) throws IllegalArgumentException {
+    ActionDesc actionDesc = this.actionDescProvider.getActionDesc(controller, action);
+    Asserts.notNull(actionDesc);
+    Asserts.isNull(actionDesc.getChildAction());
+
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
+    StringBuilder url = null;
+
+    if (absoluteUrl) {
+      url = ServletUtils.absUrlBase(request);
+    } else {
+      url = ServletUtils.newUrlBuilder();
     }
 
-    public static void addPathParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
-	for (PathParam pathParam : pathParams) {
-	    if (pathParam.getParamName() != null) {
+    // Context path
+    url.append(request.getServletContext().getContextPath());
 
-		Object value = parameters.get(pathParam.getParamName());
-		Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", pathParam.getParamName()));
-
-		url.append('/').append(URLEncoding.encodePath(value.toString()));
-		continue;
-	    }
-	    // Sub Parameters
-	    boolean isFirstSub = true;
-	    for (PathParam subParam : pathParam.getSubParams()) {
-
-		Object value = parameters.get(subParam.getParamName());
-		Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", subParam.getParamName()));
-
-		if (isFirstSub) {
-		    url.append('/').append(URLEncoding.encodePath(value.toString()));
-		    isFirstSub = false;
-		} else {
-		    url.append('-').append(URLEncoding.encodePath(value.toString()));
-		}
-	    }
-	}
+    // Language
+    if (requestContext.isPathLanguage() || this.appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+      url.append('/').append(requestContext.getLanguageId());
     }
 
-    public static void addQueryParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
-	boolean isFirstParam = true;
+    // Controller
+    url.append('/').append(controller);
 
-	for (Map.Entry<String, Object> param : parameters.entrySet()) {
-	    if (pathParams.stream().anyMatch(p -> p.hasPathParam(param.getKey()))) {
-		continue;
-	    }
-	    if (isFirstParam) {
-		isFirstParam = false;
-	    } else {
-		url.append('&');
-	    }
-	    URLUtils.addQueryParam(url, param.getKey(), param.getValue());
-	}
+    // Path Parameters
+    if (actionDesc.getPathParams().size() > 0) {
+      url.append('/').append(action);
+
+      if (parameters != null) {
+        addPathParams(url, parameters, actionDesc.getPathParams());
+      } else {
+        throw new IllegalArgumentException("Path parameters are required.");
+      }
+    } else {
+      // Index
+      if (!ServletUtils.ACTION_INDEX.equalsIgnoreCase(action)) {
+        url.append('/').append(action);
+      }
     }
+    url.append('/');
 
-    @SuppressWarnings("resource")
-    public String toActionLink(HttpServletRequest request, String controller, String action, Map<String, Object> parameters, Map<String, Object> attributes, String labelText)
-	    throws IllegalArgumentException {
-	StringWriter out = new StringWriter(255);
-
-	out.write("<a href=\"");
-	out.write(toActionUrl(request, controller, action, parameters, false));
-	out.write("\"");
-
-	// Attributes
-	if (attributes != null) {
-	    for (Entry<String, Object> attr : attributes.entrySet()) {
-		out.write(' ');
-		out.write(attr.getKey());
-		out.write("=\"");
-
-		if (attr.getValue() != null) {
-		    out.write(attr.getValue().toString());
-		}
-		out.write('"');
-	    }
-	}
-	out.write('>');
-	out.write(XmlEscaper.escapeXml(labelText));
-	out.write("</a>");
-
-	return out.toString();
+    // Query Parameters
+    if ((parameters != null) && (parameters.size() > actionDesc.getPathParamCount())) {
+      url.append('?');
+      addQueryParams(url, parameters, actionDesc.getPathParams());
     }
+    return url.toString();
+  }
+
+  // pathItem: parameter(-parameter)+
+  public static boolean parseSubParams(String pathItem, List<PathParam> subParams, Map<String, String> pathParamMap) {
+    int nextIdx = 0;
+    int startIdx = 0;
+    while (true) {
+      // Last parameter
+      if (nextIdx == subParams.size() - 1) {
+        if (startIdx >= pathItem.length()) {
+          return false;
+        }
+        String value = pathItem.substring(startIdx);
+        if (value.isEmpty()) {
+          return false;
+        }
+        pathParamMap.put(subParams.get(nextIdx).getParamName(), URLEncoding.decodePath(value));
+        return true;
+      }
+      // Not last parameter
+      int endIdx = pathItem.indexOf('-', startIdx);
+      if (endIdx < 0) {
+        return false;
+      }
+      String value = pathItem.substring(startIdx, endIdx);
+      if (value.isEmpty()) {
+        return false;
+      }
+      pathParamMap.put(subParams.get(nextIdx).getParamName(), URLEncoding.decodePath(value));
+
+      startIdx = endIdx + 1;
+      nextIdx++;
+    }
+  }
+
+  public static void addPathParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
+    for (PathParam pathParam : pathParams) {
+      if (pathParam.getParamName() != null) {
+
+        Object value = parameters.get(pathParam.getParamName());
+        Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", pathParam.getParamName()));
+
+        url.append('/').append(URLEncoding.encodePath(value.toString()));
+        continue;
+      }
+      // Sub Parameters
+      boolean isFirstSub = true;
+      for (PathParam subParam : pathParam.getSubParams()) {
+
+        Object value = parameters.get(subParam.getParamName());
+        Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", subParam.getParamName()));
+
+        if (isFirstSub) {
+          url.append('/').append(URLEncoding.encodePath(value.toString()));
+          isFirstSub = false;
+        } else {
+          url.append('-').append(URLEncoding.encodePath(value.toString()));
+        }
+      }
+    }
+  }
+
+  public static void addQueryParams(StringBuilder url, Map<String, Object> parameters, List<PathParam> pathParams) {
+    boolean isFirstParam = true;
+
+    for (Map.Entry<String, Object> param : parameters.entrySet()) {
+      if (pathParams.stream().anyMatch(p -> p.hasPathParam(param.getKey()))) {
+        continue;
+      }
+      if (isFirstParam) {
+        isFirstParam = false;
+      } else {
+        url.append('&');
+      }
+      URLUtils.addQueryParam(url, param.getKey(), param.getValue());
+    }
+  }
+
+  @SuppressWarnings("resource")
+  public String toActionLink(HttpServletRequest request, String controller, String action,
+      Map<String, Object> parameters, Map<String, Object> attributes, String labelText)
+      throws IllegalArgumentException {
+    StringWriter out = new StringWriter(255);
+
+    out.write("<a href=\"");
+    out.write(toActionUrl(request, controller, action, parameters, false));
+    out.write("\"");
+
+    // Attributes
+    if (attributes != null) {
+      for (Entry<String, Object> attr : attributes.entrySet()) {
+        out.write(' ');
+        out.write(attr.getKey());
+        out.write("=\"");
+
+        if (attr.getValue() != null) {
+          out.write(attr.getValue().toString());
+        }
+        out.write('"');
+      }
+    }
+    out.write('>');
+    out.write(XmlEscaper.escapeXml(labelText));
+    out.write("</a>");
+
+    return out.toString();
+  }
 }

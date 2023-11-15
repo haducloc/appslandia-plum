@@ -35,101 +35,102 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class CorsPolicyHandler {
 
-    public static final String HEADER_AC_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
-    public static final String HEADER_AC_ALLOW_METHODS = "Access-Control-Allow-Methods";
-    public static final String HEADER_AC_ALLOW_HEADERS = "Access-Control-Allow-Headers";
-    public static final String HEADER_AC_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
+  public static final String HEADER_AC_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+  public static final String HEADER_AC_ALLOW_METHODS = "Access-Control-Allow-Methods";
+  public static final String HEADER_AC_ALLOW_HEADERS = "Access-Control-Allow-Headers";
+  public static final String HEADER_AC_EXPOSE_HEADERS = "Access-Control-Expose-Headers";
 
-    public static final String HEADER_AC_MAX_AGE = "Access-Control-Max-Age";
-    public static final String HEADER_AC_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
+  public static final String HEADER_AC_MAX_AGE = "Access-Control-Max-Age";
+  public static final String HEADER_AC_ALLOW_CREDENTIALS = "Access-Control-Allow-Credentials";
 
-    public static final String HEADER_ORIGIN = "Origin";
-    public static final String HEADER_VARY = "Vary";
+  public static final String HEADER_ORIGIN = "Origin";
+  public static final String HEADER_VARY = "Vary";
 
-    public static final String HEADER_AC_REQUEST_METHOD = "Access-Control-Request-Method";
-    public static final String HEADER_AC_REQUEST_HEADERS = "Access-Control-Request-Headers";
+  public static final String HEADER_AC_REQUEST_METHOD = "Access-Control-Request-Method";
+  public static final String HEADER_AC_REQUEST_HEADERS = "Access-Control-Request-Headers";
 
-    public String getCrossOrigin(HttpServletRequest request) {
-	String origin = request.getHeader(HEADER_ORIGIN);
-	if (origin == null) {
-	    return null;
-	}
-	StringBuilder url = ServletUtils.absUrlBase(request);
+  public String getCrossOrigin(HttpServletRequest request) {
+    String origin = request.getHeader(HEADER_ORIGIN);
+    if (origin == null) {
+      return null;
+    }
+    StringBuilder url = ServletUtils.absUrlBase(request);
 
-	if (origin.equals(url.toString())) {
-	    return null;
-	}
-	return origin;
+    if (origin.equals(url.toString())) {
+      return null;
+    }
+    return origin;
+  }
+
+  public CorsResult handleCors(HttpServletRequest request, HttpServletResponse response, String crossOrigin,
+      CorsPolicy corsPolicy) {
+    // Origin
+    if (!corsPolicy.allowOrigin(crossOrigin)) {
+      return CorsResult.NOT_ALLOWED_ORIGIN;
     }
 
-    public CorsResult handleCors(HttpServletRequest request, HttpServletResponse response, String crossOrigin, CorsPolicy corsPolicy) {
-	// Origin
-	if (!corsPolicy.allowOrigin(crossOrigin)) {
-	    return CorsResult.NOT_ALLOWED_ORIGIN;
-	}
-
-	// Allow-Origin
-	response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(crossOrigin));
-	if (!corsPolicy.isAnyOrigin()) {
-	    response.addHeader(HEADER_VARY, HEADER_ORIGIN);
-	}
-
-	// Expose-Headers
-	if (corsPolicy.getExposeHeadersString() != null) {
-	    response.setHeader(HEADER_AC_EXPOSE_HEADERS, corsPolicy.getExposeHeadersString());
-	}
-	return CorsResult.ALLOWED;
+    // Allow-Origin
+    response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(crossOrigin));
+    if (!corsPolicy.isAnyOrigin()) {
+      response.addHeader(HEADER_VARY, HEADER_ORIGIN);
     }
 
-    public CorsResult handlePreflight(HttpServletRequest request, HttpServletResponse response, CorsPolicy corsPolicy) {
-	// CORS Headers
-	String origin = Asserts.notNull(getCrossOrigin(request));
+    // Expose-Headers
+    if (corsPolicy.getExposeHeadersString() != null) {
+      response.setHeader(HEADER_AC_EXPOSE_HEADERS, corsPolicy.getExposeHeadersString());
+    }
+    return CorsResult.ALLOWED;
+  }
 
-	// Origin
-	if (!corsPolicy.allowOrigin(origin)) {
-	    return CorsResult.NOT_ALLOWED_ORIGIN;
-	}
-	RequestContext requestContext = ServletUtils.getRequestContext(request);
+  public CorsResult handlePreflight(HttpServletRequest request, HttpServletResponse response, CorsPolicy corsPolicy) {
+    // CORS Headers
+    String origin = Asserts.notNull(getCrossOrigin(request));
 
-	// Request Method
-	String requestMethod = Asserts.notNull(request.getHeader(HEADER_AC_REQUEST_METHOD));
-	if (!requestContext.getActionDesc().getAllowMethods().contains(requestMethod)) {
-	    return CorsResult.NOT_ALLOWED_METHOD;
-	}
+    // Origin
+    if (!corsPolicy.allowOrigin(origin)) {
+      return CorsResult.NOT_ALLOWED_ORIGIN;
+    }
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
 
-	// Request Headers
-	String requestHeaders = request.getHeader(HEADER_AC_REQUEST_HEADERS);
-	if (requestHeaders != null) {
-	    if (!corsPolicy.allowHeaders(requestHeaders)) {
-		return CorsResult.NOT_ALLOWED_HEADER;
-	    }
-	}
-
-	// Allow-Origin
-	response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(origin));
-	if (!corsPolicy.isAnyOrigin()) {
-	    response.addHeader(HEADER_VARY, HEADER_ORIGIN);
-	}
-
-	// Allow-Methods
-	response.setHeader(HEADER_AC_ALLOW_METHODS, requestContext.getActionDesc().getAllowMethodsString());
-
-	// Allow-Headers
-	if (corsPolicy.getAllowHeadersString() != null) {
-	    response.setHeader(HEADER_AC_ALLOW_HEADERS, corsPolicy.getAllowHeadersString());
-	}
-
-	// Allow-Credentials
-	if (corsPolicy.isAllowCredentials()) {
-	    response.setHeader(HEADER_AC_ALLOW_CREDENTIALS, Boolean.toString(corsPolicy.isAllowCredentials()));
-	}
-
-	// Max-Age
-	response.setHeader(HEADER_AC_MAX_AGE, Integer.toString(corsPolicy.getMaxAge()));
-	return CorsResult.ALLOWED;
+    // Request Method
+    String requestMethod = Asserts.notNull(request.getHeader(HEADER_AC_REQUEST_METHOD));
+    if (!requestContext.getActionDesc().getAllowMethods().contains(requestMethod)) {
+      return CorsResult.NOT_ALLOWED_METHOD;
     }
 
-    public static enum CorsResult {
-	ALLOWED, NOT_ALLOWED_ORIGIN, NOT_ALLOWED_METHOD, NOT_ALLOWED_HEADER, NOT_ALLOWED_CORS
+    // Request Headers
+    String requestHeaders = request.getHeader(HEADER_AC_REQUEST_HEADERS);
+    if (requestHeaders != null) {
+      if (!corsPolicy.allowHeaders(requestHeaders)) {
+        return CorsResult.NOT_ALLOWED_HEADER;
+      }
     }
+
+    // Allow-Origin
+    response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(origin));
+    if (!corsPolicy.isAnyOrigin()) {
+      response.addHeader(HEADER_VARY, HEADER_ORIGIN);
+    }
+
+    // Allow-Methods
+    response.setHeader(HEADER_AC_ALLOW_METHODS, requestContext.getActionDesc().getAllowMethodsString());
+
+    // Allow-Headers
+    if (corsPolicy.getAllowHeadersString() != null) {
+      response.setHeader(HEADER_AC_ALLOW_HEADERS, corsPolicy.getAllowHeadersString());
+    }
+
+    // Allow-Credentials
+    if (corsPolicy.isAllowCredentials()) {
+      response.setHeader(HEADER_AC_ALLOW_CREDENTIALS, Boolean.toString(corsPolicy.isAllowCredentials()));
+    }
+
+    // Max-Age
+    response.setHeader(HEADER_AC_MAX_AGE, Integer.toString(corsPolicy.getMaxAge()));
+    return CorsResult.ALLOWED;
+  }
+
+  public static enum CorsResult {
+    ALLOWED, NOT_ALLOWED_ORIGIN, NOT_ALLOWED_METHOD, NOT_ALLOWED_HEADER, NOT_ALLOWED_CORS
+  }
 }

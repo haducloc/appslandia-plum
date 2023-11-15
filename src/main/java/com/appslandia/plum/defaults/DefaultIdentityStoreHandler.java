@@ -48,32 +48,33 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 150)
 public class DefaultIdentityStoreHandler extends IdentityStoreHandlerBase {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Override
-    protected void init() throws Exception {
-	final List<IdentityStore> stores = new ArrayList<>();
+  @Override
+  protected void init() throws Exception {
+    final List<IdentityStore> stores = new ArrayList<>();
 
-	CDIUtils.scanReferences(this.beanManager, IdentityStore.class, ReflectionUtils.EMPTY_ANNOTATIONS, null, (nil, bi) -> {
-	    stores.add(bi.get());
+    CDIUtils.scanReferences(this.beanManager, IdentityStore.class, ReflectionUtils.EMPTY_ANNOTATIONS, null,
+        (nil, bi) -> {
+          stores.add(bi.get());
 
-	    beanInstances.add(bi);
-	});
+          beanInstances.add(bi);
+        });
 
-	Collections.sort(stores, (s1, s2) -> {
-	    return Integer.valueOf(s1.priority()).compareTo(s2.priority());
-	});
-	this.identityStores.addAll(stores);
+    Collections.sort(stores, (s1, s2) -> {
+      return Integer.valueOf(s1.priority()).compareTo(s2.priority());
+    });
+    this.identityStores.addAll(stores);
 
-	super.init();
-    }
+    super.init();
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

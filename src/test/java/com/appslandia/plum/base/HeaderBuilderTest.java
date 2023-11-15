@@ -30,45 +30,45 @@ import org.junit.jupiter.api.Test;
  */
 public class HeaderBuilderTest {
 
-    @Test
-    public void test() {
-	HeaderBuilder builder = new HeaderBuilder();
+  @Test
+  public void test() {
+    HeaderBuilder builder = new HeaderBuilder();
 
-	builder.addValue("key1");
-	builder.addPair("key2", "value2");
-	builder.addPair("key3", "value3");
-	builder.addValues("key4", "key5");
+    builder.addValue("key1");
+    builder.addPair("key2", "value2");
+    builder.addPair("key3", "value3");
+    builder.addValues("key4", "key5");
 
-	Assertions.assertEquals("key1, key2=value2, key3=value3, key4, key5", builder.toString());
-    }
+    Assertions.assertEquals("key1, key2=value2, key3=value3, key4, key5", builder.toString());
+  }
 
-    @Test
-    public void test_customSeparator() {
-	HeaderBuilder builder = new HeaderBuilder("; ");
+  @Test
+  public void test_customSeparator() {
+    HeaderBuilder builder = new HeaderBuilder("; ");
 
-	builder.addValue("key1");
-	builder.addPair("key2", "value2");
-	builder.addPair("key3", "value3");
-	builder.addValues("key4", "key5");
+    builder.addValue("key1");
+    builder.addPair("key2", "value2");
+    builder.addPair("key3", "value3");
+    builder.addValues("key4", "key5");
 
-	Assertions.assertEquals("key1; key2=value2; key3=value3; key4; key5", builder.toString());
-    }
+    Assertions.assertEquals("key1; key2=value2; key3=value3; key4; key5", builder.toString());
+  }
 
-    @Test
-    public void test_override() {
-	HeaderBuilder builder = new HeaderBuilder("; ");
+  @Test
+  public void test_override() {
+    HeaderBuilder builder = new HeaderBuilder("; ");
 
-	builder.addValue("key1");
-	builder.addValues("key2", "key1");
+    builder.addValue("key1");
+    builder.addValues("key2", "key1");
 
-	Assertions.assertEquals("key1; key2", builder.toString());
+    Assertions.assertEquals("key1; key2", builder.toString());
 
-	builder = new HeaderBuilder("; ");
+    builder = new HeaderBuilder("; ");
 
-	builder.addPair("key1", "value1");
-	builder.addPair("key2", "value2");
-	builder.addPair("key1", "value11"); // Override value1
+    builder.addPair("key1", "value1");
+    builder.addPair("key2", "value2");
+    builder.addPair("key1", "value11"); // Override value1
 
-	Assertions.assertEquals("key1=value11; key2=value2", builder.toString());
-    }
+    Assertions.assertEquals("key1=value11; key2=value2", builder.toString());
+  }
 }

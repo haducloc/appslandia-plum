@@ -40,46 +40,46 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class HiddenSelectFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: path*, items*, readonly*, converter";
+  @Override
+  public String getDescription() {
+    return "variables: path*, items*, readonly*, converter";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String path = context.getRequiredArgument("path");
+    String converter = context.getArgument("converter");
+    boolean readonly = context.getBool("readonly");
+
+    List<SelectItem> items = context.getRequiredArgument("items");
+
+    int nameIdx = path.indexOf('.');
+    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    String name = path.substring(nameIdx + 1);
+
+    Object value = context.evaluate(path);
+    String fmtValue = context.getRequestContext().format(value, converter, false);
+
+    // Selected Item
+    SelectItem selectedItem = items.stream().filter(item -> {
+
+      String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
+      return StringUtils.iequals(codeValue, fmtValue);
+
+    }).findFirst().orElse(null);
+
+    // If readonly & selectedItem
+    if (readonly && selectedItem != null) {
+
+      StringWriter out = new StringWriter(128);
+      out.append("<input type=\"hidden\"");
+
+      HtmlUtils.escAttribute(out, "name", name);
+      HtmlUtils.escAttribute(out, "value", fmtValue);
+      out.append(" />");
+
+      return new SafeString(out.toString());
     }
-
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
-	String converter = context.getArgument("converter");
-	boolean readonly = context.getBool("readonly");
-
-	List<SelectItem> items = context.getRequiredArgument("items");
-
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
-
-	Object value = context.evaluate(path);
-	String fmtValue = context.getRequestContext().format(value, converter, false);
-
-	// Selected Item
-	SelectItem selectedItem = items.stream().filter(item -> {
-
-	    String codeValue = context.getRequestContext().format(item.getValue(), converter, false);
-	    return StringUtils.iequals(codeValue, fmtValue);
-
-	}).findFirst().orElse(null);
-
-	// If readonly & selectedItem
-	if (readonly && selectedItem != null) {
-
-	    StringWriter out = new StringWriter(128);
-	    out.append("<input type=\"hidden\"");
-
-	    HtmlUtils.escAttribute(out, "name", name);
-	    HtmlUtils.escAttribute(out, "value", fmtValue);
-	    out.append(" />");
-
-	    return new SafeString(out.toString());
-	}
-	return null;
-    }
+    return null;
+  }
 }

@@ -37,136 +37,137 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class GzipResponseWrapper extends ResponseWrapper {
 
-    private GZIPServletOutputStream outStream;
-    private PrintWriter outWriter;
-    private Boolean usedWriter;
+  private GZIPServletOutputStream outStream;
+  private PrintWriter outWriter;
+  private Boolean usedWriter;
 
-    public GzipResponseWrapper(HttpServletResponse response) {
-	super(response);
+  public GzipResponseWrapper(HttpServletResponse response) {
+    super(response);
+  }
+
+  @Override
+  public void finishWrapper() throws IOException {
+    if (this.outWriter != null) {
+      this.outWriter.flush();
+    }
+    if (this.outStream != null) {
+      this.outStream.finish();
+    }
+  }
+
+  @Override
+  public ServletOutputStream getOutputStream() throws IOException {
+    if (Boolean.TRUE.equals(this.usedWriter)) {
+      throw new IllegalStateException("getWriter has been called on this response.");
+    }
+    if (this.outStream == null) {
+      this.outStream = new GZIPServletOutputStream(super.getOutputStream());
+      this.usedWriter = Boolean.FALSE;
+
+      this.setHeader("Content-Encoding", "gzip");
+    }
+    return this.outStream;
+  }
+
+  @Override
+  public PrintWriter getWriter() throws IOException {
+    if (Boolean.FALSE.equals(this.usedWriter)) {
+      throw new IllegalStateException("getOutputStream has been called on this response.");
+    }
+    if (this.outWriter == null) {
+      this.outStream = new GZIPServletOutputStream(super.getOutputStream());
+      this.outWriter = new PrintWriter(
+          new BufferedWriter(new OutputStreamWriter(this.outStream, this.getCharacterEncoding())));
+      this.usedWriter = Boolean.TRUE;
+
+      this.setHeader("Content-Encoding", "gzip");
+    }
+    return this.outWriter;
+  }
+
+  @Override
+  public void flushBuffer() throws IOException {
+    if (this.outWriter != null) {
+      this.outWriter.flush();
+
+    } else if (this.outStream != null) {
+      this.outStream.flush();
+    }
+  }
+
+  @Override
+  public void resetBuffer() {
+    super.resetBuffer();
+
+    this.outWriter = null;
+    this.outStream = null;
+    this.usedWriter = null;
+  }
+
+  @Override
+  public void reset() {
+    super.reset();
+
+    this.outWriter = null;
+    this.outStream = null;
+    this.usedWriter = null;
+  }
+
+  @Override
+  public void setContentLength(int len) {
+    // Ignore
+  }
+
+  @Override
+  public void setContentLengthLong(long len) {
+    // Ignore
+  }
+
+  private static class GZIPServletOutputStream extends ServletOutputStream {
+
+    final GZIPOutputStream gos;
+
+    public GZIPServletOutputStream(ServletOutputStream os) throws IOException {
+      this.gos = new GZIPOutputStream(os);
     }
 
     @Override
-    public void finishWrapper() throws IOException {
-	if (this.outWriter != null) {
-	    this.outWriter.flush();
-	}
-	if (this.outStream != null) {
-	    this.outStream.finish();
-	}
+    public void write(int b) throws IOException {
+      this.gos.write(b);
     }
 
     @Override
-    public ServletOutputStream getOutputStream() throws IOException {
-	if (Boolean.TRUE.equals(this.usedWriter)) {
-	    throw new IllegalStateException("getWriter has been called on this response.");
-	}
-	if (this.outStream == null) {
-	    this.outStream = new GZIPServletOutputStream(super.getOutputStream());
-	    this.usedWriter = Boolean.FALSE;
-
-	    this.setHeader("Content-Encoding", "gzip");
-	}
-	return this.outStream;
+    public void write(byte[] b, int off, int len) throws IOException {
+      this.gos.write(b, off, len);
     }
 
     @Override
-    public PrintWriter getWriter() throws IOException {
-	if (Boolean.FALSE.equals(this.usedWriter)) {
-	    throw new IllegalStateException("getOutputStream has been called on this response.");
-	}
-	if (this.outWriter == null) {
-	    this.outStream = new GZIPServletOutputStream(super.getOutputStream());
-	    this.outWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(this.outStream, this.getCharacterEncoding())));
-	    this.usedWriter = Boolean.TRUE;
-
-	    this.setHeader("Content-Encoding", "gzip");
-	}
-	return this.outWriter;
+    public void write(byte[] b) throws IOException {
+      this.gos.write(b);
     }
 
     @Override
-    public void flushBuffer() throws IOException {
-	if (this.outWriter != null) {
-	    this.outWriter.flush();
-
-	} else if (this.outStream != null) {
-	    this.outStream.flush();
-	}
+    public void flush() throws IOException {
+      this.gos.flush();
     }
 
     @Override
-    public void resetBuffer() {
-	super.resetBuffer();
+    public void close() throws IOException {
+      this.gos.close();
+    }
 
-	this.outWriter = null;
-	this.outStream = null;
-	this.usedWriter = null;
+    public void finish() throws IOException {
+      this.gos.finish();
     }
 
     @Override
-    public void reset() {
-	super.reset();
-
-	this.outWriter = null;
-	this.outStream = null;
-	this.usedWriter = null;
+    public boolean isReady() {
+      throw new UnsupportedOperationException();
     }
 
     @Override
-    public void setContentLength(int len) {
-	// Ignore
+    public void setWriteListener(WriteListener writeListener) {
+      throw new UnsupportedOperationException();
     }
-
-    @Override
-    public void setContentLengthLong(long len) {
-	// Ignore
-    }
-
-    private static class GZIPServletOutputStream extends ServletOutputStream {
-
-	final GZIPOutputStream gos;
-
-	public GZIPServletOutputStream(ServletOutputStream os) throws IOException {
-	    this.gos = new GZIPOutputStream(os);
-	}
-
-	@Override
-	public void write(int b) throws IOException {
-	    this.gos.write(b);
-	}
-
-	@Override
-	public void write(byte[] b, int off, int len) throws IOException {
-	    this.gos.write(b, off, len);
-	}
-
-	@Override
-	public void write(byte[] b) throws IOException {
-	    this.gos.write(b);
-	}
-
-	@Override
-	public void flush() throws IOException {
-	    this.gos.flush();
-	}
-
-	@Override
-	public void close() throws IOException {
-	    this.gos.close();
-	}
-
-	public void finish() throws IOException {
-	    this.gos.finish();
-	}
-
-	@Override
-	public boolean isReady() {
-	    throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public void setWriteListener(WriteListener writeListener) {
-	    throw new UnsupportedOperationException();
-	}
-    }
+  }
 }

@@ -38,35 +38,35 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class SelectFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: path*, id, readonly";
+  @Override
+  public String getDescription() {
+    return "variables: path*, id, readonly";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String path = context.getRequiredArgument("path");
+    String id = context.getArgument("id");
+    boolean readonly = context.getBool("readonly", false);
+
+    int nameIdx = path.indexOf('.');
+    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    String name = path.substring(nameIdx + 1);
+
+    if (id == null) {
+      id = HtmlUtils.toValueTagId(name);
     }
+    StringWriter out = new StringWriter(128);
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
-	String id = context.getArgument("id");
-	boolean readonly = context.getBool("readonly", false);
+    out.write("id=\"");
+    XmlEscaper.escapeXml(out, id);
+    out.write("\"");
 
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
+    HtmlUtils.escAttribute(out, "name", name);
 
-	if (id == null) {
-	    id = HtmlUtils.toValueTagId(name);
-	}
-	StringWriter out = new StringWriter(128);
+    if (readonly)
+      HtmlUtils.disabled(out);
 
-	out.write("id=\"");
-	XmlEscaper.escapeXml(out, id);
-	out.write("\"");
-
-	HtmlUtils.escAttribute(out, "name", name);
-
-	if (readonly)
-	    HtmlUtils.disabled(out);
-
-	return new SafeString(out.toString());
-    }
+    return new SafeString(out.toString());
+  }
 }

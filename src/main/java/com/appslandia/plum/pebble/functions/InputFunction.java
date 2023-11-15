@@ -40,77 +40,77 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class InputFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: path*, id, type, readonly, converter, form, min, max, step";
+  @Override
+  public String getDescription() {
+    return "variables: path*, id, type, readonly, converter, form, min, max, step";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String path = context.getRequiredArgument("path");
+    String type = context.getArgument("type");
+    boolean readonly = context.getBool("readonly", false);
+
+    String id = context.getArgument("id");
+    String converter = context.getArgument("converter");
+    String form = context.getArgument("form");
+
+    Object min = context.getArgument("min");
+    Object max = context.getArgument("max");
+    Object step = context.getArgument("step");
+
+    Asserts.isTrue(!"checkbox".equals(type) && !"radio".equals(type), "checkbox|radio type is unsupported.");
+
+    int nameIdx = path.indexOf('.');
+    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    String name = path.substring(nameIdx + 1);
+
+    if (id == null) {
+      id = HtmlUtils.toValueTagId(name);
     }
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
-	String type = context.getArgument("type");
-	boolean readonly = context.getBool("readonly", false);
+    // localize
+    boolean localize = InputUtils.getLocalize(context.getRequest(), type);
 
-	String id = context.getArgument("id");
-	String converter = context.getArgument("converter");
-	String form = context.getArgument("form");
-
-	Object min = context.getArgument("min");
-	Object max = context.getArgument("max");
-	Object step = context.getArgument("step");
-
-	Asserts.isTrue(!"checkbox".equals(type) && !"radio".equals(type), "checkbox|radio type is unsupported.");
-
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
-
-	if (id == null) {
-	    id = HtmlUtils.toValueTagId(name);
-	}
-
-	// localize
-	boolean localize = InputUtils.getLocalize(context.getRequest(), type);
-
-	if ((type == null) || (localize && InputUtils.getDTNInputFeature(type) != null)) {
-	    type = "text";
-	}
-
-	// value
-	Object value = null;
-	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
-
-	if (isValid || InputUtils.getDTNInputFeature(type) != null) {
-	    value = context.evaluate(path);
-	} else {
-	    value = context.getRequest().getParameter(name);
-	}
-
-	// Write HTML
-	StringWriter out = new StringWriter(160);
-
-	out.write("id=\"");
-	XmlEscaper.escapeXml(out, id);
-	out.write("\"");
-
-	HtmlUtils.escAttribute(out, "name", name);
-	HtmlUtils.escAttribute(out, "value", context.getRequestContext().format(value, converter, localize));
-
-	if (type != null)
-	    HtmlUtils.escAttribute(out, "type", type);
-
-	if (min != null)
-	    HtmlUtils.escAttribute(out, "min", context.getRequestContext().format(min, converter, localize));
-
-	if (max != null)
-	    HtmlUtils.escAttribute(out, "max", context.getRequestContext().format(max, converter, localize));
-
-	if (step != null)
-	    HtmlUtils.escAttribute(out, "step", context.getRequestContext().format(step, converter, localize));
-
-	if (readonly)
-	    HtmlUtils.readonly(out);
-
-	return new SafeString(out.toString());
+    if ((type == null) || (localize && InputUtils.getDTNInputFeature(type) != null)) {
+      type = "text";
     }
+
+    // value
+    Object value = null;
+    boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
+
+    if (isValid || InputUtils.getDTNInputFeature(type) != null) {
+      value = context.evaluate(path);
+    } else {
+      value = context.getRequest().getParameter(name);
+    }
+
+    // Write HTML
+    StringWriter out = new StringWriter(160);
+
+    out.write("id=\"");
+    XmlEscaper.escapeXml(out, id);
+    out.write("\"");
+
+    HtmlUtils.escAttribute(out, "name", name);
+    HtmlUtils.escAttribute(out, "value", context.getRequestContext().format(value, converter, localize));
+
+    if (type != null)
+      HtmlUtils.escAttribute(out, "type", type);
+
+    if (min != null)
+      HtmlUtils.escAttribute(out, "min", context.getRequestContext().format(min, converter, localize));
+
+    if (max != null)
+      HtmlUtils.escAttribute(out, "max", context.getRequestContext().format(max, converter, localize));
+
+    if (step != null)
+      HtmlUtils.escAttribute(out, "step", context.getRequestContext().format(step, converter, localize));
+
+    if (readonly)
+      HtmlUtils.readonly(out);
+
+    return new SafeString(out.toString());
+  }
 }

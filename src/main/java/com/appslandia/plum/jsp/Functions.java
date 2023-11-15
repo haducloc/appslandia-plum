@@ -34,118 +34,118 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class Functions {
 
-    @Function
-    public static String hidden(boolean b) {
-	return b ? "hidden=\"hidden\"" : null;
-    }
+  @Function
+  public static String hidden(boolean b) {
+    return b ? "hidden=\"hidden\"" : null;
+  }
 
-    @Function
-    public static String disabled(boolean b) {
-	return b ? "disabled=\"disabled\"" : null;
-    }
+  @Function
+  public static String disabled(boolean b) {
+    return b ? "disabled=\"disabled\"" : null;
+  }
 
-    @Function
-    public static String readonly(boolean b) {
-	return b ? "readonly=\"readonly\"" : null;
-    }
+  @Function
+  public static String readonly(boolean b) {
+    return b ? "readonly=\"readonly\"" : null;
+  }
 
-    @Function
-    public static String required(boolean b) {
-	return b ? "required=\"required\"" : null;
-    }
+  @Function
+  public static String required(boolean b) {
+    return b ? "required=\"required\"" : null;
+  }
 
-    @Function
-    public static String checked(boolean b) {
-	return b ? "checked=\"checked\"" : null;
-    }
+  @Function
+  public static String checked(boolean b) {
+    return b ? "checked=\"checked\"" : null;
+  }
 
-    @Function
-    public static String selected(boolean b) {
-	return b ? "selected=\"selected\"" : null;
-    }
+  @Function
+  public static String selected(boolean b) {
+    return b ? "selected=\"selected\"" : null;
+  }
 
-    @Function
-    public static String hardWrap(boolean b) {
-	return b ? "wrap=\"hard\"" : null;
-    }
+  @Function
+  public static String hardWrap(boolean b) {
+    return b ? "wrap=\"hard\"" : null;
+  }
 
-    @Function
-    public static String multiple(boolean b) {
-	return b ? "multiple=\"multiple\"" : null;
-    }
+  @Function
+  public static String multiple(boolean b) {
+    return b ? "multiple=\"multiple\"" : null;
+  }
 
-    @Function
-    public static String novalidate(boolean b) {
-	return b ? "novalidate=\"novalidate\"" : null;
-    }
+  @Function
+  public static String novalidate(boolean b) {
+    return b ? "novalidate=\"novalidate\"" : null;
+  }
 
-    @Function
-    public static String escXml(Object value) {
-	if (value != null) {
-	    return XmlEscaper.escapeXml(value.toString());
-	}
-	return null;
+  @Function
+  public static String escXml(Object value) {
+    if (value != null) {
+      return XmlEscaper.escapeXml(value.toString());
     }
+    return null;
+  }
 
-    public static String ifEscXml(boolean b, Object value) {
-	if (b) {
-	    if (value != null) {
-		return XmlEscaper.escapeXml(value.toString());
-	    }
-	}
-	return null;
+  public static String ifEscXml(boolean b, Object value) {
+    if (b) {
+      if (value != null) {
+        return XmlEscaper.escapeXml(value.toString());
+      }
     }
+    return null;
+  }
 
-    @Function
-    public static String iifEscXml(boolean b, Object trueValue, Object falseValue) {
-	if (b) {
-	    if (trueValue != null) {
-		return XmlEscaper.escapeXml(trueValue.toString());
-	    }
-	} else {
-	    if (falseValue != null) {
-		return XmlEscaper.escapeXml(falseValue.toString());
-	    }
-	}
-	return null;
+  @Function
+  public static String iifEscXml(boolean b, Object trueValue, Object falseValue) {
+    if (b) {
+      if (trueValue != null) {
+        return XmlEscaper.escapeXml(trueValue.toString());
+      }
+    } else {
+      if (falseValue != null) {
+        return XmlEscaper.escapeXml(falseValue.toString());
+      }
     }
+    return null;
+  }
 
-    @Function
-    public static String encParam(Object value) {
-	if (value != null) {
-	    return URLEncoding.encodeParam(value.toString());
-	}
-	return null;
+  @Function
+  public static String encParam(Object value) {
+    if (value != null) {
+      return URLEncoding.encodeParam(value.toString());
     }
+    return null;
+  }
 
-    @Function
-    public static String encPath(Object value) {
-	if (value != null) {
-	    return URLEncoding.encodePath(value.toString());
-	}
-	return null;
+  @Function
+  public static String encPath(Object value) {
+    if (value != null) {
+      return URLEncoding.encodePath(value.toString());
     }
+    return null;
+  }
 
-    @Function
-    public static long nowMs() {
-	return System.currentTimeMillis();
-    }
+  @Function
+  public static long nowMs() {
+    return System.currentTimeMillis();
+  }
 
-    @Function
-    public static String envName() {
-	return DeployEnv.getCurrent().getName();
-    }
+  @Function
+  public static String envName() {
+    return DeployEnv.getCurrent().getName();
+  }
 
-    @Function
-    public static String ifClass(boolean b, String clazz) {
-	if (b) {
-	    return clazz;
-	}
-	return TagUtils.CSS_NOOP;
+  @Function
+  public static String ifClass(boolean b, String clazz) {
+    if (b) {
+      return clazz;
     }
+    return TagUtils.CSS_NOOP;
+  }
 
-    @Function
-    public static boolean hasCookie(HttpServletRequest request, String cookieName) {
-	return ServletUtils.getCookieValue(request, cookieName) != null;
-    }
+  @Function
+  public static boolean hasCookie(HttpServletRequest request, String cookieName) {
+    return ServletUtils.getCookieValue(request, cookieName) != null;
+  }
 }

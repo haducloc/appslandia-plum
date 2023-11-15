@@ -28,34 +28,34 @@ import java.util.ArrayList;
  *
  */
 public class Messages extends ArrayList<Message> {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String REQUEST_ATTRIBUTE_ID = "messages";
+  public static final String REQUEST_ATTRIBUTE_ID = "messages";
 
-    public Messages() {
-    }
+  public Messages() {
+  }
 
-    public Messages(int initialCapacity) {
-	super(initialCapacity);
-    }
+  public Messages(int initialCapacity) {
+    super(initialCapacity);
+  }
 
-    public void addInfo(String text) {
-	this.add(new Message(Message.TYPE_INFO, text));
-    }
+  public void addInfo(String text) {
+    this.add(new Message(Message.TYPE_INFO, text));
+  }
 
-    public void addNotice(String text) {
-	this.add(new Message(Message.TYPE_NOTICE, text));
-    }
+  public void addNotice(String text) {
+    this.add(new Message(Message.TYPE_NOTICE, text));
+  }
 
-    public void addWarn(String text) {
-	this.add(new Message(Message.TYPE_WARN, text));
-    }
+  public void addWarn(String text) {
+    this.add(new Message(Message.TYPE_WARN, text));
+  }
 
-    public void addError(String text) {
-	this.add(new Message(Message.TYPE_ERROR, text));
-    }
+  public void addError(String text) {
+    this.add(new Message(Message.TYPE_ERROR, text));
+  }
 
-    public void addFatal(String text) {
-	this.add(new Message(Message.TYPE_FATAL, text));
-    }
+  public void addFatal(String text) {
+    this.add(new Message(Message.TYPE_FATAL, text));
+  }
 }

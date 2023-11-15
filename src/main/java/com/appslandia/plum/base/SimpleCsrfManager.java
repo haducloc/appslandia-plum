@@ -32,35 +32,35 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public abstract class SimpleCsrfManager implements CsrfManager {
 
-    public static final String PARAM_CSRF_ID = "csrfId";
-    public static final String REQUEST_ATTRIBUTE_CSRF_DATA = "csrfData";
+  public static final String PARAM_CSRF_ID = "csrfId";
+  public static final String REQUEST_ATTRIBUTE_CSRF_DATA = "csrfData";
 
-    protected abstract TextGenerator getCsrfIdGenerator();
+  protected abstract TextGenerator getCsrfIdGenerator();
 
-    protected abstract Object saveCsrf(HttpServletRequest request, String csrfId);
+  protected abstract Object saveCsrf(HttpServletRequest request, String csrfId);
 
-    protected abstract Object parseCsrfData(HttpServletRequest request, String csrfId);
+  protected abstract Object parseCsrfData(HttpServletRequest request, String csrfId);
 
-    @Override
-    public void initCsrf(HttpServletRequest request) {
-	String csrfId = getCsrfIdGenerator().generate();
-	Object csrfData = saveCsrf(request, csrfId);
-	request.setAttribute(REQUEST_ATTRIBUTE_CSRF_DATA, csrfData);
+  @Override
+  public void initCsrf(HttpServletRequest request) {
+    String csrfId = getCsrfIdGenerator().generate();
+    Object csrfData = saveCsrf(request, csrfId);
+    request.setAttribute(REQUEST_ATTRIBUTE_CSRF_DATA, csrfData);
+  }
+
+  public abstract boolean verifyCsrf(HttpServletRequest request, String csrfId, boolean remove);
+
+  @Override
+  public boolean verifyCsrf(HttpServletRequest request, boolean remove) {
+    String csrfId = request.getParameter(PARAM_CSRF_ID);
+    if (csrfId == null) {
+      ServletUtils.addError(request, PARAM_CSRF_ID, Resources.ERROR_CSRF_FAILED);
+      return false;
     }
-
-    public abstract boolean verifyCsrf(HttpServletRequest request, String csrfId, boolean remove);
-
-    @Override
-    public boolean verifyCsrf(HttpServletRequest request, boolean remove) {
-	String csrfId = request.getParameter(PARAM_CSRF_ID);
-	if (csrfId == null) {
-	    ServletUtils.addError(request, PARAM_CSRF_ID, Resources.ERROR_CSRF_FAILED);
-	    return false;
-	}
-	boolean valid = verifyCsrf(request, csrfId, remove);
-	if (!valid) {
-	    ServletUtils.addError(request, PARAM_CSRF_ID, Resources.ERROR_CSRF_FAILED);
-	}
-	return valid;
+    boolean valid = verifyCsrf(request, csrfId, remove);
+    if (!valid) {
+      ServletUtils.addError(request, PARAM_CSRF_ID, Resources.ERROR_CSRF_FAILED);
     }
+    return valid;
+  }
 }

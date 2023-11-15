@@ -31,11 +31,11 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ResponseWrapperImpl extends ResponseWrapper {
 
-    public ResponseWrapperImpl(HttpServletResponse response) {
-	super(response);
-    }
+  public ResponseWrapperImpl(HttpServletResponse response) {
+    super(response);
+  }
 
-    @Override
-    public void finishWrapper() throws IOException {
-    }
+  @Override
+  public void finishWrapper() throws IOException {
+  }
 }

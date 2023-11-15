@@ -40,62 +40,62 @@ import com.appslandia.plum.utils.HtmlUtils;
  */
 public class MessagesFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: type*, listClass, itemClass";
+  @Override
+  public String getDescription() {
+    return "variables: type*, listClass, itemClass";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    List<Message> messages = (Messages) context.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
+    if (!CollectionUtils.hasElements(messages)) {
+      return null;
     }
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	List<Message> messages = (Messages) context.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
-	if (!CollectionUtils.hasElements(messages)) {
-	    return null;
-	}
+    String type = context.getRequiredArgument("type");
+    String listClass = context.getArgument("listClass");
+    String itemClass = context.getArgument("itemClass");
 
-	String type = context.getRequiredArgument("type");
-	String listClass = context.getArgument("listClass");
-	String itemClass = context.getArgument("itemClass");
+    int typeId = MessageUtils.getMsgType(type);
 
-	int typeId = MessageUtils.getMsgType(type);
-
-	List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
-	if (msgs.isEmpty()) {
-	    return null;
-	}
-	StringWriter out = new StringWriter(msgs.size() * 128);
-
-	out.write("<ul");
-	if (listClass != null)
-	    HtmlUtils.escAttribute(out, "class", listClass);
-	out.write(">");
-
-	for (Message msg : msgs) {
-	    out.write(System.lineSeparator());
-
-	    String typeClass = MessageUtils.getMsgClass(typeId);
-	    out.write("<li");
-
-	    if (itemClass == null) {
-		HtmlUtils.escAttribute(out, "class", typeClass);
-	    } else {
-		out.write(" class=\"");
-		out.write(itemClass);
-		out.write(" ");
-		out.write(typeClass);
-		out.write("\"");
-	    }
-	    out.write(">");
-
-	    if (msg.isEscXml()) {
-		XmlEscaper.escapeXml(out, msg.getText());
-	    } else {
-		out.write(msg.getText());
-	    }
-	    out.write("</li>");
-	}
-
-	out.write(System.lineSeparator());
-	out.write("</ul>");
-	return out.toString();
+    List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
+    if (msgs.isEmpty()) {
+      return null;
     }
+    StringWriter out = new StringWriter(msgs.size() * 128);
+
+    out.write("<ul");
+    if (listClass != null)
+      HtmlUtils.escAttribute(out, "class", listClass);
+    out.write(">");
+
+    for (Message msg : msgs) {
+      out.write(System.lineSeparator());
+
+      String typeClass = MessageUtils.getMsgClass(typeId);
+      out.write("<li");
+
+      if (itemClass == null) {
+        HtmlUtils.escAttribute(out, "class", typeClass);
+      } else {
+        out.write(" class=\"");
+        out.write(itemClass);
+        out.write(" ");
+        out.write(typeClass);
+        out.write("\"");
+      }
+      out.write(">");
+
+      if (msg.isEscXml()) {
+        XmlEscaper.escapeXml(out, msg.getText());
+      } else {
+        out.write(msg.getText());
+      }
+      out.write("</li>");
+    }
+
+    out.write(System.lineSeparator());
+    out.write("</ul>");
+    return out.toString();
+  }
 }

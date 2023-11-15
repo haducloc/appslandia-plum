@@ -30,115 +30,115 @@ import org.junit.jupiter.api.Test;
  */
 public class CspValueBuilderTest {
 
-    @Test
-    public void test() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.self().data();
-	Assertions.assertEquals("'self' data:", csp.toString());
-    }
+  @Test
+  public void test() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.self().data();
+    Assertions.assertEquals("'self' data:", csp.toString());
+  }
 
-    @Test
-    public void test_any() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.any();
-	Assertions.assertEquals("*", csp.toString());
-    }
+  @Test
+  public void test_any() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.any();
+    Assertions.assertEquals("*", csp.toString());
+  }
 
-    @Test
-    public void test_self() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.self();
-	Assertions.assertEquals("'self'", csp.toString());
-    }
+  @Test
+  public void test_self() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.self();
+    Assertions.assertEquals("'self'", csp.toString());
+  }
 
-    @Test
-    public void test_none() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.none();
-	Assertions.assertEquals("'none'", csp.toString());
-    }
+  @Test
+  public void test_none() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.none();
+    Assertions.assertEquals("'none'", csp.toString());
+  }
 
-    @Test
-    public void test_unsafeInline() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.unsafeInline();
-	Assertions.assertEquals("'unsafe-inline'", csp.toString());
-    }
+  @Test
+  public void test_unsafeInline() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.unsafeInline();
+    Assertions.assertEquals("'unsafe-inline'", csp.toString());
+  }
 
-    @Test
-    public void test_unsafeEval() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.unsafeEval();
-	Assertions.assertEquals("'unsafe-eval'", csp.toString());
-    }
+  @Test
+  public void test_unsafeEval() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.unsafeEval();
+    Assertions.assertEquals("'unsafe-eval'", csp.toString());
+  }
 
-    @Test
-    public void test_unsafeHashedAttributes() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.unsafeHashedAttributes();
-	Assertions.assertEquals("'unsafe-hashed-attributes'", csp.toString());
-    }
+  @Test
+  public void test_unsafeHashedAttributes() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.unsafeHashedAttributes();
+    Assertions.assertEquals("'unsafe-hashed-attributes'", csp.toString());
+  }
 
-    @Test
-    public void test_https() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.https();
-	Assertions.assertEquals("https:", csp.toString());
-    }
+  @Test
+  public void test_https() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.https();
+    Assertions.assertEquals("https:", csp.toString());
+  }
 
-    @Test
-    public void test_data() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.data();
-	Assertions.assertEquals("data:", csp.toString());
-    }
+  @Test
+  public void test_data() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.data();
+    Assertions.assertEquals("data:", csp.toString());
+  }
 
-    @Test
-    public void test_mediastream() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.mediastream();
-	Assertions.assertEquals("mediastream:", csp.toString());
-    }
+  @Test
+  public void test_mediastream() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.mediastream();
+    Assertions.assertEquals("mediastream:", csp.toString());
+  }
 
-    @Test
-    public void test_blob() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.blob();
-	Assertions.assertEquals("blob:", csp.toString());
-    }
+  @Test
+  public void test_blob() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.blob();
+    Assertions.assertEquals("blob:", csp.toString());
+  }
 
-    @Test
-    public void test_filesystem() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.filesystem();
-	Assertions.assertEquals("filesystem:", csp.toString());
-    }
+  @Test
+  public void test_filesystem() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.filesystem();
+    Assertions.assertEquals("filesystem:", csp.toString());
+  }
 
-    @Test
-    public void test_nonce() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.nonce("testNonce");
-	Assertions.assertEquals("'nonce-testNonce'", csp.toString());
-    }
+  @Test
+  public void test_nonce() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.nonce("testNonce");
+    Assertions.assertEquals("'nonce-testNonce'", csp.toString());
+  }
 
-    @Test
-    public void test_sha256() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.sha256("testSha256");
-	Assertions.assertEquals("'sha256-testSha256'", csp.toString());
-    }
+  @Test
+  public void test_sha256() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.sha256("testSha256");
+    Assertions.assertEquals("'sha256-testSha256'", csp.toString());
+  }
 
-    @Test
-    public void test_sha386() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.sha386("testSha386");
-	Assertions.assertEquals("'sha386-testSha386'", csp.toString());
-    }
+  @Test
+  public void test_sha386() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.sha386("testSha386");
+    Assertions.assertEquals("'sha386-testSha386'", csp.toString());
+  }
 
-    @Test
-    public void test_sha512() {
-	CspValueBuilder csp = new CspValueBuilder();
-	csp.sha512("testSha512");
-	Assertions.assertEquals("'sha512-testSha512'", csp.toString());
-    }
+  @Test
+  public void test_sha512() {
+    CspValueBuilder csp = new CspValueBuilder();
+    csp.sha512("testSha512");
+    Assertions.assertEquals("'sha512-testSha512'", csp.toString());
+  }
 }

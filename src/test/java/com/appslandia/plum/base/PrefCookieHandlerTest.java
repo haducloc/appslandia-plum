@@ -35,70 +35,71 @@ import jakarta.servlet.http.Cookie;
  */
 public class PrefCookieHandlerTest extends MockTestBase {
 
-    PrefCookieHandler prefCookieHandler;
+  PrefCookieHandler prefCookieHandler;
 
-    @Override
-    protected void initialize() {
-	prefCookieHandler = container.getObject(PrefCookieHandler.class);
+  @Override
+  protected void initialize() {
+    prefCookieHandler = container.getObject(PrefCookieHandler.class);
+  }
+
+  private Cookie createPrefCookie() {
+    MockHttpServletRequest request = container.createRequest();
+    MockHttpServletResponse response = container.createResponse();
+
+    prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+    return response.getCookie(prefCookieHandler.getCookieName());
+  }
+
+  @Test
+  public void test_savePrefCookie() {
+    try {
+      prefCookieHandler.savePrefCookie(getCurrentRequest(), getCurrentResponse(),
+          new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+
+      Cookie savedCookie = getCurrentResponse().getCookie(prefCookieHandler.getCookieName());
+      Assertions.assertNotNull(savedCookie);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    private Cookie createPrefCookie() {
-	MockHttpServletRequest request = container.createRequest();
-	MockHttpServletResponse response = container.createResponse();
+  @Test
+  public void test_loadPrefCookie() {
+    try {
+      getCurrentRequest().addCookie(createPrefCookie());
 
-	prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
-	return response.getCookie(prefCookieHandler.getCookieName());
+      PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
+      Assertions.assertNotNull(prefCookie);
+
+      Assertions.assertNotNull(getCurrentRequest().getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID));
+      Assertions.assertEquals("en", prefCookie.get(PrefCookie.PARAM_LANGUAGE));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_savePrefCookie() {
-	try {
-	    prefCookieHandler.savePrefCookie(getCurrentRequest(), getCurrentResponse(), new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+  @Test
+  public void test_loadPrefCookie_noCookie() {
+    try {
+      PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
+      Assertions.assertEquals(PrefCookie.EMPTY, prefCookie);
 
-	    Cookie savedCookie = getCurrentResponse().getCookie(prefCookieHandler.getCookieName());
-	    Assertions.assertNotNull(savedCookie);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_loadPrefCookie() {
-	try {
-	    getCurrentRequest().addCookie(createPrefCookie());
+  @Test
+  public void test_loadPrefCookie_invalidCookie() {
+    try {
+      getCurrentRequest().addCookie(new Cookie(prefCookieHandler.getCookieName(), "invalid"));
+      PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
+      Assertions.assertEquals(PrefCookie.EMPTY, prefCookie);
 
-	    PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertNotNull(prefCookie);
-
-	    Assertions.assertNotNull(getCurrentRequest().getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID));
-	    Assertions.assertEquals("en", prefCookie.get(PrefCookie.PARAM_LANGUAGE));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
-
-    @Test
-    public void test_loadPrefCookie_noCookie() {
-	try {
-	    PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertEquals(PrefCookie.EMPTY, prefCookie);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_loadPrefCookie_invalidCookie() {
-	try {
-	    getCurrentRequest().addCookie(new Cookie(prefCookieHandler.getCookieName(), "invalid"));
-	    PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertEquals(PrefCookie.EMPTY, prefCookie);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
+  }
 }

@@ -37,34 +37,35 @@ import com.appslandia.plum.utils.ServletUtils;
  */
 public class ResetPasswordByEmailModelTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_resetpwd() {
+    try {
+      getCurrentRequest().addParameter("newPassword", "123@Test");
+      getCurrentRequest().addParameter("confirmPassword", "124@Test");
+
+      executeCurrent("POST", "http://localhost/app/testController/resetpwd");
+
+      ResetPasswordByEmailModel model = (ResetPasswordByEmailModel) getCurrentRequest()
+          .getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(model);
+      Assertions.assertFalse(getCurrentModelState().isValid("confirmPassword"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_resetpwd() {
-	try {
-	    getCurrentRequest().addParameter("newPassword", "123@Test");
-	    getCurrentRequest().addParameter("confirmPassword", "124@Test");
+  @Controller("testController")
+  public static class TestController {
 
-	    executeCurrent("POST", "http://localhost/app/testController/resetpwd");
-
-	    ResetPasswordByEmailModel model = (ResetPasswordByEmailModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(model);
-	    Assertions.assertFalse(getCurrentModelState().isValid("confirmPassword"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpPost
+    public void resetpwd(@Model ResetPasswordByEmailModel model, RequestAccessor request) throws Exception {
+      request.storeModel(model);
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpPost
-	public void resetpwd(@Model ResetPasswordByEmailModel model, RequestAccessor request) throws Exception {
-	    request.storeModel(model);
-	}
-    }
+  }
 }

@@ -35,77 +35,81 @@ import jakarta.servlet.http.Cookie;
  */
 public class RequestContextParserTest extends MockTestBase {
 
-    RequestContextParser requestContextParser;
+  RequestContextParser requestContextParser;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	requestContextParser = container.getObject(RequestContextParser.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    requestContextParser = container.getObject(RequestContextParser.class);
+  }
+
+  private Cookie createPrefCookie(String language) {
+    MockHttpServletRequest request = container.createRequest();
+    MockHttpServletResponse response = container.createResponse();
+    PrefCookieHandler prefCookieHandler = container.getObject(PrefCookieHandler.class);
+
+    prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, language));
+    return response.getCookie(prefCookieHandler.getCookieName());
+  }
+
+  @Test
+  public void test_pathLanguage() {
+    getCurrentRequest().setRequestURL("http://localhost/app/vi/testController/index");
+    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+    RequestContext requestContext = (RequestContext) getCurrentRequest()
+        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
+    Assertions.assertNotNull(requestContext.getActionDesc());
+
+    Assertions.assertTrue(requestContext.isPathLanguage());
+    Assertions.assertEquals("vi", requestContext.getLanguage().getLanguageId());
+  }
+
+  @Test
+  public void test_defaultLanguage() {
+    getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
+    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+    RequestContext requestContext = (RequestContext) getCurrentRequest()
+        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
+    Assertions.assertNotNull(requestContext.getActionDesc());
+
+    Assertions.assertFalse(requestContext.isPathLanguage());
+    Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
+  }
+
+  @Test
+  public void test_prefLanguage() {
+    getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
+    getCurrentRequest().addCookie(createPrefCookie("vi"));
+    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+    RequestContext requestContext = (RequestContext) getCurrentRequest()
+        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
+    Assertions.assertNotNull(requestContext.getActionDesc());
+
+    Assertions.assertFalse(requestContext.isPathLanguage());
+    Assertions.assertEquals("vi", requestContext.getLanguage().getLanguageId());
+  }
+
+  @Test
+  public void test_noActionDesc() {
+    getCurrentRequest().setRequestURL("http://localhost/app/testController/noAction");
+    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+    RequestContext requestContext = (RequestContext) getCurrentRequest()
+        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
+    Assertions.assertNull(requestContext.getActionDesc());
+
+    Assertions.assertFalse(requestContext.isPathLanguage());
+    Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    private Cookie createPrefCookie(String language) {
-	MockHttpServletRequest request = container.createRequest();
-	MockHttpServletResponse response = container.createResponse();
-	PrefCookieHandler prefCookieHandler = container.getObject(PrefCookieHandler.class);
-
-	prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, language));
-	return response.getCookie(prefCookieHandler.getCookieName());
-    }
-
-    @Test
-    public void test_pathLanguage() {
-	getCurrentRequest().setRequestURL("http://localhost/app/vi/testController/index");
-	requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	RequestContext requestContext = (RequestContext) getCurrentRequest().getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-	Assertions.assertNotNull(requestContext.getActionDesc());
-
-	Assertions.assertTrue(requestContext.isPathLanguage());
-	Assertions.assertEquals("vi", requestContext.getLanguage().getLanguageId());
-    }
-
-    @Test
-    public void test_defaultLanguage() {
-	getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
-	requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	RequestContext requestContext = (RequestContext) getCurrentRequest().getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-	Assertions.assertNotNull(requestContext.getActionDesc());
-
-	Assertions.assertFalse(requestContext.isPathLanguage());
-	Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
-    }
-
-    @Test
-    public void test_prefLanguage() {
-	getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
-	getCurrentRequest().addCookie(createPrefCookie("vi"));
-	requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	RequestContext requestContext = (RequestContext) getCurrentRequest().getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-	Assertions.assertNotNull(requestContext.getActionDesc());
-
-	Assertions.assertFalse(requestContext.isPathLanguage());
-	Assertions.assertEquals("vi", requestContext.getLanguage().getLanguageId());
-    }
-
-    @Test
-    public void test_noActionDesc() {
-	getCurrentRequest().setRequestURL("http://localhost/app/testController/noAction");
-	requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	RequestContext requestContext = (RequestContext) getCurrentRequest().getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-	Assertions.assertNull(requestContext.getActionDesc());
-
-	Assertions.assertFalse(requestContext.isPathLanguage());
-	Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

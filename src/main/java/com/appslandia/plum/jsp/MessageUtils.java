@@ -30,28 +30,28 @@ import com.appslandia.plum.base.Message;
  */
 public class MessageUtils {
 
-    public static int getMsgType(String type) {
-	return Message.parseType(type);
+  public static int getMsgType(String type) {
+    return Message.parseType(type);
+  }
+
+  public static String getMsgClass(int type) {
+    switch (type) {
+    case Message.TYPE_INFO:
+      return "l-msg-info";
+
+    case Message.TYPE_NOTICE:
+      return "l-msg-notice";
+
+    case Message.TYPE_WARN:
+      return "l-msg-warn";
+
+    case Message.TYPE_ERROR:
+      return "l-msg-error";
+
+    case Message.TYPE_FATAL:
+      return "l-msg-fatal";
+    default:
+      throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
     }
-
-    public static String getMsgClass(int type) {
-	switch (type) {
-	case Message.TYPE_INFO:
-	    return "l-msg-info";
-
-	case Message.TYPE_NOTICE:
-	    return "l-msg-notice";
-
-	case Message.TYPE_WARN:
-	    return "l-msg-warn";
-
-	case Message.TYPE_ERROR:
-	    return "l-msg-error";
-
-	case Message.TYPE_FATAL:
-	    return "l-msg-fatal";
-	default:
-	    throw new IllegalArgumentException(STR.fmt("type '{}' is invalid.", type));
-	}
-    }
+  }
 }

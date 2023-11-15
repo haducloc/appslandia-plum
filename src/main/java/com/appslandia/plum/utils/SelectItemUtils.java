@@ -34,15 +34,15 @@ import com.appslandia.plum.base.Resources;
  */
 public class SelectItemUtils {
 
-    public static List<SelectItem> yesNoItems(Resources res, boolean addEmpty) {
-	List<SelectItem> list = new ArrayList<>(3);
+  public static List<SelectItem> yesNoItems(Resources res, boolean addEmpty) {
+    List<SelectItem> list = new ArrayList<>(3);
 
-	if (addEmpty) {
-	    list.add(SelectItemImpl.EMPTY);
-	}
-	list.add(new SelectItemImpl(true, res.getOrDefault("yesNo.yes", "yes")));
-	list.add(new SelectItemImpl(false, res.getOrDefault("yesNo.no", "no")));
-
-	return list;
+    if (addEmpty) {
+      list.add(SelectItemImpl.EMPTY);
     }
+    list.add(new SelectItemImpl(true, res.getOrDefault("yesNo.yes", "yes")));
+    list.add(new SelectItemImpl(false, res.getOrDefault("yesNo.no", "no")));
+
+    return list;
+  }
 }

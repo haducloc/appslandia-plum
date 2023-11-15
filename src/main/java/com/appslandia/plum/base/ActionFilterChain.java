@@ -30,27 +30,29 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class ActionFilterChain {
 
-    final String[] filters;
-    final ActionFilterProvider actionFilterProvider;
+  final String[] filters;
+  final ActionFilterProvider actionFilterProvider;
 
-    private int index = -1;
+  private int index = -1;
 
-    public ActionFilterChain(String[] filters, ActionFilterProvider actionFilterProvider) {
-	this.filters = filters;
-	this.actionFilterProvider = actionFilterProvider;
+  public ActionFilterChain(String[] filters, ActionFilterProvider actionFilterProvider) {
+    this.filters = filters;
+    this.actionFilterProvider = actionFilterProvider;
+  }
+
+  public void doFilter(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    this.index++;
+
+    if (this.index == this.filters.length) {
+      execute(request, response, requestContext);
+
+    } else {
+      String filterName = this.filters[this.index];
+      this.actionFilterProvider.getActionFilter(filterName).doFilter(request, response, requestContext, this);
     }
+  }
 
-    public void doFilter(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	this.index++;
-
-	if (this.index == this.filters.length) {
-	    execute(request, response, requestContext);
-
-	} else {
-	    String filterName = this.filters[this.index];
-	    this.actionFilterProvider.getActionFilter(filterName).doFilter(request, response, requestContext, this);
-	}
-    }
-
-    protected abstract void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception;
+  protected abstract void execute(HttpServletRequest request, HttpServletResponse response,
+      RequestContext requestContext) throws Exception;
 }

@@ -36,91 +36,92 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "label", bodyContent = "scriptless")
 public class FieldLabelTag extends UITagBase {
 
-    protected String form;
-    protected String fieldName;
-    protected String labelKey;
-    protected boolean required;
+  protected String form;
+  protected String fieldName;
+  protected String labelKey;
+  protected boolean required;
 
-    protected String _for;
+  protected String _for;
 
-    @Override
-    protected String getTagName() {
-	return "label";
+  @Override
+  protected String getTagName() {
+    return "label";
+  }
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    if (this._for == null) {
+      this._for = HtmlUtils.toValueTagId(this.fieldName);
     }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (this._for == null) {
-	    this._for = HtmlUtils.toValueTagId(this.fieldName);
-	}
-
-	if (this.required) {
-	    this.clazz = (this.clazz == null) ? "l-required-label" : (this.clazz + " l-required-label");
-	}
-
-	boolean isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this.fieldName);
-	if (!isValid) {
-	    this.clazz = (this.clazz == null) ? "l-error-label" : (this.clazz + " l-error-label");
-	}
+    if (this.required) {
+      this.clazz = (this.clazz == null) ? "l-required-label" : (this.clazz + " l-required-label");
     }
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "for", this._for);
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
-
-	if (this.form != null)
-	    HtmlUtils.escAttribute(out, "form", this.form);
-
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
+    boolean isValid = !Objects.equals(this.form, this.getModelState().getForm())
+        || this.getModelState().isValid(this.fieldName);
+    if (!isValid) {
+      this.clazz = (this.clazz == null) ? "l-error-label" : (this.clazz + " l-error-label");
     }
+  }
 
-    @Override
-    protected boolean hasBody() {
-	return true;
-    }
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    HtmlUtils.escAttribute(out, "for", this._for);
+    if (this.hidden)
+      HtmlUtils.hidden(out);
 
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	if (this.labelKey != null) {
-	    out.write(this.getRequestContext().escXml(this.labelKey));
-	} else {
-	    this.body.invoke(out);
-	}
-    }
+    if (this.form != null)
+      HtmlUtils.escAttribute(out, "form", this.form);
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setFor(String _for) {
-	this._for = _for;
-    }
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setForm(String form) {
-	this.form = form;
-    }
+  @Override
+  protected boolean hasBody() {
+    return true;
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setFieldName(String fieldName) {
-	this.fieldName = fieldName;
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    if (this.labelKey != null) {
+      out.write(this.getRequestContext().escXml(this.labelKey));
+    } else {
+      this.body.invoke(out);
     }
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setLabelKey(String labelKey) {
-	this.labelKey = labelKey;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setFor(String _for) {
+    this._for = _for;
+  }
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setRequired(boolean required) {
-	this.required = required;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setForm(String form) {
+    this.form = form;
+  }
+
+  @Attribute(required = true, rtexprvalue = true)
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setLabelKey(String labelKey) {
+    this.labelKey = labelKey;
+  }
+
+  @Attribute(required = false, rtexprvalue = true)
+  public void setRequired(boolean required) {
+    this.required = required;
+  }
 }

@@ -27,15 +27,15 @@ package com.appslandia.plum.base;
  */
 public class BrowserFeatures {
 
-    public static final String COOKIE_NAME = "browserFeatures";
+  public static final String COOKIE_NAME = "browserFeatures";
 
-    public static final int INPUT_NUMBER = 1;
-    public static final int INPUT_RANGE = 2;
+  public static final int INPUT_NUMBER = 1;
+  public static final int INPUT_RANGE = 2;
 
-    public static final int INPUT_DATE = 4;
-    public static final int INPUT_TIME = 8;
-    public static final int INPUT_DATETIME_LOCAL = 16;
+  public static final int INPUT_DATE = 4;
+  public static final int INPUT_TIME = 8;
+  public static final int INPUT_DATETIME_LOCAL = 16;
 
-    public static final int INPUT_MONTH = 32;
-    public static final int INPUT_WEEK = 64;
+  public static final int INPUT_MONTH = 32;
+  public static final int INPUT_WEEK = 64;
 }

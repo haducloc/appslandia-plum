@@ -36,36 +36,36 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class CsvResult<T> extends FilenameResult {
 
-    protected String contentEncoding;
-    protected List<T> records;
+  protected String contentEncoding;
+  protected List<T> records;
 
-    public CsvResult(String fileName, String contentType) {
-	this(fileName, contentType, StandardCharsets.UTF_8.name(), false);
+  public CsvResult(String fileName, String contentType) {
+    this(fileName, contentType, StandardCharsets.UTF_8.name(), false);
+  }
+
+  public CsvResult(String fileName, String contentType, String contentEncoding) {
+    this(fileName, contentType, contentEncoding, false);
+  }
+
+  public CsvResult(String fileName, String contentType, String contentEncoding, boolean inline) {
+    super(fileName, contentType, inline);
+
+    this.contentEncoding = contentEncoding;
+  }
+
+  @Override
+  protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    if (this.contentEncoding != null) {
+      response.setCharacterEncoding(this.contentEncoding);
     }
 
-    public CsvResult(String fileName, String contentType, String contentEncoding) {
-	this(fileName, contentType, contentEncoding, false);
+    BufferedWriter out = IOUtils.textWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
+
+    for (T r : this.records) {
+      writeRecord(out, r);
     }
+    out.flush();
+  }
 
-    public CsvResult(String fileName, String contentType, String contentEncoding, boolean inline) {
-	super(fileName, contentType, inline);
-
-	this.contentEncoding = contentEncoding;
-    }
-
-    @Override
-    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	if (this.contentEncoding != null) {
-	    response.setCharacterEncoding(this.contentEncoding);
-	}
-
-	BufferedWriter out = IOUtils.textWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
-
-	for (T r : this.records) {
-	    writeRecord(out, r);
-	}
-	out.flush();
-    }
-
-    protected abstract void writeRecord(BufferedWriter out, T record) throws Exception;
+  protected abstract void writeRecord(BufferedWriter out, T record) throws Exception;
 }

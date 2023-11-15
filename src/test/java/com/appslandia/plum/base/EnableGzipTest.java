@@ -34,72 +34,72 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class EnableGzipTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	container.getAppConfig().set(AppConfig.CONFIG_DISABLE_GZIP, false);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    container.getAppConfig().set(AppConfig.CONFIG_DISABLE_GZIP, false);
+  }
+
+  @Test
+  public void test_testGzip() {
+    try {
+      getCurrentRequest().setHeader("Accept-Encoding", "gzip");
+
+      executeCurrent("GET", "http://localhost/app/testController/testGzip");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertNull(getCurrentResponse().getHeader("Content-Length"));
+      Assertions.assertEquals("gzip", getCurrentResponse().getHeader("Content-Encoding"));
+
+      String data = TestUtils.ungzipToString(getCurrentResponse().getContent());
+      Assertions.assertEquals("data", data);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testGzip() {
-	try {
-	    getCurrentRequest().setHeader("Accept-Encoding", "gzip");
+  @Test
+  public void test_testGzip_HEAD() {
+    try {
+      getCurrentRequest().setHeader("Accept-Encoding", "gzip");
 
-	    executeCurrent("GET", "http://localhost/app/testController/testGzip");
+      executeCurrent("HEAD", "http://localhost/app/testController/testGzip");
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    Assertions.assertNull(getCurrentResponse().getHeader("Content-Length"));
-	    Assertions.assertEquals("gzip", getCurrentResponse().getHeader("Content-Encoding"));
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertEquals("gzip", getCurrentResponse().getHeader("Content-Encoding"));
 
-	    String data = TestUtils.ungzipToString(getCurrentResponse().getContent());
-	    Assertions.assertEquals("data", data);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testGzip_HEAD() {
-	try {
-	    getCurrentRequest().setHeader("Accept-Encoding", "gzip");
+  @Test
+  public void test_testGzip_POST() {
+    try {
+      getCurrentRequest().setHeader("Accept-Encoding", "gzip");
 
-	    executeCurrent("HEAD", "http://localhost/app/testController/testGzip");
+      executeCurrent("POST", "http://localhost/app/testController/testGzip");
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    Assertions.assertEquals("gzip", getCurrentResponse().getHeader("Content-Encoding"));
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertNull(getCurrentResponse().getHeader("Content-Length"));
+      Assertions.assertEquals("gzip", getCurrentResponse().getHeader("Content-Encoding"));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      String data = TestUtils.ungzipToString(getCurrentResponse().getContent());
+      Assertions.assertEquals("data", data);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testGzip_POST() {
-	try {
-	    getCurrentRequest().setHeader("Accept-Encoding", "gzip");
+  @Controller("testController")
+  public static class TestController {
 
-	    executeCurrent("POST", "http://localhost/app/testController/testGzip");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    Assertions.assertNull(getCurrentResponse().getHeader("Content-Length"));
-	    Assertions.assertEquals("gzip", getCurrentResponse().getHeader("Content-Encoding"));
-
-	    String data = TestUtils.ungzipToString(getCurrentResponse().getContent());
-	    Assertions.assertEquals("data", data);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGetPost
+    @EnableGzip
+    public ActionResult testGzip() throws Exception {
+      return new ContentResult("data", MimeTypes.TEXT_PLAIN);
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGetPost
-	@EnableGzip
-	public ActionResult testGzip() throws Exception {
-	    return new ContentResult("data", MimeTypes.TEXT_PLAIN);
-	}
-    }
+  }
 }

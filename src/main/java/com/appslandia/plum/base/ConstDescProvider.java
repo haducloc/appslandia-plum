@@ -40,76 +40,76 @@ import com.appslandia.common.utils.StringUtils;
  */
 public class ConstDescProvider extends InitializeObject {
 
-    private Map<ConstValue, String> constKeyMap = new HashMap<>();
+  private Map<ConstValue, String> constKeyMap = new HashMap<>();
+
+  @Override
+  protected void init() throws Exception {
+    this.constKeyMap = Collections.unmodifiableMap(this.constKeyMap);
+  }
+
+  public String getDescKey(String constGroup, Object value) {
+    this.initialize();
+    return this.constKeyMap.get(new ConstValue(constGroup, value));
+  }
+
+  public void addConstClass(Class<?> constClass) {
+    this.assertNotInitialized();
+    try {
+      String defConstGroup = parseConstGroup(constClass);
+
+      for (Field field : constClass.getDeclaredFields()) {
+        if (!ReflectionUtils.isPublicConst(field.getModifiers())) {
+          continue;
+        }
+        if (field.getDeclaredAnnotation(ConstDesc.class) == null) {
+          continue;
+        }
+        ConstDesc constDesc = field.getDeclaredAnnotation(ConstDesc.class);
+        String constGroup = constDesc.value().isEmpty() ? defConstGroup : constDesc.value();
+
+        // descKey: constGroup.constName
+        String descKey = constGroup + "." + field.getName().toLowerCase(Locale.ENGLISH);
+        this.constKeyMap.put(new ConstValue(constGroup, field.get(null)), descKey);
+      }
+    } catch (Exception ex) {
+      throw new InitializeException(ex);
+    }
+  }
+
+  public void addConst(String constGroup, Object value, String descKey) {
+    this.constKeyMap.put(new ConstValue(constGroup, value), descKey);
+  }
+
+  private static String parseConstGroup(Class<?> constClass) {
+    ConstDesc constDesc = constClass.getDeclaredAnnotation(ConstDesc.class);
+    if ((constDesc != null) && !constDesc.value().isEmpty()) {
+      return constDesc.value();
+    }
+    return StringUtils.firstLowerCase(constClass.getSimpleName(), Locale.ENGLISH);
+  }
+
+  private static class ConstValue {
+
+    final String constGroup;
+    final Object value;
+
+    public ConstValue(String constGroup, Object value) {
+      this.constGroup = constGroup;
+      this.value = value;
+    }
 
     @Override
-    protected void init() throws Exception {
-	this.constKeyMap = Collections.unmodifiableMap(this.constKeyMap);
+    public boolean equals(Object obj) {
+      ConstValue another = (ConstValue) obj;
+      return Objects.equals(this.constGroup, another.constGroup) && Objects.equals(this.value, another.value);
     }
 
-    public String getDescKey(String constGroup, Object value) {
-	this.initialize();
-	return this.constKeyMap.get(new ConstValue(constGroup, value));
+    @Override
+    public int hashCode() {
+      int hash = 1, p = 31;
+      hash = p * hash + Objects.hashCode(this.constGroup);
+      hash = p * hash + Objects.hashCode(this.value);
+      return hash;
     }
-
-    public void addConstClass(Class<?> constClass) {
-	this.assertNotInitialized();
-	try {
-	    String defConstGroup = parseConstGroup(constClass);
-
-	    for (Field field : constClass.getDeclaredFields()) {
-		if (!ReflectionUtils.isPublicConst(field.getModifiers())) {
-		    continue;
-		}
-		if (field.getDeclaredAnnotation(ConstDesc.class) == null) {
-		    continue;
-		}
-		ConstDesc constDesc = field.getDeclaredAnnotation(ConstDesc.class);
-		String constGroup = constDesc.value().isEmpty() ? defConstGroup : constDesc.value();
-
-		// descKey: constGroup.constName
-		String descKey = constGroup + "." + field.getName().toLowerCase(Locale.ENGLISH);
-		this.constKeyMap.put(new ConstValue(constGroup, field.get(null)), descKey);
-	    }
-	} catch (Exception ex) {
-	    throw new InitializeException(ex);
-	}
-    }
-
-    public void addConst(String constGroup, Object value, String descKey) {
-	this.constKeyMap.put(new ConstValue(constGroup, value), descKey);
-    }
-
-    private static String parseConstGroup(Class<?> constClass) {
-	ConstDesc constDesc = constClass.getDeclaredAnnotation(ConstDesc.class);
-	if ((constDesc != null) && !constDesc.value().isEmpty()) {
-	    return constDesc.value();
-	}
-	return StringUtils.firstLowerCase(constClass.getSimpleName(), Locale.ENGLISH);
-    }
-
-    private static class ConstValue {
-
-	final String constGroup;
-	final Object value;
-
-	public ConstValue(String constGroup, Object value) {
-	    this.constGroup = constGroup;
-	    this.value = value;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-	    ConstValue another = (ConstValue) obj;
-	    return Objects.equals(this.constGroup, another.constGroup) && Objects.equals(this.value, another.value);
-	}
-
-	@Override
-	public int hashCode() {
-	    int hash = 1, p = 31;
-	    hash = p * hash + Objects.hashCode(this.constGroup);
-	    hash = p * hash + Objects.hashCode(this.value);
-	    return hash;
-	}
-    }
+  }
 }

@@ -33,7 +33,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultAppConfigLoader implements AppConfigLoader {
 
-    @Override
-    public void load(ConfigMap configMap) throws Exception {
-    }
+  @Override
+  public void load(ConfigMap configMap) throws Exception {
+  }
 }

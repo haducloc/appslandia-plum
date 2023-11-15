@@ -35,93 +35,93 @@ import jakarta.servlet.jsp.JspWriter;
  */
 public abstract class CheckInputTag extends ValueTagBase {
 
-    protected Object codeValue;
-    protected boolean triggerSubmit = false;
+  protected Object codeValue;
+  protected boolean triggerSubmit = false;
 
-    @Override
-    protected String getTagName() {
-	return "input";
+  @Override
+  protected String getTagName() {
+    return "input";
+  }
+
+  protected abstract boolean isChecked();
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    Asserts.notNull(this.codeValue, "codeValue is required.");
+
+    super.initTag();
+  }
+
+  @Override
+  protected boolean writeHiddenTag() {
+    return this.readonly && isChecked();
+  }
+
+  @Override
+  protected Object getHiddenValue() {
+    return this.codeValue;
+  }
+
+  @Override
+  protected Object getBindingValue() {
+    return this.evaluate(this.path);
+  }
+
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    HtmlUtils.escAttribute(out, "id", this.id);
+    HtmlUtils.escAttribute(out, "type", this.type);
+    HtmlUtils.escAttribute(out, "name", this._name);
+    HtmlUtils.escAttribute(out, "value", getRequestContext().format(this.codeValue, this.converter, this._localize));
+
+    if (this.isChecked())
+      HtmlUtils.checked(out);
+
+    if (this.readonly)
+      HtmlUtils.disabled(out);
+    if (this.required)
+      HtmlUtils.required(out);
+
+    if (this.autocomplete != null)
+      HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
+
+    if (this.autofocus)
+      HtmlUtils.autofocus(out);
+
+    if (this.hidden)
+      HtmlUtils.hidden(out);
+
+    if (this.form != null)
+      HtmlUtils.escAttribute(out, "form", this.form);
+
+    if (this.triggerSubmit)
+      HtmlUtils.escAttribute(out, "onchange", "this.form.submit();");
+
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+
+    // OnEnter
+    if (this.enterFn != null) {
+      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
+
+    } else if (this.enterBtn != null) {
+      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
     }
+  }
 
-    protected abstract boolean isChecked();
+  @Attribute(required = true, rtexprvalue = true)
+  public void setCodeValue(Object codeValue) {
+    this.codeValue = codeValue;
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	Asserts.notNull(this.codeValue, "codeValue is required.");
-
-	super.initTag();
-    }
-
-    @Override
-    protected boolean writeHiddenTag() {
-	return this.readonly && isChecked();
-    }
-
-    @Override
-    protected Object getHiddenValue() {
-	return this.codeValue;
-    }
-
-    @Override
-    protected Object getBindingValue() {
-	return this.evaluate(this.path);
-    }
-
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "type", this.type);
-	HtmlUtils.escAttribute(out, "name", this._name);
-	HtmlUtils.escAttribute(out, "value", getRequestContext().format(this.codeValue, this.converter, this._localize));
-
-	if (this.isChecked())
-	    HtmlUtils.checked(out);
-
-	if (this.readonly)
-	    HtmlUtils.disabled(out);
-	if (this.required)
-	    HtmlUtils.required(out);
-
-	if (this.autocomplete != null)
-	    HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
-
-	if (this.autofocus)
-	    HtmlUtils.autofocus(out);
-
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
-
-	if (this.form != null)
-	    HtmlUtils.escAttribute(out, "form", this.form);
-
-	if (this.triggerSubmit)
-	    HtmlUtils.escAttribute(out, "onchange", "this.form.submit();");
-
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-
-	// OnEnter
-	if (this.enterFn != null) {
-	    HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
-
-	} else if (this.enterBtn != null) {
-	    HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
-	}
-    }
-
-    @Attribute(required = true, rtexprvalue = true)
-    public void setCodeValue(Object codeValue) {
-	this.codeValue = codeValue;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setTriggerSubmit(boolean triggerSubmit) {
-	this.triggerSubmit = triggerSubmit;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setTriggerSubmit(boolean triggerSubmit) {
+    this.triggerSubmit = triggerSubmit;
+  }
 }

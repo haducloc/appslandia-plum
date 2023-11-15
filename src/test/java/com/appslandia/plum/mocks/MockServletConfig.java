@@ -35,39 +35,39 @@ import jakarta.servlet.ServletContext;
  */
 public class MockServletConfig implements ServletConfig {
 
-    private ServletContext servletContext;
-    private Map<String, String> initParameters = new HashMap<>();
-    private String serverName = "localhost";
+  private ServletContext servletContext;
+  private Map<String, String> initParameters = new HashMap<>();
+  private String serverName = "localhost";
 
-    public MockServletConfig(ServletContext servletContext) {
-	this.servletContext = servletContext;
-    }
+  public MockServletConfig(ServletContext servletContext) {
+    this.servletContext = servletContext;
+  }
 
-    public Map<String, String> getInitParameters() {
-	return this.initParameters;
-    }
+  public Map<String, String> getInitParameters() {
+    return this.initParameters;
+  }
 
-    @Override
-    public String getServletName() {
-	return this.serverName;
-    }
+  @Override
+  public String getServletName() {
+    return this.serverName;
+  }
 
-    @Override
-    public ServletContext getServletContext() {
-	return this.servletContext;
-    }
+  @Override
+  public ServletContext getServletContext() {
+    return this.servletContext;
+  }
 
-    @Override
-    public String getInitParameter(String name) {
-	return this.initParameters.get(name);
-    }
+  @Override
+  public String getInitParameter(String name) {
+    return this.initParameters.get(name);
+  }
 
-    public void setInitParameter(String name, String value) {
-	this.initParameters.put(name, value);
-    }
+  public void setInitParameter(String name, String value) {
+    this.initParameters.put(name, value);
+  }
 
-    @Override
-    public Enumeration<String> getInitParameterNames() {
-	return Collections.enumeration(this.initParameters.keySet());
-    }
+  @Override
+  public Enumeration<String> getInitParameterNames() {
+    return Collections.enumeration(this.initParameters.keySet());
+  }
 }

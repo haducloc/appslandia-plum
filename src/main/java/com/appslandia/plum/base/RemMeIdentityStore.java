@@ -49,183 +49,191 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class RemMeIdentityStore implements RememberMeIdentityStore {
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected HttpServletRequest request;
+  @Inject
+  protected HttpServletRequest request;
 
-    @Inject
-    protected AuthTokenManager authTokenManager;
+  @Inject
+  protected AuthTokenManager authTokenManager;
 
-    @Inject
-    protected AuthTokenHandler authTokenHandler;
+  @Inject
+  protected AuthTokenHandler authTokenHandler;
 
-    @Inject
-    @Json(Profile.COMPACT)
-    protected JsonProcessor jsonProcessor;
+  @Inject
+  @Json(Profile.COMPACT)
+  protected JsonProcessor jsonProcessor;
 
-    @Inject
-    protected IdentityValidator identityValidator;
+  @Inject
+  protected IdentityValidator identityValidator;
 
-    protected String getIdentity(UserPrincipal userPrincipal) {
-	return userPrincipal.getName();
+  protected String getIdentity(UserPrincipal userPrincipal) {
+    return userPrincipal.getName();
+  }
+
+  @Override
+  public String generateLoginToken(CallerPrincipal callerPrincipal, Set<String> groups) {
+    // UserPrincipal
+    UserPrincipal userPrincipal = (UserPrincipal) callerPrincipal;
+    String identity = getIdentity(userPrincipal);
+
+    // AuthToken
+    AuthToken authToken = new AuthToken();
+    authToken.setSeries(this.authTokenHandler.getSeriesGenerator().generate());
+    String clearToken = this.authTokenHandler.getTokenGenerator().generate();
+
+    final long curTimeMs = System.currentTimeMillis();
+    long expiresAt = curTimeMs + this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE) * 1000L;
+
+    String tokenData = this.authTokenHandler.getTokenData(authToken.getSeries(), clearToken, identity, expiresAt, null);
+    String hashToken = this.authTokenHandler.getTokenDigester().digest(tokenData);
+
+    authToken.setHashToken(hashToken);
+    authToken.setHashIdentity(this.authTokenHandler.getIdentityDigester().digest(identity));
+
+    authToken.setExpiresAt(expiresAt);
+    authToken.setIssuedAt(curTimeMs);
+
+    this.authTokenManager.save(authToken);
+
+    LoginToken loginToken = new LoginToken().setSeries(authToken.getSeries()).setToken(clearToken)
+        .setModule(userPrincipal.getModule()).setIdentity(identity);
+    return encodeLoginToken(loginToken);
+  }
+
+  protected PrincipalRoles doValidate(String module, String identity, Out<String> invalidCode) {
+    return this.identityValidator.validate(module, identity, invalidCode);
+  }
+
+  protected void handleTokenTheft(String identity, AuthToken authToken) {
+    this.authTokenManager.removeAll(authToken.getHashIdentity());
+  }
+
+  protected long getNewExpiresAt(long curExpiresAt, long curTimeMs, int cfgMaxAge) {
+    int remainingSec = ValueUtils.valueOrMin((int) ((curExpiresAt - curTimeMs) / 1000L), 0);
+    if (remainingSec > cfgMaxAge / 2) {
+      return curExpiresAt;
+    }
+    return curTimeMs + cfgMaxAge * 1000L;
+  }
+
+  @Override
+  public CredentialValidationResult validate(RememberMeCredential credential) {
+    // LoginToken
+    LoginToken loginToken = decodeLoginToken(credential.getToken());
+    if ((loginToken == null) || (loginToken.getSeries() == null) || (loginToken.getToken() == null)
+        || (loginToken.getModule() == null) || (loginToken.getIdentity() == null)) {
+      return InvalidAuthResult.TOKEN_INVALID;
     }
 
-    @Override
-    public String generateLoginToken(CallerPrincipal callerPrincipal, Set<String> groups) {
-	// UserPrincipal
-	UserPrincipal userPrincipal = (UserPrincipal) callerPrincipal;
-	String identity = getIdentity(userPrincipal);
-
-	// AuthToken
-	AuthToken authToken = new AuthToken();
-	authToken.setSeries(this.authTokenHandler.getSeriesGenerator().generate());
-	String clearToken = this.authTokenHandler.getTokenGenerator().generate();
-
-	final long curTimeMs = System.currentTimeMillis();
-	long expiresAt = curTimeMs + this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE) * 1000L;
-
-	String tokenData = this.authTokenHandler.getTokenData(authToken.getSeries(), clearToken, identity, expiresAt, null);
-	String hashToken = this.authTokenHandler.getTokenDigester().digest(tokenData);
-
-	authToken.setHashToken(hashToken);
-	authToken.setHashIdentity(this.authTokenHandler.getIdentityDigester().digest(identity));
-
-	authToken.setExpiresAt(expiresAt);
-	authToken.setIssuedAt(curTimeMs);
-
-	this.authTokenManager.save(authToken);
-
-	LoginToken loginToken = new LoginToken().setSeries(authToken.getSeries()).setToken(clearToken).setModule(userPrincipal.getModule()).setIdentity(identity);
-	return encodeLoginToken(loginToken);
+    // AuthToken
+    AuthToken authToken = this.authTokenManager.load(loginToken.getSeries());
+    if (authToken == null) {
+      return InvalidAuthResult.TOKEN_INVALID;
     }
 
-    protected PrincipalRoles doValidate(String module, String identity, Out<String> invalidCode) {
-	return this.identityValidator.validate(module, identity, invalidCode);
+    // Identity
+    if (!this.authTokenHandler.getIdentityDigester().verify(loginToken.getIdentity(), authToken.getHashIdentity())) {
+      return InvalidAuthResult.TOKEN_INVALID;
     }
 
-    protected void handleTokenTheft(String identity, AuthToken authToken) {
-	this.authTokenManager.removeAll(authToken.getHashIdentity());
+    // Token
+    String tokenData = this.authTokenHandler.getTokenData(loginToken.getSeries(), loginToken.getToken(),
+        loginToken.getIdentity(), authToken.getExpiresAt(), null);
+
+    if (!this.authTokenHandler.getTokenDigester().verify(tokenData, authToken.getHashToken())) {
+      this.request.setAttribute(AuthToken.class.getName(), authToken);
+
+      handleTokenTheft(loginToken.getIdentity(), authToken);
+      return InvalidAuthResult.TOKEN_THEFTED;
     }
 
-    protected long getNewExpiresAt(long curExpiresAt, long curTimeMs, int cfgMaxAge) {
-	int remainingSec = ValueUtils.valueOrMin((int) ((curExpiresAt - curTimeMs) / 1000L), 0);
-	if (remainingSec > cfgMaxAge / 2) {
-	    return curExpiresAt;
-	}
-	return curTimeMs + cfgMaxAge * 1000L;
+    // ExpiresAt
+    if (!DateUtils.isFutureTime(authToken.getExpiresAt(), 0)) {
+      return InvalidAuthResult.TOKEN_EXPIRED;
     }
 
-    @Override
-    public CredentialValidationResult validate(RememberMeCredential credential) {
-	// LoginToken
-	LoginToken loginToken = decodeLoginToken(credential.getToken());
-	if ((loginToken == null) || (loginToken.getSeries() == null) || (loginToken.getToken() == null) || (loginToken.getModule() == null) || (loginToken.getIdentity() == null)) {
-	    return InvalidAuthResult.TOKEN_INVALID;
-	}
+    // Validate identity
+    Out<String> invalidCode = new Out<>();
+    PrincipalRoles principalRoles = doValidate(loginToken.getModule(), loginToken.getIdentity(), invalidCode);
 
-	// AuthToken
-	AuthToken authToken = this.authTokenManager.load(loginToken.getSeries());
-	if (authToken == null) {
-	    return InvalidAuthResult.TOKEN_INVALID;
-	}
-
-	// Identity
-	if (!this.authTokenHandler.getIdentityDigester().verify(loginToken.getIdentity(), authToken.getHashIdentity())) {
-	    return InvalidAuthResult.TOKEN_INVALID;
-	}
-
-	// Token
-	String tokenData = this.authTokenHandler.getTokenData(loginToken.getSeries(), loginToken.getToken(), loginToken.getIdentity(), authToken.getExpiresAt(), null);
-
-	if (!this.authTokenHandler.getTokenDigester().verify(tokenData, authToken.getHashToken())) {
-	    this.request.setAttribute(AuthToken.class.getName(), authToken);
-
-	    handleTokenTheft(loginToken.getIdentity(), authToken);
-	    return InvalidAuthResult.TOKEN_THEFTED;
-	}
-
-	// ExpiresAt
-	if (!DateUtils.isFutureTime(authToken.getExpiresAt(), 0)) {
-	    return InvalidAuthResult.TOKEN_EXPIRED;
-	}
-
-	// Validate identity
-	Out<String> invalidCode = new Out<>();
-	PrincipalRoles principalRoles = doValidate(loginToken.getModule(), loginToken.getIdentity(), invalidCode);
-
-	if (principalRoles == null) {
-	    return InvalidAuthResult.valueOf(invalidCode.val());
-	}
-
-	// CredentialValidationResult
-	AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), loginToken.getModule(), true, false);
-	CredentialValidationResult result = SecurityUtils.createIdentityStoreResult(principal, principalRoles.getRoles());
-
-	// Reissue Token
-	final long curTimeMs = System.currentTimeMillis();
-	String clearToken = this.authTokenHandler.getTokenGenerator().generate();
-
-	long newExpiresAt = this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SLIDING)
-		? getNewExpiresAt(authToken.getExpiresAt(), curTimeMs, this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE))
-		: authToken.getExpiresAt();
-
-	String newTokenData = this.authTokenHandler.getTokenData(loginToken.getSeries(), clearToken, loginToken.getIdentity(), newExpiresAt, null);
-	String newHashToken = this.authTokenHandler.getTokenDigester().digest(newTokenData);
-
-	this.authTokenManager.reissue(authToken.getSeries(), newHashToken, newExpiresAt, curTimeMs);
-
-	int remainingSec = ValueUtils.valueOrMin((int) ((newExpiresAt - curTimeMs) / 1000L), 0);
-	String newLoginToken = encodeLoginToken(
-		new LoginToken().setSeries(loginToken.getSeries()).setToken(clearToken).setModule(loginToken.getModule()).setIdentity(loginToken.getIdentity()));
-
-	// ReissuedToken
-	this.request.setAttribute(ReissuedToken.class.getName(), new ReissuedToken(loginToken.getIdentity(), newLoginToken, remainingSec));
-	return result;
+    if (principalRoles == null) {
+      return InvalidAuthResult.valueOf(invalidCode.val());
     }
 
-    @Override
-    public void removeLoginToken(String token) {
-	LoginToken loginToken = decodeLoginToken(token);
-	if ((loginToken != null) && (loginToken.getSeries() != null)) {
-	    this.authTokenManager.remove(loginToken.getSeries());
-	}
+    // CredentialValidationResult
+    AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), loginToken.getModule(), true,
+        false);
+    CredentialValidationResult result = SecurityUtils.createIdentityStoreResult(principal, principalRoles.getRoles());
+
+    // Reissue Token
+    final long curTimeMs = System.currentTimeMillis();
+    String clearToken = this.authTokenHandler.getTokenGenerator().generate();
+
+    long newExpiresAt = this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SLIDING)
+        ? getNewExpiresAt(authToken.getExpiresAt(), curTimeMs, this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE))
+        : authToken.getExpiresAt();
+
+    String newTokenData = this.authTokenHandler.getTokenData(loginToken.getSeries(), clearToken,
+        loginToken.getIdentity(), newExpiresAt, null);
+    String newHashToken = this.authTokenHandler.getTokenDigester().digest(newTokenData);
+
+    this.authTokenManager.reissue(authToken.getSeries(), newHashToken, newExpiresAt, curTimeMs);
+
+    int remainingSec = ValueUtils.valueOrMin((int) ((newExpiresAt - curTimeMs) / 1000L), 0);
+    String newLoginToken = encodeLoginToken(new LoginToken().setSeries(loginToken.getSeries()).setToken(clearToken)
+        .setModule(loginToken.getModule()).setIdentity(loginToken.getIdentity()));
+
+    // ReissuedToken
+    this.request.setAttribute(ReissuedToken.class.getName(),
+        new ReissuedToken(loginToken.getIdentity(), newLoginToken, remainingSec));
+    return result;
+  }
+
+  @Override
+  public void removeLoginToken(String token) {
+    LoginToken loginToken = decodeLoginToken(token);
+    if ((loginToken != null) && (loginToken.getSeries() != null)) {
+      this.authTokenManager.remove(loginToken.getSeries());
+    }
+  }
+
+  protected String encodeLoginToken(LoginToken token) {
+    return BaseEncoder.BASE64_URL_NP.encode(this.jsonProcessor.toString(token).getBytes(StandardCharsets.UTF_8));
+  }
+
+  protected LoginToken decodeLoginToken(String token) {
+    try {
+      return this.jsonProcessor.read(
+          new StringReader(new String(BaseEncoder.BASE64_URL_NP.decode(token), StandardCharsets.UTF_8)),
+          LoginToken.class);
+    } catch (Exception ex) {
+      return null;
+    }
+  }
+
+  static class ReissuedToken {
+    final String identity;
+    final String loginToken;
+    final int maxAge;
+
+    public ReissuedToken(String identity, String loginToken, int maxAge) {
+      this.identity = identity;
+      this.loginToken = loginToken;
+      this.maxAge = maxAge;
     }
 
-    protected String encodeLoginToken(LoginToken token) {
-	return BaseEncoder.BASE64_URL_NP.encode(this.jsonProcessor.toString(token).getBytes(StandardCharsets.UTF_8));
+    public String getIdentity() {
+      return this.identity;
     }
 
-    protected LoginToken decodeLoginToken(String token) {
-	try {
-	    return this.jsonProcessor.read(new StringReader(new String(BaseEncoder.BASE64_URL_NP.decode(token), StandardCharsets.UTF_8)), LoginToken.class);
-	} catch (Exception ex) {
-	    return null;
-	}
+    public String getLoginToken() {
+      return this.loginToken;
     }
 
-    static class ReissuedToken {
-	final String identity;
-	final String loginToken;
-	final int maxAge;
-
-	public ReissuedToken(String identity, String loginToken, int maxAge) {
-	    this.identity = identity;
-	    this.loginToken = loginToken;
-	    this.maxAge = maxAge;
-	}
-
-	public String getIdentity() {
-	    return this.identity;
-	}
-
-	public String getLoginToken() {
-	    return this.loginToken;
-	}
-
-	public int getMaxAge() {
-	    return this.maxAge;
-	}
+    public int getMaxAge() {
+      return this.maxAge;
     }
+  }
 }

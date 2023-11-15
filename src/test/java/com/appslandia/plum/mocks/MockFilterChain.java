@@ -38,31 +38,31 @@ import jakarta.servlet.http.HttpServlet;
  */
 public class MockFilterChain implements FilterChain {
 
-    private List<Filter> filters = new ArrayList<>();
-    private HttpServlet servlet;
-    private int index = -1;
+  private List<Filter> filters = new ArrayList<>();
+  private HttpServlet servlet;
+  private int index = -1;
 
-    @Override
-    public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
-	this.index++;
-	request.setAttribute(ServletResponse.class.getName(), response);
+  @Override
+  public void doFilter(ServletRequest request, ServletResponse response) throws IOException, ServletException {
+    this.index++;
+    request.setAttribute(ServletResponse.class.getName(), response);
 
-	if (this.index == this.filters.size()) {
-	    if (this.servlet != null) {
-		this.servlet.service(request, response);
-	    }
-	} else {
-	    this.filters.get(this.index).doFilter(request, response, this);
-	}
+    if (this.index == this.filters.size()) {
+      if (this.servlet != null) {
+        this.servlet.service(request, response);
+      }
+    } else {
+      this.filters.get(this.index).doFilter(request, response, this);
     }
+  }
 
-    public MockFilterChain addFilter(Filter filter) {
-	this.filters.add(filter);
-	return this;
-    }
+  public MockFilterChain addFilter(Filter filter) {
+    this.filters.add(filter);
+    return this;
+  }
 
-    public MockFilterChain setServlet(HttpServlet servlet) {
-	this.servlet = servlet;
-	return this;
-    }
+  public MockFilterChain setServlet(HttpServlet servlet) {
+    this.servlet = servlet;
+    return this;
+  }
 }

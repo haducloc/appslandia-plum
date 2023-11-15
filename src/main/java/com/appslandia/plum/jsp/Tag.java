@@ -36,11 +36,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Tag {
 
-    String name() default "";
+  String name() default "";
 
-    String description() default "";
+  String description() default "";
 
-    String bodyContent() default "empty";
+  String bodyContent() default "empty";
 
-    boolean dynamicAttributes() default true;
+  boolean dynamicAttributes() default true;
 }

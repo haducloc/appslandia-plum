@@ -34,14 +34,14 @@ import com.appslandia.plum.pebble.TemplateEvaluationContext;
  */
 public class CheckboxFunction extends CheckInputFunction {
 
-    protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
-	if (modelValue == null) {
-	    return false;
-	}
-	if (StringUtils.iequals(codeValue, modelValue)) {
-	    return true;
-	}
-	String[] values = SplitUtils.split(modelValue, ',', SplitOptions.TRIM_NULL);
-	return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
+  protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
+    if (modelValue == null) {
+      return false;
     }
+    if (StringUtils.iequals(codeValue, modelValue)) {
+      return true;
+    }
+    String[] values = SplitUtils.split(modelValue, ',', SplitOptions.TRIM_NULL);
+    return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
+  }
 }

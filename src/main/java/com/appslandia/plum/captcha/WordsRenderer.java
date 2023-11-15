@@ -29,5 +29,5 @@ import java.awt.image.BufferedImage;
  */
 public interface WordsRenderer {
 
-    void render(BufferedImage img, int width, int height, String words);
+  void render(BufferedImage img, int width, int height, String words);
 }

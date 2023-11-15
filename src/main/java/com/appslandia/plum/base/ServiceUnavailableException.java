@@ -29,76 +29,76 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @NotLog
 public class ServiceUnavailableException extends HttpException implements HttpHeaderApply {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String reason;
-    private Long retryAfter;
+  private String reason;
+  private Long retryAfter;
 
-    public ServiceUnavailableException() {
-	super(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+  public ServiceUnavailableException() {
+    super(HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+  }
+
+  public ServiceUnavailableException(String message) {
+    super(HttpServletResponse.SC_SERVICE_UNAVAILABLE, message);
+  }
+
+  public ServiceUnavailableException(String message, Throwable cause) {
+    super(HttpServletResponse.SC_SERVICE_UNAVAILABLE, message, cause);
+  }
+
+  public ServiceUnavailableException(Throwable cause) {
+    super(HttpServletResponse.SC_SERVICE_UNAVAILABLE, cause);
+  }
+
+  @Override
+  public void apply(HttpServletResponse response) {
+    if (this.reason != null) {
+      response.addHeader("SU-Reason", this.reason);
     }
-
-    public ServiceUnavailableException(String message) {
-	super(HttpServletResponse.SC_SERVICE_UNAVAILABLE, message);
+    if (this.retryAfter != null) {
+      response.addDateHeader("Retry-After", this.retryAfter);
     }
+  }
 
-    public ServiceUnavailableException(String message, Throwable cause) {
-	super(HttpServletResponse.SC_SERVICE_UNAVAILABLE, message, cause);
-    }
+  public String getReason() {
+    return this.reason;
+  }
 
-    public ServiceUnavailableException(Throwable cause) {
-	super(HttpServletResponse.SC_SERVICE_UNAVAILABLE, cause);
-    }
+  public ServiceUnavailableException setReason(String reason) {
+    this.reason = reason;
+    return this;
+  }
 
-    @Override
-    public void apply(HttpServletResponse response) {
-	if (this.reason != null) {
-	    response.addHeader("SU-Reason", this.reason);
-	}
-	if (this.retryAfter != null) {
-	    response.addDateHeader("Retry-After", this.retryAfter);
-	}
-    }
+  public Long getRetryAfter() {
+    return this.retryAfter;
+  }
 
-    public String getReason() {
-	return this.reason;
-    }
+  public ServiceUnavailableException setRetryAfter(Long retryAfter) {
+    this.retryAfter = retryAfter;
+    return this;
+  }
 
-    public ServiceUnavailableException setReason(String reason) {
-	this.reason = reason;
-	return this;
-    }
+  @Override
+  public ServiceUnavailableException setTitleKey(String titleKey) {
+    super.setTitleKey(titleKey);
+    return this;
+  }
 
-    public Long getRetryAfter() {
-	return this.retryAfter;
-    }
+  @Override
+  public ServiceUnavailableException setTitleKey(ResKey titleKey) {
+    super.setTitleKey(titleKey);
+    return this;
+  }
 
-    public ServiceUnavailableException setRetryAfter(Long retryAfter) {
-	this.retryAfter = retryAfter;
-	return this;
-    }
+  @Override
+  public ServiceUnavailableException setDetailKey(String detailKey) {
+    super.setDetailKey(detailKey);
+    return this;
+  }
 
-    @Override
-    public ServiceUnavailableException setTitleKey(String titleKey) {
-	super.setTitleKey(titleKey);
-	return this;
-    }
-
-    @Override
-    public ServiceUnavailableException setTitleKey(ResKey titleKey) {
-	super.setTitleKey(titleKey);
-	return this;
-    }
-
-    @Override
-    public ServiceUnavailableException setDetailKey(String detailKey) {
-	super.setDetailKey(detailKey);
-	return this;
-    }
-
-    @Override
-    public ServiceUnavailableException setDetailKey(ResKey detailKey) {
-	super.setDetailKey(detailKey);
-	return this;
-    }
+  @Override
+  public ServiceUnavailableException setDetailKey(ResKey detailKey) {
+    super.setDetailKey(detailKey);
+    return this;
+  }
 }

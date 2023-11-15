@@ -37,85 +37,86 @@ import java.util.stream.Collectors;
  *
  */
 public class ModelState implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String REQUEST_ATTRIBUTE_ID = "modelState";
-    public static final String MODEL_FIELD = "__model";
+  public static final String REQUEST_ATTRIBUTE_ID = "modelState";
+  public static final String MODEL_FIELD = "__model";
 
-    private String form;
-    final Map<String, List<Message>> errors = new HashMap<>();
+  private String form;
+  final Map<String, List<Message>> errors = new HashMap<>();
 
-    public void setForm(String form) {
-	this.form = form;
+  public void setForm(String form) {
+    this.form = form;
+  }
+
+  public String getForm() {
+    return this.form;
+  }
+
+  public void addError(String message) {
+    getFieldErrors(MODEL_FIELD).add(new Message(Message.TYPE_ERROR, message));
+  }
+
+  public void addError(String message, boolean escXml) {
+    getFieldErrors(MODEL_FIELD).add(new Message(Message.TYPE_ERROR, message, escXml));
+  }
+
+  public void addError(String fieldName, String message) {
+    getFieldErrors(fieldName).add(new Message(Message.TYPE_ERROR, message));
+  }
+
+  public void addError(String fieldName, String message, boolean escXml) {
+    getFieldErrors(fieldName).add(new Message(Message.TYPE_ERROR, message, escXml));
+  }
+
+  public List<Message> getFieldErrors(String fieldName) {
+    List<Message> errors = this.errors.get(fieldName);
+    if (errors == null) {
+      errors = new ArrayList<>(5);
+      this.errors.put(fieldName, errors);
     }
+    return errors;
+  }
 
-    public String getForm() {
-	return this.form;
-    }
+  public void clearErrors() {
+    this.errors.clear();
+  }
 
-    public void addError(String message) {
-	getFieldErrors(MODEL_FIELD).add(new Message(Message.TYPE_ERROR, message));
+  public void remove(Function<String, Boolean> matcher) {
+    Iterator<String> it = this.errors.keySet().iterator();
+    while (it.hasNext()) {
+      if (matcher.apply(it.next())) {
+        it.remove();
+      }
     }
+  }
 
-    public void addError(String message, boolean escXml) {
-	getFieldErrors(MODEL_FIELD).add(new Message(Message.TYPE_ERROR, message, escXml));
-    }
+  public void remove(String... fieldNames) {
+    Arrays.stream(fieldNames).forEach(fieldName -> this.errors.remove(fieldName));
+  }
 
-    public void addError(String fieldName, String message) {
-	getFieldErrors(fieldName).add(new Message(Message.TYPE_ERROR, message));
-    }
+  public boolean isValid() {
+    return this.errors.isEmpty();
+  }
 
-    public void addError(String fieldName, String message, boolean escXml) {
-	getFieldErrors(fieldName).add(new Message(Message.TYPE_ERROR, message, escXml));
-    }
+  public boolean isValid(String fieldName) {
+    return !this.errors.containsKey(fieldName);
+  }
 
-    public List<Message> getFieldErrors(String fieldName) {
-	List<Message> errors = this.errors.get(fieldName);
-	if (errors == null) {
-	    errors = new ArrayList<>(5);
-	    this.errors.put(fieldName, errors);
-	}
-	return errors;
-    }
+  public boolean isError(String prefixPath) {
+    return this.errors.keySet().stream().anyMatch(k -> k.startsWith(prefixPath));
+  }
 
-    public void clearErrors() {
-	this.errors.clear();
-    }
+  public boolean areValid(String... fieldNames) {
+    return !Arrays.stream(fieldNames).anyMatch(fieldName -> this.errors.containsKey(fieldName));
+  }
 
-    public void remove(Function<String, Boolean> matcher) {
-	Iterator<String> it = this.errors.keySet().iterator();
-	while (it.hasNext()) {
-	    if (matcher.apply(it.next())) {
-		it.remove();
-	    }
-	}
-    }
+  public Map<String, List<Message>> getErrors() {
+    return this.errors;
+  }
 
-    public void remove(String... fieldNames) {
-	Arrays.stream(fieldNames).forEach(fieldName -> this.errors.remove(fieldName));
-    }
-
-    public boolean isValid() {
-	return this.errors.isEmpty();
-    }
-
-    public boolean isValid(String fieldName) {
-	return !this.errors.containsKey(fieldName);
-    }
-
-    public boolean isError(String prefixPath) {
-	return this.errors.keySet().stream().anyMatch(k -> k.startsWith(prefixPath));
-    }
-
-    public boolean areValid(String... fieldNames) {
-	return !Arrays.stream(fieldNames).anyMatch(fieldName -> this.errors.containsKey(fieldName));
-    }
-
-    public Map<String, List<Message>> getErrors() {
-	return this.errors;
-    }
-
-    public Map<String, String> toErrorMap() {
-	return this.errors.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get(0).getText(), (v1, v2) -> v1, TreeMap::new));
-    }
+  public Map<String, String> toErrorMap() {
+    return this.errors.entrySet().stream().collect(
+        Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get(0).getText(), (v1, v2) -> v1, TreeMap::new));
+  }
 }

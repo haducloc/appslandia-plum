@@ -41,41 +41,41 @@ import jakarta.interceptor.InvocationContext;
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 150)
 public class CacheResultInterceptor implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    protected AppCacheManager appCacheManager;
+  @Inject
+  protected AppCacheManager appCacheManager;
 
-    @AroundInvoke
-    public Object intercept(InvocationContext context) throws Exception {
+  @AroundInvoke
+  public Object intercept(InvocationContext context) throws Exception {
 
-	// @CacheResult
-	CacheResult cacheResult = context.getMethod().getAnnotation(CacheResult.class);
-	if (cacheResult == null) {
-	    return context.proceed();
-	}
-	Asserts.isTrue(!cacheResult.cacheName().isEmpty());
-	Asserts.isTrue(!cacheResult.key().isEmpty());
-
-	// Build cacheKey
-	String cacheKey = CacheUtils.toKey(cacheResult.key(), context.getParameters());
-
-	// AppCache
-	AppCache<String, Object> cache = this.appCacheManager.getRequiredCache(cacheResult.cacheName());
-
-	// Get value
-	Object value = cache.get(cacheKey);
-	if (value != null) {
-	    return value;
-	}
-
-	// Invoke method
-	value = context.proceed();
-
-	if (value == null) {
-	    return value;
-	}
-	cache.put(cacheKey, value);
-	return value;
+    // @CacheResult
+    CacheResult cacheResult = context.getMethod().getAnnotation(CacheResult.class);
+    if (cacheResult == null) {
+      return context.proceed();
     }
+    Asserts.isTrue(!cacheResult.cacheName().isEmpty());
+    Asserts.isTrue(!cacheResult.key().isEmpty());
+
+    // Build cacheKey
+    String cacheKey = CacheUtils.toKey(cacheResult.key(), context.getParameters());
+
+    // AppCache
+    AppCache<String, Object> cache = this.appCacheManager.getRequiredCache(cacheResult.cacheName());
+
+    // Get value
+    Object value = cache.get(cacheKey);
+    if (value != null) {
+      return value;
+    }
+
+    // Invoke method
+    value = context.proceed();
+
+    if (value == null) {
+      return value;
+    }
+    cache.put(cacheKey, value);
+    return value;
+  }
 }

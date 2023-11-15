@@ -44,75 +44,75 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class PrefCookieHandler {
 
-    public static final String DEFAULT_COOKIE_NAME = "pref";
-    public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
+  public static final String DEFAULT_COOKIE_NAME = "pref";
+  public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
 
-    public static final String CONFIG_COOKIE_NAME = PrefCookieHandler.class.getName() + ".cookie_name";
-    public static final String CONFIG_COOKIE_AGE = PrefCookieHandler.class.getName() + ".cookie_age";
+  public static final String CONFIG_COOKIE_NAME = PrefCookieHandler.class.getName() + ".cookie_name";
+  public static final String CONFIG_COOKIE_AGE = PrefCookieHandler.class.getName() + ".cookie_age";
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected CookieHandler cookieHandler;
+  @Inject
+  protected CookieHandler cookieHandler;
 
-    protected String getCookieName() {
-	return this.appConfig.getString(CONFIG_COOKIE_NAME, DEFAULT_COOKIE_NAME);
+  protected String getCookieName() {
+    return this.appConfig.getString(CONFIG_COOKIE_NAME, DEFAULT_COOKIE_NAME);
+  }
+
+  protected int getCookieAge() {
+    return this.appConfig.getInt(CONFIG_COOKIE_AGE, DEFAULT_COOKIE_AGE);
+  }
+
+  protected String encode(PrefCookie prefCookie) {
+    return URLUtils.toQueryParams(ObjectUtils.cast(prefCookie));
+  }
+
+  protected PrefCookie decode(String prefCookie) {
+    try {
+      Map<String, Object> map = URLUtils.parseParams(prefCookie, new LinkedHashMap<>(), false);
+      return new PrefCookie(Collections.unmodifiableMap(ObjectUtils.cast(map)));
+
+    } catch (IllegalArgumentException ex) {
+      return PrefCookie.EMPTY;
     }
+  }
 
-    protected int getCookieAge() {
-	return this.appConfig.getInt(CONFIG_COOKIE_AGE, DEFAULT_COOKIE_AGE);
+  public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, PrefCookie prefCookie) {
+    Asserts.notNull(prefCookie);
+    String cookieValue = encode(prefCookie);
+
+    if (StringUtils.isNullOrEmpty(cookieValue)) {
+      if (this.cookieHandler.getCookieValue(request, getCookieName()) != null) {
+        this.cookieHandler.removeCookie(response, getCookieName());
+      }
+    } else {
+      this.cookieHandler.saveCookie(response, getCookieName(), cookieValue, getCookieAge(), c -> c.setHttpOnly(false));
     }
+  }
 
-    protected String encode(PrefCookie prefCookie) {
-	return URLUtils.toQueryParams(ObjectUtils.cast(prefCookie));
+  public PrefCookie loadPrefCookie(HttpServletRequest request, HttpServletResponse response) {
+    String cookieValue = this.cookieHandler.getCookieValue(request, getCookieName());
+    PrefCookie prefCookie = null;
+
+    if (cookieValue == null) {
+      prefCookie = PrefCookie.EMPTY;
+    } else {
+      prefCookie = decode(cookieValue);
+
+      if (prefCookie == PrefCookie.EMPTY) {
+        this.cookieHandler.removeCookie(response, getCookieName());
+      }
     }
+    request.setAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID, prefCookie);
+    return prefCookie;
+  }
 
-    protected PrefCookie decode(String prefCookie) {
-	try {
-	    Map<String, Object> map = URLUtils.parseParams(prefCookie, new LinkedHashMap<>(), false);
-	    return new PrefCookie(Collections.unmodifiableMap(ObjectUtils.cast(map)));
+  public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, Consumer<PrefCookie> consumer) {
+    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
+    PrefCookie newPrefCookie = (prefCookie != null) ? prefCookie.clone() : new PrefCookie();
+    consumer.accept(newPrefCookie);
 
-	} catch (IllegalArgumentException ex) {
-	    return PrefCookie.EMPTY;
-	}
-    }
-
-    public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, PrefCookie prefCookie) {
-	Asserts.notNull(prefCookie);
-	String cookieValue = encode(prefCookie);
-
-	if (StringUtils.isNullOrEmpty(cookieValue)) {
-	    if (this.cookieHandler.getCookieValue(request, getCookieName()) != null) {
-		this.cookieHandler.removeCookie(response, getCookieName());
-	    }
-	} else {
-	    this.cookieHandler.saveCookie(response, getCookieName(), cookieValue, getCookieAge(), c -> c.setHttpOnly(false));
-	}
-    }
-
-    public PrefCookie loadPrefCookie(HttpServletRequest request, HttpServletResponse response) {
-	String cookieValue = this.cookieHandler.getCookieValue(request, getCookieName());
-	PrefCookie prefCookie = null;
-
-	if (cookieValue == null) {
-	    prefCookie = PrefCookie.EMPTY;
-	} else {
-	    prefCookie = decode(cookieValue);
-
-	    if (prefCookie == PrefCookie.EMPTY) {
-		this.cookieHandler.removeCookie(response, getCookieName());
-	    }
-	}
-	request.setAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID, prefCookie);
-	return prefCookie;
-    }
-
-    public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, Consumer<PrefCookie> consumer) {
-	PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-	PrefCookie newPrefCookie = (prefCookie != null) ? prefCookie.clone() : new PrefCookie();
-	consumer.accept(newPrefCookie);
-
-	savePrefCookie(request, response, newPrefCookie);
-    }
+    savePrefCookie(request, response, newPrefCookie);
+  }
 }

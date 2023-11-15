@@ -31,5 +31,5 @@ import jakarta.servlet.http.HttpServletResponse;
 @FunctionalInterface
 public interface HeaderPolicy {
 
-    void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext);
+  void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext);
 }

@@ -32,35 +32,35 @@ import org.junit.jupiter.api.Test;
  */
 public class HstsBuilderTest {
 
-    @Test
-    public void test() {
-	HstsBuilder builder = new HstsBuilder();
+  @Test
+  public void test() {
+    HstsBuilder builder = new HstsBuilder();
 
-	builder.maxAge(1000, TimeUnit.SECONDS).includeSubDomains().preload();
-	Assertions.assertTrue(builder.toString().contains("max-age=1000; includeSubDomains; preload"));
-    }
+    builder.maxAge(1000, TimeUnit.SECONDS).includeSubDomains().preload();
+    Assertions.assertTrue(builder.toString().contains("max-age=1000; includeSubDomains; preload"));
+  }
 
-    @Test
-    public void test_maxAge() {
-	HstsBuilder builder = new HstsBuilder();
+  @Test
+  public void test_maxAge() {
+    HstsBuilder builder = new HstsBuilder();
 
-	builder.maxAge(1000, TimeUnit.SECONDS);
-	Assertions.assertTrue(builder.toString().contains("max-age=1000"));
-    }
+    builder.maxAge(1000, TimeUnit.SECONDS);
+    Assertions.assertTrue(builder.toString().contains("max-age=1000"));
+  }
 
-    @Test
-    public void test_preload() {
-	HstsBuilder builder = new HstsBuilder();
+  @Test
+  public void test_preload() {
+    HstsBuilder builder = new HstsBuilder();
 
-	builder.maxAge(1000, TimeUnit.SECONDS).preload();
-	Assertions.assertTrue(builder.toString().contains("max-age=1000; preload"));
-    }
+    builder.maxAge(1000, TimeUnit.SECONDS).preload();
+    Assertions.assertTrue(builder.toString().contains("max-age=1000; preload"));
+  }
 
-    @Test
-    public void test_includeSubDomains() {
-	HstsBuilder builder = new HstsBuilder();
+  @Test
+  public void test_includeSubDomains() {
+    HstsBuilder builder = new HstsBuilder();
 
-	builder.maxAge(1000, TimeUnit.SECONDS).includeSubDomains();
-	Assertions.assertTrue(builder.toString().contains("max-age=1000; includeSubDomains"));
-    }
+    builder.maxAge(1000, TimeUnit.SECONDS).includeSubDomains();
+    Assertions.assertTrue(builder.toString().contains("max-age=1000; includeSubDomains"));
+  }
 }

@@ -38,42 +38,42 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MemLongTaskManager implements LongTaskManager {
 
-    final Map<String, LongTask> longTaskMap = Collections.synchronizedMap(new LruMap<>(100));
+  final Map<String, LongTask> longTaskMap = Collections.synchronizedMap(new LruMap<>(100));
 
-    @Override
-    public void save(LongTask longTask) {
-	this.longTaskMap.put(longTask.getSeries(), copy(longTask));
-    }
+  @Override
+  public void save(LongTask longTask) {
+    this.longTaskMap.put(longTask.getSeries(), copy(longTask));
+  }
 
-    @Override
-    public LongTask load(String series) {
-	LongTask obj = this.longTaskMap.get(series);
-	return (obj != null) ? copy(obj) : null;
-    }
+  @Override
+  public LongTask load(String series) {
+    LongTask obj = this.longTaskMap.get(series);
+    return (obj != null) ? copy(obj) : null;
+  }
 
-    @Override
-    public void updateDone(String series, String status, String message, long doneAt) {
-	LongTask obj = this.longTaskMap.get(series);
-	Asserts.notNull(obj);
+  @Override
+  public void updateDone(String series, String status, String message, long doneAt) {
+    LongTask obj = this.longTaskMap.get(series);
+    Asserts.notNull(obj);
 
-	obj.setStatus(status);
-	obj.setMessage(message);
-	obj.setDoneAt(doneAt);
-    }
+    obj.setStatus(status);
+    obj.setMessage(message);
+    obj.setDoneAt(doneAt);
+  }
 
-    @Override
-    public void remove(String series) {
-	this.longTaskMap.remove(series);
-    }
+  @Override
+  public void remove(String series) {
+    this.longTaskMap.remove(series);
+  }
 
-    static LongTask copy(LongTask obj) {
-	LongTask copy = new LongTask();
-	copy.setSeries(obj.getSeries());
-	copy.setStatus(obj.getStatus());
-	copy.setMessage(obj.getMessage());
+  static LongTask copy(LongTask obj) {
+    LongTask copy = new LongTask();
+    copy.setSeries(obj.getSeries());
+    copy.setStatus(obj.getStatus());
+    copy.setMessage(obj.getMessage());
 
-	copy.setCreatedAt(obj.getCreatedAt());
-	copy.setDoneAt(obj.getDoneAt());
-	return copy;
-    }
+    copy.setCreatedAt(obj.getCreatedAt());
+    copy.setDoneAt(obj.getDoneAt());
+    return copy;
+  }
 }

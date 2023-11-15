@@ -112,252 +112,258 @@ import jakarta.validation.Validator;
  */
 public class MockContainer extends InitializeObject {
 
-    public static final ThreadLocalStorage<MockContainer> containerHolder = new ThreadLocalStorage<>();
-    public static final ThreadLocalStorage<MockHttpServletRequest> currentRequestHolder = new ThreadLocalStorage<>(true);
-    public static final ThreadLocalStorage<MockHttpServletResponse> currentResponseHolder = new ThreadLocalStorage<>(true);
+  public static final ThreadLocalStorage<MockContainer> containerHolder = new ThreadLocalStorage<>();
+  public static final ThreadLocalStorage<MockHttpServletRequest> currentRequestHolder = new ThreadLocalStorage<>(true);
+  public static final ThreadLocalStorage<MockHttpServletResponse> currentResponseHolder = new ThreadLocalStorage<>(
+      true);
 
-    final MockServletContext servletContext;
-    final ObjectFactory objectFactory;
+  final MockServletContext servletContext;
+  final ObjectFactory objectFactory;
 
-    private volatile InitializerHandler initializerHandler;
-    private volatile ExecutorHandler executorHandler;
+  private volatile InitializerHandler initializerHandler;
+  private volatile ExecutorHandler executorHandler;
 
-    final Object mutex = new Object();
+  final Object mutex = new Object();
 
-    public MockContainer() {
-	this.servletContext = new MockServletContext(new MockSessionCookieConfig());
-	this.objectFactory = createObjectFactory(this.servletContext);
+  public MockContainer() {
+    this.servletContext = new MockServletContext(new MockSessionCookieConfig());
+    this.objectFactory = createObjectFactory(this.servletContext);
+  }
+
+  @Override
+  protected void init() throws Exception {
+    this.objectFactory.getObject(BeanInstanceContextListener.class).contextInitialized(this.servletContext);
+
+    Map<Class<?>, BeanInstance<?>> beanInstances = BeanInstanceContextListener.getBeanInstances(this.servletContext);
+
+    putBeanInst(AppConfig.class, beanInstances);
+    putBeanInst(LanguageProvider.class, beanInstances);
+
+    putBeanInst(ActionDescProvider.class, beanInstances);
+    putBeanInst(ActionParser.class, beanInstances);
+    putBeanInst(ActionInvoker.class, beanInstances);
+    putBeanInst(ControllerProvider.class, beanInstances);
+
+    putBeanInst(ConverterProvider.class, beanInstances);
+    putBeanInst(TempDataManager.class, beanInstances);
+    putBeanInst(AppCacheManager.class, beanInstances);
+
+    putBeanInst(ConstDescProvider.class, beanInstances);
+    putBeanInst(StringFormatProvider.class, beanInstances);
+
+    putBeanInst(ModelBinder.class, beanInstances);
+    putBeanInst(ExceptionHandler.class, beanInstances);
+
+    putBeanInst(PebbleTemplateProvider.class, beanInstances);
+  }
+
+  protected <T> void putBeanInst(Class<T> type, Map<Class<?>, BeanInstance<?>> beanInstances) {
+    Instance<T> inst = this.objectFactory.select(type);
+    beanInstances.put(type, new BeanInstance<>(inst.get(), inst));
+  }
+
+  protected InitializerHandler getInitializerHandler() {
+    InitializerHandler obj = this.initializerHandler;
+    if (obj == null) {
+      synchronized (this.mutex) {
+        if ((obj = this.initializerHandler) == null) {
+          obj = new MockInitializerHandler();
+          this.initializerHandler = this.objectFactory.inject(obj).postConstruct(obj);
+        }
+      }
     }
+    return obj;
+  }
 
-    @Override
-    protected void init() throws Exception {
-	this.objectFactory.getObject(BeanInstanceContextListener.class).contextInitialized(this.servletContext);
-
-	Map<Class<?>, BeanInstance<?>> beanInstances = BeanInstanceContextListener.getBeanInstances(this.servletContext);
-
-	putBeanInst(AppConfig.class, beanInstances);
-	putBeanInst(LanguageProvider.class, beanInstances);
-
-	putBeanInst(ActionDescProvider.class, beanInstances);
-	putBeanInst(ActionParser.class, beanInstances);
-	putBeanInst(ActionInvoker.class, beanInstances);
-	putBeanInst(ControllerProvider.class, beanInstances);
-
-	putBeanInst(ConverterProvider.class, beanInstances);
-	putBeanInst(TempDataManager.class, beanInstances);
-	putBeanInst(AppCacheManager.class, beanInstances);
-
-	putBeanInst(ConstDescProvider.class, beanInstances);
-	putBeanInst(StringFormatProvider.class, beanInstances);
-
-	putBeanInst(ModelBinder.class, beanInstances);
-	putBeanInst(ExceptionHandler.class, beanInstances);
-
-	putBeanInst(PebbleTemplateProvider.class, beanInstances);
+  protected ExecutorHandler getExecutorHandler() {
+    ExecutorHandler obj = this.executorHandler;
+    if (obj == null) {
+      synchronized (this.mutex) {
+        if ((obj = this.executorHandler) == null) {
+          obj = new MockExecutorHandler().setServletConfig(new MockServletConfig(this.servletContext));
+          this.executorHandler = this.objectFactory.inject(obj).postConstruct(obj);
+        }
+      }
     }
+    return obj;
+  }
 
-    protected <T> void putBeanInst(Class<T> type, Map<Class<?>, BeanInstance<?>> beanInstances) {
-	Instance<T> inst = this.objectFactory.select(type);
-	beanInstances.put(type, new BeanInstance<>(inst.get(), inst));
+  public MockHttpServletRequest createRequest() {
+    initialize();
+    MockHttpServletRequest request = new MockHttpServletRequest(this.servletContext);
+    return request;
+  }
+
+  public MockHttpServletRequest createRequest(String method) {
+    MockHttpServletRequest request = createRequest();
+    request.setMethod(method);
+    return request;
+  }
+
+  public MockHttpServletRequest createRequest(String method, String requestURL) {
+    MockHttpServletRequest request = createRequest(method);
+    request.setRequestURL(requestURL);
+    return request;
+  }
+
+  public MockHttpServletResponse createResponse() {
+    initialize();
+    return new MockHttpServletResponse(this.servletContext);
+  }
+
+  public <T, I extends T> I getObject(Class<T> type) {
+    return this.objectFactory.getObject(type);
+  }
+
+  public <T, I extends T> I getObject(Class<T> type, Annotation... qualifiers) {
+    return this.objectFactory.getObject(type, qualifiers);
+  }
+
+  public MockAppConfig getAppConfig() {
+    return this.objectFactory.getObject(AppConfig.class);
+  }
+
+  public <T> MockContainer register(Class<T> type, Class<? extends T> impl) {
+    assertNotInitialized();
+    this.objectFactory.register(type, impl);
+    return this;
+  }
+
+  public MockContainer unregister(Class<?> type) {
+    assertNotInitialized();
+    this.objectFactory.unregister(type);
+    return this;
+  }
+
+  protected void executeAuthenticationMechanism(MockHttpServletRequest request, MockHttpServletResponse response)
+      throws AuthenticationException {
+    HttpAuthenticationMechanism authenticationMechanism = this.objectFactory
+        .getObject(HttpAuthenticationMechanism.class);
+
+    MockHttpMessageContext httpMessageContext = new MockHttpMessageContext().withRequest(request).withResponse(response)
+        .withAuthParameters(new AuthenticationParameters());
+    authenticationMechanism.validateRequest(request, response, httpMessageContext);
+  }
+
+  public void execute(MockHttpServletRequest request, MockHttpServletResponse response) throws Exception {
+    initialize();
+    executeAuthenticationMechanism(request, response);
+    new MockFilterChain().addFilter(getInitializerHandler()).setServlet(getExecutorHandler()).doFilter(request,
+        response);
+
+    if (response.getStatus() < 300 || response.getStatus() >= 400) {
+      response.flushBuffer();
     }
+  }
 
-    protected InitializerHandler getInitializerHandler() {
-	InitializerHandler obj = this.initializerHandler;
-	if (obj == null) {
-	    synchronized (this.mutex) {
-		if ((obj = this.initializerHandler) == null) {
-		    obj = new MockInitializerHandler();
-		    this.initializerHandler = this.objectFactory.inject(obj).postConstruct(obj);
-		}
-	    }
-	}
-	return obj;
-    }
+  protected ObjectFactory createObjectFactory(final ServletContext sc) {
+    ObjectFactory factory = new ObjectFactory();
+    factory.register(BeanInstanceContextListener.class, BeanInstanceContextListener.class);
 
-    protected ExecutorHandler getExecutorHandler() {
-	ExecutorHandler obj = this.executorHandler;
-	if (obj == null) {
-	    synchronized (this.mutex) {
-		if ((obj = this.executorHandler) == null) {
-		    obj = new MockExecutorHandler().setServletConfig(new MockServletConfig(this.servletContext));
-		    this.executorHandler = this.objectFactory.inject(obj).postConstruct(obj);
-		}
-	    }
-	}
-	return obj;
-    }
+    factory.register(AppConfig.class, MockAppConfig.class);
+    factory.register(AppLogger.class, MockAppLogger.class);
+    factory.register(ExceptionHandler.class, MockExceptionHandler.class);
 
-    public MockHttpServletRequest createRequest() {
-	initialize();
-	MockHttpServletRequest request = new MockHttpServletRequest(this.servletContext);
-	return request;
-    }
+    factory.register(RateLimitSkipper.class, DefaultRateLimitSkipper.class);
+    factory.register(RateLimitHandler.class, MockRateLimitHandler.class);
 
-    public MockHttpServletRequest createRequest(String method) {
-	MockHttpServletRequest request = createRequest();
-	request.setMethod(method);
-	return request;
-    }
+    factory.register(JsonProcessor.class, GsonProcessor.class);
+    factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.COMPACT });
 
-    public MockHttpServletRequest createRequest(String method, String requestURL) {
-	MockHttpServletRequest request = createRequest(method);
-	request.setRequestURL(requestURL);
-	return request;
-    }
+    factory.register(AppCacheManager.class, MemAppCacheManager.class);
 
-    public MockHttpServletResponse createResponse() {
-	initialize();
-	return new MockHttpServletResponse(this.servletContext);
-    }
+    factory.register(ActionParser.class, ActionParser.class);
+    factory.register(ActionDescProvider.class, MockActionDescProvider.class);
+    factory.register(ActionFilterProvider.class, MockActionFilterProvider.class);
 
-    public <T, I extends T> I getObject(Class<T> type) {
-	return this.objectFactory.getObject(type);
-    }
+    factory.register(ModelBinder.class, ModelBinder.class);
+    factory.register(ActionInvoker.class, ActionInvoker.class);
+    factory.register(ControllerProvider.class, MockControllerProvider.class);
 
-    public <T, I extends T> I getObject(Class<T> type, Annotation... qualifiers) {
-	return this.objectFactory.getObject(type, qualifiers);
-    }
+    factory.register(new Class<?>[] { HttpAuthenticationMechanism.class, HttpAuthenticationMechanismBase.class },
+        DefaultHttpAuthenticationMechanism.class);
+    factory.register(SecurityContext.class, MockSecurityContext.class);
+    factory.register(IdentityValidator.class, DefaultIdentityValidator.class);
+    factory.register(AuthContext.class, AuthContext.class);
+    factory.register(IdentityStoreHandler.class, MockIdentityStoreHandler.class);
 
-    public MockAppConfig getAppConfig() {
-	return this.objectFactory.getObject(AppConfig.class);
-    }
+    factory.register(IdentityStore.class, MemUserPasswordIdentityStore.class);
+    factory.register(IdentityStore.class, MemJwtIdentityStore.class);
 
-    public <T> MockContainer register(Class<T> type, Class<? extends T> impl) {
-	assertNotInitialized();
-	this.objectFactory.register(type, impl);
-	return this;
-    }
+    factory.register(AuthHandler.class, MemBasicAuthHandler.class);
+    factory.register(AuthHandler.class, MemBearerAuthHandler.class);
+    factory.register(AuthHandler.class, MemFormAuthHandler.class);
 
-    public MockContainer unregister(Class<?> type) {
-	assertNotInitialized();
-	this.objectFactory.unregister(type);
-	return this;
-    }
+    factory.register(AuthHandlerProvider.class, MockAuthHandlerProvider.class);
 
-    protected void executeAuthenticationMechanism(MockHttpServletRequest request, MockHttpServletResponse response) throws AuthenticationException {
-	HttpAuthenticationMechanism authenticationMechanism = this.objectFactory.getObject(HttpAuthenticationMechanism.class);
+    factory.register(MemUserDatabase.class, MemUserDatabase.class);
+    factory.register(AuthTokenManager.class, MemAuthTokenManager.class);
+    factory.register(AuthTokenHandler.class, DefaultAuthTokenHandler.class);
 
-	MockHttpMessageContext httpMessageContext = new MockHttpMessageContext().withRequest(request).withResponse(response).withAuthParameters(new AuthenticationParameters());
-	authenticationMechanism.validateRequest(request, response, httpMessageContext);
-    }
+    factory.register(ClientIdParser.class, DefaultClientIdParser.class);
+    factory.register(ServletModuleParser.class, DefaultServletModuleParser.class);
+    factory.register(RemoteClientVerifier.class, DefaultRemoteClientVerifier.class);
+    factory.register(AuthorizePolicyProvider.class, AuthorizePolicyProvider.class);
 
-    public void execute(MockHttpServletRequest request, MockHttpServletResponse response) throws Exception {
-	initialize();
-	executeAuthenticationMechanism(request, response);
-	new MockFilterChain().addFilter(getInitializerHandler()).setServlet(getExecutorHandler()).doFilter(request, response);
+    factory.register(ConverterProvider.class, ConverterProvider.class);
+    factory.register(LanguageProvider.class, MockLanguageProvider.class);
+    factory.register(FormatProviderManager.class, FormatProviderManager.class);
+    factory.register(FormatProviderFactory.class, DefaultFormatProviderFactory.class);
 
-	if (response.getStatus() < 300 || response.getStatus() >= 400) {
-	    response.flushBuffer();
-	}
-    }
+    factory.register(ResourcesProvider.class, MockResourcesProvider.class);
+    factory.register(RequestContextParser.class, RequestContextParser.class);
 
-    protected ObjectFactory createObjectFactory(final ServletContext sc) {
-	ObjectFactory factory = new ObjectFactory();
-	factory.register(BeanInstanceContextListener.class, BeanInstanceContextListener.class);
+    factory.register(CorsPolicyProvider.class, CorsPolicyProvider.class);
+    factory.register(CorsPolicyHandler.class, CorsPolicyHandler.class);
+    factory.register(HeaderPolicyProvider.class, HeaderPolicyProvider.class);
+    factory.register(ConstDescProvider.class, ConstDescProvider.class);
+    factory.register(StringFormatProvider.class, StringFormatProvider.class);
 
-	factory.register(AppConfig.class, MockAppConfig.class);
-	factory.register(AppLogger.class, MockAppLogger.class);
-	factory.register(ExceptionHandler.class, MockExceptionHandler.class);
+    factory.register(CaptchaManager.class, MockCaptchaManager.class);
+    factory.register(CaptchaProducer.class, MockCaptchaProducer.class);
+    factory.register(CsrfManager.class, MockCsrfManager.class);
+    factory.register(TempDataManager.class, MockTempDataManager.class);
 
-	factory.register(RateLimitSkipper.class, DefaultRateLimitSkipper.class);
-	factory.register(RateLimitHandler.class, MockRateLimitHandler.class);
+    factory.register(CookieHandler.class, CookieHandler.class);
+    factory.register(PrefCookieHandler.class, PrefCookieHandler.class);
+    factory.register(TagCookieHandler.class, TagCookieHandler.class);
 
-	factory.register(JsonProcessor.class, GsonProcessor.class);
-	factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.COMPACT });
+    // PebbleTemplateProvider
+    factory.register(PebbleTemplateProvider.class, MemPebbleTemplateProvider.class);
+    factory.register(PebbleExtensionProvider.class, DefaultPebbleExtensionProvider.class);
 
-	factory.register(AppCacheManager.class, MemAppCacheManager.class);
+    factory.register(JwtSigner.class, new ObjectProducer<JwtSigner>() {
 
-	factory.register(ActionParser.class, ActionParser.class);
-	factory.register(ActionDescProvider.class, MockActionDescProvider.class);
-	factory.register(ActionFilterProvider.class, MockActionFilterProvider.class);
+      @MemVersion
+      @Override
+      public JwtSigner produce(ObjectFactory factory) throws ObjectException {
+        GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JoseGson.newGsonBuilder(true, false));
 
-	factory.register(ModelBinder.class, ModelBinder.class);
-	factory.register(ActionInvoker.class, ActionInvoker.class);
-	factory.register(ControllerProvider.class, MockControllerProvider.class);
+        return HsJwtSigner.HS256().setJsonProcessor(gsonProcessor).setSecret("secret".getBytes()).build();
+      }
+    });
 
-	factory.register(new Class<?>[] { HttpAuthenticationMechanism.class, HttpAuthenticationMechanismBase.class }, DefaultHttpAuthenticationMechanism.class);
-	factory.register(SecurityContext.class, MockSecurityContext.class);
-	factory.register(IdentityValidator.class, DefaultIdentityValidator.class);
-	factory.register(AuthContext.class, AuthContext.class);
-	factory.register(IdentityStoreHandler.class, MockIdentityStoreHandler.class);
+    factory.register(Validator.class, new ObjectProducer<Validator>() {
 
-	factory.register(IdentityStore.class, MemUserPasswordIdentityStore.class);
-	factory.register(IdentityStore.class, MemJwtIdentityStore.class);
+      @Override
+      public Validator produce(ObjectFactory factory) throws ObjectException {
+        return Validation.buildDefaultValidatorFactory().getValidator();
+      }
+    });
 
-	factory.register(AuthHandler.class, MemBasicAuthHandler.class);
-	factory.register(AuthHandler.class, MemBearerAuthHandler.class);
-	factory.register(AuthHandler.class, MemFormAuthHandler.class);
+    factory.register(ServletContext.class, new ObjectProducer<ServletContext>() {
+      @Override
+      public ServletContext produce(ObjectFactory factory) throws ObjectException {
+        return sc;
+      }
+    });
 
-	factory.register(AuthHandlerProvider.class, MockAuthHandlerProvider.class);
-
-	factory.register(MemUserDatabase.class, MemUserDatabase.class);
-	factory.register(AuthTokenManager.class, MemAuthTokenManager.class);
-	factory.register(AuthTokenHandler.class, DefaultAuthTokenHandler.class);
-
-	factory.register(ClientIdParser.class, DefaultClientIdParser.class);
-	factory.register(ServletModuleParser.class, DefaultServletModuleParser.class);
-	factory.register(RemoteClientVerifier.class, DefaultRemoteClientVerifier.class);
-	factory.register(AuthorizePolicyProvider.class, AuthorizePolicyProvider.class);
-
-	factory.register(ConverterProvider.class, ConverterProvider.class);
-	factory.register(LanguageProvider.class, MockLanguageProvider.class);
-	factory.register(FormatProviderManager.class, FormatProviderManager.class);
-	factory.register(FormatProviderFactory.class, DefaultFormatProviderFactory.class);
-
-	factory.register(ResourcesProvider.class, MockResourcesProvider.class);
-	factory.register(RequestContextParser.class, RequestContextParser.class);
-
-	factory.register(CorsPolicyProvider.class, CorsPolicyProvider.class);
-	factory.register(CorsPolicyHandler.class, CorsPolicyHandler.class);
-	factory.register(HeaderPolicyProvider.class, HeaderPolicyProvider.class);
-	factory.register(ConstDescProvider.class, ConstDescProvider.class);
-	factory.register(StringFormatProvider.class, StringFormatProvider.class);
-
-	factory.register(CaptchaManager.class, MockCaptchaManager.class);
-	factory.register(CaptchaProducer.class, MockCaptchaProducer.class);
-	factory.register(CsrfManager.class, MockCsrfManager.class);
-	factory.register(TempDataManager.class, MockTempDataManager.class);
-
-	factory.register(CookieHandler.class, CookieHandler.class);
-	factory.register(PrefCookieHandler.class, PrefCookieHandler.class);
-	factory.register(TagCookieHandler.class, TagCookieHandler.class);
-
-	// PebbleTemplateProvider
-	factory.register(PebbleTemplateProvider.class, MemPebbleTemplateProvider.class);
-	factory.register(PebbleExtensionProvider.class, DefaultPebbleExtensionProvider.class);
-
-	factory.register(JwtSigner.class, new ObjectProducer<JwtSigner>() {
-
-	    @MemVersion
-	    @Override
-	    public JwtSigner produce(ObjectFactory factory) throws ObjectException {
-		GsonProcessor gsonProcessor = new GsonProcessor().setBuilder(JoseGson.newGsonBuilder(true, false));
-
-		return HsJwtSigner.HS256().setJsonProcessor(gsonProcessor).setSecret("secret".getBytes()).build();
-	    }
-	});
-
-	factory.register(Validator.class, new ObjectProducer<Validator>() {
-
-	    @Override
-	    public Validator produce(ObjectFactory factory) throws ObjectException {
-		return Validation.buildDefaultValidatorFactory().getValidator();
-	    }
-	});
-
-	factory.register(ServletContext.class, new ObjectProducer<ServletContext>() {
-	    @Override
-	    public ServletContext produce(ObjectFactory factory) throws ObjectException {
-		return sc;
-	    }
-	});
-
-	factory.register(HttpServletRequest.class, new ObjectProducer<HttpServletRequest>() {
-	    @Override
-	    public HttpServletRequest produce(ObjectFactory factory) throws ObjectException {
-		return new MockCurrentRequest();
-	    }
-	});
-	return factory;
-    }
+    factory.register(HttpServletRequest.class, new ObjectProducer<HttpServletRequest>() {
+      @Override
+      public HttpServletRequest produce(ObjectFactory factory) throws ObjectException {
+        return new MockCurrentRequest();
+      }
+    });
+    return factory;
+  }
 }

@@ -41,150 +41,152 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "form", bodyContent = "scriptless")
 public class FormTag extends UITagBase {
 
-    protected String name;
-    protected String controller;
-    protected String action;
+  protected String name;
+  protected String controller;
+  protected String action;
 
-    protected boolean formAction;
-    protected boolean csrf;
+  protected boolean formAction;
+  protected boolean csrf;
 
-    protected String method;
-    protected String acceptCharset;
-    protected String enctype;
+  protected String method;
+  protected String acceptCharset;
+  protected String enctype;
 
-    protected boolean novalidate;
-    protected String autocomplete;
+  protected boolean novalidate;
+  protected String autocomplete;
 
-    protected String _action;
-    protected Map<String, Object> _parameters;
+  protected String _action;
+  protected Map<String, Object> _parameters;
 
-    @Override
-    protected String getTagName() {
-	return "form";
+  @Override
+  protected String getTagName() {
+    return "form";
+  }
+
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    if (TagUtils.isForParameter(name)) {
+      if (this._parameters == null) {
+        this._parameters = new LinkedHashMap<>();
+      }
+      this._parameters.put(TagUtils.getParameterName(name), value);
+    } else {
+      super.setDynamicAttribute(uri, name, value);
     }
+  }
 
-    @Override
-    public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	if (TagUtils.isForParameter(name)) {
-	    if (this._parameters == null) {
-		this._parameters = new LinkedHashMap<>();
-	    }
-	    this._parameters.put(TagUtils.getParameterName(name), value);
-	} else {
-	    super.setDynamicAttribute(uri, name, value);
-	}
+  @Override
+  protected void initTag() throws JspException, IOException {
+    if (this.controller == null) {
+      this.controller = getRequestContext().getActionDesc().getController();
     }
+    ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
+    this._action = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
+    this._action = this.getResponse().encodeURL(this._action);
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (this.controller == null) {
-	    this.controller = getRequestContext().getActionDesc().getController();
-	}
-	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
-	this._action = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, false);
-	this._action = this.getResponse().encodeURL(this._action);
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    if (this.name != null)
+      HtmlUtils.escAttribute(out, "name", this.name);
+    HtmlUtils.escAttribute(out, "action", this._action);
+
+    if (this.method != null)
+      HtmlUtils.escAttribute(out, "method", this.method);
+    if (this.acceptCharset != null)
+      HtmlUtils.escAttribute(out, "accept-charset", this.acceptCharset);
+    if (this.enctype != null)
+      HtmlUtils.escAttribute(out, "enctype", this.enctype);
+
+    if (this.novalidate)
+      HtmlUtils.novalidate(out);
+    if (this.autocomplete != null)
+      HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
+
+    if (this.hidden)
+      HtmlUtils.hidden(out);
+
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
+
+  @Override
+  protected boolean hasBody() {
+    return true;
+  }
+
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    out.newLine();
+
+    if (this.csrf) {
+      out.println(
+          STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", SimpleCsrfManager.PARAM_CSRF_ID));
     }
-
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	if (this.name != null)
-	    HtmlUtils.escAttribute(out, "name", this.name);
-	HtmlUtils.escAttribute(out, "action", this._action);
-
-	if (this.method != null)
-	    HtmlUtils.escAttribute(out, "method", this.method);
-	if (this.acceptCharset != null)
-	    HtmlUtils.escAttribute(out, "accept-charset", this.acceptCharset);
-	if (this.enctype != null)
-	    HtmlUtils.escAttribute(out, "enctype", this.enctype);
-
-	if (this.novalidate)
-	    HtmlUtils.novalidate(out);
-	if (this.autocomplete != null)
-	    HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
-
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
-
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
+    if (this.formAction) {
+      out.println(
+          STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", ServletUtils.PARAM_FORM_ACTION));
     }
-
-    @Override
-    protected boolean hasBody() {
-	return true;
+    if (this.body != null) {
+      this.body.invoke(out);
     }
+  }
 
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	out.newLine();
+  @Attribute(required = false, rtexprvalue = false)
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	if (this.csrf) {
-	    out.println(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", SimpleCsrfManager.PARAM_CSRF_ID));
-	}
-	if (this.formAction) {
-	    out.println(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", ServletUtils.PARAM_FORM_ACTION));
-	}
-	if (this.body != null) {
-	    this.body.invoke(out);
-	}
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setController(String controller) {
+    this.controller = controller;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setName(String name) {
-	this.name = name;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setController(String controller) {
-	this.controller = controller;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setCsrf(boolean csrf) {
+    this.csrf = csrf;
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setAction(String action) {
-	this.action = action;
-    }
+  @Attribute(required = false, rtexprvalue = false, description = "save|delete|etc.")
+  public void setFormAction(boolean formAction) {
+    this.formAction = formAction;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setCsrf(boolean csrf) {
-	this.csrf = csrf;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setMethod(String method) {
+    this.method = method;
+  }
 
-    @Attribute(required = false, rtexprvalue = false, description = "save|delete|etc.")
-    public void setFormAction(boolean formAction) {
-	this.formAction = formAction;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setAcceptCharset(String acceptCharset) {
+    this.acceptCharset = acceptCharset;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setMethod(String method) {
-	this.method = method;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setEnctype(String enctype) {
+    this.enctype = enctype;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAcceptCharset(String acceptCharset) {
-	this.acceptCharset = acceptCharset;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setNovalidate(boolean novalidate) {
+    this.novalidate = novalidate;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setEnctype(String enctype) {
-	this.enctype = enctype;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setNovalidate(boolean novalidate) {
-	this.novalidate = novalidate;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutocomplete(String autocomplete) {
-	this.autocomplete = autocomplete;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setAutocomplete(String autocomplete) {
+    this.autocomplete = autocomplete;
+  }
 }

@@ -39,61 +39,62 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class FieldErrorTest extends MockTestBase {
 
-    FieldErrorTag tag = new FieldErrorTag();
+  FieldErrorTag tag = new FieldErrorTag();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    executeCurrent("POST", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      tag.setFieldName("userName");
+      tag.doTag();
+
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("", html);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Test
+  public void test_error() {
+    try {
+      getCurrentModelState().addError("userName", "The userName field is required.");
+
+      tag.setFieldName("userName");
+      tag.doTag();
+
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<div class=\"l-field-error\">The userName field is required.</div>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	executeCurrent("POST", "http://localhost/app/testController/index");
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpPost
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    tag.setFieldName("userName");
-	    tag.doTag();
-
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("", html);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_error() {
-	try {
-	    getCurrentModelState().addError("userName", "The userName field is required.");
-
-	    tag.setFieldName("userName");
-	    tag.doTag();
-
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<div class=\"l-field-error\">The userName field is required.</div>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpPost
-	public void index() {
-	}
-    }
+  }
 }

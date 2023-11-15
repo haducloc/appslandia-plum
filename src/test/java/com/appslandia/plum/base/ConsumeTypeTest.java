@@ -36,108 +36,109 @@ import com.appslandia.plum.base.Model.Source;
  */
 public class ConsumeTypeTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_postAction() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/postAction");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_postJson() {
+    try {
+      getCurrentRequest().setContentType(MimeTypes.APP_JSON);
+
+      executeCurrent("POST", "http://localhost/app/testController/postJson");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_postJson_415() {
+    try {
+      getCurrentRequest().setContentType(MimeTypes.APP_XML);
+
+      executeCurrent("POST", "http://localhost/app/testController/postJson");
+
+      Assertions.assertEquals(415, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_loginAction() {
+    try {
+      getCurrentRequest().setContentType(MimeTypes.APP_JSON);
+      getCurrentRequest().setContent(
+          new GsonProcessor().toString(new LoginModel("user1", "password1")).getBytes(StandardCharsets.UTF_8));
+
+      executeCurrent("POST", "http://localhost/app/testController/loginAction");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_loginAction_415() {
+    try {
+      getCurrentRequest().setContentType(MimeTypes.APP_XML);
+
+      executeCurrent("POST", "http://localhost/app/testController/loginAction");
+
+      Assertions.assertEquals(415, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpPost
+    public void postAction() throws Exception {
     }
 
-    @Test
-    public void test_postAction() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/postAction");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpPost
+    @ConsumeType(MimeTypes.APP_JSON)
+    public void postJson() throws Exception {
     }
 
-    @Test
-    public void test_postJson() {
-	try {
-	    getCurrentRequest().setContentType(MimeTypes.APP_JSON);
+    @HttpPost
+    public void loginAction(@Model(Source.JSON_BODY) LoginModel model) throws Exception {
+    }
+  }
 
-	    executeCurrent("POST", "http://localhost/app/testController/postJson");
+  public static class LoginModel {
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
+    public String userName;
+    public String password;
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public LoginModel() {
     }
 
-    @Test
-    public void test_postJson_415() {
-	try {
-	    getCurrentRequest().setContentType(MimeTypes.APP_XML);
-
-	    executeCurrent("POST", "http://localhost/app/testController/postJson");
-
-	    Assertions.assertEquals(415, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public LoginModel(String userName, String password) {
+      this.userName = userName;
+      this.password = password;
     }
-
-    @Test
-    public void test_loginAction() {
-	try {
-	    getCurrentRequest().setContentType(MimeTypes.APP_JSON);
-	    getCurrentRequest().setContent(new GsonProcessor().toString(new LoginModel("user1", "password1")).getBytes(StandardCharsets.UTF_8));
-
-	    executeCurrent("POST", "http://localhost/app/testController/loginAction");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_loginAction_415() {
-	try {
-	    getCurrentRequest().setContentType(MimeTypes.APP_XML);
-
-	    executeCurrent("POST", "http://localhost/app/testController/loginAction");
-
-	    Assertions.assertEquals(415, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpPost
-	public void postAction() throws Exception {
-	}
-
-	@HttpPost
-	@ConsumeType(MimeTypes.APP_JSON)
-	public void postJson() throws Exception {
-	}
-
-	@HttpPost
-	public void loginAction(@Model(Source.JSON_BODY) LoginModel model) throws Exception {
-	}
-    }
-
-    public static class LoginModel {
-
-	public String userName;
-	public String password;
-
-	public LoginModel() {
-	}
-
-	public LoginModel(String userName, String password) {
-	    this.userName = userName;
-	    this.password = password;
-	}
-    }
+  }
 }

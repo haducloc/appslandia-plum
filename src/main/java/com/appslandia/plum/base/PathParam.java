@@ -29,33 +29,33 @@ import java.util.List;
  */
 public class PathParam {
 
-    private String paramName;
-    private List<PathParam> subParams;
+  private String paramName;
+  private List<PathParam> subParams;
 
-    public PathParam(String paramName) {
-	this.paramName = paramName;
-    }
+  public PathParam(String paramName) {
+    this.paramName = paramName;
+  }
 
-    public PathParam(List<PathParam> subParams) {
-	this.subParams = subParams;
-    }
+  public PathParam(List<PathParam> subParams) {
+    this.subParams = subParams;
+  }
 
-    public boolean hasPathParam(String paramName) {
-	if (this.paramName != null) {
-	    if (this.paramName.equalsIgnoreCase(paramName)) {
-		return true;
-	    }
-	} else if (this.subParams.stream().anyMatch(p -> p.getParamName().equalsIgnoreCase(paramName))) {
-	    return true;
-	}
-	return false;
+  public boolean hasPathParam(String paramName) {
+    if (this.paramName != null) {
+      if (this.paramName.equalsIgnoreCase(paramName)) {
+        return true;
+      }
+    } else if (this.subParams.stream().anyMatch(p -> p.getParamName().equalsIgnoreCase(paramName))) {
+      return true;
     }
+    return false;
+  }
 
-    public String getParamName() {
-	return this.paramName;
-    }
+  public String getParamName() {
+    return this.paramName;
+  }
 
-    public List<PathParam> getSubParams() {
-	return this.subParams;
-    }
+  public List<PathParam> getSubParams() {
+    return this.subParams;
+  }
 }

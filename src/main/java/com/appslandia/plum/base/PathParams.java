@@ -36,5 +36,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface PathParams {
 
-    String value();
+  String value();
 }

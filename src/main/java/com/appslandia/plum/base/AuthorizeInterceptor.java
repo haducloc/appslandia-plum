@@ -37,52 +37,52 @@ import jakarta.interceptor.InvocationContext;
 @Interceptor
 @Priority(Interceptor.Priority.LIBRARY_BEFORE + 150)
 public class AuthorizeInterceptor implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    protected AuthContext authContext;
+  @Inject
+  protected AuthContext authContext;
 
-    @Inject
-    protected AuthorizePolicyProvider authorizePolicyProvider;
+  @Inject
+  protected AuthorizePolicyProvider authorizePolicyProvider;
 
-    @AroundInvoke
-    public Object intercept(InvocationContext context) throws Exception {
+  @AroundInvoke
+  public Object intercept(InvocationContext context) throws Exception {
 
-	// Bypass Controller
-	if (context.getMethod().getDeclaringClass().getAnnotation(Controller.class) != null) {
-	    return context.proceed();
-	}
-
-	// Authorize
-	Authorize authorize = context.getMethod().getAnnotation(Authorize.class);
-	if (authorize == null) {
-	    authorize = context.getTarget().getClass().getAnnotation(Authorize.class);
-	}
-	if ((authorize == null) || authorize.removed()) {
-	    return context.proceed();
-	}
-
-	// UserPrincipal
-	UserPrincipal principal = this.authContext.getUserPrincipal();
-	if (principal == null) {
-	    throw new UnauthorizedException();
-	}
-	String[] roles = authorize.roles();
-	String[] policies = authorize.policies();
-
-	if ((roles.length == 0) && (policies.length == 0)) {
-	    return context.proceed();
-	}
-	if (roles.length > 0) {
-	    if (this.authContext.isCallerInRoles(roles)) {
-		return context.proceed();
-	    }
-	}
-	if (policies.length > 0) {
-	    if (this.authorizePolicyProvider.authorize(principal, policies)) {
-		return context.proceed();
-	    }
-	}
-	throw new ForbiddenException();
+    // Bypass Controller
+    if (context.getMethod().getDeclaringClass().getAnnotation(Controller.class) != null) {
+      return context.proceed();
     }
+
+    // Authorize
+    Authorize authorize = context.getMethod().getAnnotation(Authorize.class);
+    if (authorize == null) {
+      authorize = context.getTarget().getClass().getAnnotation(Authorize.class);
+    }
+    if ((authorize == null) || authorize.removed()) {
+      return context.proceed();
+    }
+
+    // UserPrincipal
+    UserPrincipal principal = this.authContext.getUserPrincipal();
+    if (principal == null) {
+      throw new UnauthorizedException();
+    }
+    String[] roles = authorize.roles();
+    String[] policies = authorize.policies();
+
+    if ((roles.length == 0) && (policies.length == 0)) {
+      return context.proceed();
+    }
+    if (roles.length > 0) {
+      if (this.authContext.isCallerInRoles(roles)) {
+        return context.proceed();
+      }
+    }
+    if (policies.length > 0) {
+      if (this.authorizePolicyProvider.authorize(principal, policies)) {
+        return context.proceed();
+      }
+    }
+    throw new ForbiddenException();
+  }
 }

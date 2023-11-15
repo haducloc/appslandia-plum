@@ -34,14 +34,16 @@ import io.pebbletemplates.pebble.template.PebbleTemplate;
  */
 public abstract class PebbleTest implements Test {
 
-    @Override
-    public boolean apply(Object input, Map<String, Object> args, PebbleTemplate self, EvaluationContext context, int lineNumber) throws PebbleException {
-	return doExecute(input, new TemplateEvaluationContext(args, self, context), lineNumber);
-    }
+  @Override
+  public boolean apply(Object input, Map<String, Object> args, PebbleTemplate self, EvaluationContext context,
+      int lineNumber) throws PebbleException {
+    return doExecute(input, new TemplateEvaluationContext(args, self, context), lineNumber);
+  }
 
-    protected abstract boolean doExecute(Object input, TemplateEvaluationContext context, int lineNumber) throws PebbleException;
+  protected abstract boolean doExecute(Object input, TemplateEvaluationContext context, int lineNumber)
+      throws PebbleException;
 
-    public String getDescription() {
-	return null;
-    }
+  public String getDescription() {
+    return null;
+  }
 }

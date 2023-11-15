@@ -37,10 +37,10 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "userDName", dynamicAttributes = false)
 public class UserDNameTag extends TagBase {
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
+  @Override
+  public void doTag() throws JspException, IOException {
+    UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
 
-	XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
-    }
+    XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
+  }
 }

@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EnableGzip {
 
-    boolean removed() default false;
+  boolean removed() default false;
 
-    public static final EnableGzip IMPL = ActionDescUtils.createEnableGzip();
+  public static final EnableGzip IMPL = ActionDescUtils.createEnableGzip();
 }

@@ -41,64 +41,66 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class FilenameResultTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testDownload");
+
+      Assertions.assertEquals("application/pdf", getCurrentResponse().getContentType());
+      Assertions.assertEquals("attachment; filename=\"testDownload.dat\"",
+          getCurrentResponse().getHeader("Content-Disposition"));
+
+      Assertions.assertArrayEquals(MathUtils.toByteArray(1, 10), getCurrentResponse().getContent().toByteArray());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_inline() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testDownloadInline");
+
+      Assertions.assertEquals("application/pdf", getCurrentResponse().getContentType());
+      Assertions.assertEquals("inline; filename=\"testDownloadInline.dat\"",
+          getCurrentResponse().getHeader("Content-Disposition"));
+
+      Assertions.assertArrayEquals(MathUtils.toByteArray(1, 10), getCurrentResponse().getContent().toByteArray());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult testDownload() throws Exception {
+      return new FilenameResult("testDownload.dat", "application/pdf") {
+
+        @Override
+        protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+          response.getOutputStream().write(MathUtils.toByteArray(1, 10));
+        }
+      };
     }
 
-    @Test
-    public void test() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testDownload");
+    @HttpGet
+    public ActionResult testDownloadInline() throws Exception {
+      return new FilenameResult("testDownloadInline.dat", "application/pdf", true) {
 
-	    Assertions.assertEquals("application/pdf", getCurrentResponse().getContentType());
-	    Assertions.assertEquals("attachment; filename=\"testDownload.dat\"", getCurrentResponse().getHeader("Content-Disposition"));
-
-	    Assertions.assertArrayEquals(MathUtils.toByteArray(1, 10), getCurrentResponse().getContent().toByteArray());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+        @Override
+        protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+          response.getOutputStream().write(MathUtils.toByteArray(1, 10));
+        }
+      };
     }
-
-    @Test
-    public void test_inline() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testDownloadInline");
-
-	    Assertions.assertEquals("application/pdf", getCurrentResponse().getContentType());
-	    Assertions.assertEquals("inline; filename=\"testDownloadInline.dat\"", getCurrentResponse().getHeader("Content-Disposition"));
-
-	    Assertions.assertArrayEquals(MathUtils.toByteArray(1, 10), getCurrentResponse().getContent().toByteArray());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult testDownload() throws Exception {
-	    return new FilenameResult("testDownload.dat", "application/pdf") {
-
-		@Override
-		protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		    response.getOutputStream().write(MathUtils.toByteArray(1, 10));
-		}
-	    };
-	}
-
-	@HttpGet
-	public ActionResult testDownloadInline() throws Exception {
-	    return new FilenameResult("testDownloadInline.dat", "application/pdf", true) {
-
-		@Override
-		protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		    response.getOutputStream().write(MathUtils.toByteArray(1, 10));
-		}
-	    };
-	}
-    }
+  }
 }

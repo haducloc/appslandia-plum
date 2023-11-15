@@ -34,8 +34,8 @@ import io.pebbletemplates.pebble.error.PebbleException;
  */
 public class NowMsFunction extends DynPebbleFunction {
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
-	return System.currentTimeMillis();
-    }
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
+    return System.currentTimeMillis();
+  }
 }

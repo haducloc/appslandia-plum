@@ -42,55 +42,55 @@ import jakarta.servlet.ServletContext;
 @ApplicationScoped
 public class BeanInstanceContextListener {
 
-    public static final String ATTRIBUTE_BEAN_INSTANCES = BeanInstanceContextListener.class.getName() + ".bean_instances";
+  public static final String ATTRIBUTE_BEAN_INSTANCES = BeanInstanceContextListener.class.getName() + ".bean_instances";
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
-	this.appLogger.info("Registering bean instances holder in the servlet context...");
-	getBeanInstances(sc);
+  public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
+    this.appLogger.info("Registering bean instances holder in the servlet context...");
+    getBeanInstances(sc);
+  }
+
+  public void contextDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext sc) {
+    this.appLogger.info("Destroying bean instances...");
+    destroyBeanInstances(sc);
+
+    this.appLogger.info("Finished destroying bean instances.");
+  }
+
+  public static void destroyBeanInstances(ServletContext sc) {
+    Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
+
+    if (beanInsts != null) {
+      beanInsts.values().stream().forEach(bi -> {
+
+        try {
+          bi.destroy();
+
+        } catch (RuntimeException ex) {
+          sc.log(ex.getMessage(), ex);
+        }
+      });
+      sc.removeAttribute(ATTRIBUTE_BEAN_INSTANCES);
     }
+  }
 
-    public void contextDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext sc) {
-	this.appLogger.info("Destroying bean instances...");
-	destroyBeanInstances(sc);
+  private static final Object MUTEX = new Object();
 
-	this.appLogger.info("Finished destroying bean instances.");
+  public static Map<Class<?>, BeanInstance<?>> getBeanInstances(ServletContext sc) {
+    Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
+    if (beanInsts == null) {
+      synchronized (MUTEX) {
+        beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
+
+        if (beanInsts == null) {
+          beanInsts = new ConcurrentHashMap<Class<?>, BeanInstance<?>>();
+
+          sc.setAttribute(ATTRIBUTE_BEAN_INSTANCES, beanInsts);
+        }
+      }
     }
-
-    public static void destroyBeanInstances(ServletContext sc) {
-	Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
-
-	if (beanInsts != null) {
-	    beanInsts.values().stream().forEach(bi -> {
-
-		try {
-		    bi.destroy();
-
-		} catch (RuntimeException ex) {
-		    sc.log(ex.getMessage(), ex);
-		}
-	    });
-	    sc.removeAttribute(ATTRIBUTE_BEAN_INSTANCES);
-	}
-    }
-
-    private static final Object MUTEX = new Object();
-
-    public static Map<Class<?>, BeanInstance<?>> getBeanInstances(ServletContext sc) {
-	Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
-	if (beanInsts == null) {
-	    synchronized (MUTEX) {
-		beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
-
-		if (beanInsts == null) {
-		    beanInsts = new ConcurrentHashMap<Class<?>, BeanInstance<?>>();
-
-		    sc.setAttribute(ATTRIBUTE_BEAN_INSTANCES, beanInsts);
-		}
-	    }
-	}
-	return beanInsts;
-    }
+    return beanInsts;
+  }
 }

@@ -39,73 +39,74 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class LastModifiedTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(DocumentController.class, DocumentController.class);
+  @Override
+  protected void initialize() {
+    container.register(DocumentController.class, DocumentController.class);
+  }
+
+  private String initLastModified() throws Exception {
+    MockHttpServletRequest request = container.createRequest("GET",
+        "http://localhost/app/documentController/document/1");
+    MockHttpServletResponse response = container.createResponse();
+    execute(request, response);
+    return Asserts.notNull(response.getHeader("Last-Modified"));
+  }
+
+  @Test
+  public void test_document_GET() {
+    try {
+      executeCurrent("GET", "http://localhost/app/documentController/document/1");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertNotNull(getCurrentResponse().getHeader("Last-Modified"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_document_notModified() {
+    try {
+      String ifModifiedSince = initLastModified();
+      getCurrentRequest().setHeader("If-Modified-Since", ifModifiedSince);
+
+      executeCurrent("GET", "http://localhost/app/documentController/document/1");
+
+      Assertions.assertEquals(304, getCurrentResponse().getStatus());
+      String lastModified = getCurrentResponse().getHeader("Last-Modified");
+      Assertions.assertEquals(lastModified, ifModifiedSince);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("documentController")
+  public static class DocumentController {
+
+    @HttpGet
+    @PathParams("/{id}")
+    public Document document(HttpServletRequest request, HttpServletResponse response, int id) throws Exception {
+      Document doc = new Document();
+      doc.id = id;
+      doc.name = "Document-" + id;
+      doc.content = "Content-" + id;
+
+      if (ServletUtils.checkNotModified(request, response, getLastModifiedMs(doc))) {
+        return null;
+      }
+      return doc;
     }
 
-    private String initLastModified() throws Exception {
-	MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/documentController/document/1");
-	MockHttpServletResponse response = container.createResponse();
-	execute(request, response);
-	return Asserts.notNull(response.getHeader("Last-Modified"));
+    protected long getLastModifiedMs(Document doc) {
+      return HeaderUtils.parseDateHeader("Sun, 01 Jan 2017 06:00:00 GMT");
     }
+  }
 
-    @Test
-    public void test_document_GET() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/documentController/document/1");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    Assertions.assertNotNull(getCurrentResponse().getHeader("Last-Modified"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_document_notModified() {
-	try {
-	    String ifModifiedSince = initLastModified();
-	    getCurrentRequest().setHeader("If-Modified-Since", ifModifiedSince);
-
-	    executeCurrent("GET", "http://localhost/app/documentController/document/1");
-
-	    Assertions.assertEquals(304, getCurrentResponse().getStatus());
-	    String lastModified = getCurrentResponse().getHeader("Last-Modified");
-	    Assertions.assertEquals(lastModified, ifModifiedSince);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("documentController")
-    public static class DocumentController {
-
-	@HttpGet
-	@PathParams("/{id}")
-	public Document document(HttpServletRequest request, HttpServletResponse response, int id) throws Exception {
-	    Document doc = new Document();
-	    doc.id = id;
-	    doc.name = "Document-" + id;
-	    doc.content = "Content-" + id;
-
-	    if (ServletUtils.checkNotModified(request, response, getLastModifiedMs(doc))) {
-		return null;
-	    }
-	    return doc;
-	}
-
-	protected long getLastModifiedMs(Document doc) {
-	    return HeaderUtils.parseDateHeader("Sun, 01 Jan 2017 06:00:00 GMT");
-	}
-    }
-
-    static class Document {
-	int id;
-	String name;
-	String content;
-    }
+  static class Document {
+    int id;
+    String name;
+    String content;
+  }
 }

@@ -30,27 +30,27 @@ import org.junit.jupiter.api.Test;
  */
 public class XFrameOptionsTest {
 
-    @Test
-    public void test_deny() {
-	XFrameOptions options = new XFrameOptions();
-	options.deny();
+  @Test
+  public void test_deny() {
+    XFrameOptions options = new XFrameOptions();
+    options.deny();
 
-	Assertions.assertTrue(options.toString().contains("DENY"));
-    }
+    Assertions.assertTrue(options.toString().contains("DENY"));
+  }
 
-    @Test
-    public void test_noCache() {
-	XFrameOptions options = new XFrameOptions();
-	options.sameOrigin();
+  @Test
+  public void test_noCache() {
+    XFrameOptions options = new XFrameOptions();
+    options.sameOrigin();
 
-	Assertions.assertTrue(options.toString().contains("SAMEORIGIN"));
-    }
+    Assertions.assertTrue(options.toString().contains("SAMEORIGIN"));
+  }
 
-    @Test
-    public void test_allowFrom() {
-	XFrameOptions options = new XFrameOptions();
-	options.allowFrom("src");
+  @Test
+  public void test_allowFrom() {
+    XFrameOptions options = new XFrameOptions();
+    options.allowFrom("src");
 
-	Assertions.assertTrue(options.toString().contains("ALLOW-FROM src"));
-    }
+    Assertions.assertTrue(options.toString().contains("ALLOW-FROM src"));
+  }
 }

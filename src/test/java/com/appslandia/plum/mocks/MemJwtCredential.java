@@ -29,7 +29,7 @@ import com.appslandia.plum.base.JwtCredential;
  */
 public class MemJwtCredential extends JwtCredential {
 
-    public MemJwtCredential(String token) {
-	super(token);
-    }
+  public MemJwtCredential(String token) {
+    super(token);
+  }
 }

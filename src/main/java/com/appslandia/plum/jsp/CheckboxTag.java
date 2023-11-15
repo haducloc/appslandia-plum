@@ -34,20 +34,20 @@ import com.appslandia.common.utils.StringUtils;
 @Tag(name = "checkbox")
 public class CheckboxTag extends CheckInputTag {
 
-    public CheckboxTag() {
-	this.type = "checkbox";
-    }
+  public CheckboxTag() {
+    this.type = "checkbox";
+  }
 
-    @Override
-    protected boolean isChecked() {
-	String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
-	if (this._value == null) {
-	    return false;
-	}
-	if (StringUtils.iequals(codeVal, (String) this._value)) {
-	    return true;
-	}
-	String[] values = SplitUtils.split((String) this._value, ',', SplitOptions.TRIM_NULL);
-	return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeVal, value));
+  @Override
+  protected boolean isChecked() {
+    String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
+    if (this._value == null) {
+      return false;
     }
+    if (StringUtils.iequals(codeVal, (String) this._value)) {
+      return true;
+    }
+    String[] values = SplitUtils.split((String) this._value, ',', SplitOptions.TRIM_NULL);
+    return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeVal, value));
+  }
 }

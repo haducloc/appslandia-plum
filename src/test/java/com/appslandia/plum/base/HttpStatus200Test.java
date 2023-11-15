@@ -30,47 +30,47 @@ import org.junit.jupiter.api.Test;
  */
 public class HttpStatus200Test extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testAction() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testAction() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+  @Test
+  public void test_testBase() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testBase");
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testBase() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testBase");
+  @Controller("testController")
+  public static class TestController extends ControllerBase {
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void testAction() throws Exception {
     }
+  }
 
-    @Controller("testController")
-    public static class TestController extends ControllerBase {
+  public static class ControllerBase {
 
-	@HttpGet
-	public void testAction() throws Exception {
-	}
+    @HttpGet
+    public void testBase() throws Exception {
     }
-
-    public static class ControllerBase {
-
-	@HttpGet
-	public void testBase() throws Exception {
-	}
-    }
+  }
 }

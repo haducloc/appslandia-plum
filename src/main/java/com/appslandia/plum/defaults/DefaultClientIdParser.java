@@ -34,8 +34,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class DefaultClientIdParser implements ClientIdParser {
 
-    @Override
-    public String parseId(HttpServletRequest request) {
-	return ServletUtils.getClientIp(request);
-    }
+  @Override
+  public String parseId(HttpServletRequest request) {
+    return ServletUtils.getClientIp(request);
+  }
 }

@@ -46,114 +46,117 @@ import jakarta.validation.constraints.NotNull;
  */
 public class HiddenSelectFunctionTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+  protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+  }
+
+  @Test
+  public void test_not_readonly() {
+    String templateContent = """
+        	{{ hiddenSel(path='model.userType', items=items, readonly=false) }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      getCurrentRequest().addParameter("userType", "1");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Params model = new Params();
+      model.set("model", getCurrentRequest().getAttribute("model"));
+      model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_selected_readonly() {
+    String templateContent = """
+        	{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      getCurrentRequest().addParameter("userType", "1");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Params model = new Params();
+      model.set("model", getCurrentRequest().getAttribute("model"));
+      model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("<input type=\"hidden\" name=\"userType\" value=\"1\" />", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_unselected_readonly() {
+    String templateContent = """
+        	{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Params model = new Params();
+      model.set("model", getCurrentRequest().getAttribute("model"));
+      model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
+      request.storeModel(model);
+
+      return ActionResult.EMPTY;
+    }
+  }
+
+  public static class UserModel {
+
+    @NotNull
+    private Integer userType;
+
+    public Integer getUserType() {
+      return userType;
     }
 
-    @Test
-    public void test_not_readonly() {
-	String templateContent = """
-			{{ hiddenSel(path='model.userType', items=items, readonly=false) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    getCurrentRequest().addParameter("userType", "1");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Params model = new Params();
-	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    public void setUserType(Integer userType) {
+      this.userType = userType;
     }
-
-    @Test
-    public void test_selected_readonly() {
-	String templateContent = """
-			{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    getCurrentRequest().addParameter("userType", "1");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Params model = new Params();
-	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("<input type=\"hidden\" name=\"userType\" value=\"1\" />", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_unselected_readonly() {
-	String templateContent = """
-			{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Params model = new Params();
-	    model.set("model", getCurrentRequest().getAttribute("model"));
-	    model.set("items", Arrays.asList(new SelectItemImpl(1, "Type1"), new SelectItemImpl(2, "Type2")));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
-	    request.storeModel(model);
-
-	    return ActionResult.EMPTY;
-	}
-    }
-
-    public static class UserModel {
-
-	@NotNull
-	private Integer userType;
-
-	public Integer getUserType() {
-	    return userType;
-	}
-
-	public void setUserType(Integer userType) {
-	    this.userType = userType;
-	}
-    }
+  }
 }

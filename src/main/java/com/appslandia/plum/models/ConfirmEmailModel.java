@@ -27,7 +27,7 @@ package com.appslandia.plum.models;
  */
 public interface ConfirmEmailModel {
 
-    String getEmail();
+  String getEmail();
 
-    String getConfirmEmail();
+  String getConfirmEmail();
 }

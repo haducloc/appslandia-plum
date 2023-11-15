@@ -37,109 +37,109 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "datalist", bodyContent = "scriptless")
 public class DataListTag extends UITagBase {
 
-    protected Iterable<Object> items;
-    protected List<Object> _items;
+  protected Iterable<Object> items;
+  protected List<Object> _items;
 
-    protected String converter;
-    protected String type;
+  protected String converter;
+  protected String type;
 
-    protected boolean _localize;
+  protected boolean _localize;
 
-    @Override
-    protected String getTagName() {
-	return "datalist";
+  @Override
+  protected String getTagName() {
+    return "datalist";
+  }
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    if (this.body != null) {
+      this.body.invoke(null);
     }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (this.body != null) {
-	    this.body.invoke(null);
-	}
+    // localize
+    this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
+  }
 
-	// localize
-	this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
+  public void addItem(Object value) {
+    if (this._items == null) {
+      this._items = new ArrayList<>();
     }
+    this._items.add(value);
+  }
 
-    public void addItem(Object value) {
-	if (this._items == null) {
-	    this._items = new ArrayList<>();
-	}
-	this._items.add(value);
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    HtmlUtils.escAttribute(out, "id", this.id);
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+  }
+
+  @Override
+  protected boolean hasBody() {
+    return true;
+  }
+
+  protected void writeItems(JspWriter out, Iterable<Object> items) throws JspException, IOException {
+    for (Object item : items) {
+      if (item == null) {
+        continue;
+      }
+      out.newLine();
+
+      out.write("<option");
+      HtmlUtils.escAttribute(out, "value", getRequestContext().format(item, this.converter, this._localize));
+      out.write(" />");
     }
+  }
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    if (this._items != null) {
+      writeItems(out, this._items);
     }
-
-    @Override
-    protected boolean hasBody() {
-	return true;
+    if (this.items != null) {
+      writeItems(out, this.items);
     }
+    out.newLine();
+  }
 
-    protected void writeItems(JspWriter out, Iterable<Object> items) throws JspException, IOException {
-	for (Object item : items) {
-	    if (item == null) {
-		continue;
-	    }
-	    out.newLine();
+  @Attribute(required = true, rtexprvalue = false)
+  public void setId(String id) {
+    this.id = id;
+  }
 
-	    out.write("<option");
-	    HtmlUtils.escAttribute(out, "value", getRequestContext().format(item, this.converter, this._localize));
-	    out.write(" />");
-	}
-    }
+  @Attribute(required = true, rtexprvalue = true)
+  public void setItems(Iterable<Object> items) {
+    this.items = items;
+  }
 
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	if (this._items != null) {
-	    writeItems(out, this._items);
-	}
-	if (this.items != null) {
-	    writeItems(out, this.items);
-	}
-	out.newLine();
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setConverter(String converter) {
+    this.converter = converter;
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setId(String id) {
-	this.id = id;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setType(String type) {
+    this.type = type;
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setItems(Iterable<Object> items) {
-	this.items = items;
-    }
+  @Override
+  public void setHidden(boolean hidden) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setConverter(String converter) {
-	this.converter = converter;
-    }
+  @Override
+  public void setClazz(String clazz) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setType(String type) {
-	this.type = type;
-    }
+  @Override
+  public void setStyle(String style) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public void setHidden(boolean hidden) {
-	throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setClazz(String clazz) {
-	throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setStyle(String style) {
-	throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setTitle(String title) {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public void setTitle(String title) {
+    throw new UnsupportedOperationException();
+  }
 }

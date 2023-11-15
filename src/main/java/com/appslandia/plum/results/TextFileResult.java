@@ -35,33 +35,35 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class TextFileResult extends FilenameResult {
 
-    protected String contentEncoding;
-    protected String content;
+  protected String contentEncoding;
+  protected String content;
 
-    public TextFileResult(String content, String fileName, String contentType) {
-	this(content, fileName, contentType, StandardCharsets.UTF_8.name(), false);
+  public TextFileResult(String content, String fileName, String contentType) {
+    this(content, fileName, contentType, StandardCharsets.UTF_8.name(), false);
+  }
+
+  public TextFileResult(String content, String fileName, String contentType, String contentEncoding) {
+    this(content, fileName, contentType, contentEncoding, false);
+  }
+
+  public TextFileResult(String content, String fileName, String contentType, String contentEncoding, boolean inline) {
+    super(fileName, contentType, inline);
+
+    this.content = content;
+    this.contentEncoding = contentEncoding;
+  }
+
+  @Override
+  protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    if (this.contentEncoding != null) {
+      response.setCharacterEncoding(this.contentEncoding);
     }
 
-    public TextFileResult(String content, String fileName, String contentType, String contentEncoding) {
-	this(content, fileName, contentType, contentEncoding, false);
-    }
+    OutputStreamWriter out = new OutputStreamWriter(
+        new BOMOutputStream(response.getOutputStream(), response.getCharacterEncoding()),
+        response.getCharacterEncoding());
+    out.write(this.content);
 
-    public TextFileResult(String content, String fileName, String contentType, String contentEncoding, boolean inline) {
-	super(fileName, contentType, inline);
-
-	this.content = content;
-	this.contentEncoding = contentEncoding;
-    }
-
-    @Override
-    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
-	if (this.contentEncoding != null) {
-	    response.setCharacterEncoding(this.contentEncoding);
-	}
-
-	OutputStreamWriter out = new OutputStreamWriter(new BOMOutputStream(response.getOutputStream(), response.getCharacterEncoding()), response.getCharacterEncoding());
-	out.write(this.content);
-
-	out.flush();
-    }
+    out.flush();
+  }
 }

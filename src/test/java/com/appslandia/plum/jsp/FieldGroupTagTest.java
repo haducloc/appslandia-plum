@@ -40,63 +40,63 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class FieldGroupTagTest extends MockTestBase {
 
-    FieldGroupTag tag = new FieldGroupTag();
+  FieldGroupTag tag = new FieldGroupTag();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      tag.setFieldName("userName");
+      tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<div>fields</div>", NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Test
+  public void test_error() {
+    try {
+
+      getCurrentModelState().addError("userName", "The userName field is required.");
+      tag.setFieldName("userName");
+      tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<div class=\"l-error-group\">fields</div>", NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    tag.setFieldName("userName");
-	    tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<div>fields</div>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_error() {
-	try {
-
-	    getCurrentModelState().addError("userName", "The userName field is required.");
-	    tag.setFieldName("userName");
-	    tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<div class=\"l-error-group\">fields</div>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

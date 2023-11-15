@@ -42,89 +42,95 @@ import jakarta.servlet.ServletContext;
  */
 public class DynFilterRegister extends InitializeObject {
 
-    private String filterName;
-    private Class<? extends Filter> filterClass;
-    private String filterClassName;
+  private String filterName;
+  private Class<? extends Filter> filterClass;
+  private String filterClassName;
 
-    private String[] servletNames;
-    private String[] urlPatterns;
-    private DispatcherType[] dispatcherTypes;
+  private String[] servletNames;
+  private String[] urlPatterns;
+  private DispatcherType[] dispatcherTypes;
 
-    final Map<String, String> initParameters = new HashMap<>();
-    private boolean asyncSupported;
+  final Map<String, String> initParameters = new HashMap<>();
+  private boolean asyncSupported;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.filterName);
-	Asserts.isTrue((this.filterClass != null) || (this.filterClassName != null), "No filter provided.");
-	Asserts.isTrue(ArrayUtils.hasElements(this.servletNames) || ArrayUtils.hasElements(this.urlPatterns), "No mapping provided.");
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.filterName);
+    Asserts.isTrue((this.filterClass != null) || (this.filterClassName != null), "No filter provided.");
+    Asserts.isTrue(ArrayUtils.hasElements(this.servletNames) || ArrayUtils.hasElements(this.urlPatterns),
+        "No mapping provided.");
+  }
+
+  public DynFilterRegister registerTo(ServletContext sc) {
+    initialize();
+    FilterRegistration.Dynamic reg = (this.filterClass != null) ? sc.addFilter(this.filterName, this.filterClass)
+        : sc.addFilter(this.filterName, this.filterClassName);
+
+    if (ArrayUtils.hasElements(this.servletNames)) {
+      reg.addMappingForServletNames(
+          ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes))
+              : null,
+          false, this.servletNames);
     }
-
-    public DynFilterRegister registerTo(ServletContext sc) {
-	initialize();
-	FilterRegistration.Dynamic reg = (this.filterClass != null) ? sc.addFilter(this.filterName, this.filterClass) : sc.addFilter(this.filterName, this.filterClassName);
-
-	if (ArrayUtils.hasElements(this.servletNames)) {
-	    reg.addMappingForServletNames(ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes)) : null, false,
-		    this.servletNames);
-	}
-	if (ArrayUtils.hasElements(this.urlPatterns)) {
-	    reg.addMappingForUrlPatterns(ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes)) : null, false,
-		    this.urlPatterns);
-	}
-	reg.setInitParameters(this.initParameters);
-	reg.setAsyncSupported(this.asyncSupported);
-	return this;
+    if (ArrayUtils.hasElements(this.urlPatterns)) {
+      reg.addMappingForUrlPatterns(
+          ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes))
+              : null,
+          false, this.urlPatterns);
     }
+    reg.setInitParameters(this.initParameters);
+    reg.setAsyncSupported(this.asyncSupported);
+    return this;
+  }
 
-    public DynFilterRegister filterName(String filterName) {
-	assertNotInitialized();
-	this.filterName = StringUtils.trimToNull(filterName);
-	return this;
-    }
+  public DynFilterRegister filterName(String filterName) {
+    assertNotInitialized();
+    this.filterName = StringUtils.trimToNull(filterName);
+    return this;
+  }
 
-    public DynFilterRegister filterClassName(String filterClassName) {
-	assertNotInitialized();
-	this.filterClassName = StringUtils.trimToNull(filterClassName);
-	return this;
-    }
+  public DynFilterRegister filterClassName(String filterClassName) {
+    assertNotInitialized();
+    this.filterClassName = StringUtils.trimToNull(filterClassName);
+    return this;
+  }
 
-    public DynFilterRegister filterClass(Class<? extends Filter> filterClass) {
-	assertNotInitialized();
-	this.filterClass = filterClass;
-	if (this.filterName == null) {
-	    this.filterName = StringUtils.trimToNull(filterClass.getSimpleName());
-	}
-	return this;
+  public DynFilterRegister filterClass(Class<? extends Filter> filterClass) {
+    assertNotInitialized();
+    this.filterClass = filterClass;
+    if (this.filterName == null) {
+      this.filterName = StringUtils.trimToNull(filterClass.getSimpleName());
     }
+    return this;
+  }
 
-    public DynFilterRegister servletNames(String... servletNames) {
-	assertNotInitialized();
-	this.servletNames = servletNames;
-	return this;
-    }
+  public DynFilterRegister servletNames(String... servletNames) {
+    assertNotInitialized();
+    this.servletNames = servletNames;
+    return this;
+  }
 
-    public DynFilterRegister urlPatterns(String... urlPatterns) {
-	assertNotInitialized();
-	this.urlPatterns = urlPatterns;
-	return this;
-    }
+  public DynFilterRegister urlPatterns(String... urlPatterns) {
+    assertNotInitialized();
+    this.urlPatterns = urlPatterns;
+    return this;
+  }
 
-    public DynFilterRegister dispatcherTypes(DispatcherType... dispatcherTypes) {
-	assertNotInitialized();
-	this.dispatcherTypes = dispatcherTypes;
-	return this;
-    }
+  public DynFilterRegister dispatcherTypes(DispatcherType... dispatcherTypes) {
+    assertNotInitialized();
+    this.dispatcherTypes = dispatcherTypes;
+    return this;
+  }
 
-    public DynFilterRegister initParameter(String name, String value) {
-	assertNotInitialized();
-	this.initParameters.put(name, value);
-	return this;
-    }
+  public DynFilterRegister initParameter(String name, String value) {
+    assertNotInitialized();
+    this.initParameters.put(name, value);
+    return this;
+  }
 
-    public DynFilterRegister asyncSupported(boolean asyncSupported) {
-	assertNotInitialized();
-	this.asyncSupported = asyncSupported;
-	return this;
-    }
+  public DynFilterRegister asyncSupported(boolean asyncSupported) {
+    assertNotInitialized();
+    this.asyncSupported = asyncSupported;
+    return this;
+  }
 }

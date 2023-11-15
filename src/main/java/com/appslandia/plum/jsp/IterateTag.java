@@ -35,74 +35,74 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "iterate", dynamicAttributes = false, bodyContent = "scriptless")
 public class IterateTag extends TagBase {
 
-    protected Iterable<?> items;
-    protected String var = "item";
+  protected Iterable<?> items;
+  protected String var = "item";
 
-    protected boolean render = true;
+  protected boolean render = true;
 
-    static final String INDEX_VAR = "index";
-    static final String FIRST_INDEX_VAR = "firstIndex";
-    static final String LAST_INDEX_VAR = "lastIndex";
+  static final String INDEX_VAR = "index";
+  static final String FIRST_INDEX_VAR = "firstIndex";
+  static final String LAST_INDEX_VAR = "lastIndex";
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	if ((!this.render) || (this.items == null) || (this.body == null)) {
-	    return;
-	}
-	final Object bakVar = this.pageContext.getAttribute(this.var);
-
-	final Object bakIndexVar = this.pageContext.getAttribute(INDEX_VAR);
-	final Object bakFirstIndexVar = this.pageContext.getAttribute(FIRST_INDEX_VAR);
-	final Object bakLastIndexVar = this.pageContext.getAttribute(LAST_INDEX_VAR);
-
-	try {
-	    int index = -1;
-	    Iterator<?> iter = this.items.iterator();
-
-	    while (iter.hasNext()) {
-		Object item = iter.next();
-
-		this.pageContext.setAttribute(this.var, item);
-		index += 1;
-
-		this.pageContext.setAttribute(INDEX_VAR, index);
-		this.pageContext.setAttribute(FIRST_INDEX_VAR, index == 0);
-		this.pageContext.setAttribute(LAST_INDEX_VAR, !iter.hasNext());
-
-		this.body.invoke(null);
-	    }
-	} finally {
-	    this.pageContext.setAttribute(this.var, bakVar);
-
-	    this.pageContext.setAttribute(INDEX_VAR, bakIndexVar);
-	    this.pageContext.setAttribute(FIRST_INDEX_VAR, bakFirstIndexVar);
-	    this.pageContext.setAttribute(LAST_INDEX_VAR, bakLastIndexVar);
-	}
+  @Override
+  public void doTag() throws JspException, IOException {
+    if ((!this.render) || (this.items == null) || (this.body == null)) {
+      return;
     }
+    final Object bakVar = this.pageContext.getAttribute(this.var);
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setItems(Object items) {
-	if (items == null) {
-	    return;
-	}
-	if (items instanceof Iterable) {
-	    this.items = (Iterable<?>) items;
+    final Object bakIndexVar = this.pageContext.getAttribute(INDEX_VAR);
+    final Object bakFirstIndexVar = this.pageContext.getAttribute(FIRST_INDEX_VAR);
+    final Object bakLastIndexVar = this.pageContext.getAttribute(LAST_INDEX_VAR);
 
-	} else if (items.getClass().isArray()) {
-	    this.items = new ArrayUtils.ArrayObjIterable(items);
+    try {
+      int index = -1;
+      Iterator<?> iter = this.items.iterator();
 
-	} else {
-	    throw new IllegalArgumentException("items must be Iterable/Array.");
-	}
+      while (iter.hasNext()) {
+        Object item = iter.next();
+
+        this.pageContext.setAttribute(this.var, item);
+        index += 1;
+
+        this.pageContext.setAttribute(INDEX_VAR, index);
+        this.pageContext.setAttribute(FIRST_INDEX_VAR, index == 0);
+        this.pageContext.setAttribute(LAST_INDEX_VAR, !iter.hasNext());
+
+        this.body.invoke(null);
+      }
+    } finally {
+      this.pageContext.setAttribute(this.var, bakVar);
+
+      this.pageContext.setAttribute(INDEX_VAR, bakIndexVar);
+      this.pageContext.setAttribute(FIRST_INDEX_VAR, bakFirstIndexVar);
+      this.pageContext.setAttribute(LAST_INDEX_VAR, bakLastIndexVar);
     }
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setVar(String var) {
-	this.var = var;
+  @Attribute(required = true, rtexprvalue = true)
+  public void setItems(Object items) {
+    if (items == null) {
+      return;
     }
+    if (items instanceof Iterable) {
+      this.items = (Iterable<?>) items;
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setRender(boolean render) {
-	this.render = render;
+    } else if (items.getClass().isArray()) {
+      this.items = new ArrayUtils.ArrayObjIterable(items);
+
+    } else {
+      throw new IllegalArgumentException("items must be Iterable/Array.");
     }
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setVar(String var) {
+    this.var = var;
+  }
+
+  @Attribute(required = false, rtexprvalue = true)
+  public void setRender(boolean render) {
+    this.render = render;
+  }
 }

@@ -36,47 +36,49 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class ViewResult implements ActionResult {
 
-    protected final String path;
-    protected final Map<String, Object> model;
-    protected String resolvedPath;
+  protected final String path;
+  protected final Map<String, Object> model;
+  protected String resolvedPath;
 
-    public ViewResult() {
-	this(null, null);
+  public ViewResult() {
+    this(null, null);
+  }
+
+  public ViewResult(String path) {
+    this(path, null);
+  }
+
+  public ViewResult(Map<String, Object> model) {
+    this(null, model);
+  }
+
+  public ViewResult(String path, Map<String, Object> model) {
+    this.path = path;
+    this.model = model;
+  }
+
+  public abstract String getSuffix();
+
+  protected abstract String getViewDir(ServletContext servletContext);
+
+  @Override
+  public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    String viewDir = getViewDir(request.getServletContext());
+    StringBuilder viewBase = new StringBuilder(viewDir.length() + 80).append(viewDir);
+
+    // Build resolvedPath
+    if (this.path == null) {
+      this.resolvedPath = viewBase.append("/").append(requestContext.getActionDesc().getController()).append("/")
+          .append(requestContext.getActionDesc().getAction()).append(getSuffix()).toString();
+
+    } else {
+      this.resolvedPath = viewBase.append(this.path).append(getSuffix()).toString();
     }
 
-    public ViewResult(String path) {
-	this(path, null);
-    }
+    doExecute(request, response, requestContext);
+  }
 
-    public ViewResult(Map<String, Object> model) {
-	this(null, model);
-    }
-
-    public ViewResult(String path, Map<String, Object> model) {
-	this.path = path;
-	this.model = model;
-    }
-
-    public abstract String getSuffix();
-
-    protected abstract String getViewDir(ServletContext servletContext);
-
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	String viewDir = getViewDir(request.getServletContext());
-	StringBuilder viewBase = new StringBuilder(viewDir.length() + 80).append(viewDir);
-
-	// Build resolvedPath
-	if (this.path == null) {
-	    this.resolvedPath = viewBase.append("/").append(requestContext.getActionDesc().getController()).append("/").append(requestContext.getActionDesc().getAction())
-		    .append(getSuffix()).toString();
-
-	} else {
-	    this.resolvedPath = viewBase.append(this.path).append(getSuffix()).toString();
-	}
-
-	doExecute(request, response, requestContext);
-    }
-
-    protected abstract void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception;
+  protected abstract void doExecute(HttpServletRequest request, HttpServletResponse response,
+      RequestContext requestContext) throws Exception;
 }

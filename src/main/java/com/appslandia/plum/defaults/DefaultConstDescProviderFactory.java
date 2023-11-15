@@ -45,36 +45,36 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultConstDescProviderFactory implements CDIFactory<ConstDescProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public ConstDescProvider produce() {
-	final ConstDescProvider impl = new ConstDescProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public ConstDescProvider produce() {
+    final ConstDescProvider impl = new ConstDescProvider();
 
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ConstDesc.class, (bi) -> {
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ConstDesc.class, (bi) -> {
 
-	    Collection<Class<?>> constClasses = ObjectUtils.cast(bi.get().get());
+      Collection<Class<?>> constClasses = ObjectUtils.cast(bi.get().get());
 
-	    for (Class<?> constClass : constClasses) {
-		impl.addConstClass(constClass);
-	    }
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+      for (Class<?> constClass : constClasses) {
+        impl.addConstClass(constClass);
+      }
+      beanInstances.add(bi);
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes ConstDescProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes ConstDescProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

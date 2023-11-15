@@ -34,53 +34,53 @@ import jakarta.validation.constraints.NotNull;
  */
 public class ContactUsModel {
 
-    @NotNull
-    @MaxLength(50)
-    private String yourName;
+  @NotNull
+  @MaxLength(50)
+  private String yourName;
 
-    @Bind(converter = Converter.STRING_LC)
-    @NotNull
-    @Email
-    private String yourEmail;
+  @Bind(converter = Converter.STRING_LC)
+  @NotNull
+  @Email
+  private String yourEmail;
 
-    @NotNull
-    @MaxLength(255)
-    private String subject;
+  @NotNull
+  @MaxLength(255)
+  private String subject;
 
-    @Bind(converter = Converter.TEXT)
-    @NotNull
-    @MaxLength(8000)
-    private String message;
+  @Bind(converter = Converter.TEXT)
+  @NotNull
+  @MaxLength(8000)
+  private String message;
 
-    public String getYourName() {
-	return this.yourName;
-    }
+  public String getYourName() {
+    return this.yourName;
+  }
 
-    public void setYourName(String yourName) {
-	this.yourName = yourName;
-    }
+  public void setYourName(String yourName) {
+    this.yourName = yourName;
+  }
 
-    public String getYourEmail() {
-	return this.yourEmail;
-    }
+  public String getYourEmail() {
+    return this.yourEmail;
+  }
 
-    public void setYourEmail(String yourEmail) {
-	this.yourEmail = yourEmail;
-    }
+  public void setYourEmail(String yourEmail) {
+    this.yourEmail = yourEmail;
+  }
 
-    public String getMessage() {
-	return this.message;
-    }
+  public String getMessage() {
+    return this.message;
+  }
 
-    public void setMessage(String message) {
-	this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public String getSubject() {
-	return this.subject;
-    }
+  public String getSubject() {
+    return this.subject;
+  }
 
-    public void setSubject(String subject) {
-	this.subject = subject;
-    }
+  public void setSubject(String subject) {
+    this.subject = subject;
+  }
 }

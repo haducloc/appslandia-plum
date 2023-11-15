@@ -47,212 +47,221 @@ import jakarta.validation.constraints.NotNull;
  */
 public class InputTagTest extends MockTestBase {
 
-    InputTag tag = new InputTag();
-    TestModel model = new TestModel();
+  InputTag tag = new InputTag();
+  TestModel model = new TestModel();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_error() {
+    try {
+      getCurrentModelState().addError("dob", "The dob field is required.");
+
+      tag.setPath("model.dob");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"\" class=\"l-error-field\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_hidden() {
+    try {
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+      tag.setType("hidden");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"hidden\" name=\"dob\" value=\"2000-01-01\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_type_text() {
+    try {
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+
+      tag.setPath("model.dob");
+      tag.setType("text");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      // type = text
+      Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_type_date1() {
+    try {
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+      tag.setType("date");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_type_date2() {
+    try {
+      setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
+
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+      tag.setType("date");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_type_date3() {
+    try {
+      setRequestContextField("browserFeatures", 0);
+
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+      tag.setType("date");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_type_date4() {
+    try {
+
+      container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+      setRequestContextField("browserFeatures", 0);
+
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+      tag.setType("date");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_type_date5() {
+    try {
+
+      container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+      setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
+
+      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      tag.setPath("model.dob");
+      tag.setType("date");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  public static class TestModel {
+
+    @NotNull
+    private LocalDate dob;
+
+    public LocalDate getDob() {
+      return dob;
     }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+    public void setDob(LocalDate dob) {
+      this.dob = dob;
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+  @Controller("testController")
+  public static class TestController {
 
-	executeCurrent("GET", "http://localhost/app/testController/index");
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_error() {
-	try {
-	    getCurrentModelState().addError("dob", "The dob field is required.");
-
-	    tag.setPath("model.dob");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"\" class=\"l-error-field\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_hidden() {
-	try {
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-	    tag.setType("hidden");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"hidden\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_type_text() {
-	try {
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-
-	    tag.setPath("model.dob");
-	    tag.setType("text");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    // type = text
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_type_date1() {
-	try {
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_type_date2() {
-	try {
-	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
-
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_type_date3() {
-	try {
-	    setRequestContextField("browserFeatures", 0);
-
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_type_date4() {
-	try {
-
-	    container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
-	    setRequestContextField("browserFeatures", 0);
-
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"01/01/2000\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_type_date5() {
-	try {
-
-	    container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
-	    setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
-
-	    model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
-	    tag.setPath("model.dob");
-	    tag.setType("date");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    public static class TestModel {
-
-	@NotNull
-	private LocalDate dob;
-
-	public LocalDate getDob() {
-	    return dob;
-	}
-
-	public void setDob(LocalDate dob) {
-	    this.dob = dob;
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

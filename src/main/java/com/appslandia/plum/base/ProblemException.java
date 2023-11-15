@@ -26,33 +26,33 @@ package com.appslandia.plum.base;
  *
  */
 public class ProblemException extends RuntimeException implements ProblemSupport {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    protected Problem problem;
+  protected Problem problem;
 
-    public ProblemException() {
-	super();
-    }
+  public ProblemException() {
+    super();
+  }
 
-    public ProblemException(String message) {
-	super(message);
-    }
+  public ProblemException(String message) {
+    super(message);
+  }
 
-    public ProblemException(String message, Throwable cause) {
-	super(message, cause);
-    }
+  public ProblemException(String message, Throwable cause) {
+    super(message, cause);
+  }
 
-    public ProblemException(Throwable cause) {
-	super(cause);
-    }
+  public ProblemException(Throwable cause) {
+    super(cause);
+  }
 
-    @Override
-    public Problem getProblem() {
-	return this.problem;
-    }
+  @Override
+  public Problem getProblem() {
+    return this.problem;
+  }
 
-    public ProblemException setProblem(Problem problem) {
-	this.problem = problem;
-	return this;
-    }
+  public ProblemException setProblem(Problem problem) {
+    this.problem = problem;
+    return this;
+  }
 }

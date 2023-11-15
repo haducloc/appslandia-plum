@@ -40,53 +40,53 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class LanguageProvider extends InitializeObject {
 
-    private Map<String, Language> languageMap = new LinkedHashMap<>();
-    private Language defaultLanguage;
+  private Map<String, Language> languageMap = new LinkedHashMap<>();
+  private Language defaultLanguage;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.isTrue(!this.languageMap.isEmpty(), "No language provided.");
+  @Override
+  protected void init() throws Exception {
+    Asserts.isTrue(!this.languageMap.isEmpty(), "No language provided.");
 
-	if (this.defaultLanguage == null) {
-	    this.defaultLanguage = this.languageMap.values().iterator().next();
-	}
-	this.languageMap = Collections.unmodifiableMap(this.languageMap);
+    if (this.defaultLanguage == null) {
+      this.defaultLanguage = this.languageMap.values().iterator().next();
     }
+    this.languageMap = Collections.unmodifiableMap(this.languageMap);
+  }
 
-    public Language getDefaultLanguage() {
-	this.initialize();
-	return this.defaultLanguage;
+  public Language getDefaultLanguage() {
+    this.initialize();
+    return this.defaultLanguage;
+  }
+
+  public Language getLanguage(String languageId) {
+    this.initialize();
+    return this.languageMap.get(languageId.toLowerCase(Locale.ENGLISH));
+  }
+
+  public Language getLanguage(HttpServletRequest request) {
+    this.initialize();
+
+    String matchedLang = ServletUtils.parseLanguage(request, languageMap.keySet());
+    if (matchedLang != null) {
+      return this.languageMap.get(matchedLang);
     }
+    return this.defaultLanguage;
+  }
 
-    public Language getLanguage(String languageId) {
-	this.initialize();
-	return this.languageMap.get(languageId.toLowerCase(Locale.ENGLISH));
-    }
+  public Collection<Language> getLanguages() {
+    this.initialize();
+    return this.languageMap.values();
+  }
 
-    public Language getLanguage(HttpServletRequest request) {
-	this.initialize();
+  public LanguageProvider addLanguage(Language impl) {
+    this.assertNotInitialized();
+    this.languageMap.put(impl.getLanguageId(), impl);
+    return this;
+  }
 
-	String matchedLang = ServletUtils.parseLanguage(request, languageMap.keySet());
-	if (matchedLang != null) {
-	    return this.languageMap.get(matchedLang);
-	}
-	return this.defaultLanguage;
-    }
-
-    public Collection<Language> getLanguages() {
-	this.initialize();
-	return this.languageMap.values();
-    }
-
-    public LanguageProvider addLanguage(Language impl) {
-	this.assertNotInitialized();
-	this.languageMap.put(impl.getLanguageId(), impl);
-	return this;
-    }
-
-    public LanguageProvider addDefault(Language impl) {
-	Asserts.isNull(this.defaultLanguage);
-	this.defaultLanguage = impl;
-	return addLanguage(impl);
-    }
+  public LanguageProvider addDefault(Language impl) {
+    Asserts.isNull(this.defaultLanguage);
+    this.defaultLanguage = impl;
+    return addLanguage(impl);
+  }
 }

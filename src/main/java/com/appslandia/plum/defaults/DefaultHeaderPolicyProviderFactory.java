@@ -47,44 +47,45 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultHeaderPolicyProviderFactory implements CDIFactory<HeaderPolicyProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public HeaderPolicyProvider produce() {
-	final HeaderPolicyProvider impl = new HeaderPolicyProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public HeaderPolicyProvider produce() {
+    final HeaderPolicyProvider impl = new HeaderPolicyProvider();
 
-	CDIUtils.scanReferences(this.beanManager, HeaderPolicy.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class, (mappedId, bi) -> {
+    CDIUtils.scanReferences(this.beanManager, HeaderPolicy.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
+        (mappedId, bi) -> {
 
-	    impl.addHeaderPolicy(mappedId.value(), bi.get());
+          impl.addHeaderPolicy(mappedId.value(), bi.get());
 
-	    beanInstances.add(bi);
-	});
+          beanInstances.add(bi);
+        });
 
-	// @Supplier(HeaderPolicy.class)
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, HeaderPolicy.class, (bi) -> {
+    // @Supplier(HeaderPolicy.class)
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, HeaderPolicy.class, (bi) -> {
 
-	    Map<String, HeaderPolicy> m = ObjectUtils.cast(bi.get().get());
+      Map<String, HeaderPolicy> m = ObjectUtils.cast(bi.get().get());
 
-	    for (Entry<String, HeaderPolicy> entry : m.entrySet()) {
-		impl.addHeaderPolicy(entry.getKey(), entry.getValue());
-	    }
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+      for (Entry<String, HeaderPolicy> entry : m.entrySet()) {
+        impl.addHeaderPolicy(entry.getKey(), entry.getValue());
+      }
+      beanInstances.add(bi);
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes HeaderPolicyProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes HeaderPolicyProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

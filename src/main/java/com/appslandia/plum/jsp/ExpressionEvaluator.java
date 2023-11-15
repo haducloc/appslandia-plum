@@ -33,49 +33,50 @@ import jakarta.servlet.jsp.PageContext;
  */
 public abstract class ExpressionEvaluator {
 
-    private static volatile ExpressionEvaluator __default;
-    private static final Object MUTEX = new Object();
+  private static volatile ExpressionEvaluator __default;
+  private static final Object MUTEX = new Object();
 
-    public static ExpressionEvaluator getDefault() {
-	ExpressionEvaluator obj = __default;
-	if (obj == null) {
-	    synchronized (MUTEX) {
-		if ((obj = __default) == null) {
-		    __default = obj = new ExpressionEvaluatorImpl();
-		}
-	    }
-	}
-	return obj;
+  public static ExpressionEvaluator getDefault() {
+    ExpressionEvaluator obj = __default;
+    if (obj == null) {
+      synchronized (MUTEX) {
+        if ((obj = __default) == null) {
+          __default = obj = new ExpressionEvaluatorImpl();
+        }
+      }
+    }
+    return obj;
+  }
+
+  public static void setDefault(ExpressionEvaluator impl) {
+    Asserts.isNull(__default, "ExpressionEvaluator.__default must be null.");
+
+    if (__default == null) {
+      synchronized (MUTEX) {
+        if (__default == null) {
+          __default = impl;
+          return;
+        }
+      }
+    }
+  }
+
+  public abstract Object getValue(PageContext pc, String property);
+
+  private static class ExpressionEvaluatorImpl extends ExpressionEvaluator {
+
+    private static final JspFactory JSP_FACTORY = JspFactory.getDefaultFactory();
+
+    @SuppressWarnings("el-syntax")
+    @Override
+    public Object getValue(PageContext pc, String property) {
+      String expr = "${" + property + "}";
+      return getExpressionFactory(pc).createValueExpression(pc.getELContext(), expr, Object.class)
+          .getValue(pc.getELContext());
     }
 
-    public static void setDefault(ExpressionEvaluator impl) {
-	Asserts.isNull(__default, "ExpressionEvaluator.__default must be null.");
-
-	if (__default == null) {
-	    synchronized (MUTEX) {
-		if (__default == null) {
-		    __default = impl;
-		    return;
-		}
-	    }
-	}
+    protected ExpressionFactory getExpressionFactory(PageContext pc) {
+      return JSP_FACTORY.getJspApplicationContext(pc.getServletContext()).getExpressionFactory();
     }
-
-    public abstract Object getValue(PageContext pc, String property);
-
-    private static class ExpressionEvaluatorImpl extends ExpressionEvaluator {
-
-	private static final JspFactory JSP_FACTORY = JspFactory.getDefaultFactory();
-
-	@SuppressWarnings("el-syntax")
-	@Override
-	public Object getValue(PageContext pc, String property) {
-	    String expr = "${" + property + "}";
-	    return getExpressionFactory(pc).createValueExpression(pc.getELContext(), expr, Object.class).getValue(pc.getELContext());
-	}
-
-	protected ExpressionFactory getExpressionFactory(PageContext pc) {
-	    return JSP_FACTORY.getJspApplicationContext(pc.getServletContext()).getExpressionFactory();
-	}
-    }
+  }
 }

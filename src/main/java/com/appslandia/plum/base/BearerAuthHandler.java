@@ -27,8 +27,8 @@ package com.appslandia.plum.base;
  */
 public abstract class BearerAuthHandler extends HttpAuthHandler {
 
-    @Override
-    public String getAuthMethod() {
-	return "Bearer";
-    }
+  @Override
+  public String getAuthMethod() {
+    return "Bearer";
+  }
 }

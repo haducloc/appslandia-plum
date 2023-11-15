@@ -29,33 +29,33 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public class AuthByCodeCredential implements Credential {
 
-    final String series;
-    final String token;
+  final String series;
+  final String token;
 
-    final String identity;
-    final String code;
+  final String identity;
+  final String code;
 
-    public AuthByCodeCredential(String series, String token, String identity, String code) {
-	this.series = series;
-	this.token = token;
+  public AuthByCodeCredential(String series, String token, String identity, String code) {
+    this.series = series;
+    this.token = token;
 
-	this.identity = identity;
-	this.code = code;
-    }
+    this.identity = identity;
+    this.code = code;
+  }
 
-    public String getSeries() {
-	return this.series;
-    }
+  public String getSeries() {
+    return this.series;
+  }
 
-    public String getToken() {
-	return this.token;
-    }
+  public String getToken() {
+    return this.token;
+  }
 
-    public String getIdentity() {
-	return this.identity;
-    }
+  public String getIdentity() {
+    return this.identity;
+  }
 
-    public String getCode() {
-	return this.code;
-    }
+  public String getCode() {
+    return this.code;
+  }
 }

@@ -27,24 +27,24 @@ package com.appslandia.plum.base;
  */
 public class SeriesToken {
 
-    private String series;
-    private String token;
+  private String series;
+  private String token;
 
-    public String getSeries() {
-	return this.series;
-    }
+  public String getSeries() {
+    return this.series;
+  }
 
-    public SeriesToken setSeries(String series) {
-	this.series = series;
-	return this;
-    }
+  public SeriesToken setSeries(String series) {
+    this.series = series;
+    return this;
+  }
 
-    public String getToken() {
-	return this.token;
-    }
+  public String getToken() {
+    return this.token;
+  }
 
-    public SeriesToken setToken(String token) {
-	this.token = token;
-	return this;
-    }
+  public SeriesToken setToken(String token) {
+    this.token = token;
+    return this;
+  }
 }

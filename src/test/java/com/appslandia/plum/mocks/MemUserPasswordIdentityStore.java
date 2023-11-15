@@ -35,29 +35,29 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public class MemUserPasswordIdentityStore extends IdentityStoreBase {
 
-    @Inject
-    protected MemUserDatabase memUserDatabase;
+  @Inject
+  protected MemUserDatabase memUserDatabase;
 
-    @Override
-    public Class<? extends Credential> getAcceptedCredentialType() {
-	return MemUserPasswordCredential.class;
+  @Override
+  public Class<? extends Credential> getAcceptedCredentialType() {
+    return MemUserPasswordCredential.class;
+  }
+
+  @Override
+  protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
+    MemUserPasswordCredential usernamePasswordCredential = (MemUserPasswordCredential) credential;
+    MemUser user = this.memUserDatabase.getUser(usernamePasswordCredential.getCaller());
+
+    if (user == null) {
+      invalidCode.value = InvalidAuthResult.CREDENTIAL_INVALID.getCode();
+      return null;
     }
 
-    @Override
-    protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
-	MemUserPasswordCredential usernamePasswordCredential = (MemUserPasswordCredential) credential;
-	MemUser user = this.memUserDatabase.getUser(usernamePasswordCredential.getCaller());
-
-	if (user == null) {
-	    invalidCode.value = InvalidAuthResult.CREDENTIAL_INVALID.getCode();
-	    return null;
-	}
-
-	// Password
-	if (!this.memUserDatabase.verifyPassword(usernamePasswordCredential.getPasswordAsString(), user.getPassword())) {
-	    invalidCode.value = InvalidAuthResult.CREDENTIAL_INVALID.getCode();
-	    return null;
-	}
-	return new PrincipalRoles(new MemPrincipal(user), user.getRoles());
+    // Password
+    if (!this.memUserDatabase.verifyPassword(usernamePasswordCredential.getPasswordAsString(), user.getPassword())) {
+      invalidCode.value = InvalidAuthResult.CREDENTIAL_INVALID.getCode();
+      return null;
     }
+    return new PrincipalRoles(new MemPrincipal(user), user.getRoles());
+  }
 }

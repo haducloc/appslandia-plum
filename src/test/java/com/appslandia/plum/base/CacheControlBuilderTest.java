@@ -32,91 +32,91 @@ import org.junit.jupiter.api.Test;
  */
 public class CacheControlBuilderTest {
 
-    @Test
-    public void test_noStore() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_noStore() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.noStore();
-	Assertions.assertTrue(builder.toString().contains("no-store"));
-    }
+    builder.noStore();
+    Assertions.assertTrue(builder.toString().contains("no-store"));
+  }
 
-    @Test
-    public void test_noCache() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_noCache() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.noCache();
-	Assertions.assertTrue(builder.toString().contains("no-cache"));
-    }
+    builder.noCache();
+    Assertions.assertTrue(builder.toString().contains("no-cache"));
+  }
 
-    @Test
-    public void test_mustRevalidate() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_mustRevalidate() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.mustRevalidate();
-	Assertions.assertTrue(builder.toString().contains("must-revalidate"));
-    }
+    builder.mustRevalidate();
+    Assertions.assertTrue(builder.toString().contains("must-revalidate"));
+  }
 
-    @Test
-    public void test_proxyRevalidate() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_proxyRevalidate() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.proxyRevalidate();
-	Assertions.assertTrue(builder.toString().contains("proxy-revalidate"));
-    }
+    builder.proxyRevalidate();
+    Assertions.assertTrue(builder.toString().contains("proxy-revalidate"));
+  }
 
-    @Test
-    public void test_usePublic() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_usePublic() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.usePublic();
-	Assertions.assertTrue(builder.toString().contains("public"));
-    }
+    builder.usePublic();
+    Assertions.assertTrue(builder.toString().contains("public"));
+  }
 
-    @Test
-    public void test_usePrivate() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_usePrivate() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.usePrivate();
-	Assertions.assertTrue(builder.toString().contains("private"));
-    }
+    builder.usePrivate();
+    Assertions.assertTrue(builder.toString().contains("private"));
+  }
 
-    @Test
-    public void test_noTransform() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_noTransform() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.noTransform();
-	Assertions.assertTrue(builder.toString().contains("no-transform"));
-    }
+    builder.noTransform();
+    Assertions.assertTrue(builder.toString().contains("no-transform"));
+  }
 
-    @Test
-    public void test_maxAge() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_maxAge() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.maxAge(10000, TimeUnit.SECONDS);
-	Assertions.assertTrue(builder.toString().contains("max-age=10000"));
-    }
+    builder.maxAge(10000, TimeUnit.SECONDS);
+    Assertions.assertTrue(builder.toString().contains("max-age=10000"));
+  }
 
-    @Test
-    public void test_sMaxAge() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_sMaxAge() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.sMaxAge(10000, TimeUnit.SECONDS);
-	Assertions.assertTrue(builder.toString().contains("s-maxage=10000"));
-    }
+    builder.sMaxAge(10000, TimeUnit.SECONDS);
+    Assertions.assertTrue(builder.toString().contains("s-maxage=10000"));
+  }
 
-    @Test
-    public void test_combine() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_combine() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.maxAge(10000, TimeUnit.SECONDS).usePrivate();
-	Assertions.assertTrue(builder.toString().contains("max-age=10000, private"));
-    }
+    builder.maxAge(10000, TimeUnit.SECONDS).usePrivate();
+    Assertions.assertTrue(builder.toString().contains("max-age=10000, private"));
+  }
 
-    @Test
-    public void test_disableCache() {
-	CacheControlBuilder builder = new CacheControlBuilder();
+  @Test
+  public void test_disableCache() {
+    CacheControlBuilder builder = new CacheControlBuilder();
 
-	builder.maxAge(0, TimeUnit.SECONDS).noCache().noStore().mustRevalidate();
-	Assertions.assertTrue(builder.toString().contains("max-age=0, no-cache, no-store, must-revalidate"));
-    }
+    builder.maxAge(0, TimeUnit.SECONDS).noCache().noStore().mustRevalidate();
+    Assertions.assertTrue(builder.toString().contains("max-age=0, no-cache, no-store, must-revalidate"));
+  }
 }

@@ -42,71 +42,71 @@ import com.appslandia.common.utils.RandomUtils;
  */
 public class WordsRendererImpl extends InitializeObject implements WordsRenderer {
 
-    final List<Color> textColors = new ArrayList<Color>();
-    final List<Font> textFonts = new ArrayList<Font>();
+  final List<Color> textColors = new ArrayList<Color>();
+  final List<Font> textFonts = new ArrayList<Font>();
 
-    final Random random = new SecureRandom();
+  final Random random = new SecureRandom();
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.isTrue(this.textColors.size() > 0, "textColor is required.");
+  @Override
+  protected void init() throws Exception {
+    Asserts.isTrue(this.textColors.size() > 0, "textColor is required.");
 
-	if (this.textFonts.isEmpty()) {
-	    addTextFont(Font.SERIF, Font.PLAIN, 36);
-	    addTextFont(Font.SANS_SERIF, Font.PLAIN, 36);
-	    addTextFont(Font.DIALOG, Font.PLAIN, 36);
-	}
+    if (this.textFonts.isEmpty()) {
+      addTextFont(Font.SERIF, Font.PLAIN, 36);
+      addTextFont(Font.SANS_SERIF, Font.PLAIN, 36);
+      addTextFont(Font.DIALOG, Font.PLAIN, 36);
     }
+  }
 
-    @Override
-    public void render(BufferedImage img, int width, int height, String words) {
-	this.initialize();
-	Graphics2D g = img.createGraphics();
+  @Override
+  public void render(BufferedImage img, int width, int height, String words) {
+    this.initialize();
+    Graphics2D g = img.createGraphics();
 
-	// hints
-	RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	hints.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
-	g.setRenderingHints(hints);
+    // hints
+    RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    hints.add(new RenderingHints(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY));
+    g.setRenderingHints(hints);
 
-	// Baseline
-	int xBaseline = (int) (0.05f * width);
-	int yBaseline = (int) (0.75f * height);
+    // Baseline
+    int xBaseline = (int) (0.05f * width);
+    int yBaseline = (int) (0.75f * height);
 
-	char[] drawChars = new char[1];
-	char[] srcChars = words.toCharArray();
-	for (int i = 0; i < srcChars.length; i++) {
-	    drawChars[0] = srcChars[i];
+    char[] drawChars = new char[1];
+    char[] srcChars = words.toCharArray();
+    for (int i = 0; i < srcChars.length; i++) {
+      drawChars[0] = srcChars[i];
 
-	    g.setColor(this.textColors.get(this.random.nextInt(this.textColors.size())));
-	    Font rdFont = this.textFonts.get(this.random.nextInt(this.textFonts.size()));
-	    g.setFont(rdFont);
+      g.setColor(this.textColors.get(this.random.nextInt(this.textColors.size())));
+      Font rdFont = this.textFonts.get(this.random.nextInt(this.textFonts.size()));
+      g.setFont(rdFont);
 
-	    if (i > 0) {
-		xBaseline += 4; // gap=4px
-	    }
-	    g.drawChars(drawChars, 0, drawChars.length, xBaseline, yBaseline + RandomUtils.nextInt(-4, 4, this.random));
+      if (i > 0) {
+        xBaseline += 4; // gap=4px
+      }
+      g.drawChars(drawChars, 0, drawChars.length, xBaseline, yBaseline + RandomUtils.nextInt(-4, 4, this.random));
 
-	    GlyphVector gv = rdFont.createGlyphVector(g.getFontRenderContext(), drawChars);
-	    xBaseline += (int) gv.getVisualBounds().getWidth();
-	}
-	g.dispose();
+      GlyphVector gv = rdFont.createGlyphVector(g.getFontRenderContext(), drawChars);
+      xBaseline += (int) gv.getVisualBounds().getWidth();
     }
+    g.dispose();
+  }
 
-    public WordsRendererImpl addTextColor(Color color) {
-	this.assertNotInitialized();
-	this.textColors.add(color);
-	return this;
-    }
+  public WordsRendererImpl addTextColor(Color color) {
+    this.assertNotInitialized();
+    this.textColors.add(color);
+    return this;
+  }
 
-    public WordsRendererImpl addTextFont(Font font) {
-	this.assertNotInitialized();
-	this.textFonts.add(font);
-	return this;
-    }
+  public WordsRendererImpl addTextFont(Font font) {
+    this.assertNotInitialized();
+    this.textFonts.add(font);
+    return this;
+  }
 
-    public WordsRendererImpl addTextFont(String name, int style, int size) {
-	this.assertNotInitialized();
-	this.textFonts.add(new Font(name, style, size));
-	return this;
-    }
+  public WordsRendererImpl addTextFont(String name, int style, int size) {
+    this.assertNotInitialized();
+    this.textFonts.add(new Font(name, style, size));
+    return this;
+  }
 }

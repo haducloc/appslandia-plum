@@ -35,233 +35,234 @@ import com.appslandia.common.utils.XmlEscaper;
  */
 public class RequestContext {
 
-    public static final String REQUEST_ATTRIBUTE_ID = "ctx";
+  public static final String REQUEST_ATTRIBUTE_ID = "ctx";
 
-    private boolean pathLanguage;
-    private FormatProvider formatProvider;
-    private Resources resources;
-    private ConverterProvider converterProvider;
+  private boolean pathLanguage;
+  private FormatProvider formatProvider;
+  private Resources resources;
+  private ConverterProvider converterProvider;
 
-    private boolean getOrHead;
-    private ActionDesc actionDesc;
-    private Map<String, String> pathParamMap;
+  private boolean getOrHead;
+  private ActionDesc actionDesc;
+  private Map<String, String> pathParamMap;
 
-    private String clientId;
-    private String module;
-    private Integer browserFeatures;
+  private String clientId;
+  private String module;
+  private Integer browserFeatures;
 
-    public RequestContext createRequestContext(ActionDesc actionDesc) {
-	RequestContext context = new RequestContext();
-	context.pathLanguage = this.pathLanguage;
-	context.formatProvider = this.formatProvider;
-	context.resources = this.resources;
-	context.converterProvider = this.converterProvider;
+  public RequestContext createRequestContext(ActionDesc actionDesc) {
+    RequestContext context = new RequestContext();
+    context.pathLanguage = this.pathLanguage;
+    context.formatProvider = this.formatProvider;
+    context.resources = this.resources;
+    context.converterProvider = this.converterProvider;
 
-	context.getOrHead = this.getOrHead;
-	context.actionDesc = actionDesc;
+    context.getOrHead = this.getOrHead;
+    context.actionDesc = actionDesc;
 
-	context.clientId = this.clientId;
-	context.module = this.module;
-	context.browserFeatures = this.browserFeatures;
-	return context;
+    context.clientId = this.clientId;
+    context.module = this.module;
+    context.browserFeatures = this.browserFeatures;
+    return context;
+  }
+
+  public boolean isRoute(String controller) {
+    if (this.actionDesc == null) {
+      return false;
+    }
+    return this.actionDesc.getController().equalsIgnoreCase(controller);
+  }
+
+  public boolean isRoute(String controller, String action) {
+    if (this.actionDesc == null) {
+      return false;
+    }
+    return this.actionDesc.getAction().equalsIgnoreCase(action)
+        && this.actionDesc.getController().equalsIgnoreCase(controller);
+  }
+
+  public String getLanguageId() {
+    return this.formatProvider.getLanguage().getLanguageId();
+  }
+
+  public Language getLanguage() {
+    return this.formatProvider.getLanguage();
+  }
+
+  public boolean isPathLanguage() {
+    return this.pathLanguage;
+  }
+
+  protected void setPathLanguage(boolean pathLanguage) {
+    this.pathLanguage = pathLanguage;
+  }
+
+  public FormatProvider getFormatProvider() {
+    return this.formatProvider;
+  }
+
+  protected void setFormatProvider(FormatProvider formatProvider) {
+    this.formatProvider = formatProvider;
+  }
+
+  public Resources getResources() {
+    return this.resources;
+  }
+
+  protected void setResources(Resources resources) {
+    this.resources = resources;
+  }
+
+  public ConverterProvider getConverterProvider() {
+    return this.converterProvider;
+  }
+
+  protected void setConverterProvider(ConverterProvider converterProvider) {
+    this.converterProvider = converterProvider;
+  }
+
+  public boolean isGetOrHead() {
+    return this.getOrHead;
+  }
+
+  protected void setGetOrHead(boolean getOrHead) {
+    this.getOrHead = getOrHead;
+  }
+
+  public ActionDesc getActionDesc() {
+    return this.actionDesc;
+  }
+
+  protected void setActionDesc(ActionDesc actionDesc) {
+    this.actionDesc = actionDesc;
+  }
+
+  public Map<String, String> getPathParamMap() {
+    return this.pathParamMap;
+  }
+
+  protected void setPathParamMap(Map<String, String> pathParamMap) {
+    this.pathParamMap = pathParamMap;
+  }
+
+  public String getClientId() {
+    return this.clientId;
+  }
+
+  protected void setClientId(String clientId) {
+    this.clientId = clientId;
+  }
+
+  public String getModule() {
+    return this.module;
+  }
+
+  protected void setModule(String module) {
+    this.module = module;
+  }
+
+  public Integer getBrowserFeatures() {
+    return this.browserFeatures;
+  }
+
+  protected void setBrowserFeatures(Integer browserFeatures) {
+    this.browserFeatures = browserFeatures;
+  }
+
+  public String res(String key) {
+    return this.resources.get(key);
+  }
+
+  public String res(String key, Object p1) {
+    return this.resources.get(key, p1);
+  }
+
+  public String res(String key, Object p1, Object p2) {
+    return this.resources.get(key, p1, p2);
+  }
+
+  public String res(String key, Object p1, Object p2, Object p3) {
+    return this.resources.get(key, p1, p2, p3);
+  }
+
+  public String format(Object value, String converterId, boolean localize) {
+    if (value == null) {
+      return null;
+    }
+    if (value.getClass() == String.class) {
+      return (String) value;
     }
 
-    public boolean isRoute(String controller) {
-	if (this.actionDesc == null) {
-	    return false;
-	}
-	return this.actionDesc.getController().equalsIgnoreCase(controller);
+    Converter<Object> converter = null;
+    if (converterId != null) {
+      converter = this.converterProvider.getConverter(converterId);
+
+    } else if (this.converterProvider.hasConverter(value.getClass())) {
+      converter = this.converterProvider.getConverter(value.getClass());
     }
+    return (converter != null) ? converter.format(value, this.formatProvider, localize) : value.toString();
+  }
 
-    public boolean isRoute(String controller, String action) {
-	if (this.actionDesc == null) {
-	    return false;
-	}
-	return this.actionDesc.getAction().equalsIgnoreCase(action) && this.actionDesc.getController().equalsIgnoreCase(controller);
+  public String escVal(Object value, String converter) {
+    return escVal(value, converter, true);
+  }
+
+  public String escVal(Object value, String converter, boolean localize) {
+    String fmtValue = format(value, converter, localize);
+    if (fmtValue != null) {
+      return XmlEscaper.escapeXml(fmtValue);
     }
+    return null;
+  }
 
-    public String getLanguageId() {
-	return this.formatProvider.getLanguage().getLanguageId();
+  public String escXml(String key) {
+    return XmlEscaper.escapeXml(this.resources.get(key));
+  }
+
+  public String escXml(String key, Object p1) {
+    return XmlEscaper.escapeXml(this.resources.get(key, p1));
+  }
+
+  public String escXml(String key, Object p1, Object p2) {
+    return XmlEscaper.escapeXml(this.resources.get(key, p1, p2));
+  }
+
+  public String escXml(String key, Object p1, Object p2, Object p3) {
+    return XmlEscaper.escapeXml(this.resources.get(key, p1, p2, p3));
+  }
+
+  public String ifEscXml(boolean b, String trueKey) {
+    if (b) {
+      return XmlEscaper.escapeXml(this.resources.get(trueKey));
     }
+    return null;
+  }
 
-    public Language getLanguage() {
-	return this.formatProvider.getLanguage();
+  public String ifEscXml(boolean b, String trueKey, Object p1) {
+    if (b) {
+      return XmlEscaper.escapeXml(this.resources.get(trueKey, p1));
     }
+    return null;
+  }
 
-    public boolean isPathLanguage() {
-	return this.pathLanguage;
+  public String ifEscXml(boolean b, String trueKey, Object p1, Object p2) {
+    if (b) {
+      return XmlEscaper.escapeXml(this.resources.get(trueKey, p1, p2));
     }
+    return null;
+  }
 
-    protected void setPathLanguage(boolean pathLanguage) {
-	this.pathLanguage = pathLanguage;
+  public String ifEscXml(boolean b, String trueKey, Object p1, Object p2, Object p3) {
+    if (b) {
+      return XmlEscaper.escapeXml(this.resources.get(trueKey, p1, p2, p3));
     }
+    return null;
+  }
 
-    public FormatProvider getFormatProvider() {
-	return this.formatProvider;
+  public String iifEscXml(boolean b, String trueKey, String falseKey) {
+    if (b) {
+      return XmlEscaper.escapeXml(this.resources.get(trueKey));
     }
-
-    protected void setFormatProvider(FormatProvider formatProvider) {
-	this.formatProvider = formatProvider;
-    }
-
-    public Resources getResources() {
-	return this.resources;
-    }
-
-    protected void setResources(Resources resources) {
-	this.resources = resources;
-    }
-
-    public ConverterProvider getConverterProvider() {
-	return this.converterProvider;
-    }
-
-    protected void setConverterProvider(ConverterProvider converterProvider) {
-	this.converterProvider = converterProvider;
-    }
-
-    public boolean isGetOrHead() {
-	return this.getOrHead;
-    }
-
-    protected void setGetOrHead(boolean getOrHead) {
-	this.getOrHead = getOrHead;
-    }
-
-    public ActionDesc getActionDesc() {
-	return this.actionDesc;
-    }
-
-    protected void setActionDesc(ActionDesc actionDesc) {
-	this.actionDesc = actionDesc;
-    }
-
-    public Map<String, String> getPathParamMap() {
-	return this.pathParamMap;
-    }
-
-    protected void setPathParamMap(Map<String, String> pathParamMap) {
-	this.pathParamMap = pathParamMap;
-    }
-
-    public String getClientId() {
-	return this.clientId;
-    }
-
-    protected void setClientId(String clientId) {
-	this.clientId = clientId;
-    }
-
-    public String getModule() {
-	return this.module;
-    }
-
-    protected void setModule(String module) {
-	this.module = module;
-    }
-
-    public Integer getBrowserFeatures() {
-	return this.browserFeatures;
-    }
-
-    protected void setBrowserFeatures(Integer browserFeatures) {
-	this.browserFeatures = browserFeatures;
-    }
-
-    public String res(String key) {
-	return this.resources.get(key);
-    }
-
-    public String res(String key, Object p1) {
-	return this.resources.get(key, p1);
-    }
-
-    public String res(String key, Object p1, Object p2) {
-	return this.resources.get(key, p1, p2);
-    }
-
-    public String res(String key, Object p1, Object p2, Object p3) {
-	return this.resources.get(key, p1, p2, p3);
-    }
-
-    public String format(Object value, String converterId, boolean localize) {
-	if (value == null) {
-	    return null;
-	}
-	if (value.getClass() == String.class) {
-	    return (String) value;
-	}
-
-	Converter<Object> converter = null;
-	if (converterId != null) {
-	    converter = this.converterProvider.getConverter(converterId);
-
-	} else if (this.converterProvider.hasConverter(value.getClass())) {
-	    converter = this.converterProvider.getConverter(value.getClass());
-	}
-	return (converter != null) ? converter.format(value, this.formatProvider, localize) : value.toString();
-    }
-
-    public String escVal(Object value, String converter) {
-	return escVal(value, converter, true);
-    }
-
-    public String escVal(Object value, String converter, boolean localize) {
-	String fmtValue = format(value, converter, localize);
-	if (fmtValue != null) {
-	    return XmlEscaper.escapeXml(fmtValue);
-	}
-	return null;
-    }
-
-    public String escXml(String key) {
-	return XmlEscaper.escapeXml(this.resources.get(key));
-    }
-
-    public String escXml(String key, Object p1) {
-	return XmlEscaper.escapeXml(this.resources.get(key, p1));
-    }
-
-    public String escXml(String key, Object p1, Object p2) {
-	return XmlEscaper.escapeXml(this.resources.get(key, p1, p2));
-    }
-
-    public String escXml(String key, Object p1, Object p2, Object p3) {
-	return XmlEscaper.escapeXml(this.resources.get(key, p1, p2, p3));
-    }
-
-    public String ifEscXml(boolean b, String trueKey) {
-	if (b) {
-	    return XmlEscaper.escapeXml(this.resources.get(trueKey));
-	}
-	return null;
-    }
-
-    public String ifEscXml(boolean b, String trueKey, Object p1) {
-	if (b) {
-	    return XmlEscaper.escapeXml(this.resources.get(trueKey, p1));
-	}
-	return null;
-    }
-
-    public String ifEscXml(boolean b, String trueKey, Object p1, Object p2) {
-	if (b) {
-	    return XmlEscaper.escapeXml(this.resources.get(trueKey, p1, p2));
-	}
-	return null;
-    }
-
-    public String ifEscXml(boolean b, String trueKey, Object p1, Object p2, Object p3) {
-	if (b) {
-	    return XmlEscaper.escapeXml(this.resources.get(trueKey, p1, p2, p3));
-	}
-	return null;
-    }
-
-    public String iifEscXml(boolean b, String trueKey, String falseKey) {
-	if (b) {
-	    return XmlEscaper.escapeXml(this.resources.get(trueKey));
-	}
-	return XmlEscaper.escapeXml(this.resources.get(falseKey));
-    }
+    return XmlEscaper.escapeXml(this.resources.get(falseKey));
+  }
 }

@@ -34,8 +34,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultCsrfManager extends SessionCsrfManager {
 
-    @Override
-    protected TextGenerator getCsrfIdGenerator() {
-	return UUIDGenerator.INSTANCE;
-    }
+  @Override
+  protected TextGenerator getCsrfIdGenerator() {
+    return UUIDGenerator.INSTANCE;
+  }
 }

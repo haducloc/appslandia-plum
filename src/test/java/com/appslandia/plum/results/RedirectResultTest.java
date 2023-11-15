@@ -35,100 +35,100 @@ import com.appslandia.plum.base.MockTestBase;
  */
 public class RedirectResultTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testAction() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(302, getCurrentResponse().getStatus());
+
+      String location = getCurrentResponse().getHeader("Location");
+      Assertions.assertNotNull(location);
+      Assertions.assertEquals("/app/testController/?encodeRedirectURL=true", location);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testAction_params() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction_params");
+
+      Assertions.assertEquals(302, getCurrentResponse().getStatus());
+
+      String location = getCurrentResponse().getHeader("Location");
+      Assertions.assertNotNull(location);
+      Assertions.assertEquals("/app/testController/?p1=v1&encodeRedirectURL=true", location);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_redirectToIndex() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/redirectToIndex");
+
+      Assertions.assertEquals(302, getCurrentResponse().getStatus());
+
+      String location = getCurrentResponse().getHeader("Location");
+      Assertions.assertNotNull(location);
+      Assertions.assertEquals("/app/testController/?encodeRedirectURL=true", location);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_redirectToRoot() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/redirectToRoot");
+
+      Assertions.assertEquals(302, getCurrentResponse().getStatus());
+
+      String location = getCurrentResponse().getHeader("Location");
+      Assertions.assertNotNull(location);
+      Assertions.assertEquals("/app/?encodeRedirectURL=true", location);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() throws Exception {
     }
 
-    @Test
-    public void test_testAction() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app/testController/?encodeRedirectURL=true", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public ActionResult testAction() throws Exception {
+      return new RedirectResult("index", null);
     }
 
-    @Test
-    public void test_testAction_params() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction_params");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app/testController/?p1=v1&encodeRedirectURL=true", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public ActionResult testAction_params() throws Exception {
+      return new RedirectResult("index", null).query("p1", "v1");
     }
 
-    @Test
-    public void test_redirectToIndex() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/redirectToIndex");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app/testController/?encodeRedirectURL=true", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public ActionResult redirectToIndex() throws Exception {
+      return RedirectResult.INDEX;
     }
 
-    @Test
-    public void test_redirectToRoot() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/redirectToRoot");
-
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-
-	    String location = getCurrentResponse().getHeader("Location");
-	    Assertions.assertNotNull(location);
-	    Assertions.assertEquals("/app/?encodeRedirectURL=true", location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public ActionResult redirectToRoot() throws Exception {
+      return RedirectResult.ROOT;
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() throws Exception {
-	}
-
-	@HttpGet
-	public ActionResult testAction() throws Exception {
-	    return new RedirectResult("index", null);
-	}
-
-	@HttpGet
-	public ActionResult testAction_params() throws Exception {
-	    return new RedirectResult("index", null).query("p1", "v1");
-	}
-
-	@HttpGet
-	public ActionResult redirectToIndex() throws Exception {
-	    return RedirectResult.INDEX;
-	}
-
-	@HttpGet
-	public ActionResult redirectToRoot() throws Exception {
-	    return RedirectResult.ROOT;
-	}
-    }
+  }
 }

@@ -28,9 +28,9 @@ import com.appslandia.common.jose.JwtToken;
  *
  */
 public class JwtPrincipal extends UserPrincipal {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public JwtPrincipal(JwtToken token) {
-	super((String) token.getPayload().getRequired(ATTRIBUTE_USER_NAME), token.getPayload());
-    }
+  public JwtPrincipal(JwtToken token) {
+    super((String) token.getPayload().getRequired(ATTRIBUTE_USER_NAME), token.getPayload());
+  }
 }

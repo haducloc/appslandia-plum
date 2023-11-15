@@ -35,15 +35,15 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultCaptchaManager extends SessionCaptchaManager {
 
-    final TextGenerator wordsGenerator = new WordsGenerator().setLength(6);
+  final TextGenerator wordsGenerator = new WordsGenerator().setLength(6);
 
-    @Override
-    protected TextGenerator getWordsGenerator() {
-	return this.wordsGenerator;
-    }
+  @Override
+  protected TextGenerator getWordsGenerator() {
+    return this.wordsGenerator;
+  }
 
-    @Override
-    protected TextGenerator getCaptchaIdGenerator() {
-	return UUIDGenerator.INSTANCE;
-    }
+  @Override
+  protected TextGenerator getCaptchaIdGenerator() {
+    return UUIDGenerator.INSTANCE;
+  }
 }

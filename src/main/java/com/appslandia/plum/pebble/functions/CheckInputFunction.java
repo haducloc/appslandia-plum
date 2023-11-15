@@ -38,51 +38,51 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public abstract class CheckInputFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: path*, id, codeValue*, converter, readonly";
+  @Override
+  public String getDescription() {
+    return "variables: path*, id, codeValue*, converter, readonly";
+  }
+
+  protected abstract boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue);
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String path = context.getRequiredArgument("path");
+    Object codeValue = context.getRequiredArgument("codeValue");
+
+    String id = context.getArgument("id");
+    String converter = context.getArgument("converter");
+    boolean readonly = context.getBool("readonly", false);
+
+    int nameIdx = path.indexOf('.');
+    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    String name = path.substring(nameIdx + 1);
+
+    Object value = context.evaluate(path);
+    String codeVal = context.getRequestContext().format(codeValue, converter, false);
+    String fmtValue = context.getRequestContext().format(value, converter, false);
+
+    if (id == null) {
+      id = HtmlUtils.toValueTagId(name);
+    }
+    StringWriter out = new StringWriter(128);
+
+    out.write("id=\"");
+    XmlEscaper.escapeXml(out, id);
+    out.write("\"");
+
+    HtmlUtils.escAttribute(out, "name", name);
+    HtmlUtils.escAttribute(out, "value", codeVal);
+
+    // checked
+    if (isChecked(context, codeVal, fmtValue)) {
+      HtmlUtils.checked(out);
     }
 
-    protected abstract boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue);
+    // readonly
+    if (readonly)
+      HtmlUtils.disabled(out);
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
-	Object codeValue = context.getRequiredArgument("codeValue");
-
-	String id = context.getArgument("id");
-	String converter = context.getArgument("converter");
-	boolean readonly = context.getBool("readonly", false);
-
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-	String name = path.substring(nameIdx + 1);
-
-	Object value = context.evaluate(path);
-	String codeVal = context.getRequestContext().format(codeValue, converter, false);
-	String fmtValue = context.getRequestContext().format(value, converter, false);
-
-	if (id == null) {
-	    id = HtmlUtils.toValueTagId(name);
-	}
-	StringWriter out = new StringWriter(128);
-
-	out.write("id=\"");
-	XmlEscaper.escapeXml(out, id);
-	out.write("\"");
-
-	HtmlUtils.escAttribute(out, "name", name);
-	HtmlUtils.escAttribute(out, "value", codeVal);
-
-	// checked
-	if (isChecked(context, codeVal, fmtValue)) {
-	    HtmlUtils.checked(out);
-	}
-
-	// readonly
-	if (readonly)
-	    HtmlUtils.disabled(out);
-
-	return new SafeString(out.toString());
-    }
+    return new SafeString(out.toString());
+  }
 }

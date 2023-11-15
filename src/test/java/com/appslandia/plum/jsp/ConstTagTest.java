@@ -40,75 +40,75 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class ConstTagTest extends MockTestBase {
 
-    ConstTag tag = new ConstTag();
-    ConstDescProvider constDescProvider;
+  ConstTag tag = new ConstTag();
+  ConstDescProvider constDescProvider;
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    constDescProvider = container.getObject(ConstDescProvider.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      // Register Actives.class
+      constDescProvider.addConstClass(Actives.class);
+
+      tag.setGroup("actives");
+      tag.setValue(Actives.ACTIVE);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("en:actives.active", html);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	constDescProvider = container.getObject(ConstDescProvider.class);
+  @Test
+  public void test_unregistered() {
+    try {
+      tag.setGroup("actives");
+      tag.setValue(Actives.INACTIVE);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(Integer.toString(Actives.INACTIVE), html);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  public static final class Actives {
+
+    @ConstDesc("actives")
+    public static final int ACTIVE = 1;
+
+    @ConstDesc("actives")
+    public static final int INACTIVE = 0;
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    // Register Actives.class
-	    constDescProvider.addConstClass(Actives.class);
-
-	    tag.setGroup("actives");
-	    tag.setValue(Actives.ACTIVE);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("en:actives.active", html);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unregistered() {
-	try {
-	    tag.setGroup("actives");
-	    tag.setValue(Actives.INACTIVE);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals(Integer.toString(Actives.INACTIVE), html);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    public static final class Actives {
-
-	@ConstDesc("actives")
-	public static final int ACTIVE = 1;
-
-	@ConstDesc("actives")
-	public static final int INACTIVE = 0;
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

@@ -37,40 +37,40 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public abstract class HiddenCheckInputFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: path*, codeValue*, readonly*, converter";
+  @Override
+  public String getDescription() {
+    return "variables: path*, codeValue*, readonly*, converter";
+  }
+
+  protected abstract boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue);
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String path = context.getRequiredArgument("path");
+    Object codeValue = context.getRequiredArgument("codeValue");
+
+    String converter = context.getArgument("converter");
+    boolean readonly = context.getBool("readonly");
+
+    int nameIdx = path.indexOf('.');
+    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+
+    String name = path.substring(nameIdx + 1);
+    Object value = context.evaluate(path);
+
+    String codeVal = context.getRequestContext().format(codeValue, converter, false);
+    String fmtValue = context.getRequestContext().format(value, converter, false);
+
+    if (readonly && isChecked(context, codeVal, fmtValue)) {
+      StringWriter out = new StringWriter(128);
+      out.append("<input type=\"hidden\"");
+
+      HtmlUtils.escAttribute(out, "name", name);
+      HtmlUtils.escAttribute(out, "value", codeVal);
+      out.append(" />");
+
+      return new SafeString(out.toString());
     }
-
-    protected abstract boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue);
-
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String path = context.getRequiredArgument("path");
-	Object codeValue = context.getRequiredArgument("codeValue");
-
-	String converter = context.getArgument("converter");
-	boolean readonly = context.getBool("readonly");
-
-	int nameIdx = path.indexOf('.');
-	Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
-
-	String name = path.substring(nameIdx + 1);
-	Object value = context.evaluate(path);
-
-	String codeVal = context.getRequestContext().format(codeValue, converter, false);
-	String fmtValue = context.getRequestContext().format(value, converter, false);
-
-	if (readonly && isChecked(context, codeVal, fmtValue)) {
-	    StringWriter out = new StringWriter(128);
-	    out.append("<input type=\"hidden\"");
-
-	    HtmlUtils.escAttribute(out, "name", name);
-	    HtmlUtils.escAttribute(out, "value", codeVal);
-	    out.append(" />");
-
-	    return new SafeString(out.toString());
-	}
-	return null;
-    }
+    return null;
+  }
 }

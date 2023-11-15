@@ -35,23 +35,24 @@ import jakarta.security.enterprise.identitystore.CredentialValidationResult;
  */
 public class SecurityUtils {
 
-    public static CredentialValidationResult createIdentityStoreResult(CallerPrincipal callerPrincipal, String userRoles) {
-	if (userRoles == null) {
-	    return new CredentialValidationResult(callerPrincipal, null);
-	}
-	String[] roles = parseUserRoles(userRoles);
-
-	if (roles.length > 0) {
-	    return new CredentialValidationResult(callerPrincipal, CollectionUtils.toSet(roles));
-	}
-	return new CredentialValidationResult(callerPrincipal, null);
+  public static CredentialValidationResult createIdentityStoreResult(CallerPrincipal callerPrincipal,
+      String userRoles) {
+    if (userRoles == null) {
+      return new CredentialValidationResult(callerPrincipal, null);
     }
+    String[] roles = parseUserRoles(userRoles);
 
-    public static String[] parseUserRoles(String userRoles) {
-	return SplitUtils.splitByComma(userRoles);
+    if (roles.length > 0) {
+      return new CredentialValidationResult(callerPrincipal, CollectionUtils.toSet(roles));
     }
+    return new CredentialValidationResult(callerPrincipal, null);
+  }
 
-    public static String toUserRoles(Set<String> userRoles) {
-	return (userRoles != null) && !userRoles.isEmpty() ? String.join(",", userRoles) : null;
-    }
+  public static String[] parseUserRoles(String userRoles) {
+    return SplitUtils.splitByComma(userRoles);
+  }
+
+  public static String toUserRoles(Set<String> userRoles) {
+    return (userRoles != null) && !userRoles.isEmpty() ? String.join(",", userRoles) : null;
+  }
 }

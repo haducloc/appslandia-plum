@@ -32,66 +32,66 @@ import org.junit.jupiter.api.Test;
  */
 public class ActionDescProviderStaticTest {
 
-    @Test
-    public void test_parsePathParams() {
-	List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}");
-	Assertions.assertEquals(1, pathParams.size());
-	Assertions.assertEquals("param0", pathParams.get(0).getParamName());
-	Assertions.assertEquals(null, pathParams.get(0).getSubParams());
+  @Test
+  public void test_parsePathParams() {
+    List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}");
+    Assertions.assertEquals(1, pathParams.size());
+    Assertions.assertEquals("param0", pathParams.get(0).getParamName());
+    Assertions.assertEquals(null, pathParams.get(0).getSubParams());
 
-	pathParams = ActionDescProvider.parsePathParams("/{param0}/{param1}");
-	Assertions.assertEquals(2, pathParams.size());
+    pathParams = ActionDescProvider.parsePathParams("/{param0}/{param1}");
+    Assertions.assertEquals(2, pathParams.size());
 
-	Assertions.assertEquals("param0", pathParams.get(0).getParamName());
-	Assertions.assertNull(pathParams.get(0).getSubParams());
-	Assertions.assertEquals("param1", pathParams.get(1).getParamName());
-	Assertions.assertNull(pathParams.get(1).getSubParams());
-    }
+    Assertions.assertEquals("param0", pathParams.get(0).getParamName());
+    Assertions.assertNull(pathParams.get(0).getSubParams());
+    Assertions.assertEquals("param1", pathParams.get(1).getParamName());
+    Assertions.assertNull(pathParams.get(1).getSubParams());
+  }
 
-    @Test
-    public void test_parsePathParams_subParams() {
-	List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}-{param1}/{param2}");
-	Assertions.assertEquals(2, pathParams.size());
+  @Test
+  public void test_parsePathParams_subParams() {
+    List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}-{param1}/{param2}");
+    Assertions.assertEquals(2, pathParams.size());
 
-	Assertions.assertEquals(null, pathParams.get(0).getParamName());
-	Assertions.assertNotNull(pathParams.get(0).getSubParams());
+    Assertions.assertEquals(null, pathParams.get(0).getParamName());
+    Assertions.assertNotNull(pathParams.get(0).getSubParams());
 
-	List<PathParam> subParams = pathParams.get(0).getSubParams();
-	Assertions.assertEquals(2, subParams.size());
+    List<PathParam> subParams = pathParams.get(0).getSubParams();
+    Assertions.assertEquals(2, subParams.size());
 
-	Assertions.assertEquals("param0", subParams.get(0).getParamName());
-	Assertions.assertNull(subParams.get(0).getSubParams());
+    Assertions.assertEquals("param0", subParams.get(0).getParamName());
+    Assertions.assertNull(subParams.get(0).getSubParams());
 
-	Assertions.assertEquals("param1", subParams.get(1).getParamName());
-	Assertions.assertNull(subParams.get(1).getSubParams());
+    Assertions.assertEquals("param1", subParams.get(1).getParamName());
+    Assertions.assertNull(subParams.get(1).getSubParams());
 
-	Assertions.assertEquals("param2", pathParams.get(1).getParamName());
-	Assertions.assertNull(pathParams.get(1).getSubParams());
-    }
+    Assertions.assertEquals("param2", pathParams.get(1).getParamName());
+    Assertions.assertNull(pathParams.get(1).getSubParams());
+  }
 
-    @Test
-    public void test_parseSubParams() {
-	List<PathParam> pathParams = ActionDescProvider.parseSubParams("{param0}-{param1}");
-	Assertions.assertEquals(2, pathParams.size());
+  @Test
+  public void test_parseSubParams() {
+    List<PathParam> pathParams = ActionDescProvider.parseSubParams("{param0}-{param1}");
+    Assertions.assertEquals(2, pathParams.size());
 
-	Assertions.assertEquals("param0", pathParams.get(0).getParamName());
-	Assertions.assertNull(pathParams.get(0).getSubParams());
+    Assertions.assertEquals("param0", pathParams.get(0).getParamName());
+    Assertions.assertNull(pathParams.get(0).getSubParams());
 
-	Assertions.assertEquals("param1", pathParams.get(1).getParamName());
-	Assertions.assertNull(pathParams.get(1).getSubParams());
-    }
+    Assertions.assertEquals("param1", pathParams.get(1).getParamName());
+    Assertions.assertNull(pathParams.get(1).getSubParams());
+  }
 
-    @Test
-    public void test_getPathParamCount() {
-	List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}");
-	int pathParamCount = ActionDescProvider.getPathParamCount(pathParams);
-	Assertions.assertEquals(1, pathParamCount);
-    }
+  @Test
+  public void test_getPathParamCount() {
+    List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}");
+    int pathParamCount = ActionDescProvider.getPathParamCount(pathParams);
+    Assertions.assertEquals(1, pathParamCount);
+  }
 
-    @Test
-    public void test_getPathParamCount_subParams() {
-	List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}-{param1}/{param2}");
-	int pathParamCount = ActionDescProvider.getPathParamCount(pathParams);
-	Assertions.assertEquals(3, pathParamCount);
-    }
+  @Test
+  public void test_getPathParamCount_subParams() {
+    List<PathParam> pathParams = ActionDescProvider.parsePathParams("/{param0}-{param1}/{param2}");
+    int pathParamCount = ActionDescProvider.getPathParamCount(pathParams);
+    Assertions.assertEquals(3, pathParamCount);
+  }
 }

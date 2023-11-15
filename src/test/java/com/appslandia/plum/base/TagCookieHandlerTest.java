@@ -37,139 +37,144 @@ import jakarta.servlet.http.Cookie;
  */
 public class TagCookieHandlerTest extends MockTestBase {
 
-    protected TagCookieHandler tagCookieHandler;
+  protected TagCookieHandler tagCookieHandler;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	tagCookieHandler = container.getObject(TagCookieHandler.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    tagCookieHandler = container.getObject(TagCookieHandler.class);
+  }
+
+  @Test
+  public void test_getTagList() {
+    try {
+      getCurrentRequest().addCookie(
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
+
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      TagList tagList = tagCookieHandler.getTagList(getCurrentRequest(), "tags_cookie", null);
+      Assertions.assertNotNull(tagList);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_getTagList() {
-	try {
-	    getCurrentRequest().addCookie(MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
+  @Test
+  public void test_saveTag() {
+    try {
+      getCurrentRequest().addCookie(
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
 
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
 
-	    TagList tagList = tagCookieHandler.getTagList(getCurrentRequest(), "tags_cookie", null);
-	    Assertions.assertNotNull(tagList);
+      tagCookieHandler.saveTag(getCurrentRequest(), getCurrentResponse(), "#tag3", "tags_cookie", null);
+      Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      Assertions.assertNotNull(tagsCookie);
+
+      String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
+      String[] tags = SplitUtils.split(decodedTags, ',');
+
+      Assertions.assertEquals(3, tags.length);
+
+      Assertions.assertEquals("#tag1", tags[0]);
+      Assertions.assertEquals("#tag2", tags[1]);
+      Assertions.assertEquals("#tag3", tags[2]);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_saveTag() {
-	try {
-	    getCurrentRequest().addCookie(MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
+  @Test
+  public void test_saveTags() {
+    try {
+      getCurrentRequest().addCookie(
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
 
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
 
-	    tagCookieHandler.saveTag(getCurrentRequest(), getCurrentResponse(), "#tag3", "tags_cookie", null);
-	    Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
+      tagCookieHandler.saveTags(getCurrentRequest(), getCurrentResponse(), "tag3,tag4", "tags_cookie", null);
+      Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
 
-	    Assertions.assertNotNull(tagsCookie);
+      Assertions.assertNotNull(tagsCookie);
 
-	    String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
-	    String[] tags = SplitUtils.split(decodedTags, ',');
+      String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
+      String[] tags = SplitUtils.split(decodedTags, ',');
 
-	    Assertions.assertEquals(3, tags.length);
+      Assertions.assertEquals(4, tags.length);
 
-	    Assertions.assertEquals("#tag1", tags[0]);
-	    Assertions.assertEquals("#tag2", tags[1]);
-	    Assertions.assertEquals("#tag3", tags[2]);
+      Assertions.assertEquals("#tag1", tags[0]);
+      Assertions.assertEquals("#tag2", tags[1]);
+      Assertions.assertEquals("#tag3", tags[2]);
+      Assertions.assertEquals("#tag4", tags[3]);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_saveTags() {
-	try {
-	    getCurrentRequest().addCookie(MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
+  @Test
+  public void test_saveDbTags() {
+    try {
+      getCurrentRequest().addCookie(
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
 
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
 
-	    tagCookieHandler.saveTags(getCurrentRequest(), getCurrentResponse(), "tag3,tag4", "tags_cookie", null);
-	    Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
+      tagCookieHandler.saveDbTags(getCurrentRequest(), getCurrentResponse(), "|#tag3|#tag4|", "tags_cookie", null);
+      Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
 
-	    Assertions.assertNotNull(tagsCookie);
+      Assertions.assertNotNull(tagsCookie);
 
-	    String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
-	    String[] tags = SplitUtils.split(decodedTags, ',');
+      String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
+      String[] tags = SplitUtils.split(decodedTags, ',');
 
-	    Assertions.assertEquals(4, tags.length);
+      Assertions.assertEquals(4, tags.length);
 
-	    Assertions.assertEquals("#tag1", tags[0]);
-	    Assertions.assertEquals("#tag2", tags[1]);
-	    Assertions.assertEquals("#tag3", tags[2]);
-	    Assertions.assertEquals("#tag4", tags[3]);
+      Assertions.assertEquals("#tag1", tags[0]);
+      Assertions.assertEquals("#tag2", tags[1]);
+      Assertions.assertEquals("#tag3", tags[2]);
+      Assertions.assertEquals("#tag4", tags[3]);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_saveDbTags() {
-	try {
-	    getCurrentRequest().addCookie(MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
+  @Test
+  public void test_replaceTag() {
+    try {
+      getCurrentRequest().addCookie(
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
 
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
 
-	    tagCookieHandler.saveDbTags(getCurrentRequest(), getCurrentResponse(), "|#tag3|#tag4|", "tags_cookie", null);
-	    Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
+      tagCookieHandler.replaceTag(getCurrentRequest(), getCurrentResponse(), "#tag2", "#tag3", "tags_cookie", null);
+      Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
 
-	    Assertions.assertNotNull(tagsCookie);
+      Assertions.assertNotNull(tagsCookie);
 
-	    String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
-	    String[] tags = SplitUtils.split(decodedTags, ',');
+      String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
+      String[] tags = SplitUtils.split(decodedTags, ',');
 
-	    Assertions.assertEquals(4, tags.length);
+      Assertions.assertEquals(2, tags.length);
 
-	    Assertions.assertEquals("#tag1", tags[0]);
-	    Assertions.assertEquals("#tag2", tags[1]);
-	    Assertions.assertEquals("#tag3", tags[2]);
-	    Assertions.assertEquals("#tag4", tags[3]);
+      Assertions.assertEquals("#tag1", tags[0]);
+      Assertions.assertEquals("#tag3", tags[1]);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_replaceTag() {
-	try {
-	    getCurrentRequest().addCookie(MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags_cookie", "#tag1,#tag2", 1000));
+  @Controller("testController")
+  public static class TestController {
 
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
-
-	    tagCookieHandler.replaceTag(getCurrentRequest(), getCurrentResponse(), "#tag2", "#tag3", "tags_cookie", null);
-	    Cookie tagsCookie = getCurrentResponse().getCookie("tags_cookie");
-
-	    Assertions.assertNotNull(tagsCookie);
-
-	    String decodedTags = URLEncoding.decodeParam(tagsCookie.getValue());
-	    String[] tags = SplitUtils.split(decodedTags, ',');
-
-	    Assertions.assertEquals(2, tags.length);
-
-	    Assertions.assertEquals("#tag1", tags[0]);
-	    Assertions.assertEquals("#tag3", tags[1]);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void testAction() throws Exception {
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void testAction() throws Exception {
-	}
-    }
+  }
 }

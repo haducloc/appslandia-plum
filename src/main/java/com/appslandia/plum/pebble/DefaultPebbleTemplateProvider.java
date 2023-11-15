@@ -35,15 +35,15 @@ import jakarta.servlet.ServletContext;
 @ApplicationScoped
 public class DefaultPebbleTemplateProvider extends PebbleTemplateProvider {
 
-    @Inject
-    protected ServletContext servletContext;
+  @Inject
+  protected ServletContext servletContext;
 
-    @Override
-    protected Loader<?> getLoader() {
-	return new Servlet5Loader(this.servletContext);
-    }
+  @Override
+  protected Loader<?> getLoader() {
+    return new Servlet5Loader(this.servletContext);
+  }
 
-    @Override
-    protected void configure(Builder builder) {
-    }
+  @Override
+  protected void configure(Builder builder) {
+  }
 }

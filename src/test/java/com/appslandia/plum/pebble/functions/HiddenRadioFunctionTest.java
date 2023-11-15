@@ -45,109 +45,112 @@ import jakarta.validation.constraints.NotNull;
  */
 public class HiddenRadioFunctionTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+  protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+  }
+
+  @Test
+  public void test_not_readonly() {
+    String templateContent = """
+        	{{ hiddenRdo(path='model.userType', codeValue=1, readonly=false) }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("userType", "1");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_checked_readonly() {
+    String templateContent = """
+        	{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("userType", "1");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("<input type=\"hidden\" name=\"userType\" value=\"1\" />", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_unchecked_readonly() {
+    String templateContent = """
+        	{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
+        """;
+
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    try {
+      getCurrentRequest().addParameter("userType", "2");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
+      request.storeModel(model);
+
+      return ActionResult.EMPTY;
+    }
+  }
+
+  public static class UserModel {
+
+    @NotNull
+    private int userType;
+
+    public int getUserType() {
+      return userType;
     }
 
-    @Test
-    public void test_not_readonly() {
-	String templateContent = """
-			{{ hiddenRdo(path='model.userType', codeValue=1, readonly=false) }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("userType", "1");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    public void setUserType(int userType) {
+      this.userType = userType;
     }
-
-    @Test
-    public void test_checked_readonly() {
-	String templateContent = """
-			{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("userType", "1");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("<input type=\"hidden\" name=\"userType\" value=\"1\" />", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Test
-    public void test_unchecked_readonly() {
-	String templateContent = """
-			{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
-		""";
-
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-	try {
-	    getCurrentRequest().addParameter("userType", "2");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
-	    request.storeModel(model);
-
-	    return ActionResult.EMPTY;
-	}
-    }
-
-    public static class UserModel {
-
-	@NotNull
-	private int userType;
-
-	public int getUserType() {
-	    return userType;
-	}
-
-	public void setUserType(int userType) {
-	    this.userType = userType;
-	}
-    }
+  }
 }

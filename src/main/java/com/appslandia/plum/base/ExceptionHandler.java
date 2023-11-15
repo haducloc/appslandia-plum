@@ -46,191 +46,198 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class ExceptionHandler {
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected JsonProcessor jsonProcessor;
+  @Inject
+  protected JsonProcessor jsonProcessor;
 
-    @Inject
-    protected RequestContextParser requestContextParser;
+  @Inject
+  protected RequestContextParser requestContextParser;
 
-    public void handleException(HttpServletRequest request, HttpServletResponse response, Throwable exception) throws ServletException, IOException {
-	if (exception.getClass().getDeclaredAnnotation(NotLog.class) == null) {
-	    this.appLogger.error(exception);
-	}
-	ResponseWrapperImpl respImpl = ServletUtils.unwrapResponse(response, ResponseWrapperImpl.class);
-	HttpServletResponse originResp = (respImpl != null) ? (HttpServletResponse) respImpl.getResponse() : response;
+  public void handleException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
+      throws ServletException, IOException {
+    if (exception.getClass().getDeclaredAnnotation(NotLog.class) == null) {
+      this.appLogger.error(exception);
+    }
+    ResponseWrapperImpl respImpl = ServletUtils.unwrapResponse(response, ResponseWrapperImpl.class);
+    HttpServletResponse originResp = (respImpl != null) ? (HttpServletResponse) respImpl.getResponse() : response;
 
-	// Already committed?
-	if (originResp.isCommitted()) {
-	    originResp.flushBuffer();
-	    return;
-	}
-
-	// Reset originResp
-	originResp.reset();
-
-	writeHeaders(originResp, exception);
-	writeException(request, originResp, exception);
+    // Already committed?
+    if (originResp.isCommitted()) {
+      originResp.flushBuffer();
+      return;
     }
 
-    protected void writeHeaders(HttpServletResponse response, Throwable exception) throws ServletException, IOException {
-	if (exception instanceof HttpHeaderApply) {
-	    ((HttpHeaderApply) exception).apply(response);
-	}
+    // Reset originResp
+    originResp.reset();
+
+    writeHeaders(originResp, exception);
+    writeException(request, originResp, exception);
+  }
+
+  protected void writeHeaders(HttpServletResponse response, Throwable exception) throws ServletException, IOException {
+    if (exception instanceof HttpHeaderApply) {
+      ((HttpHeaderApply) exception).apply(response);
+    }
+  }
+
+  protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
+      throws ServletException, IOException {
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
+    Problem problem = getProblem(request, requestContext, exception);
+
+    boolean jsonError = (requestContext.getActionDesc() != null)
+        ? (requestContext.getActionDesc().getEnableJsonError() != null)
+        : this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_ERROR);
+    if (jsonError) {
+      writeJsonError(request, response, problem.getStatus(), problem);
+    } else {
+      request.setAttribute(Problem.class.getName(), problem);
+      response.sendError(problem.getStatus(), problem.getTitle());
+    }
+  }
+
+  public Problem getProblem(HttpServletRequest request, Throwable exception) {
+    return getProblem(request, ServletUtils.getRequestContext(request), exception);
+  }
+
+  public Problem getProblem(HttpServletRequest request, RequestContext requestContext, Throwable exception) {
+    Problem problem = new Problem().setException(exception);
+
+    // ProblemSupport
+    if (exception instanceof ProblemSupport) {
+      Problem prob = ((ProblemSupport) exception).getProblem();
+      if (prob != null) {
+        problem.setStatus(prob.getStatus()).setTitle(prob.getTitle()).setTitleKey(prob.getTitleKey())
+            .setDetail(prob.getDetail()).setDetailKey(prob.getDetailKey()).setType(prob.getType())
+            .setInstance(prob.getInstance()).setExtensions(prob.getExtensions());
+      }
     }
 
-    protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception) throws ServletException, IOException {
-	RequestContext requestContext = ServletUtils.getRequestContext(request);
-	Problem problem = getProblem(request, requestContext, exception);
-
-	boolean jsonError = (requestContext.getActionDesc() != null) ? (requestContext.getActionDesc().getEnableJsonError() != null)
-		: this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_ERROR);
-	if (jsonError) {
-	    writeJsonError(request, response, problem.getStatus(), problem);
-	} else {
-	    request.setAttribute(Problem.class.getName(), problem);
-	    response.sendError(problem.getStatus(), problem.getTitle());
-	}
+    // Status
+    if (problem.getStatus() == null) {
+      problem.setStatus((Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
+    }
+    if (problem.getStatus() == null) {
+      problem.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     }
 
-    public Problem getProblem(HttpServletRequest request, Throwable exception) {
-	return getProblem(request, ServletUtils.getRequestContext(request), exception);
+    // Title
+    if (problem.getTitleKey() != null) {
+      problem.setTitle(problem.getTitleKey().getRes(requestContext.getResources()));
+    }
+    if (problem.getTitle() == null) {
+      problem.setTitle(getErrorMessage(problem.getStatus(), exception, requestContext.getResources()));
     }
 
-    public Problem getProblem(HttpServletRequest request, RequestContext requestContext, Throwable exception) {
-	Problem problem = new Problem().setException(exception);
-
-	// ProblemSupport
-	if (exception instanceof ProblemSupport) {
-	    Problem prob = ((ProblemSupport) exception).getProblem();
-	    if (prob != null) {
-		problem.setStatus(prob.getStatus()).setTitle(prob.getTitle()).setTitleKey(prob.getTitleKey()).setDetail(prob.getDetail()).setDetailKey(prob.getDetailKey())
-			.setType(prob.getType()).setInstance(prob.getInstance()).setExtensions(prob.getExtensions());
-	    }
-	}
-
-	// Status
-	if (problem.getStatus() == null) {
-	    problem.setStatus((Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE));
-	}
-	if (problem.getStatus() == null) {
-	    problem.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-	}
-
-	// Title
-	if (problem.getTitleKey() != null) {
-	    problem.setTitle(problem.getTitleKey().getRes(requestContext.getResources()));
-	}
-	if (problem.getTitle() == null) {
-	    problem.setTitle(getErrorMessage(problem.getStatus(), exception, requestContext.getResources()));
-	}
-
-	// Detail
-	if (problem.getDetailKey() != null) {
-	    problem.setDetail(problem.getDetailKey().getRes(requestContext.getResources()));
-	}
-
-	// exception
-	if (this.appConfig.isEnableDebug()) {
-	    if (exception != null) {
-		problem.setStackTrace(ExceptionUtils.toStackTrace(exception));
-	    }
-	}
-
-	// modelState
-	ModelState modelState = (ModelState) request.getAttribute(ModelState.REQUEST_ATTRIBUTE_ID);
-	if ((modelState != null) && !modelState.isValid()) {
-	    problem.setModelState(modelState);
-	}
-	return problem;
+    // Detail
+    if (problem.getDetailKey() != null) {
+      problem.setDetail(problem.getDetailKey().getRes(requestContext.getResources()));
     }
 
-    protected void writeJsonError(HttpServletRequest request, HttpServletResponse response, int status, Problem problem) throws ServletException, IOException {
-	response.setContentType(MimeTypes.APP_JSON_PROBLEM);
-	response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-	response.setStatus(status);
-
-	PrintWriter out = ServletUtils.getPrintWriter(response);
-	this.jsonProcessor.write(out, problem);
-	out.flush();
+    // exception
+    if (this.appConfig.isEnableDebug()) {
+      if (exception != null) {
+        problem.setStackTrace(ExceptionUtils.toStackTrace(exception));
+      }
     }
 
-    protected String getErrorMessage(int status, Throwable exception, Resources resources) {
-	if (exception == null) {
-	    return resources.get(getMsgKey(status));
-	}
-	if (this.appConfig.isEnableDebug()) {
-	    return String.format("%s (exception=%s)", resources.get(getMsgKey(status)), ExceptionUtils.buildMessage(exception));
-	}
-	if (exception.getMessage() != null) {
-	    return exception.getMessage();
-	}
-	return resources.get(getMsgKey(status));
+    // modelState
+    ModelState modelState = (ModelState) request.getAttribute(ModelState.REQUEST_ATTRIBUTE_ID);
+    if ((modelState != null) && !modelState.isValid()) {
+      problem.setModelState(modelState);
     }
+    return problem;
+  }
 
-    protected String getMsgKey(int status) {
-	switch (status) {
-	case HttpServletResponse.SC_BAD_REQUEST:
-	    return Resources.ERROR_BAD_REQUEST;
+  protected void writeJsonError(HttpServletRequest request, HttpServletResponse response, int status, Problem problem)
+      throws ServletException, IOException {
+    response.setContentType(MimeTypes.APP_JSON_PROBLEM);
+    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+    response.setStatus(status);
 
-	case HttpServletResponse.SC_UNAUTHORIZED:
-	    return Resources.ERROR_UNAUTHORIZED;
+    PrintWriter out = ServletUtils.getPrintWriter(response);
+    this.jsonProcessor.write(out, problem);
+    out.flush();
+  }
 
-	case HttpServletResponse.SC_FORBIDDEN:
-	    return Resources.ERROR_FORBIDDEN;
-
-	case HttpServletResponse.SC_NOT_FOUND:
-	    return Resources.ERROR_NOT_FOUND;
-
-	case HttpServletResponse.SC_METHOD_NOT_ALLOWED:
-	    return Resources.ERROR_METHOD_NOT_ALLOWED;
-
-	case HttpServletResponse.SC_PRECONDITION_FAILED:
-	    return Resources.ERROR_PRECONDITION_FAILED;
-
-	case HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE:
-	    return Resources.ERROR_UNSUPPORTED_MEDIA_TYPE;
-
-	case TooManyRequestsException.SC_TOO_MANY_REQUESTS:
-	    return Resources.ERROR_TOO_MANY_REQUESTS;
-
-	case HttpServletResponse.SC_SERVICE_UNAVAILABLE:
-	    return Resources.ERROR_SERVICE_UNAVAILABLE;
-
-	default:
-	    return Resources.ERROR_INTERNAL_SERVER_ERROR;
-	}
+  protected String getErrorMessage(int status, Throwable exception, Resources resources) {
+    if (exception == null) {
+      return resources.get(getMsgKey(status));
     }
-
-    public void writeSimpleHtml(HttpServletRequest request, HttpServletResponse response, int status, String message) throws ServletException, IOException {
-	Asserts.isTrue(!response.isCommitted());
-	response.resetBuffer();
-
-	response.setContentType(MimeTypes.TEXT_HTML);
-	response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-	response.setStatus(status);
-
-	PrintWriter out = ServletUtils.getPrintWriter(response);
-	RequestContext requestContext = this.requestContextParser.parse(request, response);
-
-	out.println("<!DOCTYPE html>");
-	out.format("<html lang=\"%s\">", requestContext.getLanguageId());
-	out.println();
-	out.println("<head>");
-	out.println(" <meta charset=\"utf-8\">");
-	out.println(" <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">");
-	out.format(" <title>HTTP Status %d</title>", status);
-	out.println();
-	out.println("</head>");
-	out.println("<body>");
-	out.format(" <h3>HTTP Status %d - %s</h3>", status, message);
-	out.println();
-	out.println("</body>");
-	out.print("</html>");
+    if (this.appConfig.isEnableDebug()) {
+      return String.format("%s (exception=%s)", resources.get(getMsgKey(status)),
+          ExceptionUtils.buildMessage(exception));
     }
+    if (exception.getMessage() != null) {
+      return exception.getMessage();
+    }
+    return resources.get(getMsgKey(status));
+  }
+
+  protected String getMsgKey(int status) {
+    switch (status) {
+    case HttpServletResponse.SC_BAD_REQUEST:
+      return Resources.ERROR_BAD_REQUEST;
+
+    case HttpServletResponse.SC_UNAUTHORIZED:
+      return Resources.ERROR_UNAUTHORIZED;
+
+    case HttpServletResponse.SC_FORBIDDEN:
+      return Resources.ERROR_FORBIDDEN;
+
+    case HttpServletResponse.SC_NOT_FOUND:
+      return Resources.ERROR_NOT_FOUND;
+
+    case HttpServletResponse.SC_METHOD_NOT_ALLOWED:
+      return Resources.ERROR_METHOD_NOT_ALLOWED;
+
+    case HttpServletResponse.SC_PRECONDITION_FAILED:
+      return Resources.ERROR_PRECONDITION_FAILED;
+
+    case HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE:
+      return Resources.ERROR_UNSUPPORTED_MEDIA_TYPE;
+
+    case TooManyRequestsException.SC_TOO_MANY_REQUESTS:
+      return Resources.ERROR_TOO_MANY_REQUESTS;
+
+    case HttpServletResponse.SC_SERVICE_UNAVAILABLE:
+      return Resources.ERROR_SERVICE_UNAVAILABLE;
+
+    default:
+      return Resources.ERROR_INTERNAL_SERVER_ERROR;
+    }
+  }
+
+  public void writeSimpleHtml(HttpServletRequest request, HttpServletResponse response, int status, String message)
+      throws ServletException, IOException {
+    Asserts.isTrue(!response.isCommitted());
+    response.resetBuffer();
+
+    response.setContentType(MimeTypes.TEXT_HTML);
+    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+    response.setStatus(status);
+
+    PrintWriter out = ServletUtils.getPrintWriter(response);
+    RequestContext requestContext = this.requestContextParser.parse(request, response);
+
+    out.println("<!DOCTYPE html>");
+    out.format("<html lang=\"%s\">", requestContext.getLanguageId());
+    out.println();
+    out.println("<head>");
+    out.println(" <meta charset=\"utf-8\">");
+    out.println(" <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">");
+    out.format(" <title>HTTP Status %d</title>", status);
+    out.println();
+    out.println("</head>");
+    out.println("<body>");
+    out.format(" <h3>HTTP Status %d - %s</h3>", status, message);
+    out.println();
+    out.println("</body>");
+    out.print("</html>");
+  }
 }

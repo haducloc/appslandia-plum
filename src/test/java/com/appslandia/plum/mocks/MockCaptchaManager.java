@@ -31,44 +31,44 @@ import com.appslandia.plum.base.SessionCaptchaManager;
  */
 public class MockCaptchaManager extends SessionCaptchaManager {
 
-    public static final String MOCK_CAPTCHA_ID = "mockCaptchaId";
-    public static final String MOCK_CAPTCHA_WORDS = "mockCaptchaWords";
+  public static final String MOCK_CAPTCHA_ID = "mockCaptchaId";
+  public static final String MOCK_CAPTCHA_WORDS = "mockCaptchaWords";
 
-    final TextGenerator captchaIdGenerator = new TextGenerator() {
-
-	@Override
-	public String generate() {
-	    return MOCK_CAPTCHA_ID;
-	}
-
-	@Override
-	public boolean verify(String value) {
-	    Asserts.notNull(value);
-	    return value.equals(MOCK_CAPTCHA_ID);
-	}
-    };
-
-    final TextGenerator wordsGenerator = new TextGenerator() {
-
-	@Override
-	public String generate() {
-	    return MOCK_CAPTCHA_WORDS;
-	}
-
-	@Override
-	public boolean verify(String value) {
-	    Asserts.notNull(value);
-	    return value.equals(MOCK_CAPTCHA_WORDS);
-	}
-    };
+  final TextGenerator captchaIdGenerator = new TextGenerator() {
 
     @Override
-    protected TextGenerator getCaptchaIdGenerator() {
-	return this.captchaIdGenerator;
+    public String generate() {
+      return MOCK_CAPTCHA_ID;
     }
 
     @Override
-    protected TextGenerator getWordsGenerator() {
-	return this.wordsGenerator;
+    public boolean verify(String value) {
+      Asserts.notNull(value);
+      return value.equals(MOCK_CAPTCHA_ID);
     }
+  };
+
+  final TextGenerator wordsGenerator = new TextGenerator() {
+
+    @Override
+    public String generate() {
+      return MOCK_CAPTCHA_WORDS;
+    }
+
+    @Override
+    public boolean verify(String value) {
+      Asserts.notNull(value);
+      return value.equals(MOCK_CAPTCHA_WORDS);
+    }
+  };
+
+  @Override
+  protected TextGenerator getCaptchaIdGenerator() {
+    return this.captchaIdGenerator;
+  }
+
+  @Override
+  protected TextGenerator getWordsGenerator() {
+    return this.wordsGenerator;
+  }
 }

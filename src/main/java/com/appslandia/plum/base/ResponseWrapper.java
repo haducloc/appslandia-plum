@@ -32,14 +32,14 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  */
 public abstract class ResponseWrapper extends HttpServletResponseWrapper {
 
-    public ResponseWrapper(HttpServletResponse response) {
-	super(response);
-    }
+  public ResponseWrapper(HttpServletResponse response) {
+    super(response);
+  }
 
-    public abstract void finishWrapper() throws IOException;
+  public abstract void finishWrapper() throws IOException;
 
-    @Override
-    public String toString() {
-	return "[" + getClass().getSimpleName() + "] " + getResponse();
-    }
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + "] " + getResponse();
+  }
 }

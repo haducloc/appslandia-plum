@@ -34,19 +34,19 @@ import jakarta.inject.Inject;
  */
 public class MemJwtIdentityStore extends JwtIdentityStore {
 
-    @Inject
-    @MemVersion
-    protected JwtSigner jwtSigner;
+  @Inject
+  @MemVersion
+  protected JwtSigner jwtSigner;
 
-    @Override
-    public Class<? extends JwtCredential> getAcceptedCredentialType() {
-	return MemJwtCredential.class;
-    }
+  @Override
+  public Class<? extends JwtCredential> getAcceptedCredentialType() {
+    return MemJwtCredential.class;
+  }
 
-    @Override
-    protected JwtToken parseJwtToken(String credential) {
-	JwtToken token = jwtSigner.parse(credential);
-	jwtSigner.verify(token);
-	return token;
-    }
+  @Override
+  protected JwtToken parseJwtToken(String credential) {
+    JwtToken token = jwtSigner.parse(credential);
+    jwtSigner.verify(token);
+    return token;
+  }
 }

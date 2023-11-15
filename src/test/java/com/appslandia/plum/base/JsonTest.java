@@ -32,78 +32,78 @@ import org.junit.jupiter.api.Test;
  */
 public class JsonTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testInt() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testInt");
+
+      String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
+      Assertions.assertEquals("100", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testNull() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testNull");
+
+      String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
+      Assertions.assertEquals("null", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testModel() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testModel");
+
+      String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
+      Assertions.assertTrue(content.contains("\"userId\":1"));
+      Assertions.assertTrue(content.contains("\"name\":\"user1\""));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public int testInt() throws Exception {
+      return 100;
     }
 
-    @Test
-    public void test_testInt() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testInt");
-
-	    String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
-	    Assertions.assertEquals("100", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public Integer testNull() throws Exception {
+      return null;
     }
 
-    @Test
-    public void test_testNull() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testNull");
-
-	    String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
-	    Assertions.assertEquals("null", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public UserModel testModel() throws Exception {
+      return new UserModel(1, "user1");
     }
+  }
 
-    @Test
-    public void test_testModel() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testModel");
+  public static class UserModel {
 
-	    String content = getCurrentResponse().getContent().toString(StandardCharsets.UTF_8);
-	    Assertions.assertTrue(content.contains("\"userId\":1"));
-	    Assertions.assertTrue(content.contains("\"name\":\"user1\""));
+    public int userId;
+    public String name;
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public UserModel(int userId, String name) {
+      this.userId = userId;
+      this.name = name;
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public int testInt() throws Exception {
-	    return 100;
-	}
-
-	@HttpGet
-	public Integer testNull() throws Exception {
-	    return null;
-	}
-
-	@HttpGet
-	public UserModel testModel() throws Exception {
-	    return new UserModel(1, "user1");
-	}
-    }
-
-    public static class UserModel {
-
-	public int userId;
-	public String name;
-
-	public UserModel(int userId, String name) {
-	    this.userId = userId;
-	    this.name = name;
-	}
-    }
+  }
 }

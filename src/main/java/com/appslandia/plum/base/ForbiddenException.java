@@ -28,21 +28,21 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 public class ForbiddenException extends HttpException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public ForbiddenException() {
-	super(HttpServletResponse.SC_FORBIDDEN);
-    }
+  public ForbiddenException() {
+    super(HttpServletResponse.SC_FORBIDDEN);
+  }
 
-    public ForbiddenException(String message) {
-	super(HttpServletResponse.SC_FORBIDDEN, message);
-    }
+  public ForbiddenException(String message) {
+    super(HttpServletResponse.SC_FORBIDDEN, message);
+  }
 
-    public ForbiddenException(String message, Throwable cause) {
-	super(HttpServletResponse.SC_FORBIDDEN, message, cause);
-    }
+  public ForbiddenException(String message, Throwable cause) {
+    super(HttpServletResponse.SC_FORBIDDEN, message, cause);
+  }
 
-    public ForbiddenException(Throwable cause) {
-	super(HttpServletResponse.SC_FORBIDDEN, cause);
-    }
+  public ForbiddenException(Throwable cause) {
+    super(HttpServletResponse.SC_FORBIDDEN, cause);
+  }
 }

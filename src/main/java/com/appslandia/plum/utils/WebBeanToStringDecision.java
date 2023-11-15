@@ -36,50 +36,51 @@ import jakarta.servlet.http.HttpSession;
  */
 public class WebBeanToStringDecision extends ToStringBuilder.ToStringDecision {
 
-    final boolean printRequest;
-    final boolean printResponse;
-    final boolean printSession;
-    final boolean printServletContext;
+  final boolean printRequest;
+  final boolean printResponse;
+  final boolean printSession;
+  final boolean printServletContext;
 
-    public WebBeanToStringDecision() {
-	this(false, false, false, false);
-    }
+  public WebBeanToStringDecision() {
+    this(false, false, false, false);
+  }
 
-    public WebBeanToStringDecision(boolean printRequest, boolean printResponse, boolean printSession, boolean printServletContext) {
-	this.printRequest = printRequest;
-	this.printResponse = printResponse;
-	this.printSession = printSession;
-	this.printServletContext = printServletContext;
-    }
+  public WebBeanToStringDecision(boolean printRequest, boolean printResponse, boolean printSession,
+      boolean printServletContext) {
+    this.printRequest = printRequest;
+    this.printResponse = printResponse;
+    this.printSession = printSession;
+    this.printServletContext = printServletContext;
+  }
 
-    @Override
-    public boolean tsIdHash(Object value, Field field) {
-	if (super.tsIdHash(value, field)) {
-	    return true;
-	}
-	if (value instanceof ServletRequest) {
-	    return !this.printRequest;
-	}
-	if (value instanceof ServletResponse) {
-	    return !this.printResponse;
-	}
-	if (value instanceof HttpSession) {
-	    return !this.printSession;
-	}
-	if (value instanceof ServletContext) {
-	    return !this.printServletContext;
-	}
-	if (value.getClass().getName().endsWith("$Proxy$_$$_WeldClientProxy")) {
-	    return true;
-	}
-	if (field != null) {
-	    if (field.getName().startsWith("weld$$$") || field.getName().startsWith("weld_proxy_field$$$")) {
-		return true;
-	    }
-	    if (field.getType().getName().startsWith("org.jboss.weld")) {
-		return true;
-	    }
-	}
-	return false;
+  @Override
+  public boolean tsIdHash(Object value, Field field) {
+    if (super.tsIdHash(value, field)) {
+      return true;
     }
+    if (value instanceof ServletRequest) {
+      return !this.printRequest;
+    }
+    if (value instanceof ServletResponse) {
+      return !this.printResponse;
+    }
+    if (value instanceof HttpSession) {
+      return !this.printSession;
+    }
+    if (value instanceof ServletContext) {
+      return !this.printServletContext;
+    }
+    if (value.getClass().getName().endsWith("$Proxy$_$$_WeldClientProxy")) {
+      return true;
+    }
+    if (field != null) {
+      if (field.getName().startsWith("weld$$$") || field.getName().startsWith("weld_proxy_field$$$")) {
+        return true;
+      }
+      if (field.getType().getName().startsWith("org.jboss.weld")) {
+        return true;
+      }
+    }
+    return false;
+  }
 }

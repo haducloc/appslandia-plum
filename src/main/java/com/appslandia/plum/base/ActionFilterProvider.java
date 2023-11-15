@@ -34,21 +34,21 @@ import com.appslandia.common.utils.Asserts;
  */
 public class ActionFilterProvider extends InitializeObject {
 
-    private Map<String, ActionFilter> actionFilterMap = new HashMap<>();
+  private Map<String, ActionFilter> actionFilterMap = new HashMap<>();
 
-    @Override
-    protected void init() throws Exception {
-	this.actionFilterMap = Collections.unmodifiableMap(this.actionFilterMap);
-    }
+  @Override
+  protected void init() throws Exception {
+    this.actionFilterMap = Collections.unmodifiableMap(this.actionFilterMap);
+  }
 
-    public ActionFilter getActionFilter(String name) {
-	this.initialize();
-	ActionFilter impl = this.actionFilterMap.get(name);
-	return Asserts.notNull(impl);
-    }
+  public ActionFilter getActionFilter(String name) {
+    this.initialize();
+    ActionFilter impl = this.actionFilterMap.get(name);
+    return Asserts.notNull(impl);
+  }
 
-    public void addActionFilter(String name, ActionFilter impl) {
-	this.assertNotInitialized();
-	this.actionFilterMap.put(name, impl);
-    }
+  public void addActionFilter(String name, ActionFilter impl) {
+    this.assertNotInitialized();
+    this.actionFilterMap.put(name, impl);
+  }
 }

@@ -34,60 +34,61 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ResponseSafeWriter extends ResponseWrapper {
 
-    private PrintWriter outWriter;
-    private Boolean usedWriter;
+  private PrintWriter outWriter;
+  private Boolean usedWriter;
 
-    public ResponseSafeWriter(HttpServletResponse response) {
-	super(response);
+  public ResponseSafeWriter(HttpServletResponse response) {
+    super(response);
+  }
+
+  @Override
+  public PrintWriter getWriter() throws IOException {
+    if (Boolean.TRUE.equals(this.usedWriter)) {
+      return super.getWriter();
     }
+    if (this.usedWriter == null) {
+      try {
+        PrintWriter writer = super.getWriter();
+        this.usedWriter = Boolean.TRUE;
+        return writer;
 
-    @Override
-    public PrintWriter getWriter() throws IOException {
-	if (Boolean.TRUE.equals(this.usedWriter)) {
-	    return super.getWriter();
-	}
-	if (this.usedWriter == null) {
-	    try {
-		PrintWriter writer = super.getWriter();
-		this.usedWriter = Boolean.TRUE;
-		return writer;
-
-	    } catch (IllegalStateException ex) {
-		this.usedWriter = Boolean.FALSE;
-	    }
-	}
-	if (this.outWriter == null) {
-	    this.outWriter = new PrintWriter(new BufferedWriter(new OutputStreamWriter(super.getOutputStream(), this.getCharacterEncoding())));
-	}
-	return this.outWriter;
+      } catch (IllegalStateException ex) {
+        this.usedWriter = Boolean.FALSE;
+      }
     }
-
-    @Override
-    public void finishWrapper() throws IOException {
+    if (this.outWriter == null) {
+      this.outWriter = new PrintWriter(
+          new BufferedWriter(new OutputStreamWriter(super.getOutputStream(), this.getCharacterEncoding())));
     }
+    return this.outWriter;
+  }
 
-    @Override
-    public void flushBuffer() throws IOException {
-	if (this.outWriter != null) {
-	    this.outWriter.flush();
-	} else {
-	    super.flushBuffer();
-	}
+  @Override
+  public void finishWrapper() throws IOException {
+  }
+
+  @Override
+  public void flushBuffer() throws IOException {
+    if (this.outWriter != null) {
+      this.outWriter.flush();
+    } else {
+      super.flushBuffer();
     }
+  }
 
-    @Override
-    public void resetBuffer() {
-	super.resetBuffer();
+  @Override
+  public void resetBuffer() {
+    super.resetBuffer();
 
-	this.outWriter = null;
-	this.usedWriter = null;
-    }
+    this.outWriter = null;
+    this.usedWriter = null;
+  }
 
-    @Override
-    public void reset() {
-	super.reset();
+  @Override
+  public void reset() {
+    super.reset();
 
-	this.outWriter = null;
-	this.usedWriter = null;
-    }
+    this.outWriter = null;
+    this.usedWriter = null;
+  }
 }

@@ -34,28 +34,29 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class FilenameResult implements ActionResult {
 
-    private String fileName;
-    private String contentType;
-    private boolean inline;
+  private String fileName;
+  private String contentType;
+  private boolean inline;
 
-    public FilenameResult(String fileName, String contentType) {
-	this(fileName, contentType, false);
-    }
+  public FilenameResult(String fileName, String contentType) {
+    this(fileName, contentType, false);
+  }
 
-    public FilenameResult(String fileName, String contentType, boolean inline) {
-	this.fileName = fileName;
-	this.contentType = contentType;
-	this.inline = inline;
-    }
+  public FilenameResult(String fileName, String contentType, boolean inline) {
+    this.fileName = fileName;
+    this.contentType = contentType;
+    this.inline = inline;
+  }
 
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	response.setContentType(this.contentType);
+  @Override
+  public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    response.setContentType(this.contentType);
 
-	ServletUtils.setContentDisposition(response, this.fileName, this.inline);
+    ServletUtils.setContentDisposition(response, this.fileName, this.inline);
 
-	this.writeContent(request, response);
-    }
+    this.writeContent(request, response);
+  }
 
-    protected abstract void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception;
+  protected abstract void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception;
 }

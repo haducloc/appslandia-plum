@@ -35,37 +35,37 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class RequestAttributes {
 
-    final Map<String, Object> storedAttributes = new HashMap<>();
+  final Map<String, Object> storedAttributes = new HashMap<>();
 
-    public RequestAttributes(HttpServletRequest request) {
-	this(request, (attr) -> true);
+  public RequestAttributes(HttpServletRequest request) {
+    this(request, (attr) -> true);
+  }
+
+  public RequestAttributes(HttpServletRequest request, Function<String, Boolean> storeSelector) {
+    Enumeration<String> attributes = request.getAttributeNames();
+    while (attributes.hasMoreElements()) {
+      String attribute = attributes.nextElement();
+
+      if (storeSelector.apply(attribute)) {
+        this.storedAttributes.put(attribute, request.getAttribute(attribute));
+      }
+    }
+  }
+
+  public void restore(HttpServletRequest request) {
+    // Remove new attributes added
+    Enumeration<String> attributes = request.getAttributeNames();
+    while (attributes.hasMoreElements()) {
+      String attribute = attributes.nextElement();
+
+      if (!this.storedAttributes.containsKey(attribute)) {
+        request.removeAttribute(attribute);
+      }
     }
 
-    public RequestAttributes(HttpServletRequest request, Function<String, Boolean> storeSelector) {
-	Enumeration<String> attributes = request.getAttributeNames();
-	while (attributes.hasMoreElements()) {
-	    String attribute = attributes.nextElement();
-
-	    if (storeSelector.apply(attribute)) {
-		this.storedAttributes.put(attribute, request.getAttribute(attribute));
-	    }
-	}
+    // Restore attribute values
+    for (Entry<String, Object> attribute : this.storedAttributes.entrySet()) {
+      request.setAttribute(attribute.getKey(), attribute.getValue());
     }
-
-    public void restore(HttpServletRequest request) {
-	// Remove new attributes added
-	Enumeration<String> attributes = request.getAttributeNames();
-	while (attributes.hasMoreElements()) {
-	    String attribute = attributes.nextElement();
-
-	    if (!this.storedAttributes.containsKey(attribute)) {
-		request.removeAttribute(attribute);
-	    }
-	}
-
-	// Restore attribute values
-	for (Entry<String, Object> attribute : this.storedAttributes.entrySet()) {
-	    request.setAttribute(attribute.getKey(), attribute.getValue());
-	}
-    }
+  }
 }

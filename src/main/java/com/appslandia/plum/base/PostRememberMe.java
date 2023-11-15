@@ -30,5 +30,5 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public interface PostRememberMe {
 
-    void apply(HttpServletRequest request, HttpServletResponse response, String tokenIdentity) throws Exception;
+  void apply(HttpServletRequest request, HttpServletResponse response, String tokenIdentity) throws Exception;
 }

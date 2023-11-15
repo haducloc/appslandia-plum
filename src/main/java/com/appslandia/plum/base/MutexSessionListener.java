@@ -36,20 +36,20 @@ import jakarta.servlet.http.HttpSessionListener;
 @WebListener
 public class MutexSessionListener implements HttpSessionListener {
 
-    public static final String ATTRIBUTE_MUTEX = "mutex";
+  public static final String ATTRIBUTE_MUTEX = "mutex";
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Override
-    public void sessionCreated(HttpSessionEvent hse) {
-	Asserts.isTrue(this.appConfig.isEnableSession(), "Http session is disabled.");
+  @Override
+  public void sessionCreated(HttpSessionEvent hse) {
+    Asserts.isTrue(this.appConfig.isEnableSession(), "Http session is disabled.");
 
-	hse.getSession().setAttribute(ATTRIBUTE_MUTEX, new Mutex());
-    }
+    hse.getSession().setAttribute(ATTRIBUTE_MUTEX, new Mutex());
+  }
 
-    @Override
-    public void sessionDestroyed(HttpSessionEvent hse) {
-	hse.getSession().removeAttribute(ATTRIBUTE_MUTEX);
-    }
+  @Override
+  public void sessionDestroyed(HttpSessionEvent hse) {
+    hse.getSession().removeAttribute(ATTRIBUTE_MUTEX);
+  }
 }

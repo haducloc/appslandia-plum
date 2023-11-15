@@ -49,67 +49,72 @@ import jakarta.servlet.http.HttpServletResponse;
 // See @Priority org.glassfish.soteria.cdi.RememberMeInterceptor
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 205)
 public class PreRememberMeInterceptor implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected CookieHandler cookieHandler;
+  @Inject
+  protected CookieHandler cookieHandler;
 
-    @Inject
-    protected PostRememberMe postRememberMe;
+  @Inject
+  protected PostRememberMe postRememberMe;
 
-    @Inject
-    protected RequestContextParser requestContextParser;
+  @Inject
+  protected RequestContextParser requestContextParser;
 
-    @AroundInvoke
-    public Object intercept(InvocationContext context) throws Exception {
+  @AroundInvoke
+  public Object intercept(InvocationContext context) throws Exception {
 
-	// If not intercepting HttpAuthenticationMechanism#validateRequest
-	if (!isValidateRequest(context.getMethod())) {
-	    return context.proceed();
-	}
-	Object[] parameters = context.getParameters();
-	HttpServletRequest request = (HttpServletRequest) parameters[0];
-	HttpServletResponse response = (HttpServletResponse) parameters[1];
+    // If not intercepting HttpAuthenticationMechanism#validateRequest
+    if (!isValidateRequest(context.getMethod())) {
+      return context.proceed();
+    }
+    Object[] parameters = context.getParameters();
+    HttpServletRequest request = (HttpServletRequest) parameters[0];
+    HttpServletResponse response = (HttpServletResponse) parameters[1];
 
-	if (request.getUserPrincipal() != null) {
-	    this.appLogger.warn("PreRememberMeInterceptor must be executed between AutoApplySessionInterceptor() and RememberMeInterceptor().");
-	    return context.proceed();
-	}
-
-	// Try to authenticate with the next interceptor or actual authentication mechanism
-	AuthenticationStatus status = (AuthenticationStatus) context.proceed();
-	if (status != AuthenticationStatus.SUCCESS) {
-	    return status;
-	}
-
-	// > AuthenticationStatus.SUCCESS
-
-	// From RemMeIdentityStore?
-	RemMeIdentityStore.ReissuedToken reissuedToken = (RemMeIdentityStore.ReissuedToken) ServletUtils.removeAttribute(request, RemMeIdentityStore.ReissuedToken.class.getName());
-	if (reissuedToken != null) {
-
-	    // Re-issue RememberMe cookie
-	    this.cookieHandler.saveCookie(response, this.appConfig.getStringReq(AppConfig.CONFIG_REMME_COOKIE_NAME), reissuedToken.getLoginToken(), reissuedToken.getMaxAge(),
-		    (c) -> {
-			c.setSecure(this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SECURE));
-			c.setHttpOnly(this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY));
-		    });
-
-	    this.postRememberMe.apply(request, response, reissuedToken.getIdentity());
-	}
-	return AuthenticationStatus.SUCCESS;
+    if (request.getUserPrincipal() != null) {
+      this.appLogger.warn(
+          "PreRememberMeInterceptor must be executed between AutoApplySessionInterceptor() and RememberMeInterceptor().");
+      return context.proceed();
     }
 
-    static final Class<?>[] VALIDATE_REQUEST_PARAMETER_TYPES = new Class<?>[] { HttpServletRequest.class, HttpServletResponse.class, HttpMessageContext.class };
-
-    static boolean isValidateRequest(Method ctxMth) {
-	return HttpAuthenticationMechanism.class.isAssignableFrom(ctxMth.getDeclaringClass()) && "validateRequest".equals(ctxMth.getName())
-		&& Arrays.equals(VALIDATE_REQUEST_PARAMETER_TYPES, ctxMth.getParameterTypes());
+    // Try to authenticate with the next interceptor or actual authentication
+    // mechanism
+    AuthenticationStatus status = (AuthenticationStatus) context.proceed();
+    if (status != AuthenticationStatus.SUCCESS) {
+      return status;
     }
+
+    // > AuthenticationStatus.SUCCESS
+
+    // From RemMeIdentityStore?
+    RemMeIdentityStore.ReissuedToken reissuedToken = (RemMeIdentityStore.ReissuedToken) ServletUtils
+        .removeAttribute(request, RemMeIdentityStore.ReissuedToken.class.getName());
+    if (reissuedToken != null) {
+
+      // Re-issue RememberMe cookie
+      this.cookieHandler.saveCookie(response, this.appConfig.getStringReq(AppConfig.CONFIG_REMME_COOKIE_NAME),
+          reissuedToken.getLoginToken(), reissuedToken.getMaxAge(), (c) -> {
+            c.setSecure(this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SECURE));
+            c.setHttpOnly(this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY));
+          });
+
+      this.postRememberMe.apply(request, response, reissuedToken.getIdentity());
+    }
+    return AuthenticationStatus.SUCCESS;
+  }
+
+  static final Class<?>[] VALIDATE_REQUEST_PARAMETER_TYPES = new Class<?>[] { HttpServletRequest.class,
+      HttpServletResponse.class, HttpMessageContext.class };
+
+  static boolean isValidateRequest(Method ctxMth) {
+    return HttpAuthenticationMechanism.class.isAssignableFrom(ctxMth.getDeclaringClass())
+        && "validateRequest".equals(ctxMth.getName())
+        && Arrays.equals(VALIDATE_REQUEST_PARAMETER_TYPES, ctxMth.getParameterTypes());
+  }
 }

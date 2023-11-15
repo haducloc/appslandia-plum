@@ -36,11 +36,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EnableCors {
 
-    public static final String DEFAULT_POLICY = "default";
+  public static final String DEFAULT_POLICY = "default";
 
-    String value() default DEFAULT_POLICY;
+  String value() default DEFAULT_POLICY;
 
-    boolean removed() default false;
+  boolean removed() default false;
 
-    public static final EnableCors IMPL = ActionDescUtils.createEnableCors(DEFAULT_POLICY);
+  public static final EnableCors IMPL = ActionDescUtils.createEnableCors(DEFAULT_POLICY);
 }

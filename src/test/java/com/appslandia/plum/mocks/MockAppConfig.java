@@ -30,32 +30,32 @@ import com.appslandia.plum.base.AppConfig;
  */
 public class MockAppConfig extends AppConfig {
 
-    public MockAppConfig() {
-	this.config = new PropertyConfig();
-    }
+  public MockAppConfig() {
+    this.config = new PropertyConfig();
+  }
 
-    public MockAppConfig set(String key, String value) {
-	this.config.set(key, value);
-	return this;
-    }
+  public MockAppConfig set(String key, String value) {
+    this.config.set(key, value);
+    return this;
+  }
 
-    public MockAppConfig set(String key, boolean value) {
-	this.config.set(key, value);
-	return this;
-    }
+  public MockAppConfig set(String key, boolean value) {
+    this.config.set(key, value);
+    return this;
+  }
 
-    public MockAppConfig set(String key, int value) {
-	this.config.set(key, value);
-	return this;
-    }
+  public MockAppConfig set(String key, int value) {
+    this.config.set(key, value);
+    return this;
+  }
 
-    public MockAppConfig set(String key, long value) {
-	this.config.set(key, value);
-	return this;
-    }
+  public MockAppConfig set(String key, long value) {
+    this.config.set(key, value);
+    return this;
+  }
 
-    public MockAppConfig set(String key, double value) {
-	this.config.set(key, value);
-	return this;
-    }
+  public MockAppConfig set(String key, double value) {
+    this.config.set(key, value);
+    return this;
+  }
 }

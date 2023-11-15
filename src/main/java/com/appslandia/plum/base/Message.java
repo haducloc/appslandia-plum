@@ -30,58 +30,58 @@ import com.appslandia.common.utils.Asserts;
  *
  */
 public class Message implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final int TYPE_INFO = 1;
-    public static final int TYPE_NOTICE = 2;
-    public static final int TYPE_WARN = 3;
-    public static final int TYPE_ERROR = 4;
-    public static final int TYPE_FATAL = 5;
+  public static final int TYPE_INFO = 1;
+  public static final int TYPE_NOTICE = 2;
+  public static final int TYPE_WARN = 3;
+  public static final int TYPE_ERROR = 4;
+  public static final int TYPE_FATAL = 5;
 
-    final int type;
-    final String text;
-    final boolean escXml;
+  final int type;
+  final String text;
+  final boolean escXml;
 
-    public Message(int type, String text) {
-	this(type, text, true);
+  public Message(int type, String text) {
+    this(type, text, true);
+  }
+
+  public Message(int type, String text, boolean escXml) {
+    this.type = type;
+    this.text = text;
+    this.escXml = escXml;
+  }
+
+  public int getType() {
+    return this.type;
+  }
+
+  public String getText() {
+    return this.text;
+  }
+
+  public boolean isEscXml() {
+    return this.escXml;
+  }
+
+  public static int parseType(String type) {
+    Asserts.notNull(type);
+
+    if ("info".equalsIgnoreCase(type)) {
+      return TYPE_INFO;
     }
-
-    public Message(int type, String text, boolean escXml) {
-	this.type = type;
-	this.text = text;
-	this.escXml = escXml;
+    if ("notice".equalsIgnoreCase(type)) {
+      return TYPE_NOTICE;
     }
-
-    public int getType() {
-	return this.type;
+    if ("warn".equalsIgnoreCase(type)) {
+      return TYPE_WARN;
     }
-
-    public String getText() {
-	return this.text;
+    if ("error".equalsIgnoreCase(type)) {
+      return TYPE_ERROR;
     }
-
-    public boolean isEscXml() {
-	return this.escXml;
+    if ("fatal".equalsIgnoreCase(type)) {
+      return TYPE_ERROR;
     }
-
-    public static int parseType(String type) {
-	Asserts.notNull(type);
-
-	if ("info".equalsIgnoreCase(type)) {
-	    return TYPE_INFO;
-	}
-	if ("notice".equalsIgnoreCase(type)) {
-	    return TYPE_NOTICE;
-	}
-	if ("warn".equalsIgnoreCase(type)) {
-	    return TYPE_WARN;
-	}
-	if ("error".equalsIgnoreCase(type)) {
-	    return TYPE_ERROR;
-	}
-	if ("fatal".equalsIgnoreCase(type)) {
-	    return TYPE_ERROR;
-	}
-	throw new IllegalArgumentException("type is invalid.");
-    }
+    throw new IllegalArgumentException("type is invalid.");
+  }
 }

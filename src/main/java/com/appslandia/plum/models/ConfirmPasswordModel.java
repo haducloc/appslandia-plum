@@ -27,7 +27,7 @@ package com.appslandia.plum.models;
  */
 public interface ConfirmPasswordModel {
 
-    String getNewPassword();
+  String getNewPassword();
 
-    String getConfirmPassword();
+  String getConfirmPassword();
 }

@@ -32,27 +32,27 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public abstract class JwtIdentityStore extends IdentityStoreBase {
 
-    protected abstract JwtToken parseJwtToken(String credential);
+  protected abstract JwtToken parseJwtToken(String credential);
 
-    @Override
-    public abstract Class<? extends JwtCredential> getAcceptedCredentialType();
+  @Override
+  public abstract Class<? extends JwtCredential> getAcceptedCredentialType();
 
-    @Override
-    protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
-	JwtCredential jwtCredential = (JwtCredential) credential;
+  @Override
+  protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
+    JwtCredential jwtCredential = (JwtCredential) credential;
 
-	// JwtToken
-	JwtToken token = null;
-	try {
-	    token = parseJwtToken(jwtCredential.getToken());
+    // JwtToken
+    JwtToken token = null;
+    try {
+      token = parseJwtToken(jwtCredential.getToken());
 
-	} catch (Exception ex) {
-	    invalidCode.value = InvalidAuthResult.CREDENTIAL_INVALID.getCode();
-	    return null;
-	}
-
-	// PrincipalRoles
-	String userRoles = (String) token.getPayload().get(UserPrincipal.ATTRIBUTE_ROLES);
-	return new PrincipalRoles(new JwtPrincipal(token), userRoles);
+    } catch (Exception ex) {
+      invalidCode.value = InvalidAuthResult.CREDENTIAL_INVALID.getCode();
+      return null;
     }
+
+    // PrincipalRoles
+    String userRoles = (String) token.getPayload().get(UserPrincipal.ATTRIBUTE_ROLES);
+    return new PrincipalRoles(new JwtPrincipal(token), userRoles);
+  }
 }

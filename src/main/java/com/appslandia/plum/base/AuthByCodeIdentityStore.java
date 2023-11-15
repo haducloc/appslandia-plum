@@ -34,41 +34,41 @@ import jakarta.security.enterprise.credential.Credential;
 @ApplicationScoped
 public class AuthByCodeIdentityStore extends IdentityStoreBase {
 
-    public static final int DEFAULT_EXPIRY_LEEWAY_MS = 1000;
-    public static final String CONFIG_EXPIRY_LEEWAY_MS = AuthByCodeIdentityStore.class.getName() + ".expiry_leeway_ms";
+  public static final int DEFAULT_EXPIRY_LEEWAY_MS = 1000;
+  public static final String CONFIG_EXPIRY_LEEWAY_MS = AuthByCodeIdentityStore.class.getName() + ".expiry_leeway_ms";
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected AuthTokenHandler authTokenHandler;
+  @Inject
+  protected AuthTokenHandler authTokenHandler;
 
-    @Inject
-    protected IdentityValidator identityValidator;
+  @Inject
+  protected IdentityValidator identityValidator;
 
-    protected int getExpiryLeewayMs() {
-	return this.appConfig.getInt(CONFIG_EXPIRY_LEEWAY_MS, DEFAULT_EXPIRY_LEEWAY_MS);
+  protected int getExpiryLeewayMs() {
+    return this.appConfig.getInt(CONFIG_EXPIRY_LEEWAY_MS, DEFAULT_EXPIRY_LEEWAY_MS);
+  }
+
+  @Override
+  public Class<? extends AuthByCodeCredential> getAcceptedCredentialType() {
+    return AuthByCodeCredential.class;
+  }
+
+  protected PrincipalRoles doValidate(String module, String identity, Out<String> invalidCode) {
+    return this.identityValidator.validate(module, identity, invalidCode);
+  }
+
+  @Override
+  protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
+    AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
+
+    // Token
+    if (!this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(), authByCodeCredential.getToken(),
+        authByCodeCredential.getIdentity(), authByCodeCredential.getCode(), getExpiryLeewayMs(), invalidCode)) {
+      return null;
     }
 
-    @Override
-    public Class<? extends AuthByCodeCredential> getAcceptedCredentialType() {
-	return AuthByCodeCredential.class;
-    }
-
-    protected PrincipalRoles doValidate(String module, String identity, Out<String> invalidCode) {
-	return this.identityValidator.validate(module, identity, invalidCode);
-    }
-
-    @Override
-    protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
-	AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
-
-	// Token
-	if (!this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(), authByCodeCredential.getToken(), authByCodeCredential.getIdentity(),
-		authByCodeCredential.getCode(), getExpiryLeewayMs(), invalidCode)) {
-	    return null;
-	}
-
-	return doValidate(module, authByCodeCredential.getIdentity(), invalidCode);
-    }
+    return doValidate(module, authByCodeCredential.getIdentity(), invalidCode);
+  }
 }

@@ -33,7 +33,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultRateLimitHandler extends RateLimitHandler {
 
-    @Override
-    protected void checkClient(String clientId) throws TooManyRequestsException {
-    }
+  @Override
+  protected void checkClient(String clientId) throws TooManyRequestsException {
+  }
 }

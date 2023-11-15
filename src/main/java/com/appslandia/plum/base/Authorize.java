@@ -42,20 +42,21 @@ import jakarta.interceptor.InterceptorBinding;
 @Documented
 public @interface Authorize {
 
-    @Nonbinding
-    String[] roles() default {};
+  @Nonbinding
+  String[] roles() default {};
 
-    @Nonbinding
-    String[] policies() default {};
+  @Nonbinding
+  String[] policies() default {};
 
-    @Nonbinding
-    boolean module() default true;
+  @Nonbinding
+  boolean module() default true;
 
-    @Nonbinding
-    boolean reauth() default false;
+  @Nonbinding
+  boolean reauth() default false;
 
-    @Nonbinding
-    boolean removed() default false;
+  @Nonbinding
+  boolean removed() default false;
 
-    public static final Authorize IMPL = ActionDescUtils.createAuthorize(StringUtils.EMPTY_ARRAY, StringUtils.EMPTY_ARRAY, true, false);
+  public static final Authorize IMPL = ActionDescUtils.createAuthorize(StringUtils.EMPTY_ARRAY, StringUtils.EMPTY_ARRAY,
+      true, false);
 }

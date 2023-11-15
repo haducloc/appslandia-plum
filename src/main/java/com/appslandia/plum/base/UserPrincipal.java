@@ -35,62 +35,63 @@ import jakarta.security.enterprise.CallerPrincipal;
  *
  */
 public abstract class UserPrincipal extends CallerPrincipal {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // https://www.iana.org/assignments/jwt/jwt.xhtml#claims
+  // https://www.iana.org/assignments/jwt/jwt.xhtml#claims
 
-    public static final String ATTRIBUTE_USER_ID = "user_id";
-    public static final String ATTRIBUTE_USER_UUID = "user_uuid";
+  public static final String ATTRIBUTE_USER_ID = "user_id";
+  public static final String ATTRIBUTE_USER_UUID = "user_uuid";
 
-    public static final String ATTRIBUTE_DISPLAY_NAME = "display_name";
-    public static final String ATTRIBUTE_EMAIL = "email";
+  public static final String ATTRIBUTE_DISPLAY_NAME = "display_name";
+  public static final String ATTRIBUTE_EMAIL = "email";
 
-    public static final String ATTRIBUTE_USER_NAME = "user_name";
-    public static final String ATTRIBUTE_ROLES = "roles";
+  public static final String ATTRIBUTE_USER_NAME = "user_name";
+  public static final String ATTRIBUTE_ROLES = "roles";
 
-    public static final String ATTRIBUTE_NAME = "name";
-    public static final String ATTRIBUTE_PHONE_NUMBER = "phone_number";
+  public static final String ATTRIBUTE_NAME = "name";
+  public static final String ATTRIBUTE_PHONE_NUMBER = "phone_number";
 
-    final Map<String, Object> attributes;
+  final Map<String, Object> attributes;
 
-    public UserPrincipal(String username, Map<String, Object> attributes) {
-	super(username);
-	this.attributes = CollectionUtils.hasEntries(attributes) ? Collections.unmodifiableMap(new HashMap<>(attributes)) : Collections.emptyMap();
-    }
+  public UserPrincipal(String username, Map<String, Object> attributes) {
+    super(username);
+    this.attributes = CollectionUtils.hasEntries(attributes) ? Collections.unmodifiableMap(new HashMap<>(attributes))
+        : Collections.emptyMap();
+  }
 
-    public Object get(String attributeName) {
-	return this.attributes.get(attributeName);
-    }
+  public Object get(String attributeName) {
+    return this.attributes.get(attributeName);
+  }
 
-    public Object getRequired(String attributeName) {
-	Object obj = this.attributes.get(attributeName);
-	return Asserts.notNull(obj);
-    }
+  public Object getRequired(String attributeName) {
+    Object obj = this.attributes.get(attributeName);
+    return Asserts.notNull(obj);
+  }
 
-    public Object getUserId() {
-	return get(ATTRIBUTE_USER_ID);
-    }
+  public Object getUserId() {
+    return get(ATTRIBUTE_USER_ID);
+  }
 
-    public String getDisplayName() {
-	String dn = (String) get(ATTRIBUTE_DISPLAY_NAME);
-	return (dn != null) ? dn : getName();
-    }
+  public String getDisplayName() {
+    String dn = (String) get(ATTRIBUTE_DISPLAY_NAME);
+    return (dn != null) ? dn : getName();
+  }
 
-    // Internal override only
+  // Internal override only
 
-    public String getModule() {
-	throw new UnsupportedOperationException();
-    }
+  public String getModule() {
+    throw new UnsupportedOperationException();
+  }
 
-    // Internal override only
+  // Internal override only
 
-    public boolean isRememberMe() {
-	throw new UnsupportedOperationException();
-    }
+  public boolean isRememberMe() {
+    throw new UnsupportedOperationException();
+  }
 
-    // Internal override only
+  // Internal override only
 
-    public long getReauthAt() {
-	throw new UnsupportedOperationException();
-    }
+  public long getReauthAt() {
+    throw new UnsupportedOperationException();
+  }
 }

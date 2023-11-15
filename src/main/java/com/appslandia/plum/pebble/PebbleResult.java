@@ -38,63 +38,66 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class PebbleResult extends ViewResult {
 
-    private String contentType;
-    private String characterEncoding;
+  private String contentType;
+  private String characterEncoding;
 
-    public PebbleResult() {
-	super();
-    }
+  public PebbleResult() {
+    super();
+  }
 
-    public PebbleResult(String path) {
-	super(path);
-    }
+  public PebbleResult(String path) {
+    super(path);
+  }
 
-    public PebbleResult(Map<String, Object> model) {
-	super(model);
-    }
+  public PebbleResult(Map<String, Object> model) {
+    super(model);
+  }
 
-    public PebbleResult(String path, Map<String, Object> model) {
-	super(path, model);
-    }
+  public PebbleResult(String path, Map<String, Object> model) {
+    super(path, model);
+  }
 
+  public PebbleResult contentType(String contentType) {
+    this.contentType = contentType;
+    return this;
+  }
+
+  public PebbleResult characterEncoding(String characterEncoding) {
+    this.characterEncoding = characterEncoding;
+    return this;
+  }
+
+  @Override
+  public String getSuffix() {
+    return ".peb";
+  }
+
+  @Override
+  protected String getViewDir(ServletContext servletContext) {
+    return PebbleUtils.getPebbleDir(servletContext);
+  }
+
+  @Override
+  protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    response.setContentType(this.contentType != null ? this.contentType : MimeTypes.TEXT_HTML);
+    response
+        .setCharacterEncoding(this.characterEncoding != null ? this.characterEncoding : StandardCharsets.UTF_8.name());
+
+    PebbleUtils.executePebble(request, response, response.getWriter(), this.resolvedPath, this.model,
+        requestContext.getLanguage().getLocale());
+  }
+
+  public static final PebbleResult DEFAULT = new PebbleResult() {
+
+    @Override
     public PebbleResult contentType(String contentType) {
-	this.contentType = contentType;
-	return this;
-    }
-
-    public PebbleResult characterEncoding(String characterEncoding) {
-	this.characterEncoding = characterEncoding;
-	return this;
+      throw new UnsupportedOperationException();
     }
 
     @Override
-    public String getSuffix() {
-	return ".peb";
+    public PebbleResult characterEncoding(String encoding) {
+      throw new UnsupportedOperationException();
     }
-
-    @Override
-    protected String getViewDir(ServletContext servletContext) {
-	return PebbleUtils.getPebbleDir(servletContext);
-    }
-
-    @Override
-    protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	response.setContentType(this.contentType != null ? this.contentType : MimeTypes.TEXT_HTML);
-	response.setCharacterEncoding(this.characterEncoding != null ? this.characterEncoding : StandardCharsets.UTF_8.name());
-
-	PebbleUtils.executePebble(request, response, response.getWriter(), this.resolvedPath, this.model, requestContext.getLanguage().getLocale());
-    }
-
-    public static final PebbleResult DEFAULT = new PebbleResult() {
-
-	@Override
-	public PebbleResult contentType(String contentType) {
-	    throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public PebbleResult characterEncoding(String encoding) {
-	    throw new UnsupportedOperationException();
-	}
-    };
+  };
 }

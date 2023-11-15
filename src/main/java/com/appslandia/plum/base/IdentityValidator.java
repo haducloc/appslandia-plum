@@ -29,7 +29,7 @@ import com.appslandia.common.base.Out;
  */
 public interface IdentityValidator {
 
-    PrincipalRoles validate(String module, String identity, Out<String> invalidCode);
+  PrincipalRoles validate(String module, String identity, Out<String> invalidCode);
 
-    PrincipalRoles validate(String module, String username, String password, Out<String> invalidCode);
+  PrincipalRoles validate(String module, String username, String password, Out<String> invalidCode);
 }

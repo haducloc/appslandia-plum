@@ -41,132 +41,132 @@ import com.appslandia.common.utils.ObjectUtils;
  */
 public class MemAppCacheManager implements AppCacheManager {
 
-    final AtomicBoolean isClosed = new AtomicBoolean(false);
-    final ConcurrentMap<String, AppCache<Object, Object>> caches = new ConcurrentHashMap<>();
+  final AtomicBoolean isClosed = new AtomicBoolean(false);
+  final ConcurrentMap<String, AppCache<Object, Object>> caches = new ConcurrentHashMap<>();
 
-    public <K, V> AppCache<K, V> createCache(String cacheName, int size) {
-	assertNotClosed();
+  public <K, V> AppCache<K, V> createCache(String cacheName, int size) {
+    assertNotClosed();
 
-	Asserts.isTrue(!this.caches.containsKey(cacheName));
+    Asserts.isTrue(!this.caches.containsKey(cacheName));
 
-	AppCache<K, V> cache = new MemAppCache<>(cacheName, size);
-	this.caches.put(cacheName, ObjectUtils.cast(cache));
-	return cache;
+    AppCache<K, V> cache = new MemAppCache<>(cacheName, size);
+    this.caches.put(cacheName, ObjectUtils.cast(cache));
+    return cache;
+  }
+
+  @Override
+  public <K, V> AppCache<K, V> getCache(String cacheName) {
+    assertNotClosed();
+    return ObjectUtils.cast(this.caches.get(cacheName));
+  }
+
+  @Override
+  public boolean clearCache(String cacheName) {
+    assertNotClosed();
+
+    AppCache<Object, Object> cache = this.caches.get(cacheName);
+    if (cache != null) {
+      cache.clear();
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public boolean destroyCache(String cacheName) {
+    assertNotClosed();
+
+    AppCache<Object, Object> cache = this.caches.remove(cacheName);
+    if (cache != null) {
+      return true;
+    }
+    return false;
+  }
+
+  @Override
+  public Iterable<String> getCacheNames() {
+    assertNotClosed();
+
+    return Collections.unmodifiableSet(this.caches.keySet());
+  }
+
+  @Override
+  public void close() {
+    this.isClosed.compareAndSet(false, true);
+  }
+
+  protected void assertNotClosed() throws AssertException {
+    if (this.isClosed.get()) {
+      throw new AssertException("closed");
+    }
+  }
+
+  static class MemAppCache<K, V> implements AppCache<K, V> {
+
+    final String name;
+    final Map<Object, Object> cache;
+
+    public MemAppCache(String name) {
+      this(name, 32);
+    }
+
+    public MemAppCache(String name, int size) {
+      this.name = name;
+      this.cache = Collections.synchronizedMap(new LruMap<>(size));
+    }
+
+    public String getName() {
+      return this.name;
     }
 
     @Override
-    public <K, V> AppCache<K, V> getCache(String cacheName) {
-	assertNotClosed();
-	return ObjectUtils.cast(this.caches.get(cacheName));
+    public V get(K key) {
+      return ObjectUtils.cast(this.cache.get(key));
     }
 
     @Override
-    public boolean clearCache(String cacheName) {
-	assertNotClosed();
-
-	AppCache<Object, Object> cache = this.caches.get(cacheName);
-	if (cache != null) {
-	    cache.clear();
-	    return true;
-	}
-	return false;
+    public void put(K key, V value) {
+      this.cache.put(key, value);
     }
 
     @Override
-    public boolean destroyCache(String cacheName) {
-	assertNotClosed();
-
-	AppCache<Object, Object> cache = this.caches.remove(cacheName);
-	if (cache != null) {
-	    return true;
-	}
-	return false;
+    public boolean putIfAbsent(K key, V value) {
+      return this.cache.putIfAbsent(key, value) == null;
     }
 
     @Override
-    public Iterable<String> getCacheNames() {
-	assertNotClosed();
-
-	return Collections.unmodifiableSet(this.caches.keySet());
+    public boolean containsKey(K key) {
+      return this.cache.containsKey(key);
     }
 
     @Override
-    public void close() {
-	this.isClosed.compareAndSet(false, true);
+    public boolean remove(K key) {
+      return this.cache.remove(key) != null;
     }
 
-    protected void assertNotClosed() throws AssertException {
-	if (this.isClosed.get()) {
-	    throw new AssertException("closed");
-	}
+    @Override
+    public boolean remove(K key, V oldValue) {
+      return this.cache.remove(key, oldValue);
     }
 
-    static class MemAppCache<K, V> implements AppCache<K, V> {
-
-	final String name;
-	final Map<Object, Object> cache;
-
-	public MemAppCache(String name) {
-	    this(name, 32);
-	}
-
-	public MemAppCache(String name, int size) {
-	    this.name = name;
-	    this.cache = Collections.synchronizedMap(new LruMap<>(size));
-	}
-
-	public String getName() {
-	    return this.name;
-	}
-
-	@Override
-	public V get(K key) {
-	    return ObjectUtils.cast(this.cache.get(key));
-	}
-
-	@Override
-	public void put(K key, V value) {
-	    this.cache.put(key, value);
-	}
-
-	@Override
-	public boolean putIfAbsent(K key, V value) {
-	    return this.cache.putIfAbsent(key, value) == null;
-	}
-
-	@Override
-	public boolean containsKey(K key) {
-	    return this.cache.containsKey(key);
-	}
-
-	@Override
-	public boolean remove(K key) {
-	    return this.cache.remove(key) != null;
-	}
-
-	@Override
-	public boolean remove(K key, V oldValue) {
-	    return this.cache.remove(key, oldValue);
-	}
-
-	@Override
-	public void removeAll(Set<? extends K> keys) {
-	    this.cache.keySet().removeAll(keys);
-	}
-
-	@Override
-	public boolean replace(K key, V value) {
-	    return this.cache.replace(key, value) != null;
-	}
-
-	@Override
-	public boolean replace(K key, V oldValue, V newValue) {
-	    return this.cache.replace(key, oldValue, newValue);
-	}
-
-	@Override
-	public void clear() {
-	    this.cache.clear();
-	}
+    @Override
+    public void removeAll(Set<? extends K> keys) {
+      this.cache.keySet().removeAll(keys);
     }
+
+    @Override
+    public boolean replace(K key, V value) {
+      return this.cache.replace(key, value) != null;
+    }
+
+    @Override
+    public boolean replace(K key, V oldValue, V newValue) {
+      return this.cache.replace(key, oldValue, newValue);
+    }
+
+    @Override
+    public void clear() {
+      this.cache.clear();
+    }
+  }
 }

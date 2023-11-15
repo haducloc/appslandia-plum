@@ -31,24 +31,24 @@ import com.appslandia.plum.base.SessionTempDataManager;
  */
 public class MockTempDataManager extends SessionTempDataManager {
 
-    public static final String MOCK_TEMP_DATA_ID = "mockTempDataId";
+  public static final String MOCK_TEMP_DATA_ID = "mockTempDataId";
 
-    final TextGenerator tempDataIdGenerator = new TextGenerator() {
-
-	@Override
-	public String generate() {
-	    return MOCK_TEMP_DATA_ID;
-	}
-
-	@Override
-	public boolean verify(String value) {
-	    Asserts.notNull(value);
-	    return value.equals(MOCK_TEMP_DATA_ID);
-	}
-    };
+  final TextGenerator tempDataIdGenerator = new TextGenerator() {
 
     @Override
-    protected TextGenerator getTempDataIdGenerator() {
-	return this.tempDataIdGenerator;
+    public String generate() {
+      return MOCK_TEMP_DATA_ID;
     }
+
+    @Override
+    public boolean verify(String value) {
+      Asserts.notNull(value);
+      return value.equals(MOCK_TEMP_DATA_ID);
+    }
+  };
+
+  @Override
+  protected TextGenerator getTempDataIdGenerator() {
+    return this.tempDataIdGenerator;
+  }
 }

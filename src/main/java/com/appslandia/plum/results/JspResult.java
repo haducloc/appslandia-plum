@@ -37,47 +37,48 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class JspResult extends ViewResult {
 
-    public JspResult() {
-	super();
+  public JspResult() {
+    super();
+  }
+
+  public JspResult(String path) {
+    super(path);
+  }
+
+  public JspResult(Map<String, Object> model) {
+    super(model);
+  }
+
+  public JspResult(String path, Map<String, Object> model) {
+    super(path, model);
+  }
+
+  @Override
+  public String getSuffix() {
+    return ".jsp";
+  }
+
+  @Override
+  protected String getViewDir(ServletContext servletContext) {
+    AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
+    return appConfig.getJspDir();
+  }
+
+  @Override
+  protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    if (this.model != null) {
+      for (Map.Entry<String, Object> variable : this.model.entrySet()) {
+        request.setAttribute(variable.getKey(), variable.getValue());
+      }
     }
+    if (requestContext.getActionDesc().getChildAction() == null) {
+      request.getRequestDispatcher(this.resolvedPath).forward(request, response);
 
-    public JspResult(String path) {
-	super(path);
+    } else {
+      request.getRequestDispatcher(this.resolvedPath).include(request, response);
     }
+  }
 
-    public JspResult(Map<String, Object> model) {
-	super(model);
-    }
-
-    public JspResult(String path, Map<String, Object> model) {
-	super(path, model);
-    }
-
-    @Override
-    public String getSuffix() {
-	return ".jsp";
-    }
-
-    @Override
-    protected String getViewDir(ServletContext servletContext) {
-	AppConfig appConfig = ServletUtils.getAppScoped(servletContext, AppConfig.class);
-	return appConfig.getJspDir();
-    }
-
-    @Override
-    protected void doExecute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	if (this.model != null) {
-	    for (Map.Entry<String, Object> variable : this.model.entrySet()) {
-		request.setAttribute(variable.getKey(), variable.getValue());
-	    }
-	}
-	if (requestContext.getActionDesc().getChildAction() == null) {
-	    request.getRequestDispatcher(this.resolvedPath).forward(request, response);
-
-	} else {
-	    request.getRequestDispatcher(this.resolvedPath).include(request, response);
-	}
-    }
-
-    public static final JspResult DEFAULT = new JspResult();
+  public static final JspResult DEFAULT = new JspResult();
 }

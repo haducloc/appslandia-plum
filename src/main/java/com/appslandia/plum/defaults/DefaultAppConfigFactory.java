@@ -46,46 +46,46 @@ import jakarta.servlet.ServletContext;
 @ApplicationScoped
 public class DefaultAppConfigFactory implements CDIFactory<AppConfig> {
 
-    public static final String DEFAULT_CONFIG_PATH = "/WEB-INF/config.properties";
-    public static final String ENV_CONFIG_PATH = "/WEB-INF/config.{}.properties";
+  public static final String DEFAULT_CONFIG_PATH = "/WEB-INF/config.properties";
+  public static final String ENV_CONFIG_PATH = "/WEB-INF/config.{}.properties";
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected ServletContext servletContext;
+  @Inject
+  protected ServletContext servletContext;
 
-    @Inject
-    protected AppConfigLoader appConfigLoader;
+  @Inject
+  protected AppConfigLoader appConfigLoader;
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public AppConfig produce() {
-	PropertyConfig config = new PropertyConfig();
-	try {
-	    this.appLogger.info("Loading configs from " + DEFAULT_CONFIG_PATH);
-	    ServletUtils.loadProps(this.servletContext, DEFAULT_CONFIG_PATH, config);
+  @Produces
+  @ApplicationScoped
+  @Override
+  public AppConfig produce() {
+    PropertyConfig config = new PropertyConfig();
+    try {
+      this.appLogger.info("Loading configs from " + DEFAULT_CONFIG_PATH);
+      ServletUtils.loadProps(this.servletContext, DEFAULT_CONFIG_PATH, config);
 
-	    String envConfig = STR.fmt(ENV_CONFIG_PATH, DeployEnv.getCurrent().getName());
-	    this.appLogger.info("Loading configs from " + envConfig);
+      String envConfig = STR.fmt(ENV_CONFIG_PATH, DeployEnv.getCurrent().getName());
+      this.appLogger.info("Loading configs from " + envConfig);
 
-	    ServletUtils.loadProps(this.servletContext, envConfig, config);
+      ServletUtils.loadProps(this.servletContext, envConfig, config);
 
-	} catch (IOException ex) {
-	    throw new InitializeException(ex);
-	}
-	try {
-	    this.appLogger.info("Loading configs using appConfigLoader...");
-	    this.appConfigLoader.load(config);
-
-	} catch (Exception ex) {
-	    throw new InitializeException(ex);
-	}
-	return new AppConfig(config);
+    } catch (IOException ex) {
+      throw new InitializeException(ex);
     }
+    try {
+      this.appLogger.info("Loading configs using appConfigLoader...");
+      this.appConfigLoader.load(config);
 
-    @Override
-    public void dispose(@Disposes AppConfig impl) {
+    } catch (Exception ex) {
+      throw new InitializeException(ex);
     }
+    return new AppConfig(config);
+  }
+
+  @Override
+  public void dispose(@Disposes AppConfig impl) {
+  }
 }

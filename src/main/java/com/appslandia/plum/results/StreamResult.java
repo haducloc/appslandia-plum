@@ -35,20 +35,20 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class StreamResult extends FilenameResult {
 
-    private InputStream content;
+  private InputStream content;
 
-    public StreamResult(InputStream content, String fileName, String contentType) {
-	this(content, fileName, contentType, false);
-    }
+  public StreamResult(InputStream content, String fileName, String contentType) {
+    this(content, fileName, contentType, false);
+  }
 
-    public StreamResult(InputStream content, String fileName, String contentType, boolean inline) {
-	super(fileName, contentType, inline);
-	this.content = content;
-    }
+  public StreamResult(InputStream content, String fileName, String contentType, boolean inline) {
+    super(fileName, contentType, inline);
+    this.content = content;
+  }
 
-    @Override
-    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	IOUtils.copy(this.content, response.getOutputStream());
-	response.getOutputStream().flush();
-    }
+  @Override
+  protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    IOUtils.copy(this.content, response.getOutputStream());
+    response.getOutputStream().flush();
+  }
 }

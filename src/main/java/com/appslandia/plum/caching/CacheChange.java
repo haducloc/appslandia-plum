@@ -32,24 +32,24 @@ import com.appslandia.common.utils.CollectionUtils;
  *
  */
 public class CacheChange implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    final String cacheName;
-    final Set<String> keys;
+  final String cacheName;
+  final Set<String> keys;
 
-    public CacheChange(String cacheName, String[] keys) {
-	Asserts.notNull(cacheName);
-	Asserts.notNull(keys);
+  public CacheChange(String cacheName, String[] keys) {
+    Asserts.notNull(cacheName);
+    Asserts.notNull(keys);
 
-	this.cacheName = cacheName;
-	this.keys = CollectionUtils.unmodifiableSet(keys);
-    }
+    this.cacheName = cacheName;
+    this.keys = CollectionUtils.unmodifiableSet(keys);
+  }
 
-    public String getCacheName() {
-	return this.cacheName;
-    }
+  public String getCacheName() {
+    return this.cacheName;
+  }
 
-    public Set<String> getKeys() {
-	return this.keys;
-    }
+  public Set<String> getKeys() {
+    return this.keys;
+  }
 }

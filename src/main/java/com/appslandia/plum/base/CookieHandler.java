@@ -39,30 +39,32 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class CookieHandler {
 
-    @Inject
-    protected ServletContext servletContext;
+  @Inject
+  protected ServletContext servletContext;
 
-    public void saveCookie(HttpServletResponse response, String cookieName, String cookieValue, int maxAge, Consumer<Cookie> cookieInit) {
-	Cookie cookie = new Cookie(cookieName, cookieValue);
-	cookie.setMaxAge(maxAge);
+  public void saveCookie(HttpServletResponse response, String cookieName, String cookieValue, int maxAge,
+      Consumer<Cookie> cookieInit) {
+    Cookie cookie = new Cookie(cookieName, cookieValue);
+    cookie.setMaxAge(maxAge);
 
-	String domain = this.servletContext.getSessionCookieConfig().getDomain();
-	if (domain != null) {
-	    cookie.setDomain(domain);
-	}
-	cookie.setPath(ServletUtils.getCookiePath(this.servletContext));
-
-	if (cookieInit != null) {
-	    cookieInit.accept(cookie);
-	}
-	response.addCookie(cookie);
+    String domain = this.servletContext.getSessionCookieConfig().getDomain();
+    if (domain != null) {
+      cookie.setDomain(domain);
     }
+    cookie.setPath(ServletUtils.getCookiePath(this.servletContext));
 
-    public void removeCookie(HttpServletResponse response, String cookieName) {
-	ServletUtils.removeCookie(response, cookieName, this.servletContext.getSessionCookieConfig().getDomain(), ServletUtils.getCookiePath(this.servletContext));
+    if (cookieInit != null) {
+      cookieInit.accept(cookie);
     }
+    response.addCookie(cookie);
+  }
 
-    public String getCookieValue(HttpServletRequest request, String cookieName) {
-	return ServletUtils.getCookieValue(request, cookieName);
-    }
+  public void removeCookie(HttpServletResponse response, String cookieName) {
+    ServletUtils.removeCookie(response, cookieName, this.servletContext.getSessionCookieConfig().getDomain(),
+        ServletUtils.getCookiePath(this.servletContext));
+  }
+
+  public String getCookieValue(HttpServletRequest request, String cookieName) {
+    return ServletUtils.getCookieValue(request, cookieName);
+  }
 }

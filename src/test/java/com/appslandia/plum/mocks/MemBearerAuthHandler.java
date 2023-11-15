@@ -33,8 +33,8 @@ import jakarta.security.enterprise.credential.Credential;
 @MappedID("bearer")
 public class MemBearerAuthHandler extends BearerAuthHandler {
 
-    @Override
-    protected Credential createCredential(String credential) throws Exception {
-	return new MemJwtCredential(credential);
-    }
+  @Override
+  protected Credential createCredential(String credential) throws Exception {
+    return new MemJwtCredential(credential);
+  }
 }

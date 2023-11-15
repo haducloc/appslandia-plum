@@ -32,67 +32,68 @@ import org.junit.jupiter.api.Test;
  */
 public class CacheControlTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	HeaderPolicyProvider headerPolicyProvider = container.getObject(HeaderPolicyProvider.class);
-	headerPolicyProvider.addHeaderPolicy("testCacheControl", new CacheControlPolicy(new CacheControlBuilder().maxAge(10000, TimeUnit.SECONDS).mustRevalidate()));
+    HeaderPolicyProvider headerPolicyProvider = container.getObject(HeaderPolicyProvider.class);
+    headerPolicyProvider.addHeaderPolicy("testCacheControl",
+        new CacheControlPolicy(new CacheControlBuilder().maxAge(10000, TimeUnit.SECONDS).mustRevalidate()));
+  }
+
+  @Test
+  public void test_noCache() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/noCache");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      String cacheControl = getCurrentResponse().getHeader("Cache-Control");
+      Assertions.assertNotNull(cacheControl);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testCacheControl() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testCacheControl");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      String cacheControl = getCurrentResponse().getHeader("Cache-Control");
+      Assertions.assertEquals("max-age=10000, must-revalidate", cacheControl);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testCacheControl_POST() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/testCacheControl");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      String cacheControl = getCurrentResponse().getHeader("Cache-Control");
+      Assertions.assertNull(cacheControl);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    @CacheControl(nocache = true)
+    public void noCache() throws Exception {
     }
 
-    @Test
-    public void test_noCache() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/noCache");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    String cacheControl = getCurrentResponse().getHeader("Cache-Control");
-	    Assertions.assertNotNull(cacheControl);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGetPost
+    @CacheControl("testCacheControl")
+    public void testCacheControl() throws Exception {
     }
-
-    @Test
-    public void test_testCacheControl() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testCacheControl");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    String cacheControl = getCurrentResponse().getHeader("Cache-Control");
-	    Assertions.assertEquals("max-age=10000, must-revalidate", cacheControl);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_testCacheControl_POST() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/testCacheControl");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    String cacheControl = getCurrentResponse().getHeader("Cache-Control");
-	    Assertions.assertNull(cacheControl);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	@CacheControl(nocache = true)
-	public void noCache() throws Exception {
-	}
-
-	@HttpGetPost
-	@CacheControl("testCacheControl")
-	public void testCacheControl() throws Exception {
-	}
-    }
+  }
 }

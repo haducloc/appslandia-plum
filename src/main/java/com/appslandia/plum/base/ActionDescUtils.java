@@ -34,154 +34,155 @@ import com.appslandia.common.utils.ArrayUtils;
  */
 public class ActionDescUtils {
 
-    public static boolean isActionResultOrVoid(Method actionMethod) {
-	return ActionResult.class.isAssignableFrom(actionMethod.getReturnType()) || (actionMethod.getReturnType() == void.class);
+  public static boolean isActionResultOrVoid(Method actionMethod) {
+    return ActionResult.class.isAssignableFrom(actionMethod.getReturnType())
+        || (actionMethod.getReturnType() == void.class);
+  }
+
+  public static boolean isActionMethod(Method method) {
+    if (method.getDeclaringClass() == Object.class) {
+      return false;
     }
-
-    public static boolean isActionMethod(Method method) {
-	if (method.getDeclaringClass() == Object.class) {
-	    return false;
-	}
-	if (!Modifier.isPublic(method.getModifiers()) || Modifier.isStatic(method.getModifiers())) {
-	    return false;
-	}
-	if (method.getDeclaredAnnotation(Removed.class) != null) {
-	    return false;
-	}
-	if (method.getDeclaredAnnotation(ChildAction.class) != null) {
-	    return false;
-	}
-	Out<Boolean> httpMethod = new Out<>();
-	ActionDescProvider.parseAllowMethods(method, httpMethod);
-
-	if (!Boolean.TRUE.equals(httpMethod.value)) {
-	    return false;
-	}
-	return true;
+    if (!Modifier.isPublic(method.getModifiers()) || Modifier.isStatic(method.getModifiers())) {
+      return false;
     }
+    if (method.getDeclaredAnnotation(Removed.class) != null) {
+      return false;
+    }
+    if (method.getDeclaredAnnotation(ChildAction.class) != null) {
+      return false;
+    }
+    Out<Boolean> httpMethod = new Out<>();
+    ActionDescProvider.parseAllowMethods(method, httpMethod);
 
-    public static Authorize createAuthorize(String[] roles, String[] policies, boolean module, boolean reauth) {
-	return new Authorize() {
+    if (!Boolean.TRUE.equals(httpMethod.value)) {
+      return false;
+    }
+    return true;
+  }
 
-	    final String[] _roles = ArrayUtils.copy(roles);
-	    final String[] _policies = ArrayUtils.copy(policies);
+  public static Authorize createAuthorize(String[] roles, String[] policies, boolean module, boolean reauth) {
+    return new Authorize() {
 
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return Authorize.class;
-	    }
+      final String[] _roles = ArrayUtils.copy(roles);
+      final String[] _policies = ArrayUtils.copy(policies);
 
-	    @Override
-	    public String[] roles() {
-		return ArrayUtils.copy(this._roles);
-	    }
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return Authorize.class;
+      }
 
-	    @Override
-	    public String[] policies() {
-		return ArrayUtils.copy(this._policies);
-	    }
+      @Override
+      public String[] roles() {
+        return ArrayUtils.copy(this._roles);
+      }
 
-	    @Override
-	    public boolean module() {
-		return module;
-	    }
+      @Override
+      public String[] policies() {
+        return ArrayUtils.copy(this._policies);
+      }
 
-	    @Override
-	    public boolean reauth() {
-		return reauth;
-	    }
+      @Override
+      public boolean module() {
+        return module;
+      }
 
-	    @Override
-	    public boolean removed() {
-		return false;
-	    }
-	};
+      @Override
+      public boolean reauth() {
+        return reauth;
+      }
+
+      @Override
+      public boolean removed() {
+        return false;
+      }
     };
+  };
 
-    public static CacheControl createCacheControl(String policy) {
-	return new CacheControl() {
+  public static CacheControl createCacheControl(String policy) {
+    return new CacheControl() {
 
-	    boolean nocache = CacheControl.NO_CACHE_POLICY.equals(policy);
+      boolean nocache = CacheControl.NO_CACHE_POLICY.equals(policy);
 
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return CacheControl.class;
-	    }
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return CacheControl.class;
+      }
 
-	    @Override
-	    public String value() {
-		return policy;
-	    }
+      @Override
+      public String value() {
+        return policy;
+      }
 
-	    @Override
-	    public boolean nocache() {
-		return this.nocache;
-	    }
-	};
+      @Override
+      public boolean nocache() {
+        return this.nocache;
+      }
     };
+  };
 
-    public static EnableCors createEnableCors(String policy) {
-	return new EnableCors() {
+  public static EnableCors createEnableCors(String policy) {
+    return new EnableCors() {
 
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return EnableCors.class;
-	    }
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return EnableCors.class;
+      }
 
-	    @Override
-	    public String value() {
-		return policy;
-	    }
+      @Override
+      public String value() {
+        return policy;
+      }
 
-	    @Override
-	    public boolean removed() {
-		return false;
-	    }
-	};
+      @Override
+      public boolean removed() {
+        return false;
+      }
     };
+  };
 
-    public static EnableGzip createEnableGzip() {
-	return new EnableGzip() {
+  public static EnableGzip createEnableGzip() {
+    return new EnableGzip() {
 
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return EnableGzip.class;
-	    }
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return EnableGzip.class;
+      }
 
-	    @Override
-	    public boolean removed() {
-		return false;
-	    }
-	};
+      @Override
+      public boolean removed() {
+        return false;
+      }
     };
+  };
 
-    public static EnableJsonError createEnableJsonError() {
-	return new EnableJsonError() {
+  public static EnableJsonError createEnableJsonError() {
+    return new EnableJsonError() {
 
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return EnableJsonError.class;
-	    }
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return EnableJsonError.class;
+      }
 
-	    @Override
-	    public boolean removed() {
-		return false;
-	    }
-	};
+      @Override
+      public boolean removed() {
+        return false;
+      }
     };
+  };
 
-    public static ConsumeType createConsumeType(String contentType) {
-	return new ConsumeType() {
+  public static ConsumeType createConsumeType(String contentType) {
+    return new ConsumeType() {
 
-	    @Override
-	    public Class<? extends Annotation> annotationType() {
-		return ConsumeType.class;
-	    }
+      @Override
+      public Class<? extends Annotation> annotationType() {
+        return ConsumeType.class;
+      }
 
-	    @Override
-	    public String value() {
-		return contentType;
-	    }
-	};
+      @Override
+      public String value() {
+        return contentType;
+      }
     };
+  };
 }

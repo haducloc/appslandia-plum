@@ -35,48 +35,48 @@ import com.appslandia.common.crypto.PasswordDigester;
  */
 public class MemUserDatabase extends InitializeObject {
 
-    private Map<String, MemUser> userMap = new CaseInsensitiveMap<>(new ConcurrentHashMap<>());
-    final PasswordDigester passwordDigester = new PasswordDigester();
+  private Map<String, MemUser> userMap = new CaseInsensitiveMap<>(new ConcurrentHashMap<>());
+  final PasswordDigester passwordDigester = new PasswordDigester();
 
-    @Override
-    protected void init() throws Exception {
-	this.userMap = Collections.unmodifiableMap(this.userMap);
-    }
+  @Override
+  protected void init() throws Exception {
+    this.userMap = Collections.unmodifiableMap(this.userMap);
+  }
 
-    public Map<String, MemUser> getUserMap() {
-	this.assertNotInitialized();
-	return this.userMap;
-    }
+  public Map<String, MemUser> getUserMap() {
+    this.assertNotInitialized();
+    return this.userMap;
+  }
 
-    public MemUser getUser(String username) {
-	this.assertNotInitialized();
-	return this.userMap.get(username);
-    }
+  public MemUser getUser(String username) {
+    this.assertNotInitialized();
+    return this.userMap.get(username);
+  }
 
-    public boolean verifyPassword(String password, String digested) {
-	this.assertNotInitialized();
-	return this.passwordDigester.verify(password, digested);
-    }
+  public boolean verifyPassword(String password, String digested) {
+    this.assertNotInitialized();
+    return this.passwordDigester.verify(password, digested);
+  }
 
-    public void addUser(String username, String password) {
-	addUser(username, password, null);
-    }
+  public void addUser(String username, String password) {
+    addUser(username, password, null);
+  }
 
-    public void addUser(String username, String password, String roles) {
-	this.assertNotInitialized();
+  public void addUser(String username, String password, String roles) {
+    this.assertNotInitialized();
 
-	MemUser user = new MemUser();
-	user.setUsername(username);
-	user.setPassword(this.passwordDigester.digest(password));
-	user.setRoles(roles);
-	this.userMap.put(username, user);
-    }
+    MemUser user = new MemUser();
+    user.setUsername(username);
+    user.setPassword(this.passwordDigester.digest(password));
+    user.setRoles(roles);
+    this.userMap.put(username, user);
+  }
 
-    public void addUser(MemUser user) {
-	this.assertNotInitialized();
+  public void addUser(MemUser user) {
+    this.assertNotInitialized();
 
-	MemUser copy = user.copy();
-	copy.setPassword(this.passwordDigester.digest(copy.getPassword()));
-	this.userMap.put(copy.getUsername(), copy);
-    }
+    MemUser copy = user.copy();
+    copy.setPassword(this.passwordDigester.digest(copy.getPassword()));
+    this.userMap.put(copy.getUsername(), copy);
+  }
 }

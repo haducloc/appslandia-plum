@@ -32,18 +32,18 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class CacheControlPolicy implements HeaderPolicy {
 
-    final String cacheControl;
+  final String cacheControl;
 
-    public CacheControlPolicy(CacheControlBuilder builder) {
-	this(builder, true);
-    }
+  public CacheControlPolicy(CacheControlBuilder builder) {
+    this(builder, true);
+  }
 
-    public CacheControlPolicy(CacheControlBuilder builder, boolean enableLocal) {
-	this.cacheControl = Asserts.notNull(builder.toString());
-    }
+  public CacheControlPolicy(CacheControlBuilder builder, boolean enableLocal) {
+    this.cacheControl = Asserts.notNull(builder.toString());
+  }
 
-    @Override
-    public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
-	response.setHeader("Cache-Control", this.cacheControl);
-    }
+  @Override
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
+    response.setHeader("Cache-Control", this.cacheControl);
+  }
 }

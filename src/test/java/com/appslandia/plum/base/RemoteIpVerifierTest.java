@@ -30,60 +30,60 @@ import org.junit.jupiter.api.Test;
  */
 public class RemoteIpVerifierTest {
 
-    @Test
-    public void test() {
-	try {
-	    RemoteIpVerifier verifier = new RemoteIpVerifier();
+  @Test
+  public void test() {
+    try {
+      RemoteIpVerifier verifier = new RemoteIpVerifier();
 
-	    Assertions.assertTrue(verifier.allow("192.168.10.1"));
-	    Assertions.assertTrue(verifier.allow("192.168.11.1"));
+      Assertions.assertTrue(verifier.allow("192.168.10.1"));
+      Assertions.assertTrue(verifier.allow("192.168.11.1"));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_setAllows() {
-	try {
-	    RemoteIpVerifier verifier = new RemoteIpVerifier();
-	    verifier.setAllows("192\\.168\\.10\\.\\d+");
+  @Test
+  public void test_setAllows() {
+    try {
+      RemoteIpVerifier verifier = new RemoteIpVerifier();
+      verifier.setAllows("192\\.168\\.10\\.\\d+");
 
-	    Assertions.assertTrue(verifier.allow("192.168.10.1"));
-	    Assertions.assertFalse(verifier.allow("192.168.11.1"));
+      Assertions.assertTrue(verifier.allow("192.168.10.1"));
+      Assertions.assertFalse(verifier.allow("192.168.11.1"));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_setDenies() {
-	try {
-	    RemoteIpVerifier verifier = new RemoteIpVerifier();
-	    verifier.setDenies("192\\.168\\.10\\.\\d+");
+  @Test
+  public void test_setDenies() {
+    try {
+      RemoteIpVerifier verifier = new RemoteIpVerifier();
+      verifier.setDenies("192\\.168\\.10\\.\\d+");
 
-	    Assertions.assertFalse(verifier.allow("192.168.10.1"));
-	    Assertions.assertTrue(verifier.allow("192.168.11.1"));
+      Assertions.assertFalse(verifier.allow("192.168.10.1"));
+      Assertions.assertTrue(verifier.allow("192.168.11.1"));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_combine() {
-	try {
-	    RemoteIpVerifier verifier = new RemoteIpVerifier();
-	    verifier.setAllows("192\\.168\\.10\\.\\d+");
-	    verifier.setDenies("192\\.168\\.11\\.\\d+");
+  @Test
+  public void test_combine() {
+    try {
+      RemoteIpVerifier verifier = new RemoteIpVerifier();
+      verifier.setAllows("192\\.168\\.10\\.\\d+");
+      verifier.setDenies("192\\.168\\.11\\.\\d+");
 
-	    Assertions.assertTrue(verifier.allow("192.168.10.1"));
-	    Assertions.assertTrue(verifier.allow("192.168.10.10"));
-	    Assertions.assertFalse(verifier.allow("192.168.11.1"));
+      Assertions.assertTrue(verifier.allow("192.168.10.1"));
+      Assertions.assertTrue(verifier.allow("192.168.10.10"));
+      Assertions.assertFalse(verifier.allow("192.168.11.1"));
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 }

@@ -29,5 +29,5 @@ import java.awt.image.BufferedImage;
  */
 public interface BackgroundProducer {
 
-    BufferedImage produce(int width, int height);
+  BufferedImage produce(int width, int height);
 }

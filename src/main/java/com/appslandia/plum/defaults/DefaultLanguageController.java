@@ -45,39 +45,40 @@ import jakarta.servlet.http.HttpServletResponse;
 @Controller("language")
 public class DefaultLanguageController {
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected LanguageProvider languageProvider;
+  @Inject
+  protected LanguageProvider languageProvider;
 
-    @Inject
-    protected PrefCookieHandler prefCookieHandler;
+  @Inject
+  protected PrefCookieHandler prefCookieHandler;
 
-    @HttpGetPost
-    public ActionResult changeto(String languageId, RequestAccessor request, HttpServletResponse response) throws Exception {
-	request.assertNotNull(languageId);
-	request.assertNotNull(this.languageProvider.getLanguage(languageId));
+  @HttpGetPost
+  public ActionResult changeto(String languageId, RequestAccessor request, HttpServletResponse response)
+      throws Exception {
+    request.assertNotNull(languageId);
+    request.assertNotNull(this.languageProvider.getLanguage(languageId));
 
-	this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
-	    prefCookie.set(PrefCookie.PARAM_LANGUAGE, languageId);
-	});
+    this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
+      prefCookie.set(PrefCookie.PARAM_LANGUAGE, languageId);
+    });
 
-	final String redirectUrl = request.getParameter("redirectUrl");
+    final String redirectUrl = request.getParameter("redirectUrl");
 
-	if (redirectUrl != null) {
-	    ServletUtils.sendRedirect(response, redirectUrl);
-	    return ActionResult.EMPTY;
+    if (redirectUrl != null) {
+      ServletUtils.sendRedirect(response, redirectUrl);
+      return ActionResult.EMPTY;
 
-	} else {
-	    return RedirectResult.ROOT;
-	}
+    } else {
+      return RedirectResult.ROOT;
     }
+  }
 
-    @HttpGet
-    public void reset(RequestAccessor request, HttpServletResponse response) throws Exception {
-	this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
-	    prefCookie.remove(PrefCookie.PARAM_LANGUAGE);
-	});
-    }
+  @HttpGet
+  public void reset(RequestAccessor request, HttpServletResponse response) throws Exception {
+    this.prefCookieHandler.savePrefCookie(request, response, (prefCookie) -> {
+      prefCookie.remove(PrefCookie.PARAM_LANGUAGE);
+    });
+  }
 }

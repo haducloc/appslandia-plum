@@ -37,48 +37,50 @@ import jakarta.servlet.ServletException;
  */
 public abstract class HandlerMappingsRegister implements Startup {
 
-    protected String[] getLanguageIds() {
-	return null;
+  protected String[] getLanguageIds() {
+    return null;
+  }
+
+  protected DynMultipartConfig buildMultipartConfig() {
+    return new DynMultipartConfig();
+  }
+
+  @Override
+  public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
+    ActionScanner scanner = ActionScanner.getInstance();
+
+    Set<String> urlMappings = new TreeSet<>();
+    urlMappings.add("");
+
+    String[] languages = getLanguageIds();
+
+    for (Class<?> controllerClass : scanner.getControllerClasses()) {
+      String controller = ActionDescProvider.getController(controllerClass);
+
+      // /{controller}/*
+      urlMappings.add(STR.fmt("/{}/*", controller));
+
+      // Only register language mappings if languages > 1
+      if ((languages != null) && (languages.length > 1)) {
+        for (String language : languages) {
+
+          // /{language}/{controller}/*
+          urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
+        }
+      }
     }
 
-    protected DynMultipartConfig buildMultipartConfig() {
-	return new DynMultipartConfig();
-    }
+    boolean partsSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
+    DynMultipartConfig multipartConfig = partsSupported ? buildMultipartConfig() : null;
 
-    @Override
-    public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
-	ActionScanner scanner = ActionScanner.getInstance();
+    String executorName = ExecutorHandler.class.getSimpleName();
+    String initializerName = InitializerHandler.class.getSimpleName();
 
-	Set<String> urlMappings = new TreeSet<>();
-	urlMappings.add("");
+    new DynServletRegister().servletName(executorName).servletClass(ExecutorHandler.class)
+        .urlPatterns(urlMappings.toArray(new String[urlMappings.size()])).multipartConfig(multipartConfig)
+        .registerTo(sc);
 
-	String[] languages = getLanguageIds();
-
-	for (Class<?> controllerClass : scanner.getControllerClasses()) {
-	    String controller = ActionDescProvider.getController(controllerClass);
-
-	    // /{controller}/*
-	    urlMappings.add(STR.fmt("/{}/*", controller));
-
-	    // Only register language mappings if languages > 1
-	    if ((languages != null) && (languages.length > 1)) {
-		for (String language : languages) {
-
-		    // /{language}/{controller}/*
-		    urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
-		}
-	    }
-	}
-
-	boolean partsSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
-	DynMultipartConfig multipartConfig = partsSupported ? buildMultipartConfig() : null;
-
-	String executorName = ExecutorHandler.class.getSimpleName();
-	String initializerName = InitializerHandler.class.getSimpleName();
-
-	new DynServletRegister().servletName(executorName).servletClass(ExecutorHandler.class).urlPatterns(urlMappings.toArray(new String[urlMappings.size()]))
-		.multipartConfig(multipartConfig).registerTo(sc);
-
-	new DynFilterRegister().filterName(initializerName).filterClass(InitializerHandler.class).servletNames(executorName).dispatcherTypes(DispatcherType.REQUEST).registerTo(sc);
-    }
+    new DynFilterRegister().filterName(initializerName).filterClass(InitializerHandler.class).servletNames(executorName)
+        .dispatcherTypes(DispatcherType.REQUEST).registerTo(sc);
+  }
 }

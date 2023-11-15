@@ -33,8 +33,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class DefaultRemoteClientVerifier implements RemoteClientVerifier {
 
-    @Override
-    public boolean allowClient(HttpServletRequest request) {
-	return true;
-    }
+  @Override
+  public boolean allowClient(HttpServletRequest request) {
+    return true;
+  }
 }

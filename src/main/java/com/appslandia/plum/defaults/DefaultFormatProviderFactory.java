@@ -35,8 +35,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultFormatProviderFactory implements FormatProviderFactory {
 
-    @Override
-    public FormatProvider produce(Language language) {
-	return new FormatProviderImpl(language);
-    }
+  @Override
+  public FormatProvider produce(Language language) {
+    return new FormatProviderImpl(language);
+  }
 }

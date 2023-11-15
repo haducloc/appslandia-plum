@@ -41,329 +41,329 @@ import jakarta.validation.constraints.NotNull;
  */
 public class ModelBinderTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testUserModel() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userModel);
+
+      Assertions.assertEquals(0, userModel.userId);
+      Assertions.assertNull(userModel.name);
+      Assertions.assertNull(userModel.dob);
+      Assertions.assertNull(userModel.permissions);
+
+      Assertions.assertFalse(getCurrentModelState().isValid("name"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_userId() {
+    try {
+      getCurrentRequest().addParameter("userId", "100");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertEquals(100, userModel.userId);
+
+      Assertions.assertTrue(getCurrentModelState().isValid("userId"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_name() {
+    try {
+      getCurrentRequest().addParameter("name", "user1 ");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertEquals("user1", userModel.name);
+
+      Assertions.assertTrue(getCurrentModelState().isValid("name"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_dob() {
+    try {
+      // ISO8601
+      getCurrentRequest().addParameter("dob", "2010-10-10");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userModel.dob);
+
+      Assertions.assertTrue(getCurrentModelState().isValid("dob"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_permissions() {
+    try {
+      getCurrentRequest().addParameter("permissions", "1", "2");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertEquals("1,2", userModel.permissions);
+
+      Assertions.assertTrue(getCurrentModelState().isValid("permissions"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_permissions_invalid() {
+    try {
+      getCurrentRequest().addParameter("permissions", "1", "2x");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertEquals("1", userModel.permissions);
+
+      Assertions.assertFalse(getCurrentModelState().isValid("permissions"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_manager() {
+    try {
+      getCurrentRequest().addParameter("userId", "1");
+      getCurrentRequest().addParameter("name", "user1");
+
+      getCurrentRequest().addParameter("manager.userId", "100");
+      getCurrentRequest().addParameter("manager.name", "manager");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userModel.manager);
+      Assertions.assertEquals(100, userModel.manager.userId);
+      Assertions.assertEquals("manager", userModel.manager.name);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testListModel() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/testUserList");
+
+      UserList userList = (UserList) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNull(userList.users);
+
+      Assertions.assertFalse(getCurrentModelState().isValid("users"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testListModel_users() {
+    try {
+      getCurrentRequest().addParameter("users[1].userId", "1");
+      getCurrentRequest().addParameter("users[1].name", "user1");
+      getCurrentRequest().addParameter("users[2].userId", "2");
+      getCurrentRequest().addParameter("users[2].name", "user2");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserList");
+
+      UserList userList = (UserList) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userList.users);
+
+      Assertions.assertTrue(getCurrentModelState().isValid("users"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testMapModel() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/testUserMap");
+
+      UserMap userMap = (UserMap) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNull(userMap.users);
+
+      Assertions.assertFalse(getCurrentModelState().isValid("users"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testMapModel_users() {
+    try {
+      getCurrentRequest().addParameter("users[1].userId", "1");
+      getCurrentRequest().addParameter("users[1].name", "user1");
+      getCurrentRequest().addParameter("users[2].userId", "2");
+      getCurrentRequest().addParameter("users[2].name", "user2");
+
+      executeCurrent("POST", "http://localhost/app/testController/testUserMap");
+
+      UserMap userMap = (UserMap) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userMap.users);
+
+      Assertions.assertTrue(getCurrentModelState().isValid("users"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testExcludesName() {
+    try {
+      getCurrentRequest().addParameter("name", "user1 ");
+
+      executeCurrent("POST", "http://localhost/app/testController/testExcludesName");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNull(userModel.name);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpPost
+    public void testUserModel(@Model UserModel model, RequestAccessor request) throws Exception {
+      request.storeModel(model);
     }
 
-    @Test
-    public void test_testUserModel() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userModel);
-
-	    Assertions.assertEquals(0, userModel.userId);
-	    Assertions.assertNull(userModel.name);
-	    Assertions.assertNull(userModel.dob);
-	    Assertions.assertNull(userModel.permissions);
-
-	    Assertions.assertFalse(getCurrentModelState().isValid("name"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpPost
+    public void testUserList(@Model UserList model, RequestAccessor request) throws Exception {
+      request.storeModel(model);
     }
 
-    @Test
-    public void test_testUserModel_userId() {
-	try {
-	    getCurrentRequest().addParameter("userId", "100");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertEquals(100, userModel.userId);
-
-	    Assertions.assertTrue(getCurrentModelState().isValid("userId"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpPost
+    public void testUserMap(@Model UserMap model, RequestAccessor request) throws Exception {
+      request.storeModel(model);
     }
 
-    @Test
-    public void test_testUserModel_name() {
-	try {
-	    getCurrentRequest().addParameter("name", "user1 ");
+    @HttpPost
+    public void testExcludesName(@Model(excludes = "name") UserModel model, RequestAccessor request) throws Exception {
+      request.storeModel(model);
+    }
+  }
 
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+  public static class UserModel {
 
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertEquals("user1", userModel.name);
+    protected int userId;
 
-	    Assertions.assertTrue(getCurrentModelState().isValid("name"));
+    @NotNull
+    @MaxLength(10)
+    protected String name;
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    protected LocalDate dob;
+
+    @MultiValues(ints = { 1, 2, 3 }, type = int.class)
+    protected String permissions;
+
+    @Valid
+    protected UserModel manager;
+
+    public int getUserId() {
+      return userId;
     }
 
-    @Test
-    public void test_testUserModel_dob() {
-	try {
-	    // ISO8601
-	    getCurrentRequest().addParameter("dob", "2010-10-10");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userModel.dob);
-
-	    Assertions.assertTrue(getCurrentModelState().isValid("dob"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public void setUserId(int userId) {
+      this.userId = userId;
     }
 
-    @Test
-    public void test_testUserModel_permissions() {
-	try {
-	    getCurrentRequest().addParameter("permissions", "1", "2");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertEquals("1,2", userModel.permissions);
-
-	    Assertions.assertTrue(getCurrentModelState().isValid("permissions"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public String getName() {
+      return name;
     }
 
-    @Test
-    public void test_testUserModel_permissions_invalid() {
-	try {
-	    getCurrentRequest().addParameter("permissions", "1", "2x");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertEquals("1", userModel.permissions);
-
-	    Assertions.assertFalse(getCurrentModelState().isValid("permissions"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public void setName(String name) {
+      this.name = name;
     }
 
-    @Test
-    public void test_testUserModel_manager() {
-	try {
-	    getCurrentRequest().addParameter("userId", "1");
-	    getCurrentRequest().addParameter("name", "user1");
-
-	    getCurrentRequest().addParameter("manager.userId", "100");
-	    getCurrentRequest().addParameter("manager.name", "manager");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userModel.manager);
-	    Assertions.assertEquals(100, userModel.manager.userId);
-	    Assertions.assertEquals("manager", userModel.manager.name);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public LocalDate getDob() {
+      return dob;
     }
 
-    @Test
-    public void test_testListModel() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/testUserList");
-
-	    UserList userList = (UserList) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNull(userList.users);
-
-	    Assertions.assertFalse(getCurrentModelState().isValid("users"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public void setDob(LocalDate dob) {
+      this.dob = dob;
     }
 
-    @Test
-    public void test_testListModel_users() {
-	try {
-	    getCurrentRequest().addParameter("users[1].userId", "1");
-	    getCurrentRequest().addParameter("users[1].name", "user1");
-	    getCurrentRequest().addParameter("users[2].userId", "2");
-	    getCurrentRequest().addParameter("users[2].name", "user2");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserList");
-
-	    UserList userList = (UserList) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userList.users);
-
-	    Assertions.assertTrue(getCurrentModelState().isValid("users"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public String getPermissions() {
+      return permissions;
     }
 
-    @Test
-    public void test_testMapModel() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/testUserMap");
-
-	    UserMap userMap = (UserMap) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNull(userMap.users);
-
-	    Assertions.assertFalse(getCurrentModelState().isValid("users"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public void setPermissions(String permissions) {
+      this.permissions = permissions;
     }
 
-    @Test
-    public void test_testMapModel_users() {
-	try {
-	    getCurrentRequest().addParameter("users[1].userId", "1");
-	    getCurrentRequest().addParameter("users[1].name", "user1");
-	    getCurrentRequest().addParameter("users[2].userId", "2");
-	    getCurrentRequest().addParameter("users[2].name", "user2");
-
-	    executeCurrent("POST", "http://localhost/app/testController/testUserMap");
-
-	    UserMap userMap = (UserMap) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userMap.users);
-
-	    Assertions.assertTrue(getCurrentModelState().isValid("users"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public UserModel getManager() {
+      return manager;
     }
 
-    @Test
-    public void test_testExcludesName() {
-	try {
-	    getCurrentRequest().addParameter("name", "user1 ");
+    public void setManager(UserModel manager) {
+      this.manager = manager;
+    }
+  }
 
-	    executeCurrent("POST", "http://localhost/app/testController/testExcludesName");
+  public static class UserList {
 
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNull(userModel.name);
+    @NotNull
+    protected List<UserModel> users;
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public List<UserModel> getUsers() {
+      return users;
     }
 
-    @Controller("testController")
-    public static class TestController {
+    public void setUsers(List<UserModel> users) {
+      this.users = users;
+    }
+  }
 
-	@HttpPost
-	public void testUserModel(@Model UserModel model, RequestAccessor request) throws Exception {
-	    request.storeModel(model);
-	}
+  public static class UserMap {
 
-	@HttpPost
-	public void testUserList(@Model UserList model, RequestAccessor request) throws Exception {
-	    request.storeModel(model);
-	}
+    @NotNull
+    protected Map<String, UserModel> users;
 
-	@HttpPost
-	public void testUserMap(@Model UserMap model, RequestAccessor request) throws Exception {
-	    request.storeModel(model);
-	}
-
-	@HttpPost
-	public void testExcludesName(@Model(excludes = "name") UserModel model, RequestAccessor request) throws Exception {
-	    request.storeModel(model);
-	}
+    public Map<String, UserModel> getUsers() {
+      return users;
     }
 
-    public static class UserModel {
-
-	protected int userId;
-
-	@NotNull
-	@MaxLength(10)
-	protected String name;
-
-	protected LocalDate dob;
-
-	@MultiValues(ints = { 1, 2, 3 }, type = int.class)
-	protected String permissions;
-
-	@Valid
-	protected UserModel manager;
-
-	public int getUserId() {
-	    return userId;
-	}
-
-	public void setUserId(int userId) {
-	    this.userId = userId;
-	}
-
-	public String getName() {
-	    return name;
-	}
-
-	public void setName(String name) {
-	    this.name = name;
-	}
-
-	public LocalDate getDob() {
-	    return dob;
-	}
-
-	public void setDob(LocalDate dob) {
-	    this.dob = dob;
-	}
-
-	public String getPermissions() {
-	    return permissions;
-	}
-
-	public void setPermissions(String permissions) {
-	    this.permissions = permissions;
-	}
-
-	public UserModel getManager() {
-	    return manager;
-	}
-
-	public void setManager(UserModel manager) {
-	    this.manager = manager;
-	}
+    public void setUsers(Map<String, UserModel> users) {
+      this.users = users;
     }
-
-    public static class UserList {
-
-	@NotNull
-	protected List<UserModel> users;
-
-	public List<UserModel> getUsers() {
-	    return users;
-	}
-
-	public void setUsers(List<UserModel> users) {
-	    this.users = users;
-	}
-    }
-
-    public static class UserMap {
-
-	@NotNull
-	protected Map<String, UserModel> users;
-
-	public Map<String, UserModel> getUsers() {
-	    return users;
-	}
-
-	public void setUsers(Map<String, UserModel> users) {
-	    this.users = users;
-	}
-    }
+  }
 }

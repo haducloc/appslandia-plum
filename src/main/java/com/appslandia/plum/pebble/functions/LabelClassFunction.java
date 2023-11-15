@@ -36,21 +36,22 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class LabelClassFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: fieldName*, form";
+  @Override
+  public String getDescription() {
+    return "variables: fieldName*, form";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String fieldName = context.getRequiredArgument("fieldName");
+    String form = context.getArgument("form");
+
+    boolean isValid = !Objects.equals(form, context.getModelState().getForm())
+        || context.getModelState().isValid(fieldName);
+
+    if (isValid) {
+      return new SafeString(TagUtils.CSS_NOOP);
     }
-
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String fieldName = context.getRequiredArgument("fieldName");
-	String form = context.getArgument("form");
-
-	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(fieldName);
-
-	if (isValid) {
-	    return new SafeString(TagUtils.CSS_NOOP);
-	}
-	return new SafeString("l-error-label");
-    }
+    return new SafeString("l-error-label");
+  }
 }

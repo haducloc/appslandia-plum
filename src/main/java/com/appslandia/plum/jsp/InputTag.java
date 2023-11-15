@@ -35,123 +35,123 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "input")
 public class InputTag extends ValueTagBase {
 
-    protected String maxlength;
+  protected String maxlength;
 
-    protected Object min;
-    protected Object max;
-    protected Object step;
-    protected String pattern;
+  protected Object min;
+  protected Object max;
+  protected Object step;
+  protected String pattern;
 
-    protected String placeholder;
-    protected String alt;
+  protected String placeholder;
+  protected String alt;
 
-    @Override
-    protected String getTagName() {
-	return "input";
+  @Override
+  protected String getTagName() {
+    return "input";
+  }
+
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    HtmlUtils.escAttribute(out, "id", this.id);
+
+    if (this.type != null)
+      HtmlUtils.escAttribute(out, "type", this.type);
+    HtmlUtils.escAttribute(out, "name", this._name);
+
+    HtmlUtils.escAttribute(out, "value", (String) this._value);
+    if (this.min != null)
+      HtmlUtils.escAttribute(out, "min", getRequestContext().format(this.min, this.converter, this._localize));
+
+    if (this.max != null)
+      HtmlUtils.escAttribute(out, "max", getRequestContext().format(this.max, this.converter, this._localize));
+
+    if (this.step != null)
+      HtmlUtils.escAttribute(out, "step", getRequestContext().format(this.step, this.converter, this._localize));
+
+    if (this.pattern != null)
+      HtmlUtils.escAttribute(out, "pattern", this.pattern);
+
+    if (this.autocomplete != null)
+      HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
+
+    if (this.maxlength != null)
+      HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
+    if (this.readonly)
+      HtmlUtils.readonly(out);
+
+    if (this.placeholder != null)
+      HtmlUtils.escAttribute(out, "placeholder", this.placeholder);
+
+    if (this.required)
+      HtmlUtils.required(out);
+
+    if (this.autofocus)
+      HtmlUtils.autofocus(out);
+
+    if (this.hidden)
+      HtmlUtils.hidden(out);
+
+    if (this.form != null)
+      HtmlUtils.escAttribute(out, "form", this.form);
+
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+
+    if (this.alt != null)
+      HtmlUtils.escAttribute(out, "alt", this.alt);
+
+    // OnEnter
+    if (this.enterFn != null) {
+      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
+
+    } else if (this.enterBtn != null) {
+      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
     }
+  }
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", this.id);
+  @Attribute(required = false, rtexprvalue = false)
+  public void setType(String type) {
+    this.type = type;
+  }
 
-	if (this.type != null)
-	    HtmlUtils.escAttribute(out, "type", this.type);
-	HtmlUtils.escAttribute(out, "name", this._name);
+  @Attribute(required = false, rtexprvalue = false)
+  public void setMaxlength(String maxlength) {
+    this.maxlength = maxlength;
+  }
 
-	HtmlUtils.escAttribute(out, "value", (String) this._value);
-	if (this.min != null)
-	    HtmlUtils.escAttribute(out, "min", getRequestContext().format(this.min, this.converter, this._localize));
+  @Attribute(required = false, rtexprvalue = true)
+  public void setMin(Object min) {
+    this.min = min;
+  }
 
-	if (this.max != null)
-	    HtmlUtils.escAttribute(out, "max", getRequestContext().format(this.max, this.converter, this._localize));
+  @Attribute(required = false, rtexprvalue = true)
+  public void setMax(Object max) {
+    this.max = max;
+  }
 
-	if (this.step != null)
-	    HtmlUtils.escAttribute(out, "step", getRequestContext().format(this.step, this.converter, this._localize));
+  @Attribute(required = false, rtexprvalue = true)
+  public void setStep(Object step) {
+    this.step = step;
+  }
 
-	if (this.pattern != null)
-	    HtmlUtils.escAttribute(out, "pattern", this.pattern);
+  @Attribute(required = false, rtexprvalue = false)
+  public void setPattern(String pattern) {
+    this.pattern = pattern;
+  }
 
-	if (this.autocomplete != null)
-	    HtmlUtils.escAttribute(out, "autocomplete", this.autocomplete);
+  @Attribute(required = false, rtexprvalue = true)
+  public void setPlaceholder(String placeholder) {
+    this.placeholder = placeholder;
+  }
 
-	if (this.maxlength != null)
-	    HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
-	if (this.readonly)
-	    HtmlUtils.readonly(out);
-
-	if (this.placeholder != null)
-	    HtmlUtils.escAttribute(out, "placeholder", this.placeholder);
-
-	if (this.required)
-	    HtmlUtils.required(out);
-
-	if (this.autofocus)
-	    HtmlUtils.autofocus(out);
-
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
-
-	if (this.form != null)
-	    HtmlUtils.escAttribute(out, "form", this.form);
-
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-
-	if (this.alt != null)
-	    HtmlUtils.escAttribute(out, "alt", this.alt);
-
-	// OnEnter
-	if (this.enterFn != null) {
-	    HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
-
-	} else if (this.enterBtn != null) {
-	    HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
-	}
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setType(String type) {
-	this.type = type;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setMaxlength(String maxlength) {
-	this.maxlength = maxlength;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setMin(Object min) {
-	this.min = min;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setMax(Object max) {
-	this.max = max;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setStep(Object step) {
-	this.step = step;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setPattern(String pattern) {
-	this.pattern = pattern;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setPlaceholder(String placeholder) {
-	this.placeholder = placeholder;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setAlt(String alt) {
-	this.alt = alt;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setAlt(String alt) {
+    this.alt = alt;
+  }
 }

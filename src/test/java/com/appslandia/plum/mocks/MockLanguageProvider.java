@@ -30,9 +30,9 @@ import com.appslandia.plum.base.LanguageProvider;
  */
 public class MockLanguageProvider extends LanguageProvider {
 
-    @Override
-    protected void init() throws Exception {
-	addDefault(Language.EN_US).addLanguage(Language.VI_VN);
-	super.init();
-    }
+  @Override
+  protected void init() throws Exception {
+    addDefault(Language.EN_US).addLanguage(Language.VI_VN);
+    super.init();
+  }
 }

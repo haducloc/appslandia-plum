@@ -42,101 +42,106 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class TagCookieHandler {
 
-    public static final String CONFIG_COOKIE_AGE = TagCookieHandler.class.getName() + ".cookie_age";
-    public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
+  public static final String CONFIG_COOKIE_AGE = TagCookieHandler.class.getName() + ".cookie_age";
+  public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected CookieHandler cookieHandler;
+  @Inject
+  protected CookieHandler cookieHandler;
 
-    protected int getCookieAge() {
-	return this.appConfig.getInt(CONFIG_COOKIE_AGE, DEFAULT_COOKIE_AGE);
+  protected int getCookieAge() {
+    return this.appConfig.getInt(CONFIG_COOKIE_AGE, DEFAULT_COOKIE_AGE);
+  }
+
+  public void saveTags(HttpServletResponse response, String cookieName, TagList tagList) {
+    String tags = URLEncoding.encodeParam(String.join(",", tagList));
+    this.cookieHandler.saveCookie(response, cookieName, tags, getCookieAge(), null);
+  }
+
+  public TagList getTagList(HttpServletRequest request, String cookieName, Supplier<TagList> tagListNewer) {
+    TagList tagList = (TagList) request.getAttribute(cookieName);
+    if (tagList != null) {
+      return tagList;
     }
+    tagList = (tagListNewer != null) ? tagListNewer.get() : new TagList();
+    request.setAttribute(cookieName, tagList);
 
-    public void saveTags(HttpServletResponse response, String cookieName, TagList tagList) {
-	String tags = URLEncoding.encodeParam(String.join(",", tagList));
-	this.cookieHandler.saveCookie(response, cookieName, tags, getCookieAge(), null);
+    String tagsCookie = this.cookieHandler.getCookieValue(request, cookieName);
+    if (tagsCookie == null) {
+      return tagList;
     }
+    // Parse Tags
+    try {
+      String decodedTags = URLEncoding.decodeParam(tagsCookie);
+      Out<Boolean> tagValid = new Out<>();
 
-    public TagList getTagList(HttpServletRequest request, String cookieName, Supplier<TagList> tagListNewer) {
-	TagList tagList = (TagList) request.getAttribute(cookieName);
-	if (tagList != null) {
-	    return tagList;
-	}
-	tagList = (tagListNewer != null) ? tagListNewer.get() : new TagList();
-	request.setAttribute(cookieName, tagList);
+      for (String tag : SplitUtils.splitByComma(decodedTags)) {
+        if (tagList.isPreTag(tag)) {
+          continue;
+        }
+        tag = TagUtils.toTag(tag, tagValid);
 
-	String tagsCookie = this.cookieHandler.getCookieValue(request, cookieName);
-	if (tagsCookie == null) {
-	    return tagList;
-	}
-	// Parse Tags
-	try {
-	    String decodedTags = URLEncoding.decodeParam(tagsCookie);
-	    Out<Boolean> tagValid = new Out<>();
-
-	    for (String tag : SplitUtils.splitByComma(decodedTags)) {
-		if (tagList.isPreTag(tag)) {
-		    continue;
-		}
-		tag = TagUtils.toTag(tag, tagValid);
-
-		if (tagValid.val()) {
-		    tagList.add(tag);
-		}
-	    }
-	} catch (IllegalArgumentException ex) {
-	}
-	return tagList;
+        if (tagValid.val()) {
+          tagList.add(tag);
+        }
+      }
+    } catch (IllegalArgumentException ex) {
     }
+    return tagList;
+  }
 
-    public void replaceTag(HttpServletRequest request, HttpServletResponse response, String tag, String byTag, String cookieName, Supplier<TagList> tagListNewer) {
-	TagList tagList = getTagList(request, cookieName, tagListNewer);
+  public void replaceTag(HttpServletRequest request, HttpServletResponse response, String tag, String byTag,
+      String cookieName, Supplier<TagList> tagListNewer) {
+    TagList tagList = getTagList(request, cookieName, tagListNewer);
 
-	if (tagList.remove(tag) && tagList.add(byTag)) {
-	    saveTags(response, cookieName, tagList);
-	}
+    if (tagList.remove(tag) && tagList.add(byTag)) {
+      saveTags(response, cookieName, tagList);
     }
+  }
 
-    public void saveTag(HttpServletRequest request, HttpServletResponse response, String tag, String cookieName, Supplier<TagList> tagListNewer) {
-	if (tag == null) {
-	    return;
-	}
-	doSaveTags(request, response, new String[] { tag }, cookieName, tagListNewer);
+  public void saveTag(HttpServletRequest request, HttpServletResponse response, String tag, String cookieName,
+      Supplier<TagList> tagListNewer) {
+    if (tag == null) {
+      return;
     }
+    doSaveTags(request, response, new String[] { tag }, cookieName, tagListNewer);
+  }
 
-    public void saveTags(HttpServletRequest request, HttpServletResponse response, String tags, String cookieName, Supplier<TagList> tagListNewer) {
-	if (tags == null) {
-	    return;
-	}
-	String[] parsedTags = TagUtils.toTags(tags, new Out<>()).stream().toArray(String[]::new);
-	doSaveTags(request, response, parsedTags, cookieName, tagListNewer);
+  public void saveTags(HttpServletRequest request, HttpServletResponse response, String tags, String cookieName,
+      Supplier<TagList> tagListNewer) {
+    if (tags == null) {
+      return;
     }
+    String[] parsedTags = TagUtils.toTags(tags, new Out<>()).stream().toArray(String[]::new);
+    doSaveTags(request, response, parsedTags, cookieName, tagListNewer);
+  }
 
-    public void saveDbTags(HttpServletRequest request, HttpServletResponse response, String dbTags, String cookieName, Supplier<TagList> tagListNewer) {
-	if (dbTags == null) {
-	    return;
-	}
-	doSaveTags(request, response, TagUtils.toTags(dbTags), cookieName, tagListNewer);
+  public void saveDbTags(HttpServletRequest request, HttpServletResponse response, String dbTags, String cookieName,
+      Supplier<TagList> tagListNewer) {
+    if (dbTags == null) {
+      return;
     }
+    doSaveTags(request, response, TagUtils.toTags(dbTags), cookieName, tagListNewer);
+  }
 
-    void doSaveTags(HttpServletRequest request, HttpServletResponse response, String[] tags, String cookieName, Supplier<TagList> tagListNewer) {
-	if (tags == null || tags.length == 0) {
-	    return;
-	}
-	TagList tagList = getTagList(request, cookieName, tagListNewer);
-
-	boolean update = false;
-	for (String tag : tags) {
-
-	    if (tagList.add(tag)) {
-		update = true;
-	    }
-	}
-	if (update) {
-	    saveTags(response, cookieName, tagList);
-	}
+  void doSaveTags(HttpServletRequest request, HttpServletResponse response, String[] tags, String cookieName,
+      Supplier<TagList> tagListNewer) {
+    if (tags == null || tags.length == 0) {
+      return;
     }
+    TagList tagList = getTagList(request, cookieName, tagListNewer);
+
+    boolean update = false;
+    for (String tag : tags) {
+
+      if (tagList.add(tag)) {
+        update = true;
+      }
+    }
+    if (update) {
+      saveTags(response, cookieName, tagList);
+    }
+  }
 }

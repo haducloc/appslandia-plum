@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface CsrfManager {
 
-    void initCsrf(HttpServletRequest request);
+  void initCsrf(HttpServletRequest request);
 
-    boolean verifyCsrf(HttpServletRequest request, boolean remove);
+  boolean verifyCsrf(HttpServletRequest request, boolean remove);
 }

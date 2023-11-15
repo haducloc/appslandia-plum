@@ -37,28 +37,28 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class ActionUrlFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: action*, controller, absUrl, escXml";
+  @Override
+  public String getDescription() {
+    return "variables: action*, controller, absUrl, escXml";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
+    String action = context.getRequiredArgument("action");
+    String controller = context.getArgument("controller");
+
+    boolean absUrl = context.getBool("absUrl", false);
+    boolean escXml = context.getBool("escXml", true);
+
+    if (controller == null) {
+      controller = context.getRequestContext().getActionDesc().getController();
     }
+    Map<String, Object> parameters = context.parseParameters();
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
-	String action = context.getRequiredArgument("action");
-	String controller = context.getArgument("controller");
+    ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
+    String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, absUrl);
 
-	boolean absUrl = context.getBool("absUrl", false);
-	boolean escXml = context.getBool("escXml", true);
-
-	if (controller == null) {
-	    controller = context.getRequestContext().getActionDesc().getController();
-	}
-	Map<String, Object> parameters = context.parseParameters();
-
-	ActionParser actionParser = ServletUtils.getAppScoped(context.getRequest().getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(context.getRequest(), controller, action, parameters, absUrl);
-
-	url = context.getResponse().encodeURL(url);
-	return new SafeString(escXml ? XmlEscaper.escapeXml(url) : url);
-    }
+    url = context.getResponse().encodeURL(url);
+    return new SafeString(escXml ? XmlEscaper.escapeXml(url) : url);
+  }
 }

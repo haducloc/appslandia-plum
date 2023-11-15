@@ -34,21 +34,21 @@ import jakarta.servlet.ServletResponse;
  */
 public class MockRequestDispatcher implements RequestDispatcher {
 
-    private String path;
+  private String path;
 
-    public MockRequestDispatcher(String path) {
-	this.path = path;
-    }
+  public MockRequestDispatcher(String path) {
+    this.path = path;
+  }
 
-    public String getPath() {
-	return this.path;
-    }
+  public String getPath() {
+    return this.path;
+  }
 
-    @Override
-    public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-    }
+  @Override
+  public void forward(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+  }
 
-    @Override
-    public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-    }
+  @Override
+  public void include(ServletRequest request, ServletResponse response) throws ServletException, IOException {
+  }
 }

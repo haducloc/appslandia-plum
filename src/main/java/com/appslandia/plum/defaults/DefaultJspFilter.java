@@ -41,19 +41,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @WebFilter(dispatcherTypes = { DispatcherType.REQUEST }, urlPatterns = "*.jsp")
 public class DefaultJspFilter extends HttpFilter {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Override
-    protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+  @Override
+  protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+      throws IOException, ServletException {
 
-	if (this.appConfig.getBool(AppConfig.CONFIG_DIRECT_JSP_ACCESS)) {
-	    chain.doFilter(request, response);
+    if (this.appConfig.getBool(AppConfig.CONFIG_DIRECT_JSP_ACCESS)) {
+      chain.doFilter(request, response);
 
-	} else {
-	    response.sendError(HttpServletResponse.SC_FORBIDDEN, STR.fmt("Couldn't access jsp pages directly. {}=false.", AppConfig.CONFIG_DIRECT_JSP_ACCESS));
-	}
+    } else {
+      response.sendError(HttpServletResponse.SC_FORBIDDEN,
+          STR.fmt("Couldn't access jsp pages directly. {}=false.", AppConfig.CONFIG_DIRECT_JSP_ACCESS));
     }
+  }
 }

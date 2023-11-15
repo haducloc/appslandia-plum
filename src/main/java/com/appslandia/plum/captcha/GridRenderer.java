@@ -36,50 +36,50 @@ import com.appslandia.common.utils.Asserts;
  */
 public class GridRenderer extends InitializeObject implements ImageRenderer {
 
-    private Color hColor;
-    private Color vColor;
+  private Color hColor;
+  private Color vColor;
 
-    final Random random = new SecureRandom();
+  final Random random = new SecureRandom();
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.hColor, "hColor is required.");
-	Asserts.notNull(this.vColor, "vColor is required.");
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.hColor, "hColor is required.");
+    Asserts.notNull(this.vColor, "vColor is required.");
+  }
+
+  @Override
+  public void render(BufferedImage img, int width, int height) {
+    this.initialize();
+    Graphics2D g = img.createGraphics();
+
+    int hStripes = height / 7;
+    int vStripes = width / 7;
+    int hSpace = height / (hStripes + 1);
+    int vSpace = width / (vStripes + 1);
+
+    // Horizontal Stripes
+    for (int i = hSpace; i < height; i = i + hSpace) {
+      g.setColor(this.hColor);
+      g.drawLine(0, i, width, i);
     }
 
-    @Override
-    public void render(BufferedImage img, int width, int height) {
-	this.initialize();
-	Graphics2D g = img.createGraphics();
-
-	int hStripes = height / 7;
-	int vStripes = width / 7;
-	int hSpace = height / (hStripes + 1);
-	int vSpace = width / (vStripes + 1);
-
-	// Horizontal Stripes
-	for (int i = hSpace; i < height; i = i + hSpace) {
-	    g.setColor(this.hColor);
-	    g.drawLine(0, i, width, i);
-	}
-
-	// Vertical Stripes
-	for (int i = vSpace; i < width; i = i + vSpace) {
-	    g.setColor(this.vColor);
-	    g.drawLine(i, 0, i, height);
-	}
-	g.dispose();
+    // Vertical Stripes
+    for (int i = vSpace; i < width; i = i + vSpace) {
+      g.setColor(this.vColor);
+      g.drawLine(i, 0, i, height);
     }
+    g.dispose();
+  }
 
-    public GridRenderer setHColor(Color hColor) {
-	this.assertNotInitialized();
-	this.hColor = hColor;
-	return this;
-    }
+  public GridRenderer setHColor(Color hColor) {
+    this.assertNotInitialized();
+    this.hColor = hColor;
+    return this;
+  }
 
-    public GridRenderer setVColor(Color vColor) {
-	this.assertNotInitialized();
-	this.vColor = vColor;
-	return this;
-    }
+  public GridRenderer setVColor(Color vColor) {
+    this.assertNotInitialized();
+    this.vColor = vColor;
+    return this;
+  }
 }

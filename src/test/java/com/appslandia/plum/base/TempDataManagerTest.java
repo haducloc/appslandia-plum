@@ -32,71 +32,71 @@ import com.appslandia.plum.mocks.MockHttpServletRequest;
  */
 public class TempDataManagerTest extends MockTestBase {
 
-    TempDataManager tempDataManager;
+  TempDataManager tempDataManager;
 
-    @Override
-    protected void initialize() {
-	tempDataManager = container.getObject(TempDataManager.class);
+  @Override
+  protected void initialize() {
+    tempDataManager = container.getObject(TempDataManager.class);
+  }
+
+  private String initTempData(MockHttpServletRequest request) throws Exception {
+    TempData tempData = new TempData().set("key1", "data1");
+    request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
+    return tempDataManager.saveTempData(request, container.createResponse());
+  }
+
+  @Test
+  public void test_saveTempData() {
+    try {
+      TempData tempData = new TempData().set("key1", "data1");
+      getCurrentRequest().setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
+
+      String tempDataId = tempDataManager.saveTempData(getCurrentRequest(), getCurrentResponse());
+      Assertions.assertNotNull(tempDataId);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    private String initTempData(MockHttpServletRequest request) throws Exception {
-	TempData tempData = new TempData().set("key1", "data1");
-	request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
-	return tempDataManager.saveTempData(request, container.createResponse());
+  @Test
+  public void test_loadTempData() {
+    try {
+      MockHttpServletRequest request = container.createRequest();
+      String tempDataId = initTempData(request);
+
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().addParameter(TempDataManager.PARAM_TEMP_DATA_ID, tempDataId);
+
+      TempData tempData = tempDataManager.loadTempData(getCurrentRequest(), getCurrentResponse());
+      Assertions.assertNotNull(tempData);
+      Assertions.assertNotNull(getCurrentRequest().getAttribute(TempData.REQUEST_ATTRIBUTE_ID));
+
+      Assertions.assertNotNull(tempData.get("key1"));
+      Assertions.assertEquals("data1", tempData.get("key1"));
+
+      tempData = tempDataManager.loadTempData(getCurrentRequest(), getCurrentResponse()); // Removed
+      Assertions.assertNull(tempData);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_saveTempData() {
-	try {
-	    TempData tempData = new TempData().set("key1", "data1");
-	    getCurrentRequest().setAttribute(TempData.REQUEST_ATTRIBUTE_ID, tempData);
+  @Test
+  public void test_loadTempData_invalidTempDataId() {
+    try {
+      MockHttpServletRequest request = container.createRequest();
+      initTempData(request);
 
-	    String tempDataId = tempDataManager.saveTempData(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertNotNull(tempDataId);
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().addParameter(TempDataManager.PARAM_TEMP_DATA_ID, "invalid");
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      TempData tempData = tempDataManager.loadTempData(getCurrentRequest(), getCurrentResponse());
+      Assertions.assertNull(tempData);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
-
-    @Test
-    public void test_loadTempData() {
-	try {
-	    MockHttpServletRequest request = container.createRequest();
-	    String tempDataId = initTempData(request);
-
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().addParameter(TempDataManager.PARAM_TEMP_DATA_ID, tempDataId);
-
-	    TempData tempData = tempDataManager.loadTempData(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertNotNull(tempData);
-	    Assertions.assertNotNull(getCurrentRequest().getAttribute(TempData.REQUEST_ATTRIBUTE_ID));
-
-	    Assertions.assertNotNull(tempData.get("key1"));
-	    Assertions.assertEquals("data1", tempData.get("key1"));
-
-	    tempData = tempDataManager.loadTempData(getCurrentRequest(), getCurrentResponse()); // Removed
-	    Assertions.assertNull(tempData);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_loadTempData_invalidTempDataId() {
-	try {
-	    MockHttpServletRequest request = container.createRequest();
-	    initTempData(request);
-
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().addParameter(TempDataManager.PARAM_TEMP_DATA_ID, "invalid");
-
-	    TempData tempData = tempDataManager.loadTempData(getCurrentRequest(), getCurrentResponse());
-	    Assertions.assertNull(tempData);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
+  }
 }

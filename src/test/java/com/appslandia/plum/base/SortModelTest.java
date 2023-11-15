@@ -30,39 +30,39 @@ import org.junit.jupiter.api.Test;
  */
 public class SortModelTest {
 
-    @Test
-    public void test() {
-	SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
-	SortModel model = new SortModel(config);
+  @Test
+  public void test() {
+    SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+    SortModel model = new SortModel(config);
 
-	model.current("name", null);
+    model.current("name", null);
 
-	Assertions.assertEquals("name", model.sortBy());
-	Assertions.assertTrue(model.sortAsc());
+    Assertions.assertEquals("name", model.sortBy());
+    Assertions.assertTrue(model.sortAsc());
 
-	Assertions.assertTrue(model.sortAsc("name"));
-	Assertions.assertNull(model.sortAsc("dateCreated"));
-    }
+    Assertions.assertTrue(model.sortAsc("name"));
+    Assertions.assertNull(model.sortAsc("dateCreated"));
+  }
 
-    @Test
-    public void test_sortAsc() {
-	SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
-	SortModel model = new SortModel(config);
+  @Test
+  public void test_sortAsc() {
+    SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+    SortModel model = new SortModel(config);
 
-	model.current("name", false);
+    model.current("name", false);
 
-	Assertions.assertEquals("name", model.sortBy());
-	Assertions.assertTrue(!model.sortAsc());
-    }
+    Assertions.assertEquals("name", model.sortBy());
+    Assertions.assertTrue(!model.sortAsc());
+  }
 
-    @Test
-    public void test_invalid_sortBy() {
-	SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
-	SortModel model = new SortModel(config);
+  @Test
+  public void test_invalid_sortBy() {
+    SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+    SortModel model = new SortModel(config);
 
-	model.current("dob", true);
+    model.current("dob", true);
 
-	Assertions.assertEquals("name", model.sortBy());
-	Assertions.assertTrue(model.sortAsc());
-    }
+    Assertions.assertEquals("name", model.sortBy());
+    Assertions.assertTrue(model.sortAsc());
+  }
 }

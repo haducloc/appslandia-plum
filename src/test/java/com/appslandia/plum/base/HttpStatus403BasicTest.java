@@ -35,125 +35,130 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class HttpStatus403BasicTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
-	memUserDatabase.addUser("user1", "password", "user");
-	memUserDatabase.addUser("manager1", "password", "manager");
+    MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
+    memUserDatabase.addUser("user1", "password", "user");
+    memUserDatabase.addUser("manager1", "password", "manager");
 
-	AuthorizePolicyProvider authorizePolicyProvider = container.getObject(AuthorizePolicyProvider.class);
-	authorizePolicyProvider.addAuthorizePolicy("manager1", new AuthorizePolicy() {
+    AuthorizePolicyProvider authorizePolicyProvider = container.getObject(AuthorizePolicyProvider.class);
+    authorizePolicyProvider.addAuthorizePolicy("manager1", new AuthorizePolicy() {
 
-	    @Override
-	    public boolean authorize(UserPrincipal principal) {
-		return principal.getName().equalsIgnoreCase("manager1");
-	    }
-	});
+      @Override
+      public boolean authorize(UserPrincipal principal) {
+        return principal.getName().equalsIgnoreCase("manager1");
+      }
+    });
+  }
+
+  @Test
+  public void test_testManager_unAuthenticated() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testManager");
+
+      Assertions.assertEquals(401, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testManager_unAuthorized() {
+    try {
+      getCurrentRequest().setHeader("Authorization",
+          "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
+
+      executeCurrent("GET", "http://localhost/app/testController/testManager");
+
+      Assertions.assertEquals(403, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testManager_authorized() {
+    try {
+      getCurrentRequest().setHeader("Authorization",
+          "Basic " + MockServletUtils.createBasicCredential("manager1", "password"));
+
+      executeCurrent("GET", "http://localhost/app/testController/testManager");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testPolicyManager1_unauthorized() {
+    try {
+      getCurrentRequest().setHeader("Authorization",
+          "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
+
+      executeCurrent("GET", "http://localhost/app/testController/testPolicyManager1");
+
+      Assertions.assertEquals(403, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testPolicyManager1_authorized() {
+    try {
+      getCurrentRequest().setHeader("Authorization",
+          "Basic " + MockServletUtils.createBasicCredential("manager1", "password"));
+
+      executeCurrent("GET", "http://localhost/app/testController/testPolicyManager1");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testForbiddenException_unAuthorized() {
+    try {
+      getCurrentRequest().setHeader("Authorization",
+          "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
+
+      executeCurrent("GET", "http://localhost/app/testController/testForbiddenException");
+
+      Assertions.assertEquals(403, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    @Authorize(roles = { "manager" })
+    public void testManager() throws Exception {
     }
 
-    @Test
-    public void test_testManager_unAuthenticated() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testManager");
-
-	    Assertions.assertEquals(401, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @Authorize(policies = { "manager1" })
+    public void testPolicyManager1() throws Exception {
     }
 
-    @Test
-    public void test_testManager_unAuthorized() {
-	try {
-	    getCurrentRequest().setHeader("Authorization", "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testManager");
-
-	    Assertions.assertEquals(403, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @Authorize
+    public void testForbiddenException(HttpServletRequest request) throws Exception {
+      if (!request.isUserInRole("manager")) {
+        throw new ForbiddenException("manager is required");
+      }
     }
-
-    @Test
-    public void test_testManager_authorized() {
-	try {
-	    getCurrentRequest().setHeader("Authorization", "Basic " + MockServletUtils.createBasicCredential("manager1", "password"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testManager");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_testPolicyManager1_unauthorized() {
-	try {
-	    getCurrentRequest().setHeader("Authorization", "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testPolicyManager1");
-
-	    Assertions.assertEquals(403, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_testPolicyManager1_authorized() {
-	try {
-	    getCurrentRequest().setHeader("Authorization", "Basic " + MockServletUtils.createBasicCredential("manager1", "password"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testPolicyManager1");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_testForbiddenException_unAuthorized() {
-	try {
-	    getCurrentRequest().setHeader("Authorization", "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
-
-	    executeCurrent("GET", "http://localhost/app/testController/testForbiddenException");
-
-	    Assertions.assertEquals(403, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	@Authorize(roles = { "manager" })
-	public void testManager() throws Exception {
-	}
-
-	@HttpGet
-	@Authorize(policies = { "manager1" })
-	public void testPolicyManager1() throws Exception {
-	}
-
-	@HttpGet
-	@Authorize
-	public void testForbiddenException(HttpServletRequest request) throws Exception {
-	    if (!request.isUserInRole("manager")) {
-		throw new ForbiddenException("manager is required");
-	    }
-	}
-    }
+  }
 }

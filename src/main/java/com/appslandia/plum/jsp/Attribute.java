@@ -36,11 +36,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Attribute {
 
-    String description() default "";
+  String description() default "";
 
-    boolean required() default false;
+  boolean required() default false;
 
-    boolean rtexprvalue() default false;
+  boolean rtexprvalue() default false;
 
-    String defaultValue() default "";
+  String defaultValue() default "";
 }

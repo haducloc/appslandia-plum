@@ -38,29 +38,29 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultAuthTokenHandler extends AuthTokenHandler {
 
-    final TextGenerator tokenGenerator = new TokenGenerator(64);
+  final TextGenerator tokenGenerator = new TokenGenerator(64);
 
-    final PasswordDigester tokenDigester = new PasswordDigester();
+  final PasswordDigester tokenDigester = new PasswordDigester();
 
-    final TextDigester identityDigester = new TextDigester(new DigesterImpl("SHA-256"));
+  final TextDigester identityDigester = new TextDigester(new DigesterImpl("SHA-256"));
 
-    @Override
-    protected TextGenerator getSeriesGenerator() {
-	return UUIDGenerator.INSTANCE;
-    }
+  @Override
+  protected TextGenerator getSeriesGenerator() {
+    return UUIDGenerator.INSTANCE;
+  }
 
-    @Override
-    protected TextGenerator getTokenGenerator() {
-	return this.tokenGenerator;
-    }
+  @Override
+  protected TextGenerator getTokenGenerator() {
+    return this.tokenGenerator;
+  }
 
-    @Override
-    protected TextDigester getTokenDigester() {
-	return this.tokenDigester;
-    }
+  @Override
+  protected TextDigester getTokenDigester() {
+    return this.tokenDigester;
+  }
 
-    @Override
-    protected TextDigester getIdentityDigester() {
-	return this.identityDigester;
-    }
+  @Override
+  protected TextDigester getIdentityDigester() {
+    return this.identityDigester;
+  }
 }

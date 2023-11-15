@@ -28,35 +28,35 @@ import com.appslandia.common.utils.Asserts;
  *
  */
 public class SortModel {
-    public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
+  public static final String REQUEST_ATTRIBUTE_ID = "sortModel";
 
-    final SortConfig config;
-    private String sortBy;
-    private Boolean sortAsc;
+  final SortConfig config;
+  private String sortBy;
+  private Boolean sortAsc;
 
-    public SortModel(SortConfig config) {
-	this.config = config;
-    }
+  public SortModel(SortConfig config) {
+    this.config = config;
+  }
 
-    public SortModel current(String sortBy, Boolean sortAsc) {
-	this.sortBy = this.config.contains(sortBy) ? sortBy : this.config.sortDefault();
-	this.sortAsc = (sortAsc != null) ? sortAsc : this.config.sortAsc(this.sortBy);
-	return this;
-    }
+  public SortModel current(String sortBy, Boolean sortAsc) {
+    this.sortBy = this.config.contains(sortBy) ? sortBy : this.config.sortDefault();
+    this.sortAsc = (sortAsc != null) ? sortAsc : this.config.sortAsc(this.sortBy);
+    return this;
+  }
 
-    public String sortBy() {
-	return Asserts.notNull(this.sortBy);
-    }
+  public String sortBy() {
+    return Asserts.notNull(this.sortBy);
+  }
 
-    public boolean sortAsc() {
-	return Asserts.notNull(this.sortAsc);
-    }
+  public boolean sortAsc() {
+    return Asserts.notNull(this.sortAsc);
+  }
 
-    public Boolean sortAsc(String fieldName) {
-	return this.sortBy().equals(fieldName) ? this.sortAsc() : null;
-    }
+  public Boolean sortAsc(String fieldName) {
+    return this.sortBy().equals(fieldName) ? this.sortAsc() : null;
+  }
 
-    public Boolean flipAsc(String fieldName) {
-	return this.sortBy().equals(fieldName) ? !this.sortAsc() : null;
-    }
+  public Boolean flipAsc(String fieldName) {
+    return this.sortBy().equals(fieldName) ? !this.sortAsc() : null;
+  }
 }

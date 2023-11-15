@@ -33,18 +33,18 @@ import io.pebbletemplates.pebble.loader.MemoryLoader;
  */
 public class MemPebbleTemplateProvider extends PebbleTemplateProvider {
 
-    final MemoryLoader loader = new MemoryLoader();
+  final MemoryLoader loader = new MemoryLoader();
 
-    @Override
-    protected Loader<?> getLoader() {
-	return this.loader;
-    }
+  @Override
+  protected Loader<?> getLoader() {
+    return this.loader;
+  }
 
-    @Override
-    protected void configure(Builder builder) {
-    }
+  @Override
+  protected void configure(Builder builder) {
+  }
 
-    public void addTemplate(String templateLocation, String templateContent) {
-	this.loader.addTemplate(templateLocation, templateContent);
-    }
+  public void addTemplate(String templateLocation, String templateContent) {
+    this.loader.addTemplate(templateLocation, templateContent);
+  }
 }

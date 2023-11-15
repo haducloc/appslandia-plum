@@ -29,54 +29,55 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public class AuthCredential implements Credential {
 
-    final Credential credential;
+  final Credential credential;
 
-    final String module;
-    final boolean authenticationRequest;
-    final boolean reauthentication;
-    final boolean rememberMe;
+  final String module;
+  final boolean authenticationRequest;
+  final boolean reauthentication;
+  final boolean rememberMe;
 
-    public AuthCredential(Credential credential, String module, boolean authenticationRequest, boolean reauthentication, boolean rememberMe) {
-	this.credential = credential;
+  public AuthCredential(Credential credential, String module, boolean authenticationRequest, boolean reauthentication,
+      boolean rememberMe) {
+    this.credential = credential;
 
-	this.module = module;
-	this.authenticationRequest = authenticationRequest;
-	this.reauthentication = reauthentication;
-	this.rememberMe = rememberMe;
-    }
+    this.module = module;
+    this.authenticationRequest = authenticationRequest;
+    this.reauthentication = reauthentication;
+    this.rememberMe = rememberMe;
+  }
 
-    public Credential getCredential() {
-	return this.credential;
-    }
+  public Credential getCredential() {
+    return this.credential;
+  }
 
-    public String getModule() {
-	return this.module;
-    }
+  public String getModule() {
+    return this.module;
+  }
 
-    public boolean isAuthenticationRequest() {
-	return this.authenticationRequest;
-    }
+  public boolean isAuthenticationRequest() {
+    return this.authenticationRequest;
+  }
 
-    public boolean isReauthentication() {
-	return this.reauthentication;
-    }
+  public boolean isReauthentication() {
+    return this.reauthentication;
+  }
 
-    public boolean isRememberMe() {
-	return this.rememberMe;
-    }
+  public boolean isRememberMe() {
+    return this.rememberMe;
+  }
 
-    @Override
-    public boolean isCleared() {
-	return this.credential.isCleared();
-    }
+  @Override
+  public boolean isCleared() {
+    return this.credential.isCleared();
+  }
 
-    @Override
-    public void clear() {
-	this.credential.clear();
-    }
+  @Override
+  public void clear() {
+    this.credential.clear();
+  }
 
-    @Override
-    public boolean isValid() {
-	return this.credential.isValid();
-    }
+  @Override
+  public boolean isValid() {
+    return this.credential.isValid();
+  }
 }

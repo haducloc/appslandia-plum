@@ -29,21 +29,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @NotLog
 public class NotFoundException extends HttpException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public NotFoundException() {
-	super(HttpServletResponse.SC_NOT_FOUND);
-    }
+  public NotFoundException() {
+    super(HttpServletResponse.SC_NOT_FOUND);
+  }
 
-    public NotFoundException(String message) {
-	super(HttpServletResponse.SC_NOT_FOUND, message);
-    }
+  public NotFoundException(String message) {
+    super(HttpServletResponse.SC_NOT_FOUND, message);
+  }
 
-    public NotFoundException(String message, Throwable cause) {
-	super(HttpServletResponse.SC_NOT_FOUND, message, cause);
-    }
+  public NotFoundException(String message, Throwable cause) {
+    super(HttpServletResponse.SC_NOT_FOUND, message, cause);
+  }
 
-    public NotFoundException(Throwable cause) {
-	super(HttpServletResponse.SC_NOT_FOUND, cause);
-    }
+  public NotFoundException(Throwable cause) {
+    super(HttpServletResponse.SC_NOT_FOUND, cause);
+  }
 }

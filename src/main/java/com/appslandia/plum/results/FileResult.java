@@ -34,22 +34,22 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class FileResult extends FilenameResult {
 
-    private File content;
+  private File content;
 
-    public FileResult(File content, String fileName, String contentType) {
-	this(content, fileName, contentType, false);
-    }
+  public FileResult(File content, String fileName, String contentType) {
+    this(content, fileName, contentType, false);
+  }
 
-    public FileResult(File content, String fileName, String contentType, boolean inline) {
-	super(fileName, contentType, inline);
-	this.content = content;
-    }
+  public FileResult(File content, String fileName, String contentType, boolean inline) {
+    super(fileName, contentType, inline);
+    this.content = content;
+  }
 
-    @Override
-    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	response.setContentLengthLong(this.content.length());
+  @Override
+  protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentLengthLong(this.content.length());
 
-	Files.copy(this.content.toPath(), response.getOutputStream());
-	response.getOutputStream().flush();
-    }
+    Files.copy(this.content.toPath(), response.getOutputStream());
+    response.getOutputStream().flush();
+  }
 }

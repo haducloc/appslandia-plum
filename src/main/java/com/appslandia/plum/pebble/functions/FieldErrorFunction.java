@@ -39,38 +39,39 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class FieldErrorFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: fieldName*, form, class";
+  @Override
+  public String getDescription() {
+    return "variables: fieldName*, form, class";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String fieldName = context.getRequiredArgument("fieldName");
+    String form = context.getArgument("form");
+
+    boolean isValid = !Objects.equals(form, context.getModelState().getForm())
+        || context.getModelState().isValid(fieldName);
+    if (!isValid) {
+
+      Message error = context.getModelState().getFieldErrors(fieldName).get(0);
+      StringWriter out = new StringWriter(128);
+
+      String clazz = context.getArgument("class");
+      clazz = (clazz == null) ? "l-field-error" : (clazz + " l-field-error");
+
+      out.append("<div");
+      HtmlUtils.escAttribute(out, "class", clazz);
+      out.append(">");
+
+      if (error.isEscXml()) {
+        XmlEscaper.escapeXml(out, error.getText());
+      } else {
+        out.write(error.getText());
+      }
+
+      out.append("</div>");
+      return new SafeString(out.toString());
     }
-
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String fieldName = context.getRequiredArgument("fieldName");
-	String form = context.getArgument("form");
-
-	boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(fieldName);
-	if (!isValid) {
-
-	    Message error = context.getModelState().getFieldErrors(fieldName).get(0);
-	    StringWriter out = new StringWriter(128);
-
-	    String clazz = context.getArgument("class");
-	    clazz = (clazz == null) ? "l-field-error" : (clazz + " l-field-error");
-
-	    out.append("<div");
-	    HtmlUtils.escAttribute(out, "class", clazz);
-	    out.append(">");
-
-	    if (error.isEscXml()) {
-		XmlEscaper.escapeXml(out, error.getText());
-	    } else {
-		out.write(error.getText());
-	    }
-
-	    out.append("</div>");
-	    return new SafeString(out.toString());
-	}
-	return null;
-    }
+    return null;
+  }
 }

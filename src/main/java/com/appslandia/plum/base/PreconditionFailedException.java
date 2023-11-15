@@ -29,21 +29,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 @NotLog
 public class PreconditionFailedException extends HttpException {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public PreconditionFailedException() {
-	super(HttpServletResponse.SC_PRECONDITION_FAILED);
-    }
+  public PreconditionFailedException() {
+    super(HttpServletResponse.SC_PRECONDITION_FAILED);
+  }
 
-    public PreconditionFailedException(String message) {
-	super(HttpServletResponse.SC_PRECONDITION_FAILED, message);
-    }
+  public PreconditionFailedException(String message) {
+    super(HttpServletResponse.SC_PRECONDITION_FAILED, message);
+  }
 
-    public PreconditionFailedException(String message, Throwable cause) {
-	super(HttpServletResponse.SC_PRECONDITION_FAILED, message, cause);
-    }
+  public PreconditionFailedException(String message, Throwable cause) {
+    super(HttpServletResponse.SC_PRECONDITION_FAILED, message, cause);
+  }
 
-    public PreconditionFailedException(Throwable cause) {
-	super(HttpServletResponse.SC_PRECONDITION_FAILED, cause);
-    }
+  public PreconditionFailedException(Throwable cause) {
+    super(HttpServletResponse.SC_PRECONDITION_FAILED, cause);
+  }
 }

@@ -34,54 +34,57 @@ import com.appslandia.plum.mocks.MemUser;
  */
 public class AuthTokenHandlerTest extends MockTestBase {
 
-    AuthTokenHandler authTokenHandler;
+  AuthTokenHandler authTokenHandler;
 
-    @Override
-    protected void initialize() {
-	authTokenHandler = container.getObject(AuthTokenHandler.class);
+  @Override
+  protected void initialize() {
+    authTokenHandler = container.getObject(AuthTokenHandler.class);
+  }
+
+  @Test
+  public void test_verify() {
+    try {
+      SeriesToken seriesToken = authTokenHandler.saveToken(MemUser.createEmail("user1"), "verifyCode1", 5000);
+
+      Out<String> invalidCode = new Out<>();
+      boolean isValid = authTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(),
+          MemUser.createEmail("user1"), "verifyCode1", 0, invalidCode);
+      Assertions.assertTrue(isValid);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_verify() {
-	try {
-	    SeriesToken seriesToken = authTokenHandler.saveToken(MemUser.createEmail("user1"), "verifyCode1", 5000);
+  @Test
+  public void test_verify_expired() {
+    try {
+      SeriesToken seriesToken = authTokenHandler.saveToken(MemUser.createEmail("user1"), "verifyCode1", 1000);
+      ThreadUtils.sleepInMs(2000);
 
-	    Out<String> invalidCode = new Out<>();
-	    boolean isValid = authTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(), MemUser.createEmail("user1"), "verifyCode1", 0, invalidCode);
-	    Assertions.assertTrue(isValid);
+      Out<String> invalidCode = new Out<>();
+      boolean isValid = authTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(),
+          MemUser.createEmail("user1"), "verifyCode1", 0, invalidCode);
+      Assertions.assertFalse(isValid);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_verify_expired() {
-	try {
-	    SeriesToken seriesToken = authTokenHandler.saveToken(MemUser.createEmail("user1"), "verifyCode1", 1000);
-	    ThreadUtils.sleepInMs(2000);
+  @Test
+  public void test_verify_leeways() {
+    try {
+      SeriesToken seriesToken = authTokenHandler.saveToken(MemUser.createEmail("user1"), "verifyCode1", 1000);
+      ThreadUtils.sleepInMs(1500);
 
-	    Out<String> invalidCode = new Out<>();
-	    boolean isValid = authTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(), MemUser.createEmail("user1"), "verifyCode1", 0, invalidCode);
-	    Assertions.assertFalse(isValid);
+      Out<String> invalidCode = new Out<>();
+      boolean isValid = authTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(),
+          MemUser.createEmail("user1"), "verifyCode1", 2000, invalidCode);
+      Assertions.assertTrue(isValid);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
-
-    @Test
-    public void test_verify_leeways() {
-	try {
-	    SeriesToken seriesToken = authTokenHandler.saveToken(MemUser.createEmail("user1"), "verifyCode1", 1000);
-	    ThreadUtils.sleepInMs(1500);
-
-	    Out<String> invalidCode = new Out<>();
-	    boolean isValid = authTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(), MemUser.createEmail("user1"), "verifyCode1", 2000, invalidCode);
-	    Assertions.assertTrue(isValid);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
+  }
 }

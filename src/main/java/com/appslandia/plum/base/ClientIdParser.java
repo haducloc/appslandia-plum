@@ -29,5 +29,5 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface ClientIdParser {
 
-    String parseId(HttpServletRequest request);
+  String parseId(HttpServletRequest request);
 }

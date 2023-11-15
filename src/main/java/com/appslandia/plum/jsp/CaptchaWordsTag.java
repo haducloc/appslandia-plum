@@ -37,73 +37,74 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "captchaWords")
 public class CaptchaWordsTag extends UITagBase {
 
-    protected String form;
-    protected String maxlength;
-    protected String placeholder;
-    protected boolean required;
+  protected String form;
+  protected String maxlength;
+  protected String placeholder;
+  protected boolean required;
 
-    @Override
-    protected String getTagName() {
-	return "input";
+  @Override
+  protected String getTagName() {
+    return "input";
+  }
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    boolean isValid = !Objects.equals(this.form, getModelState().getForm())
+        || getModelState().isValid(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
+    if (!isValid) {
+
+      this.clazz = (this.clazz == null) ? "l-field-error" : this.clazz + " l-field-error";
     }
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	boolean isValid = !Objects.equals(this.form, getModelState().getForm()) || getModelState().isValid(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
-	if (!isValid) {
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    HtmlUtils.escAttribute(out, "id", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
+    HtmlUtils.escAttribute(out, "type", "text");
+    HtmlUtils.escAttribute(out, "name", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
 
-	    this.clazz = (this.clazz == null) ? "l-field-error" : this.clazz + " l-field-error";
-	}
-    }
+    if (this.maxlength != null)
+      HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
+    if (this.placeholder != null)
+      HtmlUtils.escAttribute(out, "placeholder", this.placeholder);
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	HtmlUtils.escAttribute(out, "id", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
-	HtmlUtils.escAttribute(out, "type", "text");
-	HtmlUtils.escAttribute(out, "name", SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
+    if (this.required)
+      HtmlUtils.required(out);
+    HtmlUtils.escAttribute(out, "autocomplete", "off");
 
-	if (this.maxlength != null)
-	    HtmlUtils.escAttribute(out, "maxlength", this.maxlength);
-	if (this.placeholder != null)
-	    HtmlUtils.escAttribute(out, "placeholder", this.placeholder);
+    if (this.hidden)
+      HtmlUtils.hidden(out);
 
-	if (this.required)
-	    HtmlUtils.required(out);
-	HtmlUtils.escAttribute(out, "autocomplete", "off");
+    if (this.form != null)
+      HtmlUtils.escAttribute(out, "form", this.form);
 
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-	if (this.form != null)
-	    HtmlUtils.escAttribute(out, "form", this.form);
+  @Attribute(required = false, rtexprvalue = false)
+  public void setForm(String form) {
+    this.form = form;
+  }
 
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setMaxlength(String maxlength) {
+    this.maxlength = maxlength;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setForm(String form) {
-	this.form = form;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setPlaceholder(String placeholder) {
+    this.placeholder = placeholder;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setMaxlength(String maxlength) {
-	this.maxlength = maxlength;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setPlaceholder(String placeholder) {
-	this.placeholder = placeholder;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setRequired(boolean required) {
-	this.required = required;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setRequired(boolean required) {
+    this.required = required;
+  }
 }

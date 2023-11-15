@@ -34,178 +34,181 @@ import org.junit.jupiter.api.Test;
  */
 public class ActionParserUrlTest extends MockTestBase {
 
-    ActionParser actionParser;
-    RequestContextParser requestContextParser;
+  ActionParser actionParser;
+  RequestContextParser requestContextParser;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	actionParser = container.getObject(ActionParser.class);
-	requestContextParser = container.getObject(RequestContextParser.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    actionParser = container.getObject(ActionParser.class);
+    requestContextParser = container.getObject(RequestContextParser.class);
+  }
+
+  @Test
+  public void test_actionPathParam() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParam/param1");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("param1", "param1");
+      params.put("param2", "param2");
+
+      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParam", params, false);
+      Assertions.assertEquals("/app/testController/actionPathParam/param1/?param2=param2", url);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionNoPathParams() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionNoPathParams");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionNoPathParams", null, false);
+      Assertions.assertEquals("/app/testController/actionNoPathParams/", url);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionPathParams() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("param1", "param1");
+      params.put("param2", "param2");
+
+      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
+      Assertions.assertEquals("/app/testController/actionPathParams/param1/param2/", url);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionPathParams_lang() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/en/testController/actionPathParams/param1/param2");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("param1", "param1");
+      params.put("param2", "param2");
+
+      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
+      Assertions.assertEquals("/app/en/testController/actionPathParams/param1/param2/", url);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionPathParams_pathParamsMissed() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("param1", "param1");
+
+      actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
+      Assertions.fail();
+
+    } catch (Exception ex) {
+    }
+  }
+
+  @Test
+  public void test_actionSubPathParams() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("param1", "param1");
+      params.put("param2", "param2");
+
+      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params,
+          false);
+      Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2/", url);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionSubPathParams_pathParamsMissed() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new HashMap<>();
+      params.put("param1", "param1");
+
+      actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params, false);
+      Assertions.fail();
+
+    } catch (Exception ex) {
+    }
+  }
+
+  @Test
+  public void test_actionSubPathParams_withQueryParams() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      Map<String, Object> params = new LinkedHashMap<>();
+      params.put("param1", "param1");
+      params.put("param2", "param2");
+      params.put("param3", "param3");
+      params.put("param4", "param4");
+
+      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params,
+          false);
+      Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2/?param3=param3&param4=param4",
+          url);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
 
-    @Test
-    public void test_actionPathParam() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParam/param1");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("param1", "param1");
-	    params.put("param2", "param2");
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParam", params, false);
-	    Assertions.assertEquals("/app/testController/actionPathParam/param1/?param2=param2", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void actionNoPathParams() {
     }
 
-    @Test
-    public void test_actionNoPathParams() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionNoPathParams");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionNoPathParams", null, false);
-	    Assertions.assertEquals("/app/testController/actionNoPathParams/", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{param1}")
+    public void actionPathParam() {
     }
 
-    @Test
-    public void test_actionPathParams() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("param1", "param1");
-	    params.put("param2", "param2");
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
-	    Assertions.assertEquals("/app/testController/actionPathParams/param1/param2/", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{param1}/{param2}")
+    public void actionPathParams() {
     }
 
-    @Test
-    public void test_actionPathParams_lang() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/en/testController/actionPathParams/param1/param2");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("param1", "param1");
-	    params.put("param2", "param2");
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
-	    Assertions.assertEquals("/app/en/testController/actionPathParams/param1/param2/", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{param1}-{param2}")
+    public void actionSubPathParams() {
     }
-
-    @Test
-    public void test_actionPathParams_pathParamsMissed() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("param1", "param1");
-
-	    actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
-	    Assertions.fail();
-
-	} catch (Exception ex) {
-	}
-    }
-
-    @Test
-    public void test_actionSubPathParams() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("param1", "param1");
-	    params.put("param2", "param2");
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params, false);
-	    Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2/", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionSubPathParams_pathParamsMissed() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new HashMap<>();
-	    params.put("param1", "param1");
-
-	    actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params, false);
-	    Assertions.fail();
-
-	} catch (Exception ex) {
-	}
-    }
-
-    @Test
-    public void test_actionSubPathParams_withQueryParams() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    Map<String, Object> params = new LinkedHashMap<>();
-	    params.put("param1", "param1");
-	    params.put("param2", "param2");
-	    params.put("param3", "param3");
-	    params.put("param4", "param4");
-
-	    String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionSubPathParams", params, false);
-	    Assertions.assertEquals("/app/testController/actionSubPathParams/param1-param2/?param3=param3&param4=param4", url);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-
-	@HttpGet
-	public void actionNoPathParams() {
-	}
-
-	@HttpGet
-	@PathParams("/{param1}")
-	public void actionPathParam() {
-	}
-
-	@HttpGet
-	@PathParams("/{param1}/{param2}")
-	public void actionPathParams() {
-	}
-
-	@HttpGet
-	@PathParams("/{param1}-{param2}")
-	public void actionSubPathParams() {
-	}
-    }
+  }
 }

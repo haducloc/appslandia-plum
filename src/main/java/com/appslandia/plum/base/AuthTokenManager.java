@@ -27,13 +27,13 @@ package com.appslandia.plum.base;
  */
 public interface AuthTokenManager {
 
-    void save(AuthToken authToken);
+  void save(AuthToken authToken);
 
-    AuthToken load(String series);
+  AuthToken load(String series);
 
-    void reissue(String series, String hashToken, long expiresAt, long issuedAt);
+  void reissue(String series, String hashToken, long expiresAt, long issuedAt);
 
-    void remove(String series);
+  void remove(String series);
 
-    void removeAll(String hashIdentity);
+  void removeAll(String hashIdentity);
 }

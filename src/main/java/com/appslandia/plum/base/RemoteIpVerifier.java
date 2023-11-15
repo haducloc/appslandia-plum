@@ -32,48 +32,48 @@ import com.appslandia.common.utils.PatternUtils;
  */
 public class RemoteIpVerifier extends InitializeObject {
 
-    private Pattern[] denies;
-    private Pattern[] allows;
+  private Pattern[] denies;
+  private Pattern[] allows;
 
-    @Override
-    protected void init() throws Exception {
-	if (this.denies == null) {
-	    this.denies = PatternUtils.EMPTY_PATTERNS;
-	}
-	if (this.allows == null) {
-	    this.allows = PatternUtils.EMPTY_PATTERNS;
-	}
+  @Override
+  protected void init() throws Exception {
+    if (this.denies == null) {
+      this.denies = PatternUtils.EMPTY_PATTERNS;
+    }
+    if (this.allows == null) {
+      this.allows = PatternUtils.EMPTY_PATTERNS;
+    }
+  }
+
+  public RemoteIpVerifier setDenies(String... denyPatterns) {
+    this.assertNotInitialized();
+    this.denies = PatternUtils.compile(denyPatterns);
+    return this;
+  }
+
+  public RemoteIpVerifier setAllows(String... allowPatterns) {
+    this.assertNotInitialized();
+    this.allows = PatternUtils.compile(allowPatterns);
+    return this;
+  }
+
+  public boolean allow(String remoteIp) {
+    this.initialize();
+
+    // Check the deny patterns, if any
+    if (PatternUtils.matches(this.denies, remoteIp)) {
+      return false;
     }
 
-    public RemoteIpVerifier setDenies(String... denyPatterns) {
-	this.assertNotInitialized();
-	this.denies = PatternUtils.compile(denyPatterns);
-	return this;
+    // Check the allow patterns, if any
+    if (PatternUtils.matches(this.allows, remoteIp)) {
+      return true;
     }
 
-    public RemoteIpVerifier setAllows(String... allowPatterns) {
-	this.assertNotInitialized();
-	this.allows = PatternUtils.compile(allowPatterns);
-	return this;
+    // If allows configured -> false
+    if (this.allows.length != 0) {
+      return false;
     }
-
-    public boolean allow(String remoteIp) {
-	this.initialize();
-
-	// Check the deny patterns, if any
-	if (PatternUtils.matches(this.denies, remoteIp)) {
-	    return false;
-	}
-
-	// Check the allow patterns, if any
-	if (PatternUtils.matches(this.allows, remoteIp)) {
-	    return true;
-	}
-
-	// If allows configured -> false
-	if (this.allows.length != 0) {
-	    return false;
-	}
-	return true;
-    }
+    return true;
+  }
 }

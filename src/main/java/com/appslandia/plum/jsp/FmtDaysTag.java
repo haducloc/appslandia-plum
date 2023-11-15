@@ -42,86 +42,86 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "fmtDays", dynamicAttributes = false)
 public class FmtDaysTag extends TagBase {
 
-    private Object value;
-    private String zoneId;
+  private Object value;
+  private String zoneId;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	Object val = this.value;
-	if (val == null) {
-	    return;
-	}
-	LocalDate ld = null;
-	LocalDate now = null;
-
-	// OffsetDateTime
-	if (val instanceof OffsetDateTime) {
-	    ld = ((OffsetDateTime) val).toLocalDate();
-	    now = OffsetDateTime.now(((OffsetDateTime) val).getOffset()).toLocalDate();
-	}
-	// LocalDate
-	else if (val instanceof LocalDate) {
-	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
-
-	    ld = (LocalDate) val;
-	    now = LocalDate.now(zone);
-	}
-	// LocalDateTime
-	else if (val instanceof LocalDateTime) {
-	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
-
-	    ld = ((LocalDateTime) val).toLocalDate();
-	    now = LocalDate.now(zone);
-	}
-	// Date
-	else if (val instanceof java.util.Date) {
-	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
-
-	    ld = Instant.ofEpochMilli(((java.util.Date) val).getTime()).atZone(zone).toLocalDate();
-	    now = LocalDate.now(zone);
-	}
-	// Long
-	else if (val instanceof Long) {
-	    ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
-
-	    ld = Instant.ofEpochMilli((Long) val).atZone(zone).toLocalDate();
-	    now = LocalDate.now(zone);
-	}
-	// ZonedDateTime
-	else if (val instanceof ZonedDateTime) {
-	    ld = ((ZonedDateTime) val).toLocalDate();
-	    now = ZonedDateTime.now(((ZonedDateTime) val).getZone()).toLocalDate();
-
-	} else {
-	    throw new JspException("The given value is unsupported.");
-	}
-	int days = (int) ChronoUnit.DAYS.between(ld, now);
-
-	if (days < 7) {
-	    String key = String.format("datetime.%d_days_ago", days);
-	    XmlEscaper.escapeXml(this.pageContext.getOut(), this.getRequestContext().res(key));
-
-	} else {
-	    int weeks = days / 7;
-	    if (weeks <= 5 && days % 7 == 0) {
-
-		String key = String.format("datetime.%d_weeks_ago", weeks);
-		XmlEscaper.escapeXml(this.pageContext.getOut(), this.getRequestContext().res(key));
-
-	    } else {
-		String pattern = getRequestContext().getLanguage().getTemporalPattern(DateUtils.ISO8601_DATE);
-		XmlEscaper.escapeXml(this.pageContext.getOut(), DateUtils.getFormatter(pattern).format(ld));
-	    }
-	}
+  @Override
+  public void doTag() throws JspException, IOException {
+    Object val = this.value;
+    if (val == null) {
+      return;
     }
+    LocalDate ld = null;
+    LocalDate now = null;
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
+    // OffsetDateTime
+    if (val instanceof OffsetDateTime) {
+      ld = ((OffsetDateTime) val).toLocalDate();
+      now = OffsetDateTime.now(((OffsetDateTime) val).getOffset()).toLocalDate();
     }
+    // LocalDate
+    else if (val instanceof LocalDate) {
+      ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setZoneId(String zoneId) {
-	this.zoneId = zoneId;
+      ld = (LocalDate) val;
+      now = LocalDate.now(zone);
     }
+    // LocalDateTime
+    else if (val instanceof LocalDateTime) {
+      ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+
+      ld = ((LocalDateTime) val).toLocalDate();
+      now = LocalDate.now(zone);
+    }
+    // Date
+    else if (val instanceof java.util.Date) {
+      ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+
+      ld = Instant.ofEpochMilli(((java.util.Date) val).getTime()).atZone(zone).toLocalDate();
+      now = LocalDate.now(zone);
+    }
+    // Long
+    else if (val instanceof Long) {
+      ZoneId zone = (this.zoneId != null) ? ZoneId.of(this.zoneId) : ZoneId.systemDefault();
+
+      ld = Instant.ofEpochMilli((Long) val).atZone(zone).toLocalDate();
+      now = LocalDate.now(zone);
+    }
+    // ZonedDateTime
+    else if (val instanceof ZonedDateTime) {
+      ld = ((ZonedDateTime) val).toLocalDate();
+      now = ZonedDateTime.now(((ZonedDateTime) val).getZone()).toLocalDate();
+
+    } else {
+      throw new JspException("The given value is unsupported.");
+    }
+    int days = (int) ChronoUnit.DAYS.between(ld, now);
+
+    if (days < 7) {
+      String key = String.format("datetime.%d_days_ago", days);
+      XmlEscaper.escapeXml(this.pageContext.getOut(), this.getRequestContext().res(key));
+
+    } else {
+      int weeks = days / 7;
+      if (weeks <= 5 && days % 7 == 0) {
+
+        String key = String.format("datetime.%d_weeks_ago", weeks);
+        XmlEscaper.escapeXml(this.pageContext.getOut(), this.getRequestContext().res(key));
+
+      } else {
+        String pattern = getRequestContext().getLanguage().getTemporalPattern(DateUtils.ISO8601_DATE);
+        XmlEscaper.escapeXml(this.pageContext.getOut(), DateUtils.getFormatter(pattern).format(ld));
+      }
+    }
+  }
+
+  @Attribute(required = true, rtexprvalue = true)
+  public void setValue(Object value) {
+    this.value = value;
+  }
+
+  @Attribute(required = false, rtexprvalue = true)
+  public void setZoneId(String zoneId) {
+    this.zoneId = zoneId;
+  }
 }

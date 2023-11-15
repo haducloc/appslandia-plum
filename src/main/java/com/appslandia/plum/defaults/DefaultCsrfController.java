@@ -41,14 +41,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @CacheControl(nocache = true)
 public class DefaultCsrfController {
 
-    @Inject
-    protected SimpleCsrfManager csrfManager;
+  @Inject
+  protected SimpleCsrfManager csrfManager;
 
-    @HttpGetPost
-    public Result index(RequestAccessor request, HttpServletResponse response) throws Exception {
-	this.csrfManager.initCsrf(request);
-	String csrfId = (String) request.getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
+  @HttpGetPost
+  public Result index(RequestAccessor request, HttpServletResponse response) throws Exception {
+    this.csrfManager.initCsrf(request);
+    String csrfId = (String) request.getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
 
-	return new Result().setData(csrfId);
-    }
+    return new Result().setData(csrfId);
+  }
 }

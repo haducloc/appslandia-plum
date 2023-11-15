@@ -30,13 +30,13 @@ import com.appslandia.common.utils.StringUtils;
 @Tag(name = "radio")
 public class RadioTag extends CheckInputTag {
 
-    public RadioTag() {
-	this.type = "radio";
-    }
+  public RadioTag() {
+    this.type = "radio";
+  }
 
-    @Override
-    protected boolean isChecked() {
-	String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
-	return StringUtils.iequals(codeVal, (String) this._value);
-    }
+  @Override
+  protected boolean isChecked() {
+    String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
+    return StringUtils.iequals(codeVal, (String) this._value);
+  }
 }

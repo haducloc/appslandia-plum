@@ -35,19 +35,19 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class IfClassFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: test*, value*";
-    }
+  @Override
+  public String getDescription() {
+    return "variables: test*, value*";
+  }
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	boolean test = context.getBool("test");
-	String clazz = context.getRequiredArgument("value");
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    boolean test = context.getBool("test");
+    String clazz = context.getRequiredArgument("value");
 
-	if (test) {
-	    return new SafeString(clazz);
-	}
-	return new SafeString(TagUtils.CSS_NOOP);
+    if (test) {
+      return new SafeString(clazz);
     }
+    return new SafeString(TagUtils.CSS_NOOP);
+  }
 }

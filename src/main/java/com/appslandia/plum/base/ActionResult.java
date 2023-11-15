@@ -31,12 +31,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @FunctionalInterface
 public interface ActionResult {
 
-    void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception;
+  void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception;
 
-    public static ActionResult EMPTY = new ActionResult() {
+  public static ActionResult EMPTY = new ActionResult() {
 
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	}
-    };
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+        throws Exception {
+    }
+  };
 }

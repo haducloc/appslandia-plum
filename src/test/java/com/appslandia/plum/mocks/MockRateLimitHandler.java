@@ -30,11 +30,11 @@ import com.appslandia.plum.base.TooManyRequestsException;
  */
 public class MockRateLimitHandler extends RateLimitHandler {
 
-    @Override
-    protected void init() throws Exception {
-    }
+  @Override
+  protected void init() throws Exception {
+  }
 
-    @Override
-    protected void checkClient(String clientId) throws TooManyRequestsException {
-    }
+  @Override
+  protected void checkClient(String clientId) throws TooManyRequestsException {
+  }
 }

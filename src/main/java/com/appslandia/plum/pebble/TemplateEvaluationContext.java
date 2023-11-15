@@ -45,179 +45,180 @@ import jakarta.servlet.http.HttpServletResponse;
 @SuppressWarnings("unchecked")
 public class TemplateEvaluationContext {
 
-    final Map<String, Object> arguments;
-    final PebbleTemplate template;
-    final EvaluationContext evaluationContext;
+  final Map<String, Object> arguments;
+  final PebbleTemplate template;
+  final EvaluationContext evaluationContext;
 
-    public TemplateEvaluationContext(Map<String, Object> arguments, PebbleTemplate template, EvaluationContext evaluationContext) {
-	this.arguments = arguments;
-	this.template = template;
-	this.evaluationContext = evaluationContext;
-    }
+  public TemplateEvaluationContext(Map<String, Object> arguments, PebbleTemplate template,
+      EvaluationContext evaluationContext) {
+    this.arguments = arguments;
+    this.template = template;
+    this.evaluationContext = evaluationContext;
+  }
 
-    public Map<String, Object> parseParameters() {
-	return this.arguments.entrySet().stream().filter(entry -> TagUtils.isForParameter(entry.getKey()))
-		.collect(Collectors.toMap(e -> TagUtils.getParameterName(e.getKey()), e -> e.getValue()));
-    }
+  public Map<String, Object> parseParameters() {
+    return this.arguments.entrySet().stream().filter(entry -> TagUtils.isForParameter(entry.getKey()))
+        .collect(Collectors.toMap(e -> TagUtils.getParameterName(e.getKey()), e -> e.getValue()));
+  }
 
-    public Object evaluate(String expression) {
-	return getELProcessor().eval(expression);
-    }
+  public Object evaluate(String expression) {
+    return getELProcessor().eval(expression);
+  }
 
-    public HttpServletRequest getRequest() {
-	return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST);
-    }
+  public HttpServletRequest getRequest() {
+    return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST);
+  }
 
-    public HttpServletResponse getResponse() {
-	return getRequiredVariable(PebbleUtils.VARIABLE_RESPONSE);
-    }
+  public HttpServletResponse getResponse() {
+    return getRequiredVariable(PebbleUtils.VARIABLE_RESPONSE);
+  }
 
-    public RequestContext getRequestContext() {
-	return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST_CONTEXT);
-    }
+  public RequestContext getRequestContext() {
+    return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST_CONTEXT);
+  }
 
-    public ELProcessor getELProcessor() {
-	return getRequiredVariable(PebbleUtils.VARIABLE_EL_PROCESSOR);
-    }
+  public ELProcessor getELProcessor() {
+    return getRequiredVariable(PebbleUtils.VARIABLE_EL_PROCESSOR);
+  }
 
-    public ModelState getModelState() {
-	return ServletUtils.getModelState(getRequest());
-    }
+  public ModelState getModelState() {
+    return ServletUtils.getModelState(getRequest());
+  }
 
-    public Map<String, Object> getArguments() {
-	return this.arguments;
-    }
+  public Map<String, Object> getArguments() {
+    return this.arguments;
+  }
 
-    public PebbleTemplate getTemplate() {
-	return this.template;
-    }
+  public PebbleTemplate getTemplate() {
+    return this.template;
+  }
 
-    public EvaluationContext getEvaluationContext() {
-	return this.evaluationContext;
-    }
+  public EvaluationContext getEvaluationContext() {
+    return this.evaluationContext;
+  }
 
-    public <T> T getArgument(String name) {
-	return (T) this.arguments.get(name);
-    }
+  public <T> T getArgument(String name) {
+    return (T) this.arguments.get(name);
+  }
 
-    public <T> T getArgument(String name, T defaultValue) {
-	T value = (T) this.arguments.get(name);
-	return (value != null) ? value : defaultValue;
-    }
+  public <T> T getArgument(String name, T defaultValue) {
+    T value = (T) this.arguments.get(name);
+    return (value != null) ? value : defaultValue;
+  }
 
-    public <T> T getRequiredArgument(String name) {
-	return Asserts.notNull((T) this.arguments.get(name), () -> STR.fmt("The argument {} is required.", name));
-    }
+  public <T> T getRequiredArgument(String name) {
+    return Asserts.notNull((T) this.arguments.get(name), () -> STR.fmt("The argument {} is required.", name));
+  }
 
-    public <T> T getVariable(String name) {
-	return (T) this.evaluationContext.getVariable(name);
-    }
+  public <T> T getVariable(String name) {
+    return (T) this.evaluationContext.getVariable(name);
+  }
 
-    public <T> T getRequiredVariable(String name) {
-	return Asserts.notNull((T) this.evaluationContext.getVariable(name));
-    }
+  public <T> T getRequiredVariable(String name) {
+    return Asserts.notNull((T) this.evaluationContext.getVariable(name));
+  }
 
-    // Boolean
-    private boolean toBool(Object value) {
-	if (value.getClass() == Boolean.class) {
-	    return ((Boolean) value).booleanValue();
-	}
-	if (value.getClass() == String.class) {
-	    return ParseUtils.parseBool((String) value);
-	}
-	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to boolean.", value));
+  // Boolean
+  private boolean toBool(Object value) {
+    if (value.getClass() == Boolean.class) {
+      return ((Boolean) value).booleanValue();
     }
+    if (value.getClass() == String.class) {
+      return ParseUtils.parseBool((String) value);
+    }
+    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to boolean.", value));
+  }
 
-    public boolean getBool(String name) {
-	Object value = getRequiredArgument(name);
-	return toBool(value);
-    }
+  public boolean getBool(String name) {
+    Object value = getRequiredArgument(name);
+    return toBool(value);
+  }
 
-    public boolean getBool(String name, boolean defaultValue) {
-	Object value = getArgument(name);
-	return (value != null) ? toBool(value) : defaultValue;
-    }
+  public boolean getBool(String name, boolean defaultValue) {
+    Object value = getArgument(name);
+    return (value != null) ? toBool(value) : defaultValue;
+  }
 
-    public Boolean getBoolObj(String name) {
-	Object value = getArgument(name);
-	return (value != null) ? toBool(value) : null;
-    }
+  public Boolean getBoolObj(String name) {
+    Object value = getArgument(name);
+    return (value != null) ? toBool(value) : null;
+  }
 
-    // Int
-    private int toInt(Object value) {
-	if (value instanceof Number) {
-	    return ((Number) value).intValue();
-	}
-	if (value.getClass() == String.class) {
-	    return ParseUtils.parseInt((String) value);
-	}
-	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to int.", value));
+  // Int
+  private int toInt(Object value) {
+    if (value instanceof Number) {
+      return ((Number) value).intValue();
     }
+    if (value.getClass() == String.class) {
+      return ParseUtils.parseInt((String) value);
+    }
+    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to int.", value));
+  }
 
-    public int getInt(String name) {
-	Object value = getRequiredArgument(name);
-	return toInt(value);
-    }
+  public int getInt(String name) {
+    Object value = getRequiredArgument(name);
+    return toInt(value);
+  }
 
-    public int getInt(String name, int defaultValue) {
-	Object value = getArgument(name);
-	return (value != null) ? toInt(value) : defaultValue;
-    }
+  public int getInt(String name, int defaultValue) {
+    Object value = getArgument(name);
+    return (value != null) ? toInt(value) : defaultValue;
+  }
 
-    public Integer getIntObj(String name) {
-	Object value = getArgument(name);
-	return (value != null) ? toInt(value) : null;
-    }
+  public Integer getIntObj(String name) {
+    Object value = getArgument(name);
+    return (value != null) ? toInt(value) : null;
+  }
 
-    // Long
-    private long toLong(Object value) {
-	if (value instanceof Number) {
-	    return ((Number) value).longValue();
-	}
-	if (value.getClass() == String.class) {
-	    return ParseUtils.parseLong((String) value);
-	}
-	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to long.", value));
+  // Long
+  private long toLong(Object value) {
+    if (value instanceof Number) {
+      return ((Number) value).longValue();
     }
+    if (value.getClass() == String.class) {
+      return ParseUtils.parseLong((String) value);
+    }
+    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to long.", value));
+  }
 
-    public long getLong(String name) {
-	Object value = getRequiredArgument(name);
-	return toLong(value);
-    }
+  public long getLong(String name) {
+    Object value = getRequiredArgument(name);
+    return toLong(value);
+  }
 
-    public long getLong(String name, long defaultValue) {
-	Object value = getArgument(name);
-	return (value != null) ? toLong(value) : defaultValue;
-    }
+  public long getLong(String name, long defaultValue) {
+    Object value = getArgument(name);
+    return (value != null) ? toLong(value) : defaultValue;
+  }
 
-    public Long getLongObj(String name) {
-	Object value = getArgument(name);
-	return (value != null) ? toLong(value) : null;
-    }
+  public Long getLongObj(String name) {
+    Object value = getArgument(name);
+    return (value != null) ? toLong(value) : null;
+  }
 
-    // Double
-    private double toDouble(Object value) {
-	if (value instanceof Number) {
-	    return ((Number) value).doubleValue();
-	}
-	if (value.getClass() == String.class) {
-	    return ParseUtils.parseDouble((String) value);
-	}
-	throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to double.", value));
+  // Double
+  private double toDouble(Object value) {
+    if (value instanceof Number) {
+      return ((Number) value).doubleValue();
     }
+    if (value.getClass() == String.class) {
+      return ParseUtils.parseDouble((String) value);
+    }
+    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to double.", value));
+  }
 
-    public double getDouble(String name) {
-	Object value = getRequiredArgument(name);
-	return toDouble(value);
-    }
+  public double getDouble(String name) {
+    Object value = getRequiredArgument(name);
+    return toDouble(value);
+  }
 
-    public double getDouble(String name, double defaultValue) {
-	Object value = getArgument(name);
-	return (value != null) ? toDouble(value) : defaultValue;
-    }
+  public double getDouble(String name, double defaultValue) {
+    Object value = getArgument(name);
+    return (value != null) ? toDouble(value) : defaultValue;
+  }
 
-    public Double getDoubleObj(String name) {
-	Object value = getArgument(name);
-	return (value != null) ? toDouble(value) : null;
-    }
+  public Double getDoubleObj(String name) {
+    Object value = getArgument(name);
+    return (value != null) ? toDouble(value) : null;
+  }
 }

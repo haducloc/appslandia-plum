@@ -34,8 +34,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultTempDataManager extends SessionTempDataManager {
 
-    @Override
-    protected TextGenerator getTempDataIdGenerator() {
-	return UUIDGenerator.INSTANCE;
-    }
+  @Override
+  protected TextGenerator getTempDataIdGenerator() {
+    return UUIDGenerator.INSTANCE;
+  }
 }

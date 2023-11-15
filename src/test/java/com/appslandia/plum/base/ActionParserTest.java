@@ -37,191 +37,192 @@ import com.appslandia.common.utils.Asserts;
  */
 public class ActionParserTest extends MockTestBase {
 
-    ActionParser actionParser;
+  ActionParser actionParser;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	actionParser = container.getObject(ActionParser.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    actionParser = container.getObject(ActionParser.class);
+  }
+
+  @Test
+  public void test_index() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Asserts.notNull(actionDesc);
+
+      Assertions.assertEquals("index", actionDesc.getAction());
+      Assertions.assertEquals("testController", actionDesc.getController());
+      Assertions.assertEquals(0, pathParamMap.size());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionNoPathParams() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionNoPathParams");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Asserts.notNull(actionDesc);
+
+      Assertions.assertEquals("actionNoPathParams", actionDesc.getAction());
+      Assertions.assertEquals("testController", actionDesc.getController());
+      Assertions.assertEquals(0, pathParamMap.size());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionNoPathParams_invalidPathParamsAdded() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionNoPathParams/param1");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Assertions.assertNull(actionDesc);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionPathParams_pathParamsProvided() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Asserts.notNull(actionDesc);
+
+      Assertions.assertEquals("actionPathParams", actionDesc.getAction());
+      Assertions.assertEquals("testController", actionDesc.getController());
+      Assertions.assertEquals(2, pathParamMap.size());
+
+      Assertions.assertEquals("param1", pathParamMap.get("param1"));
+      Assertions.assertEquals("param2", pathParamMap.get("param2"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionPathParams_pathParamsMissed() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Assertions.assertNull(actionDesc);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionSubPathParams_pathParamsProvided() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Asserts.notNull(actionDesc);
+
+      Assertions.assertEquals("actionSubPathParams", actionDesc.getAction());
+      Assertions.assertEquals("testController", actionDesc.getController());
+      Assertions.assertEquals(2, pathParamMap.size());
+
+      Assertions.assertEquals("param1", pathParamMap.get("param1"));
+      Assertions.assertEquals("param2", pathParamMap.get("param2"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionSubPathParams_pathParamsMissed() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Assertions.assertNull(actionDesc);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_actionSubPathParams_invalidPathParamsAdded() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2/param3");
+      List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
+
+      Map<String, String> pathParamMap = new HashMap<>();
+      ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
+      Assertions.assertNull(actionDesc);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_toActionLink() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> attributes = new Params().set("class", "class1");
+      String link = actionParser.toActionLink(getCurrentRequest(), "testController", "index",
+          new Params().set("key1", "val1"), attributes, ">link");
+
+      Assertions.assertEquals("<a href=\"/app/testController/?key1=val1\" class=\"class1\">&gt;link</a>", link);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  @Home
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
 
-    @Test
-    public void test_index() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Asserts.notNull(actionDesc);
-
-	    Assertions.assertEquals("index", actionDesc.getAction());
-	    Assertions.assertEquals("testController", actionDesc.getController());
-	    Assertions.assertEquals(0, pathParamMap.size());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void actionNoPathParams() {
     }
 
-    @Test
-    public void test_actionNoPathParams() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionNoPathParams");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Asserts.notNull(actionDesc);
-
-	    Assertions.assertEquals("actionNoPathParams", actionDesc.getAction());
-	    Assertions.assertEquals("testController", actionDesc.getController());
-	    Assertions.assertEquals(0, pathParamMap.size());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{param1}/{param2}")
+    public void actionPathParams() {
     }
 
-    @Test
-    public void test_actionNoPathParams_invalidPathParamsAdded() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionNoPathParams/param1");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Assertions.assertNull(actionDesc);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{param1}-{param2}")
+    public void actionSubPathParams() {
     }
-
-    @Test
-    public void test_actionPathParams_pathParamsProvided() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Asserts.notNull(actionDesc);
-
-	    Assertions.assertEquals("actionPathParams", actionDesc.getAction());
-	    Assertions.assertEquals("testController", actionDesc.getController());
-	    Assertions.assertEquals(2, pathParamMap.size());
-
-	    Assertions.assertEquals("param1", pathParamMap.get("param1"));
-	    Assertions.assertEquals("param2", pathParamMap.get("param2"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionPathParams_pathParamsMissed() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Assertions.assertNull(actionDesc);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionSubPathParams_pathParamsProvided() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Asserts.notNull(actionDesc);
-
-	    Assertions.assertEquals("actionSubPathParams", actionDesc.getAction());
-	    Assertions.assertEquals("testController", actionDesc.getController());
-	    Assertions.assertEquals(2, pathParamMap.size());
-
-	    Assertions.assertEquals("param1", pathParamMap.get("param1"));
-	    Assertions.assertEquals("param2", pathParamMap.get("param2"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionSubPathParams_pathParamsMissed() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Assertions.assertNull(actionDesc);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_actionSubPathParams_invalidPathParamsAdded() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/actionSubPathParams/param1-param2/param3");
-	    List<String> pathItems = RequestContextParser.parsePathItems(getCurrentRequest());
-
-	    Map<String, String> pathParamMap = new HashMap<>();
-	    ActionDesc actionDesc = actionParser.parse(pathItems, pathParamMap);
-	    Assertions.assertNull(actionDesc);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_toActionLink() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> attributes = new Params().set("class", "class1");
-	    String link = actionParser.toActionLink(getCurrentRequest(), "testController", "index", new Params().set("key1", "val1"), attributes, ">link");
-
-	    Assertions.assertEquals("<a href=\"/app/testController/?key1=val1\" class=\"class1\">&gt;link</a>", link);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    @Home
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-
-	@HttpGet
-	public void actionNoPathParams() {
-	}
-
-	@HttpGet
-	@PathParams("/{param1}/{param2}")
-	public void actionPathParams() {
-	}
-
-	@HttpGet
-	@PathParams("/{param1}-{param2}")
-	public void actionSubPathParams() {
-	}
-    }
+  }
 }

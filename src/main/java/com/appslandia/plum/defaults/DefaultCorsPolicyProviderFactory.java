@@ -45,36 +45,36 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultCorsPolicyProviderFactory implements CDIFactory<CorsPolicyProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public CorsPolicyProvider produce() {
-	final CorsPolicyProvider impl = new CorsPolicyProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public CorsPolicyProvider produce() {
+    final CorsPolicyProvider impl = new CorsPolicyProvider();
 
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, CorsPolicy.class, (bi) -> {
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, CorsPolicy.class, (bi) -> {
 
-	    Collection<CorsPolicy> policies = ObjectUtils.cast(bi.get().get());
+      Collection<CorsPolicy> policies = ObjectUtils.cast(bi.get().get());
 
-	    for (CorsPolicy corsPolicy : policies) {
-		impl.addCorsPolicy(corsPolicy);
-	    }
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+      for (CorsPolicy corsPolicy : policies) {
+        impl.addCorsPolicy(corsPolicy);
+      }
+      beanInstances.add(bi);
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes CorsPolicyProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes CorsPolicyProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

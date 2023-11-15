@@ -33,40 +33,40 @@ import jakarta.servlet.ServletInputStream;
  */
 public class MockServletInputStream extends ServletInputStream {
 
-    final InputStream is;
+  final InputStream is;
 
-    public MockServletInputStream(InputStream is) {
-	this.is = is;
-    }
+  public MockServletInputStream(InputStream is) {
+    this.is = is;
+  }
 
-    @Override
-    public int read() throws IOException {
-	return this.is.read();
-    }
+  @Override
+  public int read() throws IOException {
+    return this.is.read();
+  }
 
-    @Override
-    public synchronized void reset() throws IOException {
-	this.is.reset();
-    }
+  @Override
+  public synchronized void reset() throws IOException {
+    this.is.reset();
+  }
 
-    @Override
-    public void close() throws IOException {
-	this.is.close();
-	super.close();
-    }
+  @Override
+  public void close() throws IOException {
+    this.is.close();
+    super.close();
+  }
 
-    @Override
-    public boolean isFinished() {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public boolean isFinished() {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public boolean isReady() {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public boolean isReady() {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public void setReadListener(ReadListener readListener) {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public void setReadListener(ReadListener readListener) {
+    throw new UnsupportedOperationException();
+  }
 }

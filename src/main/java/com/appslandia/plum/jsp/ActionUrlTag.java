@@ -40,56 +40,57 @@ import jakarta.servlet.jsp.tagext.DynamicAttributes;
 @Tag(name = "actionUrl")
 public class ActionUrlTag extends TagBase implements DynamicAttributes {
 
-    protected String controller;
-    protected String action;
-    protected boolean absUrl;
-    protected boolean escXml;
+  protected String controller;
+  protected String action;
+  protected boolean absUrl;
+  protected boolean escXml;
 
-    protected Map<String, Object> _parameters;
+  protected Map<String, Object> _parameters;
 
-    @Override
-    public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	Asserts.isTrue(TagUtils.isForParameter(name));
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    Asserts.isTrue(TagUtils.isForParameter(name));
 
-	if (this._parameters == null) {
-	    this._parameters = new LinkedHashMap<>();
-	}
-	this._parameters.put(TagUtils.getParameterName(name), value);
+    if (this._parameters == null) {
+      this._parameters = new LinkedHashMap<>();
     }
+    this._parameters.put(TagUtils.getParameterName(name), value);
+  }
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	if (this.controller == null) {
-	    this.controller = getRequestContext().getActionDesc().getController();
-	}
-	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
-	String _url = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, this.absUrl);
-	_url = this.getResponse().encodeURL(_url);
-
-	if (this.escXml) {
-	    XmlEscaper.escapeXml(this.pageContext.getOut(), _url);
-	} else {
-	    this.pageContext.getOut().write(_url);
-	}
+  @Override
+  public void doTag() throws JspException, IOException {
+    if (this.controller == null) {
+      this.controller = getRequestContext().getActionDesc().getController();
     }
+    ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
+    String _url = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters,
+        this.absUrl);
+    _url = this.getResponse().encodeURL(_url);
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setController(String controller) {
-	this.controller = controller;
+    if (this.escXml) {
+      XmlEscaper.escapeXml(this.pageContext.getOut(), _url);
+    } else {
+      this.pageContext.getOut().write(_url);
     }
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setAction(String action) {
-	this.action = action;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setController(String controller) {
+    this.controller = controller;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAbsUrl(boolean absUrl) {
-	this.absUrl = absUrl;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setEscXml(boolean escXml) {
-	this.escXml = escXml;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setAbsUrl(boolean absUrl) {
+    this.absUrl = absUrl;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setEscXml(boolean escXml) {
+    this.escXml = escXml;
+  }
 }

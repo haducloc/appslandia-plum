@@ -40,96 +40,97 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "actionImage")
 public class ActionImageTag extends UITagBase {
 
-    protected String controller;
-    protected String action;
-    protected boolean absUrl;
+  protected String controller;
+  protected String action;
+  protected boolean absUrl;
 
-    protected String width;
-    protected String height;
-    protected String alt = StringUtils.EMPTY_STRING;
+  protected String width;
+  protected String height;
+  protected String alt = StringUtils.EMPTY_STRING;
 
-    protected String _src;
-    protected Map<String, Object> _parameters;
+  protected String _src;
+  protected Map<String, Object> _parameters;
 
-    @Override
-    protected String getTagName() {
-	return "img";
+  @Override
+  protected String getTagName() {
+    return "img";
+  }
+
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    if (TagUtils.isForParameter(name)) {
+      if (this._parameters == null) {
+        this._parameters = new LinkedHashMap<>();
+      }
+      this._parameters.put(TagUtils.getParameterName(name), value);
+    } else {
+      super.setDynamicAttribute(uri, name, value);
     }
+  }
 
-    @Override
-    public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	if (TagUtils.isForParameter(name)) {
-	    if (this._parameters == null) {
-		this._parameters = new LinkedHashMap<>();
-	    }
-	    this._parameters.put(TagUtils.getParameterName(name), value);
-	} else {
-	    super.setDynamicAttribute(uri, name, value);
-	}
+  @Override
+  protected void initTag() throws JspException, IOException {
+    if (this.controller == null) {
+      this.controller = getRequestContext().getActionDesc().getController();
     }
+    ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
+    this._src = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters,
+        this.absUrl);
+    this._src = this.getResponse().encodeURL(this._src);
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	if (this.controller == null) {
-	    this.controller = getRequestContext().getActionDesc().getController();
-	}
-	ActionParser actionParser = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionParser.class);
-	this._src = actionParser.toActionUrl(this.getRequest(), this.controller, this.action, this._parameters, this.absUrl);
-	this._src = this.getResponse().encodeURL(this._src);
-    }
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    HtmlUtils.escAttribute(out, "src", this._src);
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "src", this._src);
+    if (this.width != null)
+      HtmlUtils.escAttribute(out, "width", this.width);
+    if (this.height != null)
+      HtmlUtils.escAttribute(out, "height", this.height);
 
-	if (this.width != null)
-	    HtmlUtils.escAttribute(out, "width", this.width);
-	if (this.height != null)
-	    HtmlUtils.escAttribute(out, "height", this.height);
+    HtmlUtils.escAttribute(out, "alt", this.alt);
+    if (this.hidden)
+      HtmlUtils.hidden(out);
 
-	HtmlUtils.escAttribute(out, "alt", this.alt);
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setController(String controller) {
+    this.controller = controller;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setController(String controller) {
-	this.controller = controller;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setAction(String action) {
-	this.action = action;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setAbsUrl(boolean absUrl) {
+    this.absUrl = absUrl;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAbsUrl(boolean absUrl) {
-	this.absUrl = absUrl;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setWidth(String width) {
+    this.width = width;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setWidth(String width) {
-	this.width = width;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setHeight(String height) {
+    this.height = height;
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setHeight(String height) {
-	this.height = height;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setAlt(String alt) {
-	this.alt = alt;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setAlt(String alt) {
+    this.alt = alt;
+  }
 }

@@ -34,16 +34,16 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "dataitem", dynamicAttributes = false)
 public class DataItemTag extends TagBase {
 
-    protected Object value;
+  protected Object value;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	Asserts.notNull(this.parent);
-	((DataListTag) this.parent).addItem(this.value);
-    }
+  @Override
+  public void doTag() throws JspException, IOException {
+    Asserts.notNull(this.parent);
+    ((DataListTag) this.parent).addItem(this.value);
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
-    }
+  @Attribute(required = true, rtexprvalue = true)
+  public void setValue(Object value) {
+    this.value = value;
+  }
 }

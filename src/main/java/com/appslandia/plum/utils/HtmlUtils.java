@@ -34,83 +34,84 @@ import com.appslandia.common.utils.XmlEscaper;
  */
 public class HtmlUtils {
 
-    public static void hidden(Writer out) throws IOException {
-	out.write(" hidden=\"hidden\"");
+  public static void hidden(Writer out) throws IOException {
+    out.write(" hidden=\"hidden\"");
+  }
+
+  public static void disabled(Writer out) throws IOException {
+    out.write(" disabled=\"disabled\"");
+  }
+
+  public static void readonly(Writer out) throws IOException {
+    out.write(" readonly=\"readonly\"");
+  }
+
+  public static void required(Writer out) throws IOException {
+    out.write(" required=\"required\"");
+  }
+
+  public static void autofocus(Writer out) throws IOException {
+    out.write(" autofocus=\"autofocus\"");
+  }
+
+  public static void checked(Writer out) throws IOException {
+    out.write(" checked=\"checked\"");
+  }
+
+  public static void selected(Writer out) throws IOException {
+    out.write(" selected=\"selected\"");
+  }
+
+  public static void hardWrap(Writer out) throws IOException {
+    out.write(" wrap=\"hard\"");
+  }
+
+  public static void multiple(Writer out) throws IOException {
+    out.write(" multiple=\"multiple\"");
+  }
+
+  public static void novalidate(Writer out) throws IOException {
+    out.write(" novalidate=\"novalidate\"");
+  }
+
+  public static void escAttribute(Writer out, String name, String value) throws IOException {
+    out.write(' ');
+    out.write(name);
+    out.write("=\"");
+    if (value != null) {
+      XmlEscaper.escapeXml(out, value);
     }
+    out.write('"');
+  }
 
-    public static void disabled(Writer out) throws IOException {
-	out.write(" disabled=\"disabled\"");
+  public static void writeAttributes(Writer out, Map<String, Object> attributes,
+      Function<String, Boolean> excludeFilter) throws IOException {
+    for (Map.Entry<String, Object> attr : attributes.entrySet()) {
+      if (attr.getValue() == null) {
+        continue;
+      }
+      if (excludeFilter != null && excludeFilter.apply(attr.getKey())) {
+        continue;
+      }
+
+      out.write(' ');
+      out.write(attr.getKey());
+      out.write("=\"");
+      XmlEscaper.escapeXml(out, attr.getValue().toString());
+      out.write('"');
     }
+  }
 
-    public static void readonly(Writer out) throws IOException {
-	out.write(" readonly=\"readonly\"");
+  public static String toValueTagId(String fieldName) {
+    int len = fieldName.length();
+    int i = -1;
+    char buf[] = new char[fieldName.length()];
+
+    while (i < len - 1) {
+      i++;
+      char c = fieldName.charAt(i);
+      buf[i] = ((c == '.') || (c == '[') || (c == ']')) ? ('_') : c;
     }
-
-    public static void required(Writer out) throws IOException {
-	out.write(" required=\"required\"");
-    }
-
-    public static void autofocus(Writer out) throws IOException {
-	out.write(" autofocus=\"autofocus\"");
-    }
-
-    public static void checked(Writer out) throws IOException {
-	out.write(" checked=\"checked\"");
-    }
-
-    public static void selected(Writer out) throws IOException {
-	out.write(" selected=\"selected\"");
-    }
-
-    public static void hardWrap(Writer out) throws IOException {
-	out.write(" wrap=\"hard\"");
-    }
-
-    public static void multiple(Writer out) throws IOException {
-	out.write(" multiple=\"multiple\"");
-    }
-
-    public static void novalidate(Writer out) throws IOException {
-	out.write(" novalidate=\"novalidate\"");
-    }
-
-    public static void escAttribute(Writer out, String name, String value) throws IOException {
-	out.write(' ');
-	out.write(name);
-	out.write("=\"");
-	if (value != null) {
-	    XmlEscaper.escapeXml(out, value);
-	}
-	out.write('"');
-    }
-
-    public static void writeAttributes(Writer out, Map<String, Object> attributes, Function<String, Boolean> excludeFilter) throws IOException {
-	for (Map.Entry<String, Object> attr : attributes.entrySet()) {
-	    if (attr.getValue() == null) {
-		continue;
-	    }
-	    if (excludeFilter != null && excludeFilter.apply(attr.getKey())) {
-		continue;
-	    }
-
-	    out.write(' ');
-	    out.write(attr.getKey());
-	    out.write("=\"");
-	    XmlEscaper.escapeXml(out, attr.getValue().toString());
-	    out.write('"');
-	}
-    }
-
-    public static String toValueTagId(String fieldName) {
-	int len = fieldName.length();
-	int i = -1;
-	char buf[] = new char[fieldName.length()];
-
-	while (i < len - 1) {
-	    i++;
-	    char c = fieldName.charAt(i);
-	    buf[i] = ((c == '.') || (c == '[') || (c == ']')) ? ('_') : c;
-	}
-	return new String(buf);
-    }
+    return new String(buf);
+  }
 }

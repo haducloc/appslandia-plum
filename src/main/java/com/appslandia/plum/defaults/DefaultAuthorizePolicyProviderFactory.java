@@ -47,46 +47,47 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultAuthorizePolicyProviderFactory implements CDIFactory<AuthorizePolicyProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public AuthorizePolicyProvider produce() {
-	final AuthorizePolicyProvider impl = new AuthorizePolicyProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public AuthorizePolicyProvider produce() {
+    final AuthorizePolicyProvider impl = new AuthorizePolicyProvider();
 
-	CDIUtils.scanReferences(this.beanManager, AuthorizePolicy.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class, (mappedId, bi) -> {
+    CDIUtils.scanReferences(this.beanManager, AuthorizePolicy.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
+        (mappedId, bi) -> {
 
-	    impl.addAuthorizePolicy(mappedId.value(), bi.get());
+          impl.addAuthorizePolicy(mappedId.value(), bi.get());
 
-	    beanInstances.add(bi);
-	});
+          beanInstances.add(bi);
+        });
 
-	// @Supplier(AuthorizePolicy.class)
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, AuthorizePolicy.class, (bi) -> {
+    // @Supplier(AuthorizePolicy.class)
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, AuthorizePolicy.class, (bi) -> {
 
-	    Map<String, AuthorizePolicy> m = ObjectUtils.cast(bi.get().get());
+      Map<String, AuthorizePolicy> m = ObjectUtils.cast(bi.get().get());
 
-	    for (Entry<String, AuthorizePolicy> entry : m.entrySet()) {
+      for (Entry<String, AuthorizePolicy> entry : m.entrySet()) {
 
-		impl.addAuthorizePolicy(entry.getKey(), entry.getValue());
+        impl.addAuthorizePolicy(entry.getKey(), entry.getValue());
 
-		beanInstances.add(bi);
-	    }
-	});
-	return impl;
-    }
+        beanInstances.add(bi);
+      }
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes AuthorizePolicyProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes AuthorizePolicyProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

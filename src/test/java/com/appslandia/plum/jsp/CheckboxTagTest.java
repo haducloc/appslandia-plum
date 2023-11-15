@@ -42,121 +42,126 @@ import jakarta.validation.constraints.NotNull;
  */
 public class CheckboxTagTest extends MockTestBase {
 
-    CheckboxTag tag = new CheckboxTag();
-    TestModel model = new TestModel();
+  CheckboxTag tag = new CheckboxTag();
+  TestModel model = new TestModel();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      model.setRoles("admin,operator");
+
+      tag.setPath("model.roles");
+      tag.setCodeValue("admin");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_unchecked() {
+    try {
+      model.setRoles("operator");
+
+      tag.setPath("model.roles");
+      tag.setCodeValue("admin");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_checked_readonly() {
+    try {
+      model.setRoles("admin,operator");
+
+      tag.setPath("model.roles");
+      tag.setCodeValue("admin");
+      tag.setReadonly(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"roles\" value=\"admin\" type=\"hidden\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_unchecked_readonly() {
+    try {
+      model.setRoles("operator");
+
+      tag.setPath("model.roles");
+      tag.setCodeValue("admin");
+      tag.setReadonly(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" disabled=\"disabled\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  public static class TestModel {
+    @NotNull
+    private String roles;
+
+    public String getRoles() {
+      return roles;
     }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+    public void setRoles(String roles) {
+      this.roles = roles;
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+  @Controller("testController")
+  public static class TestController {
 
-	executeCurrent("GET", "http://localhost/app/testController/index");
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    model.setRoles("admin,operator");
-
-	    tag.setPath("model.roles");
-	    tag.setCodeValue("admin");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unchecked() {
-	try {
-	    model.setRoles("operator");
-
-	    tag.setPath("model.roles");
-	    tag.setCodeValue("admin");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_checked_readonly() {
-	try {
-	    model.setRoles("admin,operator");
-
-	    tag.setPath("model.roles");
-	    tag.setCodeValue("admin");
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals(
-		    "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"roles\" value=\"admin\" type=\"hidden\" />",
-		    NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unchecked_readonly() {
-	try {
-	    model.setRoles("operator");
-
-	    tag.setPath("model.roles");
-	    tag.setCodeValue("admin");
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" disabled=\"disabled\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    public static class TestModel {
-	@NotNull
-	private String roles;
-
-	public String getRoles() {
-	    return roles;
-	}
-
-	public void setRoles(String roles) {
-	    this.roles = roles;
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

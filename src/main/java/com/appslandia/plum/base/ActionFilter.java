@@ -31,5 +31,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @FunctionalInterface
 public interface ActionFilter {
 
-    void doFilter(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext, ActionFilterChain filterChain) throws Exception;
+  void doFilter(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext,
+      ActionFilterChain filterChain) throws Exception;
 }

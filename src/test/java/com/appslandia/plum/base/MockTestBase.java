@@ -40,82 +40,82 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public abstract class MockTestBase {
 
-    protected final MockContainer container;
+  protected final MockContainer container;
 
-    public MockTestBase() {
-	this.container = new MockContainer();
-	initialize();
+  public MockTestBase() {
+    this.container = new MockContainer();
+    initialize();
 
-	MockContainer.containerHolder.set(this.container);
+    MockContainer.containerHolder.set(this.container);
+  }
+
+  @RegisterExtension
+  final MockRequestLifecycleExtension requestLifecycleExtension = new MockRequestLifecycleExtension();
+
+  protected abstract void initialize();
+
+  protected void execute(MockHttpServletRequest request, MockHttpServletResponse response) {
+    MockHttpServletRequest _currentRequest = MockContainer.currentRequestHolder.get();
+    MockHttpServletResponse _currentResponse = MockContainer.currentResponseHolder.get();
+
+    try {
+      MockContainer.currentRequestHolder.set(request);
+      MockContainer.currentResponseHolder.set(response);
+
+      this.container.execute(request, response);
+
+    } catch (RuntimeException ex) {
+      throw ex;
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
+    } finally {
+      MockContainer.currentRequestHolder.set(_currentRequest);
+      MockContainer.currentResponseHolder.set(_currentResponse);
     }
+  }
 
-    @RegisterExtension
-    final MockRequestLifecycleExtension requestLifecycleExtension = new MockRequestLifecycleExtension();
+  protected void executeCurrent(String method, String requestURL) {
+    try {
+      MockHttpServletRequest currentRequest = getCurrentRequest();
+      MockHttpServletResponse currentResponse = getCurrentResponse();
 
-    protected abstract void initialize();
+      currentRequest.setMethod(method);
+      currentRequest.setRequestURL(requestURL);
 
-    protected void execute(MockHttpServletRequest request, MockHttpServletResponse response) {
-	MockHttpServletRequest _currentRequest = MockContainer.currentRequestHolder.get();
-	MockHttpServletResponse _currentResponse = MockContainer.currentResponseHolder.get();
+      this.container.execute(currentRequest, currentResponse);
 
-	try {
-	    MockContainer.currentRequestHolder.set(request);
-	    MockContainer.currentResponseHolder.set(response);
-
-	    this.container.execute(request, response);
-
-	} catch (RuntimeException ex) {
-	    throw ex;
-	} catch (Exception ex) {
-	    throw new RuntimeException(ex);
-	} finally {
-	    MockContainer.currentRequestHolder.set(_currentRequest);
-	    MockContainer.currentResponseHolder.set(_currentResponse);
-	}
+    } catch (RuntimeException ex) {
+      throw ex;
+    } catch (Exception ex) {
+      throw new RuntimeException(ex);
     }
+  }
 
-    protected void executeCurrent(String method, String requestURL) {
-	try {
-	    MockHttpServletRequest currentRequest = getCurrentRequest();
-	    MockHttpServletResponse currentResponse = getCurrentResponse();
+  protected RequestContext getCurrentRequestContext() {
+    return ServletUtils.getRequestContext(getCurrentRequest());
+  }
 
-	    currentRequest.setMethod(method);
-	    currentRequest.setRequestURL(requestURL);
+  protected ModelState getCurrentModelState() {
+    return ServletUtils.getModelState(getCurrentRequest());
+  }
 
-	    this.container.execute(currentRequest, currentResponse);
+  protected MockHttpServletRequest getCurrentRequest() {
+    return Asserts.notNull(MockContainer.currentRequestHolder.get());
+  }
 
-	} catch (RuntimeException ex) {
-	    throw ex;
-	} catch (Exception ex) {
-	    throw new RuntimeException(ex);
-	}
-    }
+  protected MockHttpServletResponse getCurrentResponse() {
+    return Asserts.notNull(MockContainer.currentResponseHolder.get());
+  }
 
-    protected RequestContext getCurrentRequestContext() {
-	return ServletUtils.getRequestContext(getCurrentRequest());
-    }
+  protected void printCurrentException() {
+    TestUtils.printException(getCurrentRequest());
+  }
 
-    protected ModelState getCurrentModelState() {
-	return ServletUtils.getModelState(getCurrentRequest());
-    }
+  protected void setRequestContextField(String fieldName, Object value) {
+    Field field = ReflectionUtils.findField(RequestContext.class, fieldName);
+    Asserts.notNull(field);
+    field.setAccessible(true);
 
-    protected MockHttpServletRequest getCurrentRequest() {
-	return Asserts.notNull(MockContainer.currentRequestHolder.get());
-    }
-
-    protected MockHttpServletResponse getCurrentResponse() {
-	return Asserts.notNull(MockContainer.currentResponseHolder.get());
-    }
-
-    protected void printCurrentException() {
-	TestUtils.printException(getCurrentRequest());
-    }
-
-    protected void setRequestContextField(String fieldName, Object value) {
-	Field field = ReflectionUtils.findField(RequestContext.class, fieldName);
-	Asserts.notNull(field);
-	field.setAccessible(true);
-
-	ReflectionUtils.set(field, getCurrentRequestContext(), value);
-    }
+    ReflectionUtils.set(field, getCurrentRequestContext(), value);
+  }
 }

@@ -35,8 +35,8 @@ import io.pebbletemplates.pebble.error.PebbleException;
  */
 public class EnvNameFunction extends DynPebbleFunction {
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
-	return DeployEnv.getCurrent().getName();
-    }
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
+    return DeployEnv.getCurrent().getName();
+  }
 }

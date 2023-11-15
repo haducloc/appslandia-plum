@@ -50,113 +50,116 @@ import jakarta.servlet.jsp.tagext.DynamicAttributes;
 @Tag(name = "include")
 public class IncludeTag extends TagBase implements DynamicAttributes {
 
-    public static final String REQUEST_ATTRIBUTE_INCLUDE_PARAMS = "includeParams";
+  public static final String REQUEST_ATTRIBUTE_INCLUDE_PARAMS = "includeParams";
 
-    protected String controller;
-    protected String action;
-    protected String errorKey;
+  protected String controller;
+  protected String action;
+  protected String errorKey;
 
-    protected Map<String, Object> _params;
+  protected Map<String, Object> _params;
 
-    @Override
-    public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	if (this._params == null) {
-	    this._params = new LinkedHashMap<>();
-	}
-	this._params.put(name, value);
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    if (this._params == null) {
+      this._params = new LinkedHashMap<>();
     }
+    this._params.put(name, value);
+  }
 
-    protected RequestAttributes backupAttributes(HttpServletRequest request) {
-	return new RequestAttributes(request);
+  protected RequestAttributes backupAttributes(HttpServletRequest request) {
+    return new RequestAttributes(request);
+  }
+
+  protected String buildContent(RequestContext childContext) throws Exception {
+    HttpServletRequest request = getRequest();
+    HttpServletResponse response = getResponse();
+
+    RequestAttributes backupAttributes = backupAttributes(request);
+    request.setAttribute(REQUEST_ATTRIBUTE_INCLUDE_PARAMS, this._params);
+    request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, childContext);
+
+    try {
+      boolean useWrapper = ActionDescUtils.isActionResultOrVoid(childContext.getActionDesc().getMethod());
+      if (useWrapper) {
+        response = new ContentResponseWrapper(response, false, false);
+      }
+      ControllerProvider controllerProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
+          ControllerProvider.class);
+      ActionInvoker actionInvoker = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
+          ActionInvoker.class);
+
+      Object childController = controllerProvider.getController(childContext.getActionDesc().getControllerClass());
+      Object result = actionInvoker.invokeAction(request, response, childContext, childController);
+
+      if (useWrapper) {
+        ContentResponseWrapper wrapper = (ContentResponseWrapper) response;
+        if (childContext.getActionDesc().getMethod().getReturnType() != void.class) {
+          Asserts.notNull(result);
+
+          ((ActionResult) result).execute(request, response, childContext);
+        }
+        wrapper.finishWrapper();
+        return wrapper.getContent().toString(response.getCharacterEncoding());
+      }
+      return ObjectUtils.toStringOrEmpty(result);
+
+    } finally {
+      backupAttributes.restore(request);
     }
+  }
 
-    protected String buildContent(RequestContext childContext) throws Exception {
-	HttpServletRequest request = getRequest();
-	HttpServletResponse response = getResponse();
+  @Override
+  public void doTag() throws JspException, IOException {
+    final RequestContext childContext = createChildRequestContext();
 
-	RequestAttributes backupAttributes = backupAttributes(request);
-	request.setAttribute(REQUEST_ATTRIBUTE_INCLUDE_PARAMS, this._params);
-	request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, childContext);
+    try {
+      String content = buildContent(childContext);
+      this.pageContext.getOut().write(content);
 
-	try {
-	    boolean useWrapper = ActionDescUtils.isActionResultOrVoid(childContext.getActionDesc().getMethod());
-	    if (useWrapper) {
-		response = new ContentResponseWrapper(response, false, false);
-	    }
-	    ControllerProvider controllerProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ControllerProvider.class);
-	    ActionInvoker actionInvoker = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionInvoker.class);
-
-	    Object childController = controllerProvider.getController(childContext.getActionDesc().getControllerClass());
-	    Object result = actionInvoker.invokeAction(request, response, childContext, childController);
-
-	    if (useWrapper) {
-		ContentResponseWrapper wrapper = (ContentResponseWrapper) response;
-		if (childContext.getActionDesc().getMethod().getReturnType() != void.class) {
-		    Asserts.notNull(result);
-
-		    ((ActionResult) result).execute(request, response, childContext);
-		}
-		wrapper.finishWrapper();
-		return wrapper.getContent().toString(response.getCharacterEncoding());
-	    }
-	    return ObjectUtils.toStringOrEmpty(result);
-
-	} finally {
-	    backupAttributes.restore(request);
-	}
+    } catch (Exception ex) {
+      handleException(ex);
     }
+  }
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	final RequestContext childContext = createChildRequestContext();
-
-	try {
-	    String content = buildContent(childContext);
-	    this.pageContext.getOut().write(content);
-
-	} catch (Exception ex) {
-	    handleException(ex);
-	}
+  protected void handleException(Exception ex) throws JspException, IOException {
+    if (this.errorKey != null) {
+      this.pageContext.getOut().write(this.getRequestContext().escXml(this.errorKey));
+    } else {
+      if (ex instanceof RuntimeException) {
+        throw (RuntimeException) ex;
+      }
+      if (ex instanceof JspException) {
+        throw (JspException) ex;
+      }
+      if (ex instanceof IOException) {
+        throw (IOException) ex;
+      }
+      throw new JspException(ex);
     }
+  }
 
-    protected void handleException(Exception ex) throws JspException, IOException {
-	if (this.errorKey != null) {
-	    this.pageContext.getOut().write(this.getRequestContext().escXml(this.errorKey));
-	} else {
-	    if (ex instanceof RuntimeException) {
-		throw (RuntimeException) ex;
-	    }
-	    if (ex instanceof JspException) {
-		throw (JspException) ex;
-	    }
-	    if (ex instanceof IOException) {
-		throw (IOException) ex;
-	    }
-	    throw new JspException(ex);
-	}
-    }
+  protected RequestContext createChildRequestContext() {
+    ActionDescProvider actionDescProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
+        ActionDescProvider.class);
+    ActionDesc actionDesc = actionDescProvider.getActionDesc(this.controller, this.action);
+    Asserts.notNull(actionDesc);
+    Asserts.notNull(actionDesc.getChildAction());
 
-    protected RequestContext createChildRequestContext() {
-	ActionDescProvider actionDescProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ActionDescProvider.class);
-	ActionDesc actionDesc = actionDescProvider.getActionDesc(this.controller, this.action);
-	Asserts.notNull(actionDesc);
-	Asserts.notNull(actionDesc.getChildAction());
+    return getRequestContext().createRequestContext(actionDesc);
+  }
 
-	return getRequestContext().createRequestContext(actionDesc);
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setController(String controller) {
+    this.controller = controller;
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setController(String controller) {
-	this.controller = controller;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setAction(String action) {
+    this.action = action;
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setAction(String action) {
-	this.action = action;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setErrorKey(String errorKey) {
-	this.errorKey = errorKey;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setErrorKey(String errorKey) {
+    this.errorKey = errorKey;
+  }
 }

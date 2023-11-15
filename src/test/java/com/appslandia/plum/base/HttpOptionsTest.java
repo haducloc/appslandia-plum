@@ -30,65 +30,65 @@ import org.junit.jupiter.api.Test;
  */
 public class HttpOptionsTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testAction() {
+    try {
+      executeCurrent("OPTIONS", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(405, getCurrentResponse().getStatus());
+      Assertions.assertNull(getCurrentResponse().getHeader("Allow"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testAuthorize() {
+    try {
+      executeCurrent("OPTIONS", "http://localhost/app/testController/testAuthorize");
+
+      Assertions.assertEquals(405, getCurrentResponse().getStatus());
+      Assertions.assertNull(getCurrentResponse().getHeader("Allow"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_enableCorsAction() {
+    try {
+      executeCurrent("OPTIONS", "http://localhost/app/testController/enableCorsAction");
+
+      Assertions.assertEquals(403, getCurrentResponse().getStatus());
+      Assertions.assertNull(getCurrentResponse().getHeader("Allow"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void testAction() throws Exception {
     }
 
-    @Test
-    public void test_testAction() {
-	try {
-	    executeCurrent("OPTIONS", "http://localhost/app/testController/testAction");
-
-	    Assertions.assertEquals(405, getCurrentResponse().getStatus());
-	    Assertions.assertNull(getCurrentResponse().getHeader("Allow"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @Authorize
+    public void testAuthorize() throws Exception {
     }
 
-    @Test
-    public void test_testAuthorize() {
-	try {
-	    executeCurrent("OPTIONS", "http://localhost/app/testController/testAuthorize");
-
-	    Assertions.assertEquals(405, getCurrentResponse().getStatus());
-	    Assertions.assertNull(getCurrentResponse().getHeader("Allow"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @EnableCors("testCors")
+    public void enableCorsAction() throws Exception {
     }
-
-    @Test
-    public void test_enableCorsAction() {
-	try {
-	    executeCurrent("OPTIONS", "http://localhost/app/testController/enableCorsAction");
-
-	    Assertions.assertEquals(403, getCurrentResponse().getStatus());
-	    Assertions.assertNull(getCurrentResponse().getHeader("Allow"));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void testAction() throws Exception {
-	}
-
-	@HttpGet
-	@Authorize
-	public void testAuthorize() throws Exception {
-	}
-
-	@HttpGet
-	@EnableCors("testCors")
-	public void enableCorsAction() throws Exception {
-	}
-    }
+  }
 }

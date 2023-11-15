@@ -34,97 +34,98 @@ import jakarta.security.enterprise.identitystore.CredentialValidationResult;
  */
 public class InvalidAuthResult extends CredentialValidationResult {
 
-    static final CallerPrincipal INVALID_PRINCIPAL = new CallerPrincipal("null");
-    static final CredentialValidationResult INVALID_RESULT = CredentialValidationResult.INVALID_RESULT;
+  static final CallerPrincipal INVALID_PRINCIPAL = new CallerPrincipal("null");
+  static final CredentialValidationResult INVALID_RESULT = CredentialValidationResult.INVALID_RESULT;
 
-    final String code;
+  final String code;
 
-    // NOTES: CredentialValidationResult doesn't provide a public constructor for creating an invalid result
-    // Use INVALID_RESULT to implement custom invalid result
+  // NOTES: CredentialValidationResult doesn't provide a public constructor for
+  // creating an invalid result
+  // Use INVALID_RESULT to implement custom invalid result
 
-    private InvalidAuthResult(String code) {
-	super((String) null, INVALID_PRINCIPAL, null, null, null);
+  private InvalidAuthResult(String code) {
+    super((String) null, INVALID_PRINCIPAL, null, null, null);
 
-	this.code = Asserts.notNull(code);
+    this.code = Asserts.notNull(code);
+  }
+
+  @Override
+  public Status getStatus() {
+    return INVALID_RESULT.getStatus();
+  }
+
+  @Override
+  public String getIdentityStoreId() {
+    return INVALID_RESULT.getIdentityStoreId();
+  }
+
+  @Override
+  public CallerPrincipal getCallerPrincipal() {
+    return INVALID_RESULT.getCallerPrincipal();
+  }
+
+  @Override
+  public String getCallerUniqueId() {
+    return INVALID_RESULT.getCallerUniqueId();
+  }
+
+  @Override
+  public String getCallerDn() {
+    return INVALID_RESULT.getCallerDn();
+  }
+
+  @Override
+  public Set<String> getCallerGroups() {
+    return INVALID_RESULT.getCallerGroups();
+  }
+
+  public String getCode() {
+    return this.code;
+  }
+
+  public static final InvalidAuthResult CREDENTIAL_INVALID = new InvalidAuthResult("credential_invalid");
+
+  public static final InvalidAuthResult CREDENTIAL_SUSPENDED = new InvalidAuthResult("credential_suspended");
+  public static final InvalidAuthResult CREDENTIAL_NOT_ACTIVATED = new InvalidAuthResult("credential_not_activated");
+  public static final InvalidAuthResult CREDENTIAL_NOT_APPROVED = new InvalidAuthResult("credential_not_approved");
+  public static final InvalidAuthResult CREDENTIAL_INVALID_STATE = new InvalidAuthResult("credential_invalid_state");
+
+  public static final InvalidAuthResult TOKEN_INVALID = new InvalidAuthResult("token_invalid");
+  public static final InvalidAuthResult TOKEN_THEFTED = new InvalidAuthResult("token_thefted");
+  public static final InvalidAuthResult TOKEN_EXPIRED = new InvalidAuthResult("token_expired");
+
+  public static final InvalidAuthResult ID_STORE_EXCEPTION = new InvalidAuthResult("id_store_exception");
+
+  public static InvalidAuthResult valueOf(String code) {
+    Asserts.notNull(code);
+
+    if (CREDENTIAL_INVALID.getCode().equalsIgnoreCase(code)) {
+      return CREDENTIAL_INVALID;
     }
-
-    @Override
-    public Status getStatus() {
-	return INVALID_RESULT.getStatus();
+    if (CREDENTIAL_SUSPENDED.getCode().equalsIgnoreCase(code)) {
+      return CREDENTIAL_SUSPENDED;
     }
-
-    @Override
-    public String getIdentityStoreId() {
-	return INVALID_RESULT.getIdentityStoreId();
+    if (CREDENTIAL_NOT_ACTIVATED.getCode().equalsIgnoreCase(code)) {
+      return CREDENTIAL_NOT_ACTIVATED;
     }
-
-    @Override
-    public CallerPrincipal getCallerPrincipal() {
-	return INVALID_RESULT.getCallerPrincipal();
+    if (CREDENTIAL_NOT_APPROVED.getCode().equalsIgnoreCase(code)) {
+      return CREDENTIAL_NOT_APPROVED;
     }
-
-    @Override
-    public String getCallerUniqueId() {
-	return INVALID_RESULT.getCallerUniqueId();
+    if (CREDENTIAL_INVALID_STATE.getCode().equalsIgnoreCase(code)) {
+      return CREDENTIAL_INVALID_STATE;
     }
-
-    @Override
-    public String getCallerDn() {
-	return INVALID_RESULT.getCallerDn();
+    if (TOKEN_INVALID.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_INVALID;
     }
-
-    @Override
-    public Set<String> getCallerGroups() {
-	return INVALID_RESULT.getCallerGroups();
+    if (TOKEN_THEFTED.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_THEFTED;
     }
-
-    public String getCode() {
-	return this.code;
+    if (TOKEN_EXPIRED.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_EXPIRED;
     }
-
-    public static final InvalidAuthResult CREDENTIAL_INVALID = new InvalidAuthResult("credential_invalid");
-
-    public static final InvalidAuthResult CREDENTIAL_SUSPENDED = new InvalidAuthResult("credential_suspended");
-    public static final InvalidAuthResult CREDENTIAL_NOT_ACTIVATED = new InvalidAuthResult("credential_not_activated");
-    public static final InvalidAuthResult CREDENTIAL_NOT_APPROVED = new InvalidAuthResult("credential_not_approved");
-    public static final InvalidAuthResult CREDENTIAL_INVALID_STATE = new InvalidAuthResult("credential_invalid_state");
-
-    public static final InvalidAuthResult TOKEN_INVALID = new InvalidAuthResult("token_invalid");
-    public static final InvalidAuthResult TOKEN_THEFTED = new InvalidAuthResult("token_thefted");
-    public static final InvalidAuthResult TOKEN_EXPIRED = new InvalidAuthResult("token_expired");
-
-    public static final InvalidAuthResult ID_STORE_EXCEPTION = new InvalidAuthResult("id_store_exception");
-
-    public static InvalidAuthResult valueOf(String code) {
-	Asserts.notNull(code);
-
-	if (CREDENTIAL_INVALID.getCode().equalsIgnoreCase(code)) {
-	    return CREDENTIAL_INVALID;
-	}
-	if (CREDENTIAL_SUSPENDED.getCode().equalsIgnoreCase(code)) {
-	    return CREDENTIAL_SUSPENDED;
-	}
-	if (CREDENTIAL_NOT_ACTIVATED.getCode().equalsIgnoreCase(code)) {
-	    return CREDENTIAL_NOT_ACTIVATED;
-	}
-	if (CREDENTIAL_NOT_APPROVED.getCode().equalsIgnoreCase(code)) {
-	    return CREDENTIAL_NOT_APPROVED;
-	}
-	if (CREDENTIAL_INVALID_STATE.getCode().equalsIgnoreCase(code)) {
-	    return CREDENTIAL_INVALID_STATE;
-	}
-	if (TOKEN_INVALID.getCode().equalsIgnoreCase(code)) {
-	    return TOKEN_INVALID;
-	}
-	if (TOKEN_THEFTED.getCode().equalsIgnoreCase(code)) {
-	    return TOKEN_THEFTED;
-	}
-	if (TOKEN_EXPIRED.getCode().equalsIgnoreCase(code)) {
-	    return TOKEN_EXPIRED;
-	}
-	if (ID_STORE_EXCEPTION.getCode().equalsIgnoreCase(code)) {
-	    return ID_STORE_EXCEPTION;
-	}
-	return new InvalidAuthResult(code);
+    if (ID_STORE_EXCEPTION.getCode().equalsIgnoreCase(code)) {
+      return ID_STORE_EXCEPTION;
     }
+    return new InvalidAuthResult(code);
+  }
 }

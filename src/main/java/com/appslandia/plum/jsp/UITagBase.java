@@ -38,102 +38,102 @@ import jakarta.servlet.jsp.tagext.DynamicAttributes;
  */
 public abstract class UITagBase extends TagBase implements DynamicAttributes {
 
-    // Global attributes
-    protected String id;
-    protected boolean hidden;
-    protected String datatag;
+  // Global attributes
+  protected String id;
+  protected boolean hidden;
+  protected String datatag;
 
-    protected String clazz;
-    protected String style;
-    protected String title;
+  protected String clazz;
+  protected String style;
+  protected String title;
 
-    protected boolean render = true;
-    protected Map<String, Object> dynamicAttributes;
+  protected boolean render = true;
+  protected Map<String, Object> dynamicAttributes;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	this.initTag();
-	if (!this.render) {
-	    return;
-	}
-	this.writeTag(this.pageContext.getOut());
+  @Override
+  public void doTag() throws JspException, IOException {
+    this.initTag();
+    if (!this.render) {
+      return;
+    }
+    this.writeTag(this.pageContext.getOut());
+  }
+
+  protected abstract void writeAttributes(JspWriter out) throws JspException, IOException;
+
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    if (this.dynamicAttributes == null) {
+      this.dynamicAttributes = new HashMap<>();
+    }
+    this.dynamicAttributes.put(name, value);
+  }
+
+  abstract protected void initTag() throws JspException, IOException;
+
+  protected abstract String getTagName();
+
+  protected boolean hasBody() {
+    return false;
+  }
+
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+  }
+
+  protected void writeTag(JspWriter out) throws JspException, IOException {
+    out.write('<');
+    out.write(this.getTagName());
+    this.writeAttributes(out);
+
+    if (this.dynamicAttributes != null) {
+      HtmlUtils.writeAttributes(out, this.dynamicAttributes, null);
     }
 
-    protected abstract void writeAttributes(JspWriter out) throws JspException, IOException;
+    if (this.hasBody()) {
+      out.write('>');
 
-    @Override
-    public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-	if (this.dynamicAttributes == null) {
-	    this.dynamicAttributes = new HashMap<>();
-	}
-	this.dynamicAttributes.put(name, value);
+      this.writeBody(out);
+      out.write("</");
+      out.write(this.getTagName());
+      out.write('>');
+
+    } else {
+      out.write(" />");
     }
+  }
 
-    abstract protected void initTag() throws JspException, IOException;
+  @Attribute(required = false, rtexprvalue = true)
+  public void setId(String id) {
+    this.id = id;
+  }
 
-    protected abstract String getTagName();
+  @Attribute(required = false, rtexprvalue = true)
+  public void setHidden(boolean hidden) {
+    this.hidden = hidden;
+  }
 
-    protected boolean hasBody() {
-	return false;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setDatatag(Object datatag) {
+    this.datatag = ObjectUtils.toStringOrNull(datatag);
+  }
 
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setClazz(String clazz) {
+    this.clazz = clazz;
+  }
 
-    protected void writeTag(JspWriter out) throws JspException, IOException {
-	out.write('<');
-	out.write(this.getTagName());
-	this.writeAttributes(out);
+  @Attribute(required = false, rtexprvalue = true)
+  public void setStyle(String style) {
+    this.style = style;
+  }
 
-	if (this.dynamicAttributes != null) {
-	    HtmlUtils.writeAttributes(out, this.dynamicAttributes, null);
-	}
+  @Attribute(required = false, rtexprvalue = true)
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-	if (this.hasBody()) {
-	    out.write('>');
-
-	    this.writeBody(out);
-	    out.write("</");
-	    out.write(this.getTagName());
-	    out.write('>');
-
-	} else {
-	    out.write(" />");
-	}
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setId(String id) {
-	this.id = id;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setHidden(boolean hidden) {
-	this.hidden = hidden;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setDatatag(Object datatag) {
-	this.datatag = ObjectUtils.toStringOrNull(datatag);
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setClazz(String clazz) {
-	this.clazz = clazz;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setStyle(String style) {
-	this.style = style;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setTitle(String title) {
-	this.title = title;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setRender(boolean render) {
-	this.render = render;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setRender(boolean render) {
+    this.render = render;
+  }
 }

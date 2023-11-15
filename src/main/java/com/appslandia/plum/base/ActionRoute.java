@@ -29,30 +29,30 @@ import java.util.Locale;
  */
 public class ActionRoute {
 
-    final String controller;
-    final String action;
+  final String controller;
+  final String action;
 
-    public ActionRoute(String controller, String action) {
-	this.controller = controller;
-	this.action = action;
-    }
+  public ActionRoute(String controller, String action) {
+    this.controller = controller;
+    this.action = action;
+  }
 
-    @Override
-    public int hashCode() {
-	int hash = 1, p = 31;
-	hash = p * hash + this.controller.toLowerCase(Locale.ENGLISH).hashCode();
-	hash = p * hash + this.action.toLowerCase(Locale.ENGLISH).hashCode();
-	return hash;
-    }
+  @Override
+  public int hashCode() {
+    int hash = 1, p = 31;
+    hash = p * hash + this.controller.toLowerCase(Locale.ENGLISH).hashCode();
+    hash = p * hash + this.action.toLowerCase(Locale.ENGLISH).hashCode();
+    return hash;
+  }
 
-    @Override
-    public boolean equals(Object obj) {
-	ActionRoute another = (ActionRoute) obj;
-	return this.controller.equalsIgnoreCase(another.controller) && this.action.equalsIgnoreCase(another.action);
-    }
+  @Override
+  public boolean equals(Object obj) {
+    ActionRoute another = (ActionRoute) obj;
+    return this.controller.equalsIgnoreCase(another.controller) && this.action.equalsIgnoreCase(another.action);
+  }
 
-    @Override
-    public String toString() {
-	return '/' + this.controller + '/' + this.action;
-    }
+  @Override
+  public String toString() {
+    return '/' + this.controller + '/' + this.action;
+  }
 }

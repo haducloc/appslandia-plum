@@ -41,52 +41,53 @@ import jakarta.enterprise.inject.spi.CDI;
  */
 public class ActionScanner {
 
-    final List<Class<?>> controllerClasses = new ArrayList<>();
+  final List<Class<?>> controllerClasses = new ArrayList<>();
 
-    public List<Class<?>> getControllerClasses() {
-	return Collections.unmodifiableList(this.controllerClasses);
+  public List<Class<?>> getControllerClasses() {
+    return Collections.unmodifiableList(this.controllerClasses);
+  }
+
+  public void scanActions(Function<Method, Boolean> matcher, BiFunction<Class<?>, Method, Boolean> consumer) {
+    for (Class<?> controllerClass : this.controllerClasses) {
+
+      // @Removed
+      if (controllerClass.getDeclaredAnnotation(Removed.class) != null) {
+        continue;
+      }
+      for (Method actionMethod : controllerClass.getMethods()) {
+        if (!ActionDescUtils.isActionMethod(actionMethod)) {
+          continue;
+        }
+        if ((matcher != null) && !Boolean.TRUE.equals(matcher.apply(actionMethod))) {
+          continue;
+        }
+        if (Boolean.TRUE.equals(consumer.apply(controllerClass, actionMethod))) {
+          return;
+        }
+      }
     }
+  }
 
-    public void scanActions(Function<Method, Boolean> matcher, BiFunction<Class<?>, Method, Boolean> consumer) {
-	for (Class<?> controllerClass : this.controllerClasses) {
+  public boolean hasAction(Function<Method, Boolean> matcher) {
+    final Out<Boolean> out = new Out<>();
+    scanActions(matcher, (controllerClass, actionMethod) -> {
+      out.value = true;
+      return true;
+    });
+    return Boolean.TRUE.equals(out.value);
+  }
 
-	    // @Removed
-	    if (controllerClass.getDeclaredAnnotation(Removed.class) != null) {
-		continue;
-	    }
-	    for (Method actionMethod : controllerClass.getMethods()) {
-		if (!ActionDescUtils.isActionMethod(actionMethod)) {
-		    continue;
-		}
-		if ((matcher != null) && !Boolean.TRUE.equals(matcher.apply(actionMethod))) {
-		    continue;
-		}
-		if (Boolean.TRUE.equals(consumer.apply(controllerClass, actionMethod))) {
-		    return;
-		}
-	    }
-	}
-    }
+  public boolean hasAnnotation(Class<? extends Annotation> annotation) {
+    return hasAction(m -> m.getDeclaredAnnotation(annotation) != null);
+  }
 
-    public boolean hasAction(Function<Method, Boolean> matcher) {
-	final Out<Boolean> out = new Out<>();
-	scanActions(matcher, (controllerClass, actionMethod) -> {
-	    out.value = true;
-	    return true;
-	});
-	return Boolean.TRUE.equals(out.value);
-    }
+  public static ActionScanner getInstance() {
+    final ActionScanner scanner = new ActionScanner();
 
-    public boolean hasAnnotation(Class<? extends Annotation> annotation) {
-	return hasAction(m -> m.getDeclaredAnnotation(annotation) != null);
-    }
-
-    public static ActionScanner getInstance() {
-	final ActionScanner scanner = new ActionScanner();
-
-	CDIUtils.scanBeanClasses(CDI.current().getBeanManager(), Object.class, ReflectionUtils.EMPTY_ANNOTATIONS, Controller.class, (c, implClass) -> {
-	    scanner.controllerClasses.add(implClass);
-	});
-	return scanner;
-    }
+    CDIUtils.scanBeanClasses(CDI.current().getBeanManager(), Object.class, ReflectionUtils.EMPTY_ANNOTATIONS,
+        Controller.class, (c, implClass) -> {
+          scanner.controllerClasses.add(implClass);
+        });
+    return scanner;
+  }
 }

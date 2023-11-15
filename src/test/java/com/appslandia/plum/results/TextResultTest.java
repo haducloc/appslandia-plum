@@ -40,58 +40,60 @@ import com.appslandia.plum.base.MockTestBase;
  */
 public class TextResultTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testTextFileResult() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testTextFileResult");
+
+      Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
+      Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
+
+      try (BOMInputStream bis = new BOMInputStream(
+          new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()))) {
+        String content = IOUtils.toString(bis, StandardCharsets.UTF_8.name());
+        Assertions.assertEquals("item1, item2, item3", content);
+      }
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testTextFileResult_ISO_8859_1() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testTextFileResult_ISO_8859_1");
+
+      Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
+      Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
+
+      try (BOMInputStream bis = new BOMInputStream(
+          new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()))) {
+        String content = IOUtils.toString(bis, StandardCharsets.ISO_8859_1.name());
+        Assertions.assertEquals("item1, item2, item3", content);
+      }
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult testTextFileResult() throws Exception {
+      String content = "item1, item2, item3";
+      return new TextFileResult(content, "test.csv", "application/csv");
     }
 
-    @Test
-    public void test_testTextFileResult() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testTextFileResult");
-
-	    Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
-	    Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
-
-	    try (BOMInputStream bis = new BOMInputStream(new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()))) {
-		String content = IOUtils.toString(bis, StandardCharsets.UTF_8.name());
-		Assertions.assertEquals("item1, item2, item3", content);
-	    }
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public ActionResult testTextFileResult_ISO_8859_1() throws Exception {
+      String content = "item1, item2, item3";
+      return new TextFileResult(content, "test.csv", "application/csv", StandardCharsets.ISO_8859_1.name());
     }
-
-    @Test
-    public void test_testTextFileResult_ISO_8859_1() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testTextFileResult_ISO_8859_1");
-
-	    Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
-	    Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
-
-	    try (BOMInputStream bis = new BOMInputStream(new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()))) {
-		String content = IOUtils.toString(bis, StandardCharsets.ISO_8859_1.name());
-		Assertions.assertEquals("item1, item2, item3", content);
-	    }
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult testTextFileResult() throws Exception {
-	    String content = "item1, item2, item3";
-	    return new TextFileResult(content, "test.csv", "application/csv");
-	}
-
-	@HttpGet
-	public ActionResult testTextFileResult_ISO_8859_1() throws Exception {
-	    String content = "item1, item2, item3";
-	    return new TextFileResult(content, "test.csv", "application/csv", StandardCharsets.ISO_8859_1.name());
-	}
-    }
+  }
 }

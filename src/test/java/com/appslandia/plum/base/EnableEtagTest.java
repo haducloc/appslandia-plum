@@ -34,98 +34,99 @@ import com.appslandia.plum.mocks.MockHttpServletResponse;
  */
 public class EnableEtagTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(DocumentController.class, DocumentController.class);
+  @Override
+  protected void initialize() {
+    container.register(DocumentController.class, DocumentController.class);
+  }
+
+  private String initEtag() throws Exception {
+    MockHttpServletRequest request = container.createRequest("GET",
+        "http://localhost/app/documentController/document/1");
+    MockHttpServletResponse response = container.createResponse();
+    execute(request, response);
+    return Asserts.notNull(response.getHeader("ETag"));
+  }
+
+  @Test
+  public void test_document() {
+    try {
+      executeCurrent("GET", "http://localhost/app/documentController/document/1");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertNotNull(getCurrentResponse().getHeader("Content-Length"));
+      Assertions.assertNotNull(getCurrentResponse().getHeader("ETag"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    private String initEtag() throws Exception {
-	MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/documentController/document/1");
-	MockHttpServletResponse response = container.createResponse();
-	execute(request, response);
-	return Asserts.notNull(response.getHeader("ETag"));
+  @Test
+  public void test_document_HEAD() {
+    try {
+      executeCurrent("HEAD", "http://localhost/app/documentController/document/1");
+
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+      Assertions.assertNotNull(getCurrentResponse().getHeader("Content-Length"));
+      Assertions.assertNotNull(getCurrentResponse().getHeader("ETag"));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_document() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/documentController/document/1");
+  @Test
+  public void test_document_notModified() {
+    try {
+      String ifNoneMatch = initEtag();
+      getCurrentRequest().setHeader("If-None-Match", ifNoneMatch);
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    Assertions.assertNotNull(getCurrentResponse().getHeader("Content-Length"));
-	    Assertions.assertNotNull(getCurrentResponse().getHeader("ETag"));
+      executeCurrent("GET", "http://localhost/app/documentController/document/1");
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      Assertions.assertEquals(304, getCurrentResponse().getStatus());
+      String etag = getCurrentResponse().getHeader("ETag");
+      Assertions.assertEquals(etag, ifNoneMatch);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_document_HEAD() {
-	try {
-	    executeCurrent("HEAD", "http://localhost/app/documentController/document/1");
+  @Test
+  public void test_document_notModified_HEAD() {
+    try {
+      String ifNoneMatch = initEtag();
+      getCurrentRequest().setHeader("If-None-Match", ifNoneMatch);
 
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-	    Assertions.assertNotNull(getCurrentResponse().getHeader("Content-Length"));
-	    Assertions.assertNotNull(getCurrentResponse().getHeader("ETag"));
+      executeCurrent("HEAD", "http://localhost/app/documentController/document/1");
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      Assertions.assertEquals(304, getCurrentResponse().getStatus());
+      String etag = getCurrentResponse().getHeader("ETag");
+      Assertions.assertEquals(etag, ifNoneMatch);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_document_notModified() {
-	try {
-	    String ifNoneMatch = initEtag();
-	    getCurrentRequest().setHeader("If-None-Match", ifNoneMatch);
+  @Controller("documentController")
+  public static class DocumentController {
 
-	    executeCurrent("GET", "http://localhost/app/documentController/document/1");
-
-	    Assertions.assertEquals(304, getCurrentResponse().getStatus());
-	    String etag = getCurrentResponse().getHeader("ETag");
-	    Assertions.assertEquals(etag, ifNoneMatch);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @PathParams("/{id}")
+    @EnableEtag
+    public Document document(int id) throws Exception {
+      Document doc = new Document();
+      doc.id = id;
+      doc.name = "Document-" + id;
+      doc.content = "Content-" + id;
+      return doc;
     }
+  }
 
-    @Test
-    public void test_document_notModified_HEAD() {
-	try {
-	    String ifNoneMatch = initEtag();
-	    getCurrentRequest().setHeader("If-None-Match", ifNoneMatch);
-
-	    executeCurrent("HEAD", "http://localhost/app/documentController/document/1");
-
-	    Assertions.assertEquals(304, getCurrentResponse().getStatus());
-	    String etag = getCurrentResponse().getHeader("ETag");
-	    Assertions.assertEquals(etag, ifNoneMatch);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("documentController")
-    public static class DocumentController {
-
-	@HttpGet
-	@PathParams("/{id}")
-	@EnableEtag
-	public Document document(int id) throws Exception {
-	    Document doc = new Document();
-	    doc.id = id;
-	    doc.name = "Document-" + id;
-	    doc.content = "Content-" + id;
-	    return doc;
-	}
-    }
-
-    static class Document {
-	int id;
-	String name;
-	String content;
-    }
+  static class Document {
+    int id;
+    String name;
+    String content;
+  }
 }

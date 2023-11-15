@@ -35,73 +35,73 @@ import jakarta.servlet.http.HttpSession;
  */
 public abstract class SessionCaptchaManager extends SimpleCaptchaManager {
 
-    public static final String SESSION_ATTRIBUTE_CAPTCHA_CACHE = "captchaCache";
+  public static final String SESSION_ATTRIBUTE_CAPTCHA_CACHE = "captchaCache";
 
-    public static final int DEFAULT_CACHE_SIZE = 3;
-    public static final String CONFIG_CACHE_SIZE = SessionCaptchaManager.class.getName() + ".cache_size";
+  public static final int DEFAULT_CACHE_SIZE = 3;
+  public static final String CONFIG_CACHE_SIZE = SessionCaptchaManager.class.getName() + ".cache_size";
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    protected int getCacheSize() {
-	return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+  protected int getCacheSize() {
+    return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+  }
+
+  @Override
+  protected Object parseCaptchaData(HttpServletRequest request, String captchaId) {
+    return captchaId;
+  }
+
+  @Override
+  protected Object saveCaptcha(HttpServletRequest request, String captchaId, String captchaWords) {
+    HttpSession session = request.getSession();
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE));
+      if (cache == null) {
+        cache = new LruCache<>(getCacheSize());
+      }
+      cache.put(captchaId, captchaWords);
+      session.setAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE, cache);
+      return captchaId;
     }
+  }
 
-    @Override
-    protected Object parseCaptchaData(HttpServletRequest request, String captchaId) {
-	return captchaId;
+  @Override
+  protected String doGetCaptchaWords(HttpServletRequest request, String captchaId) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return null;
     }
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE));
+      if (cache == null) {
+        return null;
+      }
+      return cache.get(captchaId);
+    }
+  }
 
-    @Override
-    protected Object saveCaptcha(HttpServletRequest request, String captchaId, String captchaWords) {
-	HttpSession session = request.getSession();
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE));
-	    if (cache == null) {
-		cache = new LruCache<>(getCacheSize());
-	    }
-	    cache.put(captchaId, captchaWords);
-	    session.setAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE, cache);
-	    return captchaId;
-	}
+  @Override
+  protected boolean doVerifyCaptcha(HttpServletRequest request, String captchaId, String captchaWords) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return false;
     }
-
-    @Override
-    protected String doGetCaptchaWords(HttpServletRequest request, String captchaId) {
-	HttpSession session = request.getSession(false);
-	if (session == null) {
-	    return null;
-	}
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE));
-	    if (cache == null) {
-		return null;
-	    }
-	    return cache.get(captchaId);
-	}
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE));
+      if (cache == null) {
+        return false;
+      }
+      String words = cache.get(captchaId);
+      if (words == null) {
+        return false;
+      }
+      boolean hasCaptcha = captchaWords.equalsIgnoreCase(words);
+      if (hasCaptcha) {
+        cache.remove(captchaId);
+        session.setAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE, cache);
+      }
+      return hasCaptcha;
     }
-
-    @Override
-    protected boolean doVerifyCaptcha(HttpServletRequest request, String captchaId, String captchaWords) {
-	HttpSession session = request.getSession(false);
-	if (session == null) {
-	    return false;
-	}
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE));
-	    if (cache == null) {
-		return false;
-	    }
-	    String words = cache.get(captchaId);
-	    if (words == null) {
-		return false;
-	    }
-	    boolean hasCaptcha = captchaWords.equalsIgnoreCase(words);
-	    if (hasCaptcha) {
-		cache.remove(captchaId);
-		session.setAttribute(SESSION_ATTRIBUTE_CAPTCHA_CACHE, cache);
-	    }
-	    return hasCaptcha;
-	}
-    }
+  }
 }

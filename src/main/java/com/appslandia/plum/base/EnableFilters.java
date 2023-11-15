@@ -36,5 +36,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EnableFilters {
 
-    String[] value();
+  String[] value();
 }

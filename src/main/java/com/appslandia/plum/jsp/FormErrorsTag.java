@@ -48,134 +48,136 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "errors", dynamicAttributes = false, bodyContent = "scriptless")
 public class FormErrorsTag extends TagBase {
 
-    protected String form;
-    protected String fieldOrders;
-    protected boolean includeFields = true;
+  protected String form;
+  protected String fieldOrders;
+  protected boolean includeFields = true;
 
-    protected String listClass;
-    protected String itemClass;
+  protected String listClass;
+  protected String itemClass;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	boolean hasErrors = false;
-	if (this.includeFields) {
-	    hasErrors = Objects.equals(this.form, this.getModelState().getForm()) && !this.getModelState().isValid();
-	} else {
-	    hasErrors = Objects.equals(this.form, this.getModelState().getForm())
-		    && !(this.getModelState().isValid(ModelState.MODEL_FIELD) && this.getModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
-	}
-
-	if (hasErrors) {
-	    JspWriter out = this.pageContext.getOut();
-
-	    out.write("<ul");
-	    if (this.listClass != null) {
-		HtmlUtils.escAttribute(out, "class", this.listClass);
-	    }
-	    out.write(">");
-
-	    // Write field errors
-	    if (this.includeFields) {
-		List<Entry<String, List<Message>>> errors = new ArrayList<>(this.getModelState().getErrors().entrySet());
-		if (this.fieldOrders != null) {
-		    Collections.sort(errors, toFieldComparator(this.fieldOrders));
-		}
-
-		for (Entry<String, List<Message>> fieldError : errors) {
-		    if (!fieldError.getKey().equals(ModelState.MODEL_FIELD) && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
-			this.writeMessages(out, fieldError.getValue());
-		    }
-		}
-	    }
-
-	    // Model errors
-	    List<Message> errors = this.getModelState().getErrors().get(ModelState.MODEL_FIELD);
-	    if (errors != null) {
-		this.writeMessages(out, errors);
-	    }
-
-	    // CSRF
-	    errors = this.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
-	    if (errors != null) {
-		this.writeMessages(out, errors);
-	    }
-
-	    out.newLine();
-	    out.write("</ul>");
-	}
+  @Override
+  public void doTag() throws JspException, IOException {
+    boolean hasErrors = false;
+    if (this.includeFields) {
+      hasErrors = Objects.equals(this.form, this.getModelState().getForm()) && !this.getModelState().isValid();
+    } else {
+      hasErrors = Objects.equals(this.form, this.getModelState().getForm())
+          && !(this.getModelState().isValid(ModelState.MODEL_FIELD)
+              && this.getModelState().isValid(SimpleCsrfManager.PARAM_CSRF_ID));
     }
 
-    protected void writeMessages(JspWriter out, List<Message> messages) throws IOException {
-	for (Message message : messages) {
-	    out.newLine();
+    if (hasErrors) {
+      JspWriter out = this.pageContext.getOut();
 
-	    out.write("<li");
-	    if (this.itemClass == null) {
-		HtmlUtils.escAttribute(out, "class", "l-fi-error");
-	    } else {
-		out.write(" class=\"");
-		out.write(this.itemClass);
-		out.write(" l-fi-error\"");
-	    }
-	    out.write(">");
+      out.write("<ul");
+      if (this.listClass != null) {
+        HtmlUtils.escAttribute(out, "class", this.listClass);
+      }
+      out.write(">");
 
-	    if (message.isEscXml()) {
-		XmlEscaper.escapeXml(out, message.getText());
-	    } else {
-		out.write(message.getText());
-	    }
-	    out.write("</li>");
-	}
+      // Write field errors
+      if (this.includeFields) {
+        List<Entry<String, List<Message>>> errors = new ArrayList<>(this.getModelState().getErrors().entrySet());
+        if (this.fieldOrders != null) {
+          Collections.sort(errors, toFieldComparator(this.fieldOrders));
+        }
+
+        for (Entry<String, List<Message>> fieldError : errors) {
+          if (!fieldError.getKey().equals(ModelState.MODEL_FIELD)
+              && !fieldError.getKey().equals(SimpleCsrfManager.PARAM_CSRF_ID)) {
+            this.writeMessages(out, fieldError.getValue());
+          }
+        }
+      }
+
+      // Model errors
+      List<Message> errors = this.getModelState().getErrors().get(ModelState.MODEL_FIELD);
+      if (errors != null) {
+        this.writeMessages(out, errors);
+      }
+
+      // CSRF
+      errors = this.getModelState().getErrors().get(SimpleCsrfManager.PARAM_CSRF_ID);
+      if (errors != null) {
+        this.writeMessages(out, errors);
+      }
+
+      out.newLine();
+      out.write("</ul>");
     }
+  }
 
-    public static Comparator<Map.Entry<String, List<Message>>> toFieldComparator(String fieldOrders) {
-	final Map<String, Integer> posMap = new HashMap<>();
-	int pos = 0;
-	String[] fieldNames = SplitUtils.splitByComma(fieldOrders);
+  protected void writeMessages(JspWriter out, List<Message> messages) throws IOException {
+    for (Message message : messages) {
+      out.newLine();
 
-	for (String fieldName : fieldNames) {
-	    posMap.put(fieldName, ++pos);
-	}
-	return new Comparator<Map.Entry<String, List<Message>>>() {
+      out.write("<li");
+      if (this.itemClass == null) {
+        HtmlUtils.escAttribute(out, "class", "l-fi-error");
+      } else {
+        out.write(" class=\"");
+        out.write(this.itemClass);
+        out.write(" l-fi-error\"");
+      }
+      out.write(">");
 
-	    @Override
-	    public int compare(Entry<String, List<Message>> f1, Entry<String, List<Message>> f2) {
-		Integer p1 = posMap.get(f1.getKey());
-		Integer p2 = posMap.get(f2.getKey());
-
-		if (p1 == null) {
-		    p1 = Integer.MAX_VALUE;
-		}
-		if (p2 == null) {
-		    p2 = Integer.MAX_VALUE;
-		}
-		return p1.compareTo(p2);
-	    }
-	};
+      if (message.isEscXml()) {
+        XmlEscaper.escapeXml(out, message.getText());
+      } else {
+        out.write(message.getText());
+      }
+      out.write("</li>");
     }
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setForm(String form) {
-	this.form = form;
-    }
+  public static Comparator<Map.Entry<String, List<Message>>> toFieldComparator(String fieldOrders) {
+    final Map<String, Integer> posMap = new HashMap<>();
+    int pos = 0;
+    String[] fieldNames = SplitUtils.splitByComma(fieldOrders);
 
-    @Attribute(required = false, rtexprvalue = false, description = "username,password,etc.")
-    public void setFieldOrders(String fieldOrders) {
-	this.fieldOrders = fieldOrders;
+    for (String fieldName : fieldNames) {
+      posMap.put(fieldName, ++pos);
     }
+    return new Comparator<Map.Entry<String, List<Message>>>() {
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setIncludeFields(boolean includeFields) {
-	this.includeFields = includeFields;
-    }
+      @Override
+      public int compare(Entry<String, List<Message>> f1, Entry<String, List<Message>> f2) {
+        Integer p1 = posMap.get(f1.getKey());
+        Integer p2 = posMap.get(f2.getKey());
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setListClass(String listClass) {
-	this.listClass = listClass;
-    }
+        if (p1 == null) {
+          p1 = Integer.MAX_VALUE;
+        }
+        if (p2 == null) {
+          p2 = Integer.MAX_VALUE;
+        }
+        return p1.compareTo(p2);
+      }
+    };
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setItemClass(String itemClass) {
-	this.itemClass = itemClass;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setForm(String form) {
+    this.form = form;
+  }
+
+  @Attribute(required = false, rtexprvalue = false, description = "username,password,etc.")
+  public void setFieldOrders(String fieldOrders) {
+    this.fieldOrders = fieldOrders;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setIncludeFields(boolean includeFields) {
+    this.includeFields = includeFields;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setListClass(String listClass) {
+    this.listClass = listClass;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setItemClass(String itemClass) {
+    this.itemClass = itemClass;
+  }
 }

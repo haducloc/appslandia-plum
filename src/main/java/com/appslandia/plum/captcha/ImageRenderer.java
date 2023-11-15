@@ -29,5 +29,5 @@ import java.awt.image.BufferedImage;
  */
 public interface ImageRenderer {
 
-    void render(BufferedImage img, int width, int height);
+  void render(BufferedImage img, int width, int height);
 }

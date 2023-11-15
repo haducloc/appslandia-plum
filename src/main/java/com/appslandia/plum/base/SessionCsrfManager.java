@@ -35,55 +35,55 @@ import jakarta.servlet.http.HttpSession;
  */
 public abstract class SessionCsrfManager extends SimpleCsrfManager {
 
-    public static final String SESSION_ATTRIBUTE_CSRF_CACHE = "csrfCache";
+  public static final String SESSION_ATTRIBUTE_CSRF_CACHE = "csrfCache";
 
-    public static final int DEFAULT_CACHE_SIZE = 3;
-    public static final String CONFIG_CACHE_SIZE = SessionCsrfManager.class.getName() + ".cache_size";
+  public static final int DEFAULT_CACHE_SIZE = 3;
+  public static final String CONFIG_CACHE_SIZE = SessionCsrfManager.class.getName() + ".cache_size";
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    protected int getCacheSize() {
-	return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+  protected int getCacheSize() {
+    return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+  }
+
+  @Override
+  protected Object parseCsrfData(HttpServletRequest request, String csrfId) {
+    return csrfId;
+  }
+
+  @Override
+  protected Object saveCsrf(HttpServletRequest request, String csrfId) {
+    HttpSession session = request.getSession();
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CSRF_CACHE));
+      if (cache == null) {
+        cache = new LruCache<>(getCacheSize());
+      }
+      cache.put(csrfId, null);
+      session.setAttribute(SESSION_ATTRIBUTE_CSRF_CACHE, cache);
+      return csrfId;
     }
+  }
 
-    @Override
-    protected Object parseCsrfData(HttpServletRequest request, String csrfId) {
-	return csrfId;
+  @Override
+  public boolean verifyCsrf(HttpServletRequest request, String csrfId, boolean remove) {
+    HttpSession session = request.getSession(false);
+    if (session == null) {
+      return false;
     }
+    synchronized (ServletUtils.getMutex(session)) {
+      LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CSRF_CACHE));
+      if (cache == null) {
+        return false;
+      }
+      boolean hasCsrf = cache.contains(csrfId);
 
-    @Override
-    protected Object saveCsrf(HttpServletRequest request, String csrfId) {
-	HttpSession session = request.getSession();
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CSRF_CACHE));
-	    if (cache == null) {
-		cache = new LruCache<>(getCacheSize());
-	    }
-	    cache.put(csrfId, null);
-	    session.setAttribute(SESSION_ATTRIBUTE_CSRF_CACHE, cache);
-	    return csrfId;
-	}
+      if (hasCsrf && remove) {
+        cache.remove(csrfId);
+        session.setAttribute(SESSION_ATTRIBUTE_CSRF_CACHE, cache);
+      }
+      return hasCsrf;
     }
-
-    @Override
-    public boolean verifyCsrf(HttpServletRequest request, String csrfId, boolean remove) {
-	HttpSession session = request.getSession(false);
-	if (session == null) {
-	    return false;
-	}
-	synchronized (ServletUtils.getMutex(session)) {
-	    LruCache<String, String> cache = ObjectUtils.cast(session.getAttribute(SESSION_ATTRIBUTE_CSRF_CACHE));
-	    if (cache == null) {
-		return false;
-	    }
-	    boolean hasCsrf = cache.contains(csrfId);
-
-	    if (hasCsrf && remove) {
-		cache.remove(csrfId);
-		session.setAttribute(SESSION_ATTRIBUTE_CSRF_CACHE, cache);
-	    }
-	    return hasCsrf;
-	}
-    }
+  }
 }

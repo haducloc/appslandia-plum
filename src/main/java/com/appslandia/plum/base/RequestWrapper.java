@@ -41,79 +41,79 @@ import jakarta.servlet.http.HttpSession;
  */
 public class RequestWrapper extends HttpServletRequestWrapper {
 
-    final Map<String, String[]> mergedParamMap;
+  final Map<String, String[]> mergedParamMap;
 
-    public RequestWrapper(HttpServletRequest request, Map<String, String> pathParamMap) {
-	super(request);
-	this.mergedParamMap = !pathParamMap.isEmpty() ? this.mergeParameters(pathParamMap) : null;
+  public RequestWrapper(HttpServletRequest request, Map<String, String> pathParamMap) {
+    super(request);
+    this.mergedParamMap = !pathParamMap.isEmpty() ? this.mergeParameters(pathParamMap) : null;
+  }
+
+  @Override
+  public HttpSession getSession() {
+    return getSession(true);
+  }
+
+  @Override
+  public HttpSession getSession(boolean create) {
+    AppConfig config = ServletUtils.getAppScoped(this.getServletContext(), AppConfig.class);
+    Asserts.isTrue(config.isEnableSession(), "Http session is disabled.");
+
+    return super.getSession(create);
+  }
+
+  @Override
+  public String getParameter(String name) {
+    if (this.mergedParamMap == null) {
+      return super.getParameter(name);
     }
+    String[] values = this.mergedParamMap.get(name);
+    return (values != null) ? values[0] : null;
+  }
 
-    @Override
-    public HttpSession getSession() {
-	return getSession(true);
+  @Override
+  public String[] getParameterValues(String name) {
+    if (this.mergedParamMap == null) {
+      return super.getParameterValues(name);
     }
+    String[] values = this.mergedParamMap.get(name);
+    return (values != null) ? ArrayUtils.copy(values) : null;
+  }
 
-    @Override
-    public HttpSession getSession(boolean create) {
-	AppConfig config = ServletUtils.getAppScoped(this.getServletContext(), AppConfig.class);
-	Asserts.isTrue(config.isEnableSession(), "Http session is disabled.");
-
-	return super.getSession(create);
+  @Override
+  public Map<String, String[]> getParameterMap() {
+    if (this.mergedParamMap == null) {
+      return super.getParameterMap();
     }
+    return this.mergedParamMap;
+  }
 
-    @Override
-    public String getParameter(String name) {
-	if (this.mergedParamMap == null) {
-	    return super.getParameter(name);
-	}
-	String[] values = this.mergedParamMap.get(name);
-	return (values != null) ? values[0] : null;
+  @Override
+  public Enumeration<String> getParameterNames() {
+    if (this.mergedParamMap == null) {
+      return super.getParameterNames();
     }
+    return Collections.enumeration(this.mergedParamMap.keySet());
+  }
 
-    @Override
-    public String[] getParameterValues(String name) {
-	if (this.mergedParamMap == null) {
-	    return super.getParameterValues(name);
-	}
-	String[] values = this.mergedParamMap.get(name);
-	return (values != null) ? ArrayUtils.copy(values) : null;
+  protected Map<String, String[]> mergeParameters(Map<String, String> pathParamMap) {
+    final Map<String, String[]> merged = new HashMap<>();
+
+    for (Entry<String, String> param : pathParamMap.entrySet()) {
+      merged.put(param.getKey(), new String[] { param.getValue() });
     }
-
-    @Override
-    public Map<String, String[]> getParameterMap() {
-	if (this.mergedParamMap == null) {
-	    return super.getParameterMap();
-	}
-	return this.mergedParamMap;
+    for (Entry<String, String[]> param : this.getRequest().getParameterMap().entrySet()) {
+      String[] values = merged.get(param.getKey());
+      if (values == null) {
+        merged.put(param.getKey(), param.getValue());
+      } else {
+        merged.put(param.getKey(), ArrayUtils.append(values, param.getValue()));
+      }
     }
+    return Collections.unmodifiableMap(merged);
+  }
 
-    @Override
-    public Enumeration<String> getParameterNames() {
-	if (this.mergedParamMap == null) {
-	    return super.getParameterNames();
-	}
-	return Collections.enumeration(this.mergedParamMap.keySet());
-    }
-
-    protected Map<String, String[]> mergeParameters(Map<String, String> pathParamMap) {
-	final Map<String, String[]> merged = new HashMap<>();
-
-	for (Entry<String, String> param : pathParamMap.entrySet()) {
-	    merged.put(param.getKey(), new String[] { param.getValue() });
-	}
-	for (Entry<String, String[]> param : this.getRequest().getParameterMap().entrySet()) {
-	    String[] values = merged.get(param.getKey());
-	    if (values == null) {
-		merged.put(param.getKey(), param.getValue());
-	    } else {
-		merged.put(param.getKey(), ArrayUtils.append(values, param.getValue()));
-	    }
-	}
-	return Collections.unmodifiableMap(merged);
-    }
-
-    @Override
-    public String toString() {
-	return "[" + getClass().getSimpleName() + "] " + getRequest();
-    }
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + "] " + getRequest();
+  }
 }

@@ -36,15 +36,15 @@ import jakarta.enterprise.inject.Produces;
 @ApplicationScoped
 public class DefaultAppLoggerManagerFactory implements CDIFactory<AppLoggerManager> {
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public AppLoggerManager produce() {
-	return new JulAppLoggerManager();
-    }
+  @Produces
+  @ApplicationScoped
+  @Override
+  public AppLoggerManager produce() {
+    return new JulAppLoggerManager();
+  }
 
-    @Override
-    public void dispose(@Disposes AppLoggerManager impl) {
-	impl.close();
-    }
+  @Override
+  public void dispose(@Disposes AppLoggerManager impl) {
+    impl.close();
+  }
 }

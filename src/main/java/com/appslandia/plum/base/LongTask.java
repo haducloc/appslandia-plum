@@ -36,82 +36,82 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 public class LongTask extends EntityBase {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String IN_PROGRESS = "in_progress";
-    public static final String DONE_SUCCESS = "done_success";
-    public static final String DONE_FAILURE = "done_failure";
+  public static final String IN_PROGRESS = "in_progress";
+  public static final String DONE_SUCCESS = "done_success";
+  public static final String DONE_FAILURE = "done_failure";
 
-    @Id
-    @NotNull
-    @Column(unique = true, updatable = false)
-    private String series;
+  @Id
+  @NotNull
+  @Column(unique = true, updatable = false)
+  private String series;
 
-    @NotNull
-    private String title;
+  @NotNull
+  private String title;
 
-    @NotNull
-    private String status;
+  @NotNull
+  private String status;
 
-    @NotNull
-    private String message;
+  @NotNull
+  private String message;
 
-    @NotNull
-    @Column(updatable = false)
-    private Long createdAt;
+  @NotNull
+  @Column(updatable = false)
+  private Long createdAt;
 
-    private Long doneAt;
+  private Long doneAt;
 
-    @Override
-    public Serializable getPk() {
-	return this.series;
-    }
+  @Override
+  public Serializable getPk() {
+    return this.series;
+  }
 
-    public String getSeries() {
-	return this.series;
-    }
+  public String getSeries() {
+    return this.series;
+  }
 
-    public void setSeries(String series) {
-	this.series = series;
-    }
+  public void setSeries(String series) {
+    this.series = series;
+  }
 
-    public String getTitle() {
-	return this.title;
-    }
+  public String getTitle() {
+    return this.title;
+  }
 
-    public void setTitle(String title) {
-	this.title = title;
-    }
+  public void setTitle(String title) {
+    this.title = title;
+  }
 
-    public String getStatus() {
-	return this.status;
-    }
+  public String getStatus() {
+    return this.status;
+  }
 
-    public void setStatus(String status) {
-	this.status = status;
-    }
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-    public String getMessage() {
-	return this.message;
-    }
+  public String getMessage() {
+    return this.message;
+  }
 
-    public void setMessage(String message) {
-	this.message = message;
-    }
+  public void setMessage(String message) {
+    this.message = message;
+  }
 
-    public Long getCreatedAt() {
-	return this.createdAt;
-    }
+  public Long getCreatedAt() {
+    return this.createdAt;
+  }
 
-    public void setCreatedAt(Long createdAt) {
-	this.createdAt = createdAt;
-    }
+  public void setCreatedAt(Long createdAt) {
+    this.createdAt = createdAt;
+  }
 
-    public Long getDoneAt() {
-	return this.doneAt;
-    }
+  public Long getDoneAt() {
+    return this.doneAt;
+  }
 
-    public void setDoneAt(Long doneAt) {
-	this.doneAt = doneAt;
-    }
+  public void setDoneAt(Long doneAt) {
+    this.doneAt = doneAt;
+  }
 }

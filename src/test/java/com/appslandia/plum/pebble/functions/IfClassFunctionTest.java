@@ -39,63 +39,65 @@ import com.appslandia.plum.pebble.PebbleUtils;
  */
 public class IfClassFunctionTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+  protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+  }
+
+  @Test
+  public void test() {
+    String templateContent = """
+        {{ ifClass(test=false, value='active') }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals(TagUtils.CSS_NOOP, content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
     }
+  }
 
-    @Test
-    public void test() {
-	String templateContent = """
-		{{ ifClass(test=false, value='active') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+  @Test
+  public void test_true() {
+    String templateContent = """
+        {{ ifClass(test=true, value='active') }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null, getCurrentRequestContext().getLanguage().getLocale());
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null,
+          getCurrentRequestContext().getLanguage().getLocale());
 
-	    String content = out.toString();
-	    Assertions.assertEquals(TagUtils.CSS_NOOP, content);
+      String content = out.toString();
+      Assertions.assertEquals("active", content);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex);
     }
+  }
 
-    @Test
-    public void test_true() {
-	String templateContent = """
-		{{ ifClass(test=true, value='active') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+  @Controller("testController")
+  public static class TestController {
 
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("active", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    @HttpGet
+    public ActionResult index() throws Exception {
+      return ActionResult.EMPTY;
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult index() throws Exception {
-	    return ActionResult.EMPTY;
-	}
-    }
+  }
 }

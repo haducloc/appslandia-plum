@@ -44,60 +44,60 @@ import jakarta.servlet.jsp.tagext.SimpleTag;
  */
 public abstract class TagBase implements SimpleTag {
 
-    protected JspTag parent;
-    protected PageContext pageContext;
-    protected JspFragment body;
+  protected JspTag parent;
+  protected PageContext pageContext;
+  protected JspFragment body;
 
-    protected String evalJspBody() throws JspException, IOException {
-	if (this.body != null) {
-	    StringWriter out = new StringWriter();
-	    this.body.invoke(out);
-	    return out.toString();
-	}
-	return StringUtils.EMPTY_STRING;
+  protected String evalJspBody() throws JspException, IOException {
+    if (this.body != null) {
+      StringWriter out = new StringWriter();
+      this.body.invoke(out);
+      return out.toString();
     }
+    return StringUtils.EMPTY_STRING;
+  }
 
-    public Object evaluate(String expression) {
-	return ExpressionEvaluator.getDefault().getValue(this.pageContext, expression);
-    }
+  public Object evaluate(String expression) {
+    return ExpressionEvaluator.getDefault().getValue(this.pageContext, expression);
+  }
 
-    public PageContext getPageContext() {
-	return this.pageContext;
-    }
+  public PageContext getPageContext() {
+    return this.pageContext;
+  }
 
-    public HttpServletRequest getRequest() {
-	return (HttpServletRequest) this.pageContext.getRequest();
-    }
+  public HttpServletRequest getRequest() {
+    return (HttpServletRequest) this.pageContext.getRequest();
+  }
 
-    public HttpServletResponse getResponse() {
-	return (HttpServletResponse) this.pageContext.getResponse();
-    }
+  public HttpServletResponse getResponse() {
+    return (HttpServletResponse) this.pageContext.getResponse();
+  }
 
-    public RequestContext getRequestContext() {
-	return ServletUtils.getRequestContext((HttpServletRequest) this.pageContext.getRequest());
-    }
+  public RequestContext getRequestContext() {
+    return ServletUtils.getRequestContext((HttpServletRequest) this.pageContext.getRequest());
+  }
 
-    public ModelState getModelState() {
-	return ServletUtils.getModelState((HttpServletRequest) this.pageContext.getRequest());
-    }
+  public ModelState getModelState() {
+    return ServletUtils.getModelState((HttpServletRequest) this.pageContext.getRequest());
+  }
 
-    @Override
-    public void setParent(JspTag parent) {
-	this.parent = parent;
-    }
+  @Override
+  public void setParent(JspTag parent) {
+    this.parent = parent;
+  }
 
-    @Override
-    public JspTag getParent() {
-	return this.parent;
-    }
+  @Override
+  public JspTag getParent() {
+    return this.parent;
+  }
 
-    @Override
-    public void setJspContext(JspContext pc) {
-	this.pageContext = (PageContext) pc;
-    }
+  @Override
+  public void setJspContext(JspContext pc) {
+    this.pageContext = (PageContext) pc;
+  }
 
-    @Override
-    public void setJspBody(JspFragment body) {
-	this.body = body;
-    }
+  @Override
+  public void setJspBody(JspFragment body) {
+    this.body = body;
+  }
 }

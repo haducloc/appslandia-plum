@@ -33,92 +33,92 @@ import com.appslandia.plum.utils.ServletUtils;
  */
 public class DefaultValueBindingTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testAction() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      String userLanguage = (String) getCurrentRequest().getAttribute("language");
+      Assertions.assertEquals("en", userLanguage);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testAction_language() {
+    try {
+      getCurrentRequest().addParameter("language", "vi");
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      String userLanguage = (String) getCurrentRequest().getAttribute("language");
+      Assertions.assertEquals("vi", userLanguage);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userModel);
+      Assertions.assertEquals("en", userModel.getLanguage());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testUserModel_language() {
+    try {
+      getCurrentRequest().addParameter("language", "vi");
+      executeCurrent("POST", "http://localhost/app/testController/testUserModel");
+
+      UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
+      Assertions.assertNotNull(userModel);
+      Assertions.assertEquals("vi", userModel.getLanguage());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void testAction(@Bind(defaultValue = "en") String language, RequestAccessor request) throws Exception {
+      request.store("language", language);
     }
 
-    @Test
-    public void test_testAction() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+    @HttpPost
+    public void testUserModel(@Model UserModel model, RequestAccessor request) throws Exception {
+      request.storeModel(model);
+    }
+  }
 
-	    String userLanguage = (String) getCurrentRequest().getAttribute("language");
-	    Assertions.assertEquals("en", userLanguage);
+  public static class UserModel {
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @Bind(defaultValue = "en")
+    protected String language;
+
+    public String getLanguage() {
+      return language;
     }
 
-    @Test
-    public void test_testAction_language() {
-	try {
-	    getCurrentRequest().addParameter("language", "vi");
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
-
-	    String userLanguage = (String) getCurrentRequest().getAttribute("language");
-	    Assertions.assertEquals("vi", userLanguage);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public void setLanguage(String language) {
+      this.language = language;
     }
-
-    @Test
-    public void test_testUserModel() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userModel);
-	    Assertions.assertEquals("en", userModel.getLanguage());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_testUserModel_language() {
-	try {
-	    getCurrentRequest().addParameter("language", "vi");
-	    executeCurrent("POST", "http://localhost/app/testController/testUserModel");
-
-	    UserModel userModel = (UserModel) getCurrentRequest().getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
-	    Assertions.assertNotNull(userModel);
-	    Assertions.assertEquals("vi", userModel.getLanguage());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void testAction(@Bind(defaultValue = "en") String language, RequestAccessor request) throws Exception {
-	    request.store("language", language);
-	}
-
-	@HttpPost
-	public void testUserModel(@Model UserModel model, RequestAccessor request) throws Exception {
-	    request.storeModel(model);
-	}
-    }
-
-    public static class UserModel {
-
-	@Bind(defaultValue = "en")
-	protected String language;
-
-	public String getLanguage() {
-	    return language;
-	}
-
-	public void setLanguage(String language) {
-	    this.language = language;
-	}
-    }
+  }
 }

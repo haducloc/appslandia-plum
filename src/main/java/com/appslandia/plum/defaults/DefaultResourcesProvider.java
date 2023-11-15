@@ -37,13 +37,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultResourcesProvider extends PropertiesResourcesProvider {
 
-    @Override
-    protected String getResourcePath(String resourceName, String language) {
-	return STR.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, language);
-    }
+  @Override
+  protected String getResourcePath(String resourceName, String language) {
+    return STR.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, language);
+  }
 
-    @Override
-    protected void loadResources(Properties resources, BufferedReader br) throws IOException {
-	resources.load(br);
-    }
+  @Override
+  protected void loadResources(Properties resources, BufferedReader br) throws IOException {
+    resources.load(br);
+  }
 }

@@ -38,32 +38,32 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class DatalistFunction extends DynPebbleFunction {
 
-    @Override
-    public String getDescription() {
-	return "variables: items*, type, converter";
+  @Override
+  public String getDescription() {
+    return "variables: items*, type, converter";
+  }
+
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    List<Object> items = context.getRequiredArgument("items");
+    String type = context.getArgument("type");
+    String converter = context.getArgument("converter");
+
+    // localize
+    boolean localize = InputUtils.getLocalize(context.getRequest(), type);
+
+    StringWriter out = new StringWriter(items.size() * 80);
+
+    for (Object item : items) {
+      String codeValue = context.getRequestContext().format(item, converter, localize);
+
+      out.write(System.lineSeparator());
+      out.write("<option");
+      HtmlUtils.escAttribute(out, "value", codeValue);
+      out.write(">");
+      out.write("</option>");
     }
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	List<Object> items = context.getRequiredArgument("items");
-	String type = context.getArgument("type");
-	String converter = context.getArgument("converter");
-
-	// localize
-	boolean localize = InputUtils.getLocalize(context.getRequest(), type);
-
-	StringWriter out = new StringWriter(items.size() * 80);
-
-	for (Object item : items) {
-	    String codeValue = context.getRequestContext().format(item, converter, localize);
-
-	    out.write(System.lineSeparator());
-	    out.write("<option");
-	    HtmlUtils.escAttribute(out, "value", codeValue);
-	    out.write(">");
-	    out.write("</option>");
-	}
-
-	return new SafeString(out.toString());
-    }
+    return new SafeString(out.toString());
+  }
 }

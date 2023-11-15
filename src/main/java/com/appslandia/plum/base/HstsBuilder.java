@@ -31,23 +31,23 @@ import com.appslandia.common.utils.ValueUtils;
  */
 public class HstsBuilder extends HeaderBuilder {
 
-    public HstsBuilder() {
-	super("; ");
-    }
+  public HstsBuilder() {
+    super("; ");
+  }
 
-    public HstsBuilder preload() {
-	addValue("preload");
-	return this;
-    }
+  public HstsBuilder preload() {
+    addValue("preload");
+    return this;
+  }
 
-    public HstsBuilder includeSubDomains() {
-	addValue("includeSubDomains");
-	return this;
-    }
+  public HstsBuilder includeSubDomains() {
+    addValue("includeSubDomains");
+    return this;
+  }
 
-    public HstsBuilder maxAge(int maxAge, TimeUnit unit) {
-	long ageInSec = TimeUnit.SECONDS.convert(maxAge, unit);
-	addPair("max-age", Long.toString(ValueUtils.valueOrMin(ageInSec, 0)));
-	return this;
-    }
+  public HstsBuilder maxAge(int maxAge, TimeUnit unit) {
+    long ageInSec = TimeUnit.SECONDS.convert(maxAge, unit);
+    addPair("max-age", Long.toString(ValueUtils.valueOrMin(ageInSec, 0)));
+    return this;
+  }
 }

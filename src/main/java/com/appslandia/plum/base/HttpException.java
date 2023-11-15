@@ -26,52 +26,52 @@ package com.appslandia.plum.base;
  *
  */
 public class HttpException extends RuntimeException implements ProblemSupport {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    final Problem problem;
+  final Problem problem;
 
-    public HttpException(int status) {
-	super();
-	this.problem = new Problem().setStatus(status);
-    }
+  public HttpException(int status) {
+    super();
+    this.problem = new Problem().setStatus(status);
+  }
 
-    public HttpException(int status, String message) {
-	super(message);
-	this.problem = new Problem().setStatus(status).setTitle(message);
-    }
+  public HttpException(int status, String message) {
+    super(message);
+    this.problem = new Problem().setStatus(status).setTitle(message);
+  }
 
-    public HttpException(int status, String message, Throwable cause) {
-	super(message, cause);
-	this.problem = new Problem().setStatus(status).setTitle(message);
-    }
+  public HttpException(int status, String message, Throwable cause) {
+    super(message, cause);
+    this.problem = new Problem().setStatus(status).setTitle(message);
+  }
 
-    public HttpException(int status, Throwable cause) {
-	super(cause);
-	this.problem = new Problem().setStatus(status);
-    }
+  public HttpException(int status, Throwable cause) {
+    super(cause);
+    this.problem = new Problem().setStatus(status);
+  }
 
-    @Override
-    public Problem getProblem() {
-	return this.problem;
-    }
+  @Override
+  public Problem getProblem() {
+    return this.problem;
+  }
 
-    public HttpException setTitleKey(String titleKey) {
-	this.problem.setTitleKey(titleKey);
-	return this;
-    }
+  public HttpException setTitleKey(String titleKey) {
+    this.problem.setTitleKey(titleKey);
+    return this;
+  }
 
-    public HttpException setTitleKey(ResKey titleKey) {
-	this.problem.setTitleKey(titleKey);
-	return this;
-    }
+  public HttpException setTitleKey(ResKey titleKey) {
+    this.problem.setTitleKey(titleKey);
+    return this;
+  }
 
-    public HttpException setDetailKey(String detailKey) {
-	this.problem.setDetailKey(detailKey);
-	return this;
-    }
+  public HttpException setDetailKey(String detailKey) {
+    this.problem.setDetailKey(detailKey);
+    return this;
+  }
 
-    public HttpException setDetailKey(ResKey detailKey) {
-	this.problem.setDetailKey(detailKey);
-	return this;
-    }
+  public HttpException setDetailKey(ResKey detailKey) {
+    this.problem.setDetailKey(detailKey);
+    return this;
+  }
 }

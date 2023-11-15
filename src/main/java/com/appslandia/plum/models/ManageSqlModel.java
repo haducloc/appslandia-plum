@@ -40,116 +40,116 @@ import jakarta.validation.constraints.NotNull;
  */
 public class ManageSqlModel {
 
-    @NotNull
-    @ValidValues(ints = { RESULT_FORMAT_JSON, RESULT_FORMAT_CSV })
-    private Integer resultFormat;
+  @NotNull
+  @ValidValues(ints = { RESULT_FORMAT_JSON, RESULT_FORMAT_CSV })
+  private Integer resultFormat;
 
-    @NotNull
-    @ValidValues(ints = { SQL_TYPE_QUERY, SQL_TYPE_UPDATE })
-    private Integer sqlType;
+  @NotNull
+  @ValidValues(ints = { SQL_TYPE_QUERY, SQL_TYPE_UPDATE })
+  private Integer sqlType;
 
-    private boolean resultFile;
+  private boolean resultFile;
 
-    @NotNull
-    @MaxLength(20000)
-    private String sqlText;
+  @NotNull
+  @MaxLength(20000)
+  private String sqlText;
 
-    @NotBind
-    private List<SelectItem> resultFormats;
+  @NotBind
+  private List<SelectItem> resultFormats;
 
-    @NotBind
-    private List<SelectItem> sqlTypes;
+  @NotBind
+  private List<SelectItem> sqlTypes;
 
-    @NotBind
-    private String resultText;
+  @NotBind
+  private String resultText;
 
-    public boolean isQueryType() {
-	Asserts.notNull(this.sqlType);
-	return this.sqlType == SQL_TYPE_QUERY;
-    }
+  public boolean isQueryType() {
+    Asserts.notNull(this.sqlType);
+    return this.sqlType == SQL_TYPE_QUERY;
+  }
 
-    public boolean isJsonResult() {
-	Asserts.notNull(this.resultFormat);
-	return this.resultFormat == RESULT_FORMAT_JSON;
-    }
+  public boolean isJsonResult() {
+    Asserts.notNull(this.resultFormat);
+    return this.resultFormat == RESULT_FORMAT_JSON;
+  }
 
-    public Integer getResultFormat() {
-	return this.resultFormat;
-    }
+  public Integer getResultFormat() {
+    return this.resultFormat;
+  }
 
-    public void setResultFormat(Integer resultFormat) {
-	this.resultFormat = resultFormat;
-    }
+  public void setResultFormat(Integer resultFormat) {
+    this.resultFormat = resultFormat;
+  }
 
-    public Integer getSqlType() {
-	return this.sqlType;
-    }
+  public Integer getSqlType() {
+    return this.sqlType;
+  }
 
-    public void setSqlType(Integer sqlType) {
-	this.sqlType = sqlType;
-    }
+  public void setSqlType(Integer sqlType) {
+    this.sqlType = sqlType;
+  }
 
-    public boolean isResultFile() {
-	return this.resultFile;
-    }
+  public boolean isResultFile() {
+    return this.resultFile;
+  }
 
-    public void setResultFile(boolean resultFile) {
-	this.resultFile = resultFile;
-    }
+  public void setResultFile(boolean resultFile) {
+    this.resultFile = resultFile;
+  }
 
-    public String getSqlText() {
-	return this.sqlText;
-    }
+  public String getSqlText() {
+    return this.sqlText;
+  }
 
-    public void setSqlText(String sqlText) {
-	this.sqlText = sqlText;
-    }
+  public void setSqlText(String sqlText) {
+    this.sqlText = sqlText;
+  }
 
-    public List<SelectItem> getResultFormats() {
-	return this.resultFormats;
-    }
+  public List<SelectItem> getResultFormats() {
+    return this.resultFormats;
+  }
 
-    public void setResultFormats(List<SelectItem> resultFormats) {
-	this.resultFormats = resultFormats;
-    }
+  public void setResultFormats(List<SelectItem> resultFormats) {
+    this.resultFormats = resultFormats;
+  }
 
-    public List<SelectItem> getSqlTypes() {
-	return this.sqlTypes;
-    }
+  public List<SelectItem> getSqlTypes() {
+    return this.sqlTypes;
+  }
 
-    public void setSqlTypes(List<SelectItem> sqlTypes) {
-	this.sqlTypes = sqlTypes;
-    }
+  public void setSqlTypes(List<SelectItem> sqlTypes) {
+    this.sqlTypes = sqlTypes;
+  }
 
-    public String getResultText() {
-	return this.resultText;
-    }
+  public String getResultText() {
+    return this.resultText;
+  }
 
-    public void setResultText(String resultText) {
-	this.resultText = resultText;
-    }
+  public void setResultText(String resultText) {
+    this.resultText = resultText;
+  }
 
-    public static final int SQL_TYPE_QUERY = 1;
-    public static final int SQL_TYPE_UPDATE = 2;
+  public static final int SQL_TYPE_QUERY = 1;
+  public static final int SQL_TYPE_UPDATE = 2;
 
-    public static final int RESULT_FORMAT_JSON = 1;
-    public static final int RESULT_FORMAT_CSV = 2;
+  public static final int RESULT_FORMAT_JSON = 1;
+  public static final int RESULT_FORMAT_CSV = 2;
 
-    public static List<SelectItem> sqlTypes(Resources res) {
-	List<SelectItem> list = new ArrayList<>(2);
+  public static List<SelectItem> sqlTypes(Resources res) {
+    List<SelectItem> list = new ArrayList<>(2);
 
-	list.add(new SelectItemImpl(SQL_TYPE_QUERY, res.getOrDefault("manageSqlModel.sql_type_query", "Query")));
-	list.add(new SelectItemImpl(SQL_TYPE_UPDATE, res.getOrDefault("manageSqlModel.sql_type_update", "Update")));
+    list.add(new SelectItemImpl(SQL_TYPE_QUERY, res.getOrDefault("manageSqlModel.sql_type_query", "Query")));
+    list.add(new SelectItemImpl(SQL_TYPE_UPDATE, res.getOrDefault("manageSqlModel.sql_type_update", "Update")));
 
-	return list;
-    }
+    return list;
+  }
 
-    public static List<SelectItem> resultFormats(Resources res) {
-	List<SelectItem> list = new ArrayList<>(2);
+  public static List<SelectItem> resultFormats(Resources res) {
+    List<SelectItem> list = new ArrayList<>(2);
 
-	list.add(new SelectItemImpl(RESULT_FORMAT_JSON, res.getOrDefault("manageSqlModel.result_format_json", "JSON")));
-	list.add(new SelectItemImpl(RESULT_FORMAT_CSV, res.getOrDefault("manageSqlModel.result_format_csv", "CSV")));
+    list.add(new SelectItemImpl(RESULT_FORMAT_JSON, res.getOrDefault("manageSqlModel.result_format_json", "JSON")));
+    list.add(new SelectItemImpl(RESULT_FORMAT_CSV, res.getOrDefault("manageSqlModel.result_format_csv", "CSV")));
 
-	return list;
-    }
+    return list;
+  }
 }

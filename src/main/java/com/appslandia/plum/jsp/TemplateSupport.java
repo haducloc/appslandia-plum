@@ -29,5 +29,5 @@ import jakarta.servlet.jsp.tagext.JspFragment;
  */
 public interface TemplateSupport {
 
-    void setTemplate(String type, JspFragment tpl);
+  void setTemplate(String type, JspFragment tpl);
 }

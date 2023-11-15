@@ -36,68 +36,68 @@ import jakarta.validation.constraints.NotNull;
  */
 @Entity
 public class AuthToken extends EntityBase {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    @Id
-    @NotNull
-    @Column(unique = true, updatable = false)
-    private String series;
+  @Id
+  @NotNull
+  @Column(unique = true, updatable = false)
+  private String series;
 
-    @NotNull
-    private String hashToken;
+  @NotNull
+  private String hashToken;
 
-    @NotNull
-    @Column(updatable = false)
-    private String hashIdentity;
+  @NotNull
+  @Column(updatable = false)
+  private String hashIdentity;
 
-    @NotNull
-    private Long expiresAt;
+  @NotNull
+  private Long expiresAt;
 
-    @NotNull
-    private Long issuedAt;
+  @NotNull
+  private Long issuedAt;
 
-    @Override
-    public Serializable getPk() {
-	return this.series;
-    }
+  @Override
+  public Serializable getPk() {
+    return this.series;
+  }
 
-    public String getSeries() {
-	return this.series;
-    }
+  public String getSeries() {
+    return this.series;
+  }
 
-    public void setSeries(String series) {
-	this.series = series;
-    }
+  public void setSeries(String series) {
+    this.series = series;
+  }
 
-    public String getHashToken() {
-	return this.hashToken;
-    }
+  public String getHashToken() {
+    return this.hashToken;
+  }
 
-    public void setHashToken(String hashToken) {
-	this.hashToken = hashToken;
-    }
+  public void setHashToken(String hashToken) {
+    this.hashToken = hashToken;
+  }
 
-    public String getHashIdentity() {
-	return this.hashIdentity;
-    }
+  public String getHashIdentity() {
+    return this.hashIdentity;
+  }
 
-    public void setHashIdentity(String hashIdentity) {
-	this.hashIdentity = hashIdentity;
-    }
+  public void setHashIdentity(String hashIdentity) {
+    this.hashIdentity = hashIdentity;
+  }
 
-    public Long getExpiresAt() {
-	return this.expiresAt;
-    }
+  public Long getExpiresAt() {
+    return this.expiresAt;
+  }
 
-    public void setExpiresAt(Long expiresAt) {
-	this.expiresAt = expiresAt;
-    }
+  public void setExpiresAt(Long expiresAt) {
+    this.expiresAt = expiresAt;
+  }
 
-    public Long getIssuedAt() {
-	return this.issuedAt;
-    }
+  public Long getIssuedAt() {
+    return this.issuedAt;
+  }
 
-    public void setIssuedAt(Long issuedAt) {
-	this.issuedAt = issuedAt;
-    }
+  public void setIssuedAt(Long issuedAt) {
+    this.issuedAt = issuedAt;
+  }
 }

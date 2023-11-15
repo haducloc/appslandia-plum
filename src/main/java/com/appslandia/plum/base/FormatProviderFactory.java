@@ -30,5 +30,5 @@ import com.appslandia.common.base.Language;
  */
 public interface FormatProviderFactory {
 
-    FormatProvider produce(Language language);
+  FormatProvider produce(Language language);
 }

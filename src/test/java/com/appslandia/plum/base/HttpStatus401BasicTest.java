@@ -33,46 +33,47 @@ import com.appslandia.plum.mocks.MockServletUtils;
  */
 public class HttpStatus401BasicTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
-	memUserDatabase.addUser("user1", "password");
+    MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
+    memUserDatabase.addUser("user1", "password");
+  }
+
+  @Test
+  public void test_testAction_unAuthenticated() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(401, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testAction_unAuthenticated() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+  @Test
+  public void test_testAction_authenticated() {
+    try {
+      getCurrentRequest().setHeader("Authorization",
+          "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
 
-	    Assertions.assertEquals(401, getCurrentResponse().getStatus());
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testAction_authenticated() {
-	try {
-	    getCurrentRequest().setHeader("Authorization", "Basic " + MockServletUtils.createBasicCredential("user1", "password"));
+  @Controller("testController")
+  public static class TestController {
 
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
-
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    @Authorize
+    public void testAction() throws Exception {
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	@Authorize
-	public void testAction() throws Exception {
-	}
-    }
+  }
 }

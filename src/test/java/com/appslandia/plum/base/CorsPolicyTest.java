@@ -32,73 +32,73 @@ import org.junit.jupiter.api.Test;
  */
 public class CorsPolicyTest {
 
-    @Test
-    public void test() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
-	Assertions.assertNull(policy.getAllowHeaders());
-	Assertions.assertNull(policy.getAllowHeadersString());
-	Assertions.assertNull(policy.getExposeHeaders());
+  @Test
+  public void test() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    Assertions.assertNull(policy.getAllowHeaders());
+    Assertions.assertNull(policy.getAllowHeadersString());
+    Assertions.assertNull(policy.getExposeHeaders());
 
-	Assertions.assertFalse(policy.isAllowCredentials());
-	Assertions.assertTrue(policy.getMaxAge() == 0);
-    }
+    Assertions.assertFalse(policy.isAllowCredentials());
+    Assertions.assertTrue(policy.getMaxAge() == 0);
+  }
 
-    @Test
-    public void test_anyOrigin() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+  @Test
+  public void test_anyOrigin() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
 
-	Assertions.assertTrue(policy.isAnyOrigin());
-	Assertions.assertTrue(policy.allowOrigin("http://myDomain.com"));
-	Assertions.assertEquals("*", policy.getAllowOrigin("http://myDomain.com"));
-    }
+    Assertions.assertTrue(policy.isAnyOrigin());
+    Assertions.assertTrue(policy.allowOrigin("http://myDomain.com"));
+    Assertions.assertEquals("*", policy.getAllowOrigin("http://myDomain.com"));
+  }
 
-    @Test
-    public void test_anyHeader() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin().anyHeader();
-	Assertions.assertEquals("*", policy.getAllowHeadersString());
-    }
+  @Test
+  public void test_anyHeader() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin().anyHeader();
+    Assertions.assertEquals("*", policy.getAllowHeadersString());
+  }
 
-    @Test
-    public void test_allowOrigin() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").setAllowOrigins("http(s)?://(.+\\.)*myDomain\\.com");
+  @Test
+  public void test_allowOrigin() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAllowOrigins("http(s)?://(.+\\.)*myDomain\\.com");
 
-	Assertions.assertTrue(policy.allowOrigin("https://myDomain.com"));
-	Assertions.assertTrue(policy.allowOrigin("http://sub.myDomain.com"));
-	Assertions.assertTrue(policy.allowOrigin("http://sub.sub.myDomain.com"));
-    }
+    Assertions.assertTrue(policy.allowOrigin("https://myDomain.com"));
+    Assertions.assertTrue(policy.allowOrigin("http://sub.myDomain.com"));
+    Assertions.assertTrue(policy.allowOrigin("http://sub.sub.myDomain.com"));
+  }
 
-    @Test
-    public void test_allowHeaders() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
-	policy.setAllowHeaders("X-Header", "X-Header2");
+  @Test
+  public void test_allowHeaders() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    policy.setAllowHeaders("X-Header", "X-Header2");
 
-	Assertions.assertTrue(policy.allowHeaders("X-Header"));
-	Assertions.assertTrue(policy.allowHeaders("X-Header, x-header2"));
-	Assertions.assertFalse(policy.allowHeaders("X-Header, x-header2, x-header3"));
-    }
+    Assertions.assertTrue(policy.allowHeaders("X-Header"));
+    Assertions.assertTrue(policy.allowHeaders("X-Header, x-header2"));
+    Assertions.assertFalse(policy.allowHeaders("X-Header, x-header2, x-header3"));
+  }
 
-    @Test
-    public void test_setExposeHeaders() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
-	policy.setExposeHeaders("X-Header", "X-Header2");
+  @Test
+  public void test_setExposeHeaders() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    policy.setExposeHeaders("X-Header", "X-Header2");
 
-	Assertions.assertTrue(policy.getExposeHeaders().contains("X-Header"));
-	Assertions.assertTrue(policy.getExposeHeaders().contains("X-Header2"));
-    }
+    Assertions.assertTrue(policy.getExposeHeaders().contains("X-Header"));
+    Assertions.assertTrue(policy.getExposeHeaders().contains("X-Header2"));
+  }
 
-    @Test
-    public void test_setAllowAnyOrigin() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
-	policy.setAllowCredentials(true);
+  @Test
+  public void test_setAllowAnyOrigin() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    policy.setAllowCredentials(true);
 
-	Assertions.assertTrue(policy.isAllowCredentials());
-    }
+    Assertions.assertTrue(policy.isAllowCredentials());
+  }
 
-    @Test
-    public void test_setMaxAge() {
-	CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
-	policy.setMaxAge(365, TimeUnit.DAYS);
+  @Test
+  public void test_setMaxAge() {
+    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    policy.setMaxAge(365, TimeUnit.DAYS);
 
-	Assertions.assertEquals(TimeUnit.SECONDS.convert(365, TimeUnit.DAYS), policy.getMaxAge());
-    }
+    Assertions.assertEquals(TimeUnit.SECONDS.convert(365, TimeUnit.DAYS), policy.getMaxAge());
+  }
 }

@@ -31,50 +31,50 @@ import com.appslandia.common.utils.ValueUtils;
  */
 public class CacheControlBuilder extends HeaderBuilder {
 
-    public CacheControlBuilder usePublic() {
-	addValue("public");
-	return this;
-    }
+  public CacheControlBuilder usePublic() {
+    addValue("public");
+    return this;
+  }
 
-    public CacheControlBuilder usePrivate() {
-	addValue("private");
-	return this;
-    }
+  public CacheControlBuilder usePrivate() {
+    addValue("private");
+    return this;
+  }
 
-    public CacheControlBuilder noStore() {
-	addValue("no-store");
-	return this;
-    }
+  public CacheControlBuilder noStore() {
+    addValue("no-store");
+    return this;
+  }
 
-    public CacheControlBuilder noCache() {
-	addValue("no-cache");
-	return this;
-    }
+  public CacheControlBuilder noCache() {
+    addValue("no-cache");
+    return this;
+  }
 
-    public CacheControlBuilder noTransform() {
-	addValue("no-transform");
-	return this;
-    }
+  public CacheControlBuilder noTransform() {
+    addValue("no-transform");
+    return this;
+  }
 
-    public CacheControlBuilder maxAge(int maxAge, TimeUnit unit) {
-	long ageInSec = TimeUnit.SECONDS.convert(maxAge, unit);
-	addPair("max-age", Long.toString(ValueUtils.valueOrMin(ageInSec, 0)));
-	return this;
-    }
+  public CacheControlBuilder maxAge(int maxAge, TimeUnit unit) {
+    long ageInSec = TimeUnit.SECONDS.convert(maxAge, unit);
+    addPair("max-age", Long.toString(ValueUtils.valueOrMin(ageInSec, 0)));
+    return this;
+  }
 
-    public CacheControlBuilder sMaxAge(int sMaxAge, TimeUnit unit) {
-	long ageInSec = TimeUnit.SECONDS.convert(sMaxAge, unit);
-	addPair("s-maxage", Long.toString(ValueUtils.valueOrMin(ageInSec, 0)));
-	return this;
-    }
+  public CacheControlBuilder sMaxAge(int sMaxAge, TimeUnit unit) {
+    long ageInSec = TimeUnit.SECONDS.convert(sMaxAge, unit);
+    addPair("s-maxage", Long.toString(ValueUtils.valueOrMin(ageInSec, 0)));
+    return this;
+  }
 
-    public CacheControlBuilder mustRevalidate() {
-	addValue("must-revalidate");
-	return this;
-    }
+  public CacheControlBuilder mustRevalidate() {
+    addValue("must-revalidate");
+    return this;
+  }
 
-    public CacheControlBuilder proxyRevalidate() {
-	addValue("proxy-revalidate");
-	return this;
-    }
+  public CacheControlBuilder proxyRevalidate() {
+    addValue("proxy-revalidate");
+    return this;
+  }
 }

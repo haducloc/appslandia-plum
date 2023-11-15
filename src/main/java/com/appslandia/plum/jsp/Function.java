@@ -36,7 +36,7 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Function {
 
-    String name() default "";
+  String name() default "";
 
-    String description() default "";
+  String description() default "";
 }

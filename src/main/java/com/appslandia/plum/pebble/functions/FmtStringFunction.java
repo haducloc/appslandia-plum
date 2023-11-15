@@ -38,17 +38,18 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
  */
 public class FmtStringFunction extends DynPebbleFunction {
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-	String value = context.getArgument("value");
-	if (value == null) {
-	    return null;
-	}
-
-	StringFormatProvider stringFormatProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(), StringFormatProvider.class);
-	String format = context.getRequiredArgument("format");
-	StringFormat stringFormat = stringFormatProvider.getStringFormat(format);
-
-	return new SafeString(XmlEscaper.escapeXml(stringFormat.format(value)));
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String value = context.getArgument("value");
+    if (value == null) {
+      return null;
     }
+
+    StringFormatProvider stringFormatProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(),
+        StringFormatProvider.class);
+    String format = context.getRequiredArgument("format");
+    StringFormat stringFormat = stringFormatProvider.getStringFormat(format);
+
+    return new SafeString(XmlEscaper.escapeXml(stringFormat.format(value)));
+  }
 }

@@ -36,28 +36,28 @@ import jakarta.inject.Inject;
  */
 public class MockActionDescProvider extends ActionDescProvider {
 
-    @Inject
-    protected ObjectFactory factory;
+  @Inject
+  protected ObjectFactory factory;
 
-    @Override
-    protected void init() throws Exception {
-	addControllerClasses();
+  @Override
+  protected void init() throws Exception {
+    addControllerClasses();
 
-	super.init();
+    super.init();
+  }
+
+  private void addControllerClasses() {
+    Iterator<ObjectDefinition> iter = this.factory.getDefinitionIterator();
+
+    while (iter.hasNext()) {
+      Class<?> implClass = iter.next().getImplClass();
+      if (implClass == null) {
+        continue;
+      }
+      // @Controller
+      if (implClass.getDeclaredAnnotation(Controller.class) != null) {
+        addControllerClass(implClass);
+      }
     }
-
-    private void addControllerClasses() {
-	Iterator<ObjectDefinition> iter = this.factory.getDefinitionIterator();
-
-	while (iter.hasNext()) {
-	    Class<?> implClass = iter.next().getImplClass();
-	    if (implClass == null) {
-		continue;
-	    }
-	    // @Controller
-	    if (implClass.getDeclaredAnnotation(Controller.class) != null) {
-		addControllerClass(implClass);
-	    }
-	}
-    }
+  }
 }

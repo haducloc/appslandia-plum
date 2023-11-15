@@ -34,35 +34,35 @@ import com.appslandia.common.utils.Asserts;
  */
 public class AuthorizePolicyProvider extends InitializeObject {
 
-    private Map<String, AuthorizePolicy> authorizePolicyMap = new HashMap<>();
+  private Map<String, AuthorizePolicy> authorizePolicyMap = new HashMap<>();
 
-    @Override
-    protected void init() throws Exception {
-	this.authorizePolicyMap = Collections.unmodifiableMap(this.authorizePolicyMap);
+  @Override
+  protected void init() throws Exception {
+    this.authorizePolicyMap = Collections.unmodifiableMap(this.authorizePolicyMap);
+  }
+
+  public AuthorizePolicy getAuthorizePolicy(String name) {
+    this.initialize();
+    AuthorizePolicy impl = this.authorizePolicyMap.get(name);
+    return Asserts.notNull(impl);
+  }
+
+  public void addAuthorizePolicy(String name, AuthorizePolicy impl) {
+    this.assertNotInitialized();
+    this.authorizePolicyMap.put(name, impl);
+  }
+
+  public boolean authorize(UserPrincipal principal, String... policies) {
+    this.initialize();
+
+    Asserts.notNull(principal);
+    Asserts.hasElements(policies);
+
+    for (String policy : policies) {
+      if (getAuthorizePolicy(policy).authorize(principal)) {
+        return true;
+      }
     }
-
-    public AuthorizePolicy getAuthorizePolicy(String name) {
-	this.initialize();
-	AuthorizePolicy impl = this.authorizePolicyMap.get(name);
-	return Asserts.notNull(impl);
-    }
-
-    public void addAuthorizePolicy(String name, AuthorizePolicy impl) {
-	this.assertNotInitialized();
-	this.authorizePolicyMap.put(name, impl);
-    }
-
-    public boolean authorize(UserPrincipal principal, String... policies) {
-	this.initialize();
-
-	Asserts.notNull(principal);
-	Asserts.hasElements(policies);
-
-	for (String policy : policies) {
-	    if (getAuthorizePolicy(policy).authorize(principal)) {
-		return true;
-	    }
-	}
-	return false;
-    }
+    return false;
+  }
 }

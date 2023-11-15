@@ -29,5 +29,5 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface RateLimitSkipper {
 
-    boolean skipRequest(HttpServletRequest request, RequestContext requestContext);
+  boolean skipRequest(HttpServletRequest request, RequestContext requestContext);
 }

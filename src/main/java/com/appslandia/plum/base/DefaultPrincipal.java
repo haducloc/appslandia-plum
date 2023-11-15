@@ -28,9 +28,9 @@ import java.util.Map;
  *
  */
 public class DefaultPrincipal extends UserPrincipal {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public DefaultPrincipal(String username, Map<String, Object> attributes) {
-	super(username, attributes);
-    }
+  public DefaultPrincipal(String username, Map<String, Object> attributes) {
+    super(username, attributes);
+  }
 }

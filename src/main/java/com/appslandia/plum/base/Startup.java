@@ -32,5 +32,5 @@ import jakarta.servlet.ServletException;
  */
 public interface Startup {
 
-    void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException;
+  void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException;
 }

@@ -35,21 +35,21 @@ import com.appslandia.common.utils.Asserts;
  */
 public class StringFormatProvider extends InitializeObject {
 
-    private Map<String, StringFormat> stringFormatMap = new HashMap<>();
+  private Map<String, StringFormat> stringFormatMap = new HashMap<>();
 
-    @Override
-    protected void init() throws Exception {
-	this.stringFormatMap = Collections.unmodifiableMap(this.stringFormatMap);
-    }
+  @Override
+  protected void init() throws Exception {
+    this.stringFormatMap = Collections.unmodifiableMap(this.stringFormatMap);
+  }
 
-    public StringFormat getStringFormat(String name) {
-	this.initialize();
-	StringFormat impl = this.stringFormatMap.get(name);
-	return Asserts.notNull(impl);
-    }
+  public StringFormat getStringFormat(String name) {
+    this.initialize();
+    StringFormat impl = this.stringFormatMap.get(name);
+    return Asserts.notNull(impl);
+  }
 
-    public void addStringFormat(String name, StringFormat impl) {
-	this.assertNotInitialized();
-	this.stringFormatMap.put(name, impl);
-    }
+  public void addStringFormat(String name, StringFormat impl) {
+    this.assertNotInitialized();
+    this.stringFormatMap.put(name, impl);
+  }
 }

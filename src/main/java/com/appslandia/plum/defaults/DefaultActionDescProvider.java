@@ -37,15 +37,16 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultActionDescProvider extends ActionDescProvider {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    @Override
-    protected void init() throws Exception {
-	CDIUtils.scanBeanClasses(this.beanManager, Object.class, ReflectionUtils.EMPTY_ANNOTATIONS, Controller.class, (c, implClass) -> {
+  @Override
+  protected void init() throws Exception {
+    CDIUtils.scanBeanClasses(this.beanManager, Object.class, ReflectionUtils.EMPTY_ANNOTATIONS, Controller.class,
+        (c, implClass) -> {
 
-	    addControllerClass(implClass);
-	});
-	super.init();
-    }
+          addControllerClass(implClass);
+        });
+    super.init();
+  }
 }

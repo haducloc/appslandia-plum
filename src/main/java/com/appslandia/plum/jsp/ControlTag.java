@@ -35,46 +35,46 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "c", bodyContent = "scriptless")
 public class ControlTag extends UITagBase {
 
-    protected String tag;
+  protected String tag;
 
-    @Override
-    protected String getTagName() {
-	return this.tag;
-    }
+  @Override
+  protected String getTagName() {
+    return this.tag;
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-    }
+  @Override
+  protected void initTag() throws JspException, IOException {
+  }
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    if (this.hidden)
+      HtmlUtils.hidden(out);
 
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-    }
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-    @Override
-    protected boolean hasBody() {
-	return this.body != null;
-    }
+  @Override
+  protected boolean hasBody() {
+    return this.body != null;
+  }
 
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	this.body.invoke(out);
-    }
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    this.body.invoke(out);
+  }
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setT(String tag) {
-	this.tag = tag;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setT(String tag) {
+    this.tag = tag;
+  }
 }

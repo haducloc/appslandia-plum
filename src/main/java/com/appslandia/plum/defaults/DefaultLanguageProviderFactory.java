@@ -46,44 +46,44 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public LanguageProvider produce() {
-	final Out<List<Language>> supplied = new Out<>();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public LanguageProvider produce() {
+    final Out<List<Language>> supplied = new Out<>();
 
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, Language.class, (bi) -> {
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, Language.class, (bi) -> {
 
-	    supplied.value = ObjectUtils.cast(bi.get().get());
+      supplied.value = ObjectUtils.cast(bi.get().get());
 
-	    beanInstances.add(bi);
-	});
+      beanInstances.add(bi);
+    });
 
-	final LanguageProvider impl = new LanguageProvider();
+    final LanguageProvider impl = new LanguageProvider();
 
-	if ((supplied.value != null) && !supplied.value.isEmpty()) {
+    if ((supplied.value != null) && !supplied.value.isEmpty()) {
 
-	    for (Language language : supplied.value) {
-		impl.addLanguage(language);
-	    }
-	} else {
-	    impl.addDefault(Language.EN_US);
-	}
-	return impl;
+      for (Language language : supplied.value) {
+        impl.addLanguage(language);
+      }
+    } else {
+      impl.addDefault(Language.EN_US);
     }
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes LanguageProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes LanguageProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

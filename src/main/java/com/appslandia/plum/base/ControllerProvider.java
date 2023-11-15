@@ -27,5 +27,5 @@ package com.appslandia.plum.base;
  */
 public interface ControllerProvider {
 
-    Object getController(Class<?> controllerClass) throws Exception;
+  Object getController(Class<?> controllerClass) throws Exception;
 }

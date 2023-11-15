@@ -34,46 +34,46 @@ import jakarta.validation.constraints.NotNull;
 @Validate(modelValidator = ChangePasswordModel.CONFIRM_PASSWORD_VALIDATOR, message = ConfirmPasswordValidator.MESSAGE_TEMPLATE, reportProperty = "confirmPassword")
 public class ChangePasswordModel implements ConfirmPasswordModel {
 
-    public static final String CONFIRM_PASSWORD_VALIDATOR = "changePasswordModel.confirmPasswordValidator";
+  public static final String CONFIRM_PASSWORD_VALIDATOR = "changePasswordModel.confirmPasswordValidator";
 
-    static {
-	ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ChangePasswordModel>() {
-	});
-    }
-    @NotNull
-    @Password
-    private String newPassword;
+  static {
+    ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ChangePasswordModel>() {
+    });
+  }
+  @NotNull
+  @Password
+  private String newPassword;
 
-    @NotNull
-    private String confirmPassword;
+  @NotNull
+  private String confirmPassword;
 
-    @NotNull
-    @Password
-    private String currentPassword;
+  @NotNull
+  @Password
+  private String currentPassword;
 
-    @Override
-    public String getNewPassword() {
-	return this.newPassword;
-    }
+  @Override
+  public String getNewPassword() {
+    return this.newPassword;
+  }
 
-    public void setNewPassword(String newPassword) {
-	this.newPassword = newPassword;
-    }
+  public void setNewPassword(String newPassword) {
+    this.newPassword = newPassword;
+  }
 
-    @Override
-    public String getConfirmPassword() {
-	return this.confirmPassword;
-    }
+  @Override
+  public String getConfirmPassword() {
+    return this.confirmPassword;
+  }
 
-    public void setConfirmPassword(String confirmPassword) {
-	this.confirmPassword = confirmPassword;
-    }
+  public void setConfirmPassword(String confirmPassword) {
+    this.confirmPassword = confirmPassword;
+  }
 
-    public String getCurrentPassword() {
-	return this.currentPassword;
-    }
+  public String getCurrentPassword() {
+    return this.currentPassword;
+  }
 
-    public void setCurrentPassword(String currentPassword) {
-	this.currentPassword = currentPassword;
-    }
+  public void setCurrentPassword(String currentPassword) {
+    this.currentPassword = currentPassword;
+  }
 }

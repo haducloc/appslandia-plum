@@ -33,131 +33,135 @@ import com.appslandia.plum.mocks.MockHttpServletRequest;
  */
 public class CaptchaManagerTest extends MockTestBase {
 
-    SimpleCaptchaManager captchaManager;
-    RequestContextParser requestContextParser;
+  SimpleCaptchaManager captchaManager;
+  RequestContextParser requestContextParser;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	captchaManager = container.getObject(CaptchaManager.class);
-	requestContextParser = container.getObject(RequestContextParser.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    captchaManager = container.getObject(CaptchaManager.class);
+    requestContextParser = container.getObject(RequestContextParser.class);
+  }
+
+  @Test
+  public void test_initCaptcha() {
+    try {
+      getCurrentRequest().setRequestURL("http://localhost/app/testController/testCaptcha");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+
+      captchaManager.initCaptcha(getCurrentRequest());
+      String captchaId = (String) getCurrentRequest().getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+      Assertions.assertNotNull(captchaId);
+
+      captchaId = (String) getCurrentRequest().getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+      Assertions.assertNotNull(captchaId);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_initCaptcha() {
-	try {
-	    getCurrentRequest().setRequestURL("http://localhost/app/testController/testCaptcha");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+  @Test
+  public void test_getCaptchaWords() {
+    try {
+      MockHttpServletRequest request = container.createRequest("GET",
+          "http://localhost/app/testController/testCaptcha");
+      requestContextParser.parse(request, container.createResponse());
+      captchaManager.initCaptcha(request);
+      String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
 
-	    captchaManager.initCaptcha(getCurrentRequest());
-	    String captchaId = (String) getCurrentRequest().getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
-	    Assertions.assertNotNull(captchaId);
+      getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
-	    captchaId = (String) getCurrentRequest().getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
-	    Assertions.assertNotNull(captchaId);
+      String captchaWords = captchaManager.getCaptchaWords(getCurrentRequest());
+      Assertions.assertNotNull(captchaWords);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_getCaptchaWords() {
-	try {
-	    MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/testController/testCaptcha");
-	    requestContextParser.parse(request, container.createResponse());
-	    captchaManager.initCaptcha(request);
-	    String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+  @Test
+  public void test_verifyCaptcha() {
+    try {
+      MockHttpServletRequest request = container.createRequest("GET",
+          "http://localhost/app/testController/testCaptcha");
+      requestContextParser.parse(request, container.createResponse());
+      captchaManager.initCaptcha(request);
+      String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
 
-	    getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+      getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS, MockCaptchaManager.MOCK_CAPTCHA_WORDS);
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
-	    String captchaWords = captchaManager.getCaptchaWords(getCurrentRequest());
-	    Assertions.assertNotNull(captchaWords);
+      boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
+      Assertions.assertTrue(valid);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      // Removed
+      valid = captchaManager.verifyCaptcha(getCurrentRequest());
+      Assertions.assertFalse(valid);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_verifyCaptcha() {
-	try {
-	    MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/testController/testCaptcha");
-	    requestContextParser.parse(request, container.createResponse());
-	    captchaManager.initCaptcha(request);
-	    String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+  @Test
+  public void test_verifyCaptcha_invalidWords() {
+    try {
+      MockHttpServletRequest request = container.createRequest("GET",
+          "http://localhost/app/testController/testCaptcha");
+      requestContextParser.parse(request, container.createResponse());
+      captchaManager.initCaptcha(request);
+      String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
 
-	    getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS, MockCaptchaManager.MOCK_CAPTCHA_WORDS);
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+      getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
+      getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS, "invalid");
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
-	    boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
-	    Assertions.assertTrue(valid);
+      boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
+      Assertions.assertFalse(valid);
 
-	    // Removed
-	    valid = captchaManager.verifyCaptcha(getCurrentRequest());
-	    Assertions.assertFalse(valid);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_verifyCaptcha_invalidWords() {
-	try {
-	    MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/testController/testCaptcha");
-	    requestContextParser.parse(request, container.createResponse());
-	    captchaManager.initCaptcha(request);
-	    String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+  @Test
+  public void test_verifyCaptcha_noSession() {
+    try {
+      MockHttpServletRequest request = container.createRequest("GET",
+          "http://localhost/app/testController/testCaptcha");
+      requestContextParser.parse(request, container.createResponse());
+      captchaManager.initCaptcha(request);
+      String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
 
-	    getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
-	    getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS, "invalid");
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
+      getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
+      // getCurrentRequest().setSession(request.getSession());
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
+      getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS, MockCaptchaManager.MOCK_CAPTCHA_WORDS);
+      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
 
-	    boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
-	    Assertions.assertFalse(valid);
+      boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
+      Assertions.assertFalse(valid);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_verifyCaptcha_noSession() {
-	try {
-	    MockHttpServletRequest request = container.createRequest("GET", "http://localhost/app/testController/testCaptcha");
-	    requestContextParser.parse(request, container.createResponse());
-	    captchaManager.initCaptcha(request);
-	    String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+  @Controller("testController")
+  public static class TestController {
 
-	    getCurrentRequest().setMethod("POST").setRequestURL("http://localhost/app/testController/testCaptcha");
-	    // getCurrentRequest().setSession(request.getSession());
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
-	    getCurrentRequest().addParameter(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS, MockCaptchaManager.MOCK_CAPTCHA_WORDS);
-	    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-	    boolean valid = captchaManager.verifyCaptcha(getCurrentRequest());
-	    Assertions.assertFalse(valid);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGetPost
+    @EnableCaptcha
+    public void testCaptcha() throws Exception {
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGetPost
-	@EnableCaptcha
-	public void testCaptcha() throws Exception {
-	}
-    }
+  }
 }

@@ -30,43 +30,43 @@ import org.junit.jupiter.api.Test;
  */
 public class ChildActionTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_childAction() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/childAction");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_notAction() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/notAction");
+
+      Assertions.assertEquals(404, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @ChildAction
+    public void childAction() throws Exception {
     }
 
-    @Test
-    public void test_childAction() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/childAction");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    public void notAction() throws Exception {
     }
-
-    @Test
-    public void test_notAction() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/notAction");
-
-	    Assertions.assertEquals(404, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@ChildAction
-	public void childAction() throws Exception {
-	}
-
-	public void notAction() throws Exception {
-	}
-    }
+  }
 }

@@ -40,9 +40,9 @@ import jakarta.interceptor.InterceptorBinding;
 @Documented
 public @interface CacheResult {
 
-    @Nonbinding
-    String cacheName() default "";
+  @Nonbinding
+  String cacheName() default "";
 
-    @Nonbinding
-    String key() default "";
+  @Nonbinding
+  String key() default "";
 }

@@ -40,36 +40,36 @@ import jakarta.servlet.ServletContext;
  */
 public abstract class PropertiesResourcesProvider extends ResourcesProvider {
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected ServletContext servletContext;
+  @Inject
+  protected ServletContext servletContext;
 
-    @Override
-    protected Resources loadResources(String language) throws InitializeException {
-	Properties props = new Properties();
-	String[] resourceNames = this.appConfig.getStringArray(AppConfig.CONFIG_RESOURCE_NAMES);
+  @Override
+  protected Resources loadResources(String language) throws InitializeException {
+    Properties props = new Properties();
+    String[] resourceNames = this.appConfig.getStringArray(AppConfig.CONFIG_RESOURCE_NAMES);
 
-	for (String resourceName : resourceNames) {
-	    String resPath = getResourcePath(resourceName, language);
+    for (String resourceName : resourceNames) {
+      String resPath = getResourcePath(resourceName, language);
 
-	    InputStream is = this.servletContext.getResourceAsStream(resPath);
-	    if (is != null) {
-		try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
-		    loadResources(props, br);
+      InputStream is = this.servletContext.getResourceAsStream(resPath);
+      if (is != null) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+          loadResources(props, br);
 
-		} catch (IOException ex) {
-		    throw new InitializeException(ex);
-		}
-	    }
-	}
-	Resources resources = new Resources(language);
-	resources.putResources(ObjectUtils.cast(props));
-	return resources;
+        } catch (IOException ex) {
+          throw new InitializeException(ex);
+        }
+      }
     }
+    Resources resources = new Resources(language);
+    resources.putResources(ObjectUtils.cast(props));
+    return resources;
+  }
 
-    protected abstract String getResourcePath(String resourceName, String language);
+  protected abstract String getResourcePath(String resourceName, String language);
 
-    protected abstract void loadResources(Properties resources, BufferedReader br) throws IOException;
+  protected abstract void loadResources(Properties resources, BufferedReader br) throws IOException;
 }

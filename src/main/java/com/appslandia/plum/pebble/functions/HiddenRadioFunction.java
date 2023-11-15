@@ -30,7 +30,7 @@ import com.appslandia.plum.pebble.TemplateEvaluationContext;
  */
 public class HiddenRadioFunction extends HiddenCheckInputFunction {
 
-    protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
-	return StringUtils.iequals(codeValue, modelValue);
-    }
+  protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
+    return StringUtils.iequals(codeValue, modelValue);
+  }
 }

@@ -40,62 +40,66 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class DataListTagTest extends MockTestBase {
 
-    DataListTag tag = new DataListTag();
+  DataListTag tag = new DataListTag();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      tag.setId("testDataList");
+      tag.setItems(CollectionUtils.toList("admin", "manager"));
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Test
+  public void test_addItem() {
+    try {
+      tag.setId("testDataList");
+      tag.addItem("admin");
+      tag.addItem("manager");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    tag.setId("testDataList");
-	    tag.setItems(CollectionUtils.toList("admin", "manager"));
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_addItem() {
-	try {
-	    tag.setId("testDataList");
-	    tag.addItem("admin");
-	    tag.addItem("manager");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

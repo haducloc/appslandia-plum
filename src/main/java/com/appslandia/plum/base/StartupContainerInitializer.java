@@ -45,49 +45,49 @@ import jakarta.servlet.annotation.HandlesTypes;
 @HandlesTypes(Startup.class)
 public class StartupContainerInitializer implements ServletContainerInitializer {
 
-    @Override
-    public void onStartup(Set<Class<?>> startupClasses, ServletContext sc) throws ServletException {
-	// allClasses
-	List<Class<? extends Startup>> allClasses = ObjectUtils.cast(new ArrayList<>(startupClasses));
-	Collections.sort(allClasses, (c1, c2) -> {
+  @Override
+  public void onStartup(Set<Class<?>> startupClasses, ServletContext sc) throws ServletException {
+    // allClasses
+    List<Class<? extends Startup>> allClasses = ObjectUtils.cast(new ArrayList<>(startupClasses));
+    Collections.sort(allClasses, (c1, c2) -> {
 
-	    StartupConfig config1 = c1.getDeclaredAnnotation(StartupConfig.class);
-	    StartupConfig config2 = c2.getDeclaredAnnotation(StartupConfig.class);
+      StartupConfig config1 = c1.getDeclaredAnnotation(StartupConfig.class);
+      StartupConfig config2 = c2.getDeclaredAnnotation(StartupConfig.class);
 
-	    Integer p1 = (config1 == null) ? Integer.MAX_VALUE : config1.priority();
-	    Integer p2 = (config2 == null) ? Integer.MAX_VALUE : config2.priority();
-	    return p1.compareTo(p2);
-	});
+      Integer p1 = (config1 == null) ? Integer.MAX_VALUE : config1.priority();
+      Integer p2 = (config2 == null) ? Integer.MAX_VALUE : config2.priority();
+      return p1.compareTo(p2);
+    });
 
-	// removedNames
-	final Set<String> removedNames = new HashSet<>();
-	allClasses.stream().forEach(clazz -> {
-	    if (Modifier.isAbstract(clazz.getModifiers())) {
-		removedNames.add(clazz.getName());
-	    }
-	    StartupConfig config = clazz.getDeclaredAnnotation(StartupConfig.class);
-	    if (config == null) {
-		return;
-	    }
-	    CollectionUtils.toSet(removedNames, config.removeNames());
-	    for (Class<? extends Startup> removeClass : config.removeClasses()) {
-		removedNames.add(removeClass.getName());
-	    }
-	});
+    // removedNames
+    final Set<String> removedNames = new HashSet<>();
+    allClasses.stream().forEach(clazz -> {
+      if (Modifier.isAbstract(clazz.getModifiers())) {
+        removedNames.add(clazz.getName());
+      }
+      StartupConfig config = clazz.getDeclaredAnnotation(StartupConfig.class);
+      if (config == null) {
+        return;
+      }
+      CollectionUtils.toSet(removedNames, config.removeNames());
+      for (Class<? extends Startup> removeClass : config.removeClasses()) {
+        removedNames.add(removeClass.getName());
+      }
+    });
 
-	// Execute startupClasses
-	List<Class<? extends Startup>> unmodifiableClasses = Collections.unmodifiableList(allClasses);
-	for (Class<? extends Startup> clazz : allClasses) {
-	    if (removedNames.contains(clazz.getName())) {
-		continue;
-	    }
-	    try {
-		Startup impl = ReflectionUtils.newInstance(clazz);
-		impl.onStartup(sc, unmodifiableClasses);
+    // Execute startupClasses
+    List<Class<? extends Startup>> unmodifiableClasses = Collections.unmodifiableList(allClasses);
+    for (Class<? extends Startup> clazz : allClasses) {
+      if (removedNames.contains(clazz.getName())) {
+        continue;
+      }
+      try {
+        Startup impl = ReflectionUtils.newInstance(clazz);
+        impl.onStartup(sc, unmodifiableClasses);
 
-	    } catch (Exception ex) {
-		throw new InitializeException(ex);
-	    }
-	}
+      } catch (Exception ex) {
+        throw new InitializeException(ex);
+      }
     }
+  }
 }

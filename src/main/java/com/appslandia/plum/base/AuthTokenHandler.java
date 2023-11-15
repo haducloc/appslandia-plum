@@ -36,72 +36,73 @@ import jakarta.inject.Inject;
  */
 public abstract class AuthTokenHandler {
 
-    @Inject
-    protected AuthTokenManager authTokenManager;
+  @Inject
+  protected AuthTokenManager authTokenManager;
 
-    protected abstract TextGenerator getSeriesGenerator();
+  protected abstract TextGenerator getSeriesGenerator();
 
-    protected abstract TextGenerator getTokenGenerator();
+  protected abstract TextGenerator getTokenGenerator();
 
-    protected abstract TextDigester getTokenDigester();
+  protected abstract TextDigester getTokenDigester();
 
-    protected abstract TextDigester getIdentityDigester();
+  protected abstract TextDigester getIdentityDigester();
 
-    public SeriesToken saveToken(String identity, String data, long expiresInMs) {
-	// AuthToken
-	AuthToken authToken = new AuthToken();
-	authToken.setSeries(getSeriesGenerator().generate());
-	String clearToken = getTokenGenerator().generate();
+  public SeriesToken saveToken(String identity, String data, long expiresInMs) {
+    // AuthToken
+    AuthToken authToken = new AuthToken();
+    authToken.setSeries(getSeriesGenerator().generate());
+    String clearToken = getTokenGenerator().generate();
 
-	final long curTimeMs = System.currentTimeMillis();
-	long expiresAt = curTimeMs + expiresInMs;
-	identity = identity.toLowerCase(Locale.ENGLISH);
+    final long curTimeMs = System.currentTimeMillis();
+    long expiresAt = curTimeMs + expiresInMs;
+    identity = identity.toLowerCase(Locale.ENGLISH);
 
-	String tokenData = getTokenData(authToken.getSeries(), clearToken, identity, expiresAt, data);
-	authToken.setHashToken(getTokenDigester().digest(tokenData));
-	authToken.setHashIdentity(getIdentityDigester().digest(identity));
+    String tokenData = getTokenData(authToken.getSeries(), clearToken, identity, expiresAt, data);
+    authToken.setHashToken(getTokenDigester().digest(tokenData));
+    authToken.setHashIdentity(getIdentityDigester().digest(identity));
 
-	authToken.setExpiresAt(expiresAt);
-	authToken.setIssuedAt(curTimeMs);
+    authToken.setExpiresAt(expiresAt);
+    authToken.setIssuedAt(curTimeMs);
 
-	this.authTokenManager.save(authToken);
-	return new SeriesToken().setSeries(authToken.getSeries()).setToken(clearToken);
+    this.authTokenManager.save(authToken);
+    return new SeriesToken().setSeries(authToken.getSeries()).setToken(clearToken);
+  }
+
+  public boolean verifyToken(String series, String token, String identity, String data, int expiryLeewayMs,
+      Out<String> invalidCode) {
+    // AuthToken
+    AuthToken authToken = this.authTokenManager.load(series);
+    if (authToken == null) {
+      invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
+      return false;
     }
 
-    public boolean verifyToken(String series, String token, String identity, String data, int expiryLeewayMs, Out<String> invalidCode) {
-	// AuthToken
-	AuthToken authToken = this.authTokenManager.load(series);
-	if (authToken == null) {
-	    invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
-	    return false;
-	}
-
-	// Identity
-	identity = identity.toLowerCase(Locale.ENGLISH);
-	if (!getIdentityDigester().verify(identity, authToken.getHashIdentity())) {
-	    return false;
-	}
-
-	// Token
-	String tokenData = getTokenData(series, token, identity, authToken.getExpiresAt(), data);
-	if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
-	    invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
-	    return false;
-	}
-
-	// ExpiresAt
-	if (!DateUtils.isFutureTime(authToken.getExpiresAt(), expiryLeewayMs)) {
-	    invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
-	    return false;
-	}
-	return true;
+    // Identity
+    identity = identity.toLowerCase(Locale.ENGLISH);
+    if (!getIdentityDigester().verify(identity, authToken.getHashIdentity())) {
+      return false;
     }
 
-    protected String getTokenData(String series, String token, String identity, long expiresAt, String data) {
-	return String.join("|", series, token, identity, Long.toString(expiresAt), data);
+    // Token
+    String tokenData = getTokenData(series, token, identity, authToken.getExpiresAt(), data);
+    if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
+      invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
+      return false;
     }
 
-    public void removeToken(String series) {
-	this.authTokenManager.remove(series);
+    // ExpiresAt
+    if (!DateUtils.isFutureTime(authToken.getExpiresAt(), expiryLeewayMs)) {
+      invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
+      return false;
     }
+    return true;
+  }
+
+  protected String getTokenData(String series, String token, String identity, long expiresAt, String data) {
+    return String.join("|", series, token, identity, Long.toString(expiresAt), data);
+  }
+
+  public void removeToken(String series) {
+    this.authTokenManager.remove(series);
+  }
 }

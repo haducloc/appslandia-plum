@@ -34,28 +34,28 @@ import jakarta.security.enterprise.credential.UsernamePasswordCredential;
  */
 public abstract class BasicAuthHandler extends HttpAuthHandler {
 
-    @Override
-    public String getAuthMethod() {
-	return "Basic";
+  @Override
+  public String getAuthMethod() {
+    return "Basic";
+  }
+
+  protected abstract UsernamePasswordCredential createCredential(String username, String password);
+
+  @Override
+  protected Credential createCredential(String credential) throws Exception {
+    String usernamePwd = new String(BaseEncoder.BASE64.decode(credential), StandardCharsets.UTF_8);
+
+    // username:password
+    int idx = usernamePwd.indexOf(":");
+    if (idx < 0) {
+      return null;
     }
+    String username = usernamePwd.substring(0, idx).trim();
+    String password = usernamePwd.substring(idx + 1);
 
-    protected abstract UsernamePasswordCredential createCredential(String username, String password);
-
-    @Override
-    protected Credential createCredential(String credential) throws Exception {
-	String usernamePwd = new String(BaseEncoder.BASE64.decode(credential), StandardCharsets.UTF_8);
-
-	// username:password
-	int idx = usernamePwd.indexOf(":");
-	if (idx < 0) {
-	    return null;
-	}
-	String username = usernamePwd.substring(0, idx).trim();
-	String password = usernamePwd.substring(idx + 1);
-
-	if (username.isEmpty() || password.isEmpty()) {
-	    return null;
-	}
-	return createCredential(username, password);
+    if (username.isEmpty() || password.isEmpty()) {
+      return null;
     }
+    return createCredential(username, password);
+  }
 }

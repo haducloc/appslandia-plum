@@ -26,53 +26,53 @@ package com.appslandia.plum.base;
  *
  */
 public class AuthUserPrincipal extends UserPrincipal {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    final UserPrincipal principal;
-    final String module;
-    final boolean rememberMe;
-    final long reauthAt;
+  final UserPrincipal principal;
+  final String module;
+  final boolean rememberMe;
+  final long reauthAt;
 
-    public AuthUserPrincipal(UserPrincipal principal, AuthCredential credential) {
-	this(principal, credential.getModule(), credential.isRememberMe(), credential.isReauthentication());
-    }
+  public AuthUserPrincipal(UserPrincipal principal, AuthCredential credential) {
+    this(principal, credential.getModule(), credential.isRememberMe(), credential.isReauthentication());
+  }
 
-    public AuthUserPrincipal(UserPrincipal principal, String module, boolean rememberMe, boolean reauthentication) {
-	super(null, null);
-	this.principal = principal;
+  public AuthUserPrincipal(UserPrincipal principal, String module, boolean rememberMe, boolean reauthentication) {
+    super(null, null);
+    this.principal = principal;
 
-	this.module = module;
-	this.rememberMe = rememberMe;
-	this.reauthAt = reauthentication ? System.currentTimeMillis() : 0L;
-    }
+    this.module = module;
+    this.rememberMe = rememberMe;
+    this.reauthAt = reauthentication ? System.currentTimeMillis() : 0L;
+  }
 
-    @Override
-    public String getName() {
-	return this.principal.getName();
-    }
+  @Override
+  public String getName() {
+    return this.principal.getName();
+  }
 
-    @Override
-    public Object get(String attributeName) {
-	return this.principal.get(attributeName);
-    }
+  @Override
+  public Object get(String attributeName) {
+    return this.principal.get(attributeName);
+  }
 
-    @Override
-    public Object getRequired(String attributeName) {
-	return this.principal.getRequired(attributeName);
-    }
+  @Override
+  public Object getRequired(String attributeName) {
+    return this.principal.getRequired(attributeName);
+  }
 
-    @Override
-    public String getModule() {
-	return this.module;
-    }
+  @Override
+  public String getModule() {
+    return this.module;
+  }
 
-    @Override
-    public boolean isRememberMe() {
-	return this.rememberMe;
-    }
+  @Override
+  public boolean isRememberMe() {
+    return this.rememberMe;
+  }
 
-    @Override
-    public long getReauthAt() {
-	return this.reauthAt;
-    }
+  @Override
+  public long getReauthAt() {
+    return this.reauthAt;
+  }
 }

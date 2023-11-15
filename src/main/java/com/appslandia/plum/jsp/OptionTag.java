@@ -34,22 +34,22 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "option", dynamicAttributes = false)
 public class OptionTag extends TagBase {
 
-    protected String name;
-    protected Object value;
+  protected String name;
+  protected Object value;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	Asserts.notNull(this.parent);
-	((SelectTag) this.parent).addOption(this.name, this.value);
-    }
+  @Override
+  public void doTag() throws JspException, IOException {
+    Asserts.notNull(this.parent);
+    ((SelectTag) this.parent).addOption(this.name, this.value);
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setName(String name) {
-	this.name = name;
-    }
+  @Attribute(required = true, rtexprvalue = true)
+  public void setName(String name) {
+    this.name = name;
+  }
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setValue(Object value) {
+    this.value = value;
+  }
 }

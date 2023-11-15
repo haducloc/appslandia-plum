@@ -34,22 +34,22 @@ import com.appslandia.common.utils.Asserts;
  */
 public class AuthHandlerProvider extends InitializeObject {
 
-    private Map<String, AuthHandler> authHandlerMap = new CaseInsensitiveMap<>();
+  private Map<String, AuthHandler> authHandlerMap = new CaseInsensitiveMap<>();
 
-    @Override
-    protected void init() throws Exception {
-	this.authHandlerMap = Collections.unmodifiableMap(this.authHandlerMap);
-    }
+  @Override
+  protected void init() throws Exception {
+    this.authHandlerMap = Collections.unmodifiableMap(this.authHandlerMap);
+  }
 
-    public void addAuthHandler(String module, AuthHandler impl) {
-	this.assertNotInitialized();
-	this.authHandlerMap.put(module, impl);
-    }
+  public void addAuthHandler(String module, AuthHandler impl) {
+    this.assertNotInitialized();
+    this.authHandlerMap.put(module, impl);
+  }
 
-    public AuthHandler getAuthHandler(String module) {
-	this.initialize();
+  public AuthHandler getAuthHandler(String module) {
+    this.initialize();
 
-	AuthHandler impl = this.authHandlerMap.get(module);
-	return Asserts.notNull(impl);
-    }
+    AuthHandler impl = this.authHandlerMap.get(module);
+    return Asserts.notNull(impl);
+  }
 }

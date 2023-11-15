@@ -35,90 +35,91 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "submitButton", bodyContent = "empty")
 public class SubmitButtonTag extends UITagBase {
 
-    protected String labelKey;
+  protected String labelKey;
 
-    protected String formAction;
-    protected boolean disabled;
-    protected boolean autofocus;
+  protected String formAction;
+  protected boolean disabled;
+  protected boolean autofocus;
 
-    protected boolean handleWait = true;
-    protected String _label;
+  protected boolean handleWait = true;
+  protected String _label;
 
-    @Override
-    protected String getTagName() {
-	return "button";
+  @Override
+  protected String getTagName() {
+    return "button";
+  }
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    this._label = getRequestContext().escXml(this.labelKey);
+  }
+
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    HtmlUtils.escAttribute(out, "type", "button");
+
+    if (this.hidden)
+      HtmlUtils.hidden(out);
+
+    if (this.disabled)
+      HtmlUtils.disabled(out);
+
+    if (this.autofocus)
+      HtmlUtils.autofocus(out);
+
+    HtmlUtils.escAttribute(out, "data-label", this._label);
+
+    String fAction = null;
+    if (this.formAction != null) {
+      fAction = "'" + formAction + "'";
     }
+    HtmlUtils.escAttribute(out, "onclick",
+        String.format("return __click_submit_btn(event, %s, %s);", this.handleWait, fAction));
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	this._label = getRequestContext().escXml(this.labelKey);
-    }
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	HtmlUtils.escAttribute(out, "type", "button");
+  @Override
+  protected boolean hasBody() {
+    return true;
+  }
 
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    out.write(this._label);
+  }
 
-	if (this.disabled)
-	    HtmlUtils.disabled(out);
+  @Attribute(required = true, rtexprvalue = false)
+  public void setLabelKey(String labelKey) {
+    this.labelKey = labelKey;
+  }
 
-	if (this.autofocus)
-	    HtmlUtils.autofocus(out);
+  @Attribute(required = false, rtexprvalue = false)
+  public void setFormAction(String formAction) {
+    this.formAction = formAction;
+  }
 
-	HtmlUtils.escAttribute(out, "data-label", this._label);
+  @Attribute(required = false, rtexprvalue = true)
+  public void setDisabled(boolean disabled) {
+    this.disabled = disabled;
+  }
 
-	String fAction = null;
-	if (this.formAction != null) {
-	    fAction = "'" + formAction + "'";
-	}
-	HtmlUtils.escAttribute(out, "onclick", String.format("return __click_submit_btn(event, %s, %s);", this.handleWait, fAction));
+  @Attribute(required = false, rtexprvalue = false)
+  public void setAutofocus(boolean autofocus) {
+    this.autofocus = autofocus;
+  }
 
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-    }
-
-    @Override
-    protected boolean hasBody() {
-	return true;
-    }
-
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	out.write(this._label);
-    }
-
-    @Attribute(required = true, rtexprvalue = false)
-    public void setLabelKey(String labelKey) {
-	this.labelKey = labelKey;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setFormAction(String formAction) {
-	this.formAction = formAction;
-    }
-
-    @Attribute(required = false, rtexprvalue = true)
-    public void setDisabled(boolean disabled) {
-	this.disabled = disabled;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setAutofocus(boolean autofocus) {
-	this.autofocus = autofocus;
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setHandleWait(boolean handleWait) {
-	this.handleWait = handleWait;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setHandleWait(boolean handleWait) {
+    this.handleWait = handleWait;
+  }
 }

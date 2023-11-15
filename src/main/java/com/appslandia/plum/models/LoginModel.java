@@ -34,38 +34,38 @@ import jakarta.validation.constraints.NotNull;
  */
 public class LoginModel {
 
-    @Bind(converter = Converter.STRING_LC)
-    @NotNull
-    @Username
-    private String username;
+  @Bind(converter = Converter.STRING_LC)
+  @NotNull
+  @Username
+  private String username;
 
-    @NotNull
-    @Password
-    private String password;
+  @NotNull
+  @Password
+  private String password;
 
-    private boolean rememberMe;
+  private boolean rememberMe;
 
-    public String getUsername() {
-	return this.username;
-    }
+  public String getUsername() {
+    return this.username;
+  }
 
-    public void setUsername(String username) {
-	this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public String getPassword() {
-	return this.password;
-    }
+  public String getPassword() {
+    return this.password;
+  }
 
-    public void setPassword(String password) {
-	this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public boolean isRememberMe() {
-	return this.rememberMe;
-    }
+  public boolean isRememberMe() {
+    return this.rememberMe;
+  }
 
-    public void setRememberMe(boolean rememberMe) {
-	this.rememberMe = rememberMe;
-    }
+  public void setRememberMe(boolean rememberMe) {
+    this.rememberMe = rememberMe;
+  }
 }

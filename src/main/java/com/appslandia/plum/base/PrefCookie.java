@@ -33,61 +33,61 @@ import com.appslandia.common.base.MapWrapper;
  *
  */
 public class PrefCookie extends MapWrapper<String, String> implements Config, Cloneable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String REQUEST_ATTRIBUTE_ID = "prefCookie";
-    public static final String PARAM_LANGUAGE = "language";
+  public static final String REQUEST_ATTRIBUTE_ID = "prefCookie";
+  public static final String PARAM_LANGUAGE = "language";
 
-    public static final PrefCookie EMPTY = new PrefCookie(Collections.emptyMap());
+  public static final PrefCookie EMPTY = new PrefCookie(Collections.emptyMap());
 
-    public PrefCookie() {
-	super(new LinkedHashMap<>());
+  public PrefCookie() {
+    super(new LinkedHashMap<>());
+  }
+
+  public PrefCookie(Map<String, String> newMap) {
+    super(newMap);
+  }
+
+  @Override
+  public String getString(String key) {
+    return this.map.get(key);
+  }
+
+  public PrefCookie set(String key, String value) {
+    this.map.put(key, value);
+    return this;
+  }
+
+  public PrefCookie set(String key, boolean value) {
+    this.map.put(key, Boolean.toString(value));
+    return this;
+  }
+
+  public PrefCookie set(String key, int value) {
+    this.map.put(key, Integer.toString(value));
+    return this;
+  }
+
+  public PrefCookie set(String key, long value) {
+    this.map.put(key, Long.toString(value));
+    return this;
+  }
+
+  public PrefCookie set(String key, float value) {
+    this.map.put(key, Float.toString(value));
+    return this;
+  }
+
+  public PrefCookie set(String key, double value) {
+    this.map.put(key, Double.toString(value));
+    return this;
+  }
+
+  @Override
+  public PrefCookie clone() {
+    if (this == EMPTY) {
+      return new PrefCookie();
     }
-
-    public PrefCookie(Map<String, String> newMap) {
-	super(newMap);
-    }
-
-    @Override
-    public String getString(String key) {
-	return this.map.get(key);
-    }
-
-    public PrefCookie set(String key, String value) {
-	this.map.put(key, value);
-	return this;
-    }
-
-    public PrefCookie set(String key, boolean value) {
-	this.map.put(key, Boolean.toString(value));
-	return this;
-    }
-
-    public PrefCookie set(String key, int value) {
-	this.map.put(key, Integer.toString(value));
-	return this;
-    }
-
-    public PrefCookie set(String key, long value) {
-	this.map.put(key, Long.toString(value));
-	return this;
-    }
-
-    public PrefCookie set(String key, float value) {
-	this.map.put(key, Float.toString(value));
-	return this;
-    }
-
-    public PrefCookie set(String key, double value) {
-	this.map.put(key, Double.toString(value));
-	return this;
-    }
-
-    @Override
-    public PrefCookie clone() {
-	if (this == EMPTY) {
-	    return new PrefCookie();
-	}
-	return new PrefCookie(new LinkedHashMap<>(this.map));
-    }
+    return new PrefCookie(new LinkedHashMap<>(this.map));
+  }
 }

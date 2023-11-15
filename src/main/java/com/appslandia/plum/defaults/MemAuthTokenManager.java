@@ -38,50 +38,50 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MemAuthTokenManager implements AuthTokenManager {
 
-    final Map<String, AuthToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
+  final Map<String, AuthToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
 
-    @Override
-    public void save(AuthToken authToken) {
-	this.tokenMap.put(authToken.getSeries(), copy(authToken));
+  @Override
+  public void save(AuthToken authToken) {
+    this.tokenMap.put(authToken.getSeries(), copy(authToken));
+  }
+
+  @Override
+  public AuthToken load(String series) {
+    AuthToken authToken = this.tokenMap.get(series);
+    if (authToken == null) {
+      return null;
     }
+    return copy(authToken);
+  }
 
-    @Override
-    public AuthToken load(String series) {
-	AuthToken authToken = this.tokenMap.get(series);
-	if (authToken == null) {
-	    return null;
-	}
-	return copy(authToken);
-    }
+  @Override
+  public void reissue(String series, String hashToken, long expiresAt, long issuedAt) {
+    AuthToken obj = this.tokenMap.get(series);
+    Asserts.notNull(obj);
 
-    @Override
-    public void reissue(String series, String hashToken, long expiresAt, long issuedAt) {
-	AuthToken obj = this.tokenMap.get(series);
-	Asserts.notNull(obj);
+    obj.setHashToken(hashToken);
+    obj.setExpiresAt(expiresAt);
+    obj.setIssuedAt(issuedAt);
+  }
 
-	obj.setHashToken(hashToken);
-	obj.setExpiresAt(expiresAt);
-	obj.setIssuedAt(issuedAt);
-    }
+  @Override
+  public void remove(String series) {
+    this.tokenMap.remove(series);
+  }
 
-    @Override
-    public void remove(String series) {
-	this.tokenMap.remove(series);
-    }
+  @Override
+  public void removeAll(String hashIdentity) {
+    this.tokenMap.entrySet().removeIf(e -> e.getValue().getHashIdentity().equals(hashIdentity));
+  }
 
-    @Override
-    public void removeAll(String hashIdentity) {
-	this.tokenMap.entrySet().removeIf(e -> e.getValue().getHashIdentity().equals(hashIdentity));
-    }
+  static AuthToken copy(AuthToken obj) {
+    AuthToken copy = new AuthToken();
+    copy.setSeries(obj.getSeries());
+    copy.setHashToken(obj.getHashToken());
+    copy.setHashIdentity(obj.getHashIdentity());
 
-    static AuthToken copy(AuthToken obj) {
-	AuthToken copy = new AuthToken();
-	copy.setSeries(obj.getSeries());
-	copy.setHashToken(obj.getHashToken());
-	copy.setHashIdentity(obj.getHashIdentity());
-
-	copy.setExpiresAt(obj.getExpiresAt());
-	copy.setIssuedAt(obj.getIssuedAt());
-	return copy;
-    }
+    copy.setExpiresAt(obj.getExpiresAt());
+    copy.setIssuedAt(obj.getIssuedAt());
+    return copy;
+  }
 }

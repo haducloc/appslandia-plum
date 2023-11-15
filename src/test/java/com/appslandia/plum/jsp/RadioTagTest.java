@@ -42,121 +42,126 @@ import jakarta.validation.constraints.NotNull;
  */
 public class RadioTagTest extends MockTestBase {
 
-    RadioTag tag = new RadioTag();
-    TestModel model = new TestModel();
+  RadioTag tag = new RadioTag();
+  TestModel model = new TestModel();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      model.setUserType(1);
+
+      tag.setPath("model.userType");
+      tag.setCodeValue(1);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_unchecked() {
+    try {
+      model.setUserType(2);
+
+      tag.setPath("model.userType");
+      tag.setCodeValue("1");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_checked_readonly() {
+    try {
+      model.setUserType(1);
+
+      tag.setPath("model.userType");
+      tag.setCodeValue("1");
+      tag.setReadonly(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"userType\" value=\"1\" type=\"hidden\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_unchecked_readonly() {
+    try {
+      model.setUserType(2);
+
+      tag.setPath("model.userType");
+      tag.setCodeValue("1");
+      tag.setReadonly(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" disabled=\"disabled\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  public static class TestModel {
+    @NotNull
+    private int userType;
+
+    public int getUserType() {
+      return userType;
     }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+    public void setUserType(int userType) {
+      this.userType = userType;
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+  @Controller("testController")
+  public static class TestController {
 
-	executeCurrent("GET", "http://localhost/app/testController/index");
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    model.setUserType(1);
-
-	    tag.setPath("model.userType");
-	    tag.setCodeValue(1);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unchecked() {
-	try {
-	    model.setUserType(2);
-
-	    tag.setPath("model.userType");
-	    tag.setCodeValue("1");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_checked_readonly() {
-	try {
-	    model.setUserType(1);
-
-	    tag.setPath("model.userType");
-	    tag.setCodeValue("1");
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals(
-		    "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"userType\" value=\"1\" type=\"hidden\" />",
-		    NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unchecked_readonly() {
-	try {
-	    model.setUserType(2);
-
-	    tag.setPath("model.userType");
-	    tag.setCodeValue("1");
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" disabled=\"disabled\" />", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    public static class TestModel {
-	@NotNull
-	private int userType;
-
-	public int getUserType() {
-	    return userType;
-	}
-
-	public void setUserType(int userType) {
-	    this.userType = userType;
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

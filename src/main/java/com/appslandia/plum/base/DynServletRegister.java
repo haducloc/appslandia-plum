@@ -38,89 +38,90 @@ import jakarta.servlet.ServletRegistration;
  */
 public class DynServletRegister extends InitializeObject {
 
-    private String servletName;
-    private Class<? extends Servlet> servletClass;
-    private String servletClassName;
+  private String servletName;
+  private Class<? extends Servlet> servletClass;
+  private String servletClassName;
 
-    private String[] urlPatterns;
-    final Map<String, String> initParameters = new HashMap<>();
+  private String[] urlPatterns;
+  final Map<String, String> initParameters = new HashMap<>();
 
-    private boolean asyncSupported;
-    private int loadOnStartup = -1;
+  private boolean asyncSupported;
+  private int loadOnStartup = -1;
 
-    private DynMultipartConfig multipartConfig;
+  private DynMultipartConfig multipartConfig;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.servletName);
-	Asserts.isTrue((this.servletClass != null) || (this.servletClassName != null), "No servlet provided.");
-	Asserts.hasElements(this.urlPatterns, "urlPatterns is required.");
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.servletName);
+    Asserts.isTrue((this.servletClass != null) || (this.servletClassName != null), "No servlet provided.");
+    Asserts.hasElements(this.urlPatterns, "urlPatterns is required.");
+  }
+
+  public DynServletRegister registerTo(ServletContext sc) {
+    initialize();
+
+    ServletRegistration.Dynamic reg = (this.servletClass != null) ? sc.addServlet(this.servletName, this.servletClass)
+        : sc.addServlet(this.servletName, this.servletClassName);
+    reg.addMapping(this.urlPatterns);
+    reg.setInitParameters(this.initParameters);
+
+    reg.setAsyncSupported(this.asyncSupported);
+    reg.setLoadOnStartup(this.loadOnStartup);
+
+    if (this.multipartConfig != null) {
+      reg.setMultipartConfig(this.multipartConfig.toMultipartConfigElement());
     }
+    return this;
+  }
 
-    public DynServletRegister registerTo(ServletContext sc) {
-	initialize();
+  public DynServletRegister servletName(String servletName) {
+    assertNotInitialized();
+    this.servletName = StringUtils.trimToNull(servletName);
+    return this;
+  }
 
-	ServletRegistration.Dynamic reg = (this.servletClass != null) ? sc.addServlet(this.servletName, this.servletClass) : sc.addServlet(this.servletName, this.servletClassName);
-	reg.addMapping(this.urlPatterns);
-	reg.setInitParameters(this.initParameters);
+  public DynServletRegister servletClassName(String servletClassName) {
+    assertNotInitialized();
+    this.servletClassName = StringUtils.trimToNull(servletClassName);
+    return this;
+  }
 
-	reg.setAsyncSupported(this.asyncSupported);
-	reg.setLoadOnStartup(this.loadOnStartup);
-
-	if (this.multipartConfig != null) {
-	    reg.setMultipartConfig(this.multipartConfig.toMultipartConfigElement());
-	}
-	return this;
+  public DynServletRegister servletClass(Class<? extends Servlet> servletClass) {
+    assertNotInitialized();
+    this.servletClass = servletClass;
+    if (this.servletName == null) {
+      this.servletName = StringUtils.trimToNull(servletClass.getSimpleName());
     }
+    return this;
+  }
 
-    public DynServletRegister servletName(String servletName) {
-	assertNotInitialized();
-	this.servletName = StringUtils.trimToNull(servletName);
-	return this;
-    }
+  public DynServletRegister urlPatterns(String... urlPatterns) {
+    assertNotInitialized();
+    this.urlPatterns = urlPatterns;
+    return this;
+  }
 
-    public DynServletRegister servletClassName(String servletClassName) {
-	assertNotInitialized();
-	this.servletClassName = StringUtils.trimToNull(servletClassName);
-	return this;
-    }
+  public DynServletRegister initParameter(String name, String value) {
+    assertNotInitialized();
+    this.initParameters.put(name, value);
+    return this;
+  }
 
-    public DynServletRegister servletClass(Class<? extends Servlet> servletClass) {
-	assertNotInitialized();
-	this.servletClass = servletClass;
-	if (this.servletName == null) {
-	    this.servletName = StringUtils.trimToNull(servletClass.getSimpleName());
-	}
-	return this;
-    }
+  public DynServletRegister asyncSupported(boolean asyncSupported) {
+    assertNotInitialized();
+    this.asyncSupported = asyncSupported;
+    return this;
+  }
 
-    public DynServletRegister urlPatterns(String... urlPatterns) {
-	assertNotInitialized();
-	this.urlPatterns = urlPatterns;
-	return this;
-    }
+  public DynServletRegister loadOnStartup(int loadOnStartup) {
+    assertNotInitialized();
+    this.loadOnStartup = loadOnStartup;
+    return this;
+  }
 
-    public DynServletRegister initParameter(String name, String value) {
-	assertNotInitialized();
-	this.initParameters.put(name, value);
-	return this;
-    }
-
-    public DynServletRegister asyncSupported(boolean asyncSupported) {
-	assertNotInitialized();
-	this.asyncSupported = asyncSupported;
-	return this;
-    }
-
-    public DynServletRegister loadOnStartup(int loadOnStartup) {
-	assertNotInitialized();
-	this.loadOnStartup = loadOnStartup;
-	return this;
-    }
-
-    public DynServletRegister multipartConfig(DynMultipartConfig multipartConfig) {
-	assertNotInitialized();
-	this.multipartConfig = multipartConfig;
-	return this;
-    }
+  public DynServletRegister multipartConfig(DynMultipartConfig multipartConfig) {
+    assertNotInitialized();
+    this.multipartConfig = multipartConfig;
+    return this;
+  }
 }

@@ -47,45 +47,46 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultActionFilterProviderFactory implements CDIFactory<ActionFilterProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public ActionFilterProvider produce() {
-	final ActionFilterProvider impl = new ActionFilterProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public ActionFilterProvider produce() {
+    final ActionFilterProvider impl = new ActionFilterProvider();
 
-	CDIUtils.scanReferences(this.beanManager, ActionFilter.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class, (mappedId, bi) -> {
+    CDIUtils.scanReferences(this.beanManager, ActionFilter.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
+        (mappedId, bi) -> {
 
-	    impl.addActionFilter(mappedId.value(), bi.get());
+          impl.addActionFilter(mappedId.value(), bi.get());
 
-	    beanInstances.add(bi);
-	});
+          beanInstances.add(bi);
+        });
 
-	// @Supplier(ActionFilter.class)
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ActionFilter.class, (bi) -> {
+    // @Supplier(ActionFilter.class)
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ActionFilter.class, (bi) -> {
 
-	    Map<String, ActionFilter> m = ObjectUtils.cast(bi.get().get());
+      Map<String, ActionFilter> m = ObjectUtils.cast(bi.get().get());
 
-	    for (Entry<String, ActionFilter> entry : m.entrySet()) {
+      for (Entry<String, ActionFilter> entry : m.entrySet()) {
 
-		impl.addActionFilter(entry.getKey(), entry.getValue());
-	    }
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+        impl.addActionFilter(entry.getKey(), entry.getValue());
+      }
+      beanInstances.add(bi);
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes ActionFilterProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes ActionFilterProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

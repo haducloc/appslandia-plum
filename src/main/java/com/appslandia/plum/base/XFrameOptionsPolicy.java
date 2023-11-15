@@ -32,14 +32,14 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class XFrameOptionsPolicy implements HeaderPolicy {
 
-    final String xFrameOptions;
+  final String xFrameOptions;
 
-    public XFrameOptionsPolicy(XFrameOptions builder) {
-	this.xFrameOptions = Asserts.notNull(builder.toString());
-    }
+  public XFrameOptionsPolicy(XFrameOptions builder) {
+    this.xFrameOptions = Asserts.notNull(builder.toString());
+  }
 
-    @Override
-    public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
-	response.setHeader("X-Frame-Options", this.xFrameOptions);
-    }
+  @Override
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
+    response.setHeader("X-Frame-Options", this.xFrameOptions);
+  }
 }

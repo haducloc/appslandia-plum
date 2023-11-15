@@ -43,60 +43,62 @@ import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
  */
 public abstract class IdentityStoreHandlerBase extends InitializeObject implements IdentityStoreHandler {
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    protected List<IdentityStore> identityStores = new ArrayList<>();
+  protected List<IdentityStore> identityStores = new ArrayList<>();
 
-    @Override
-    protected void init() throws Exception {
-	this.identityStores = Collections.unmodifiableList(this.identityStores);
+  @Override
+  protected void init() throws Exception {
+    this.identityStores = Collections.unmodifiableList(this.identityStores);
+  }
+
+  @Override
+  public CredentialValidationResult validate(Credential credential) {
+    this.initialize();
+
+    // Not AuthCredential?
+    if (!(credential instanceof AuthCredential)) {
+      this.appLogger.warn(
+          "HttpAuthenticationMechanismBase is not being used. Returning CredentialValidationResult.NOT_VALIDATED_RESULT");
+
+      return CredentialValidationResult.NOT_VALIDATED_RESULT;
+    }
+    AuthCredential authCredential = (AuthCredential) credential;
+    CredentialValidationResult result = null;
+
+    // RULES: First store that returns Status is not NOT_VALIDATED will be used
+    // Only IdentityStoreBase validated
+
+    for (IdentityStore store : this.identityStores) {
+      if (!(store instanceof IdentityStoreBase)) {
+        continue;
+      }
+      if (!store.validationTypes().contains(ValidationType.VALIDATE)) {
+        continue;
+      }
+
+      // Validate authCredential
+      result = store.validate(authCredential);
+
+      if (result.getStatus() != Status.NOT_VALIDATED) {
+        break;
+      }
     }
 
-    @Override
-    public CredentialValidationResult validate(Credential credential) {
-	this.initialize();
+    // NOT_VALIDATED
+    if ((result == null) || (result.getStatus() == Status.NOT_VALIDATED)) {
+      this.appLogger
+          .warn(STR.fmt("No identity store found for validating credential type '{}'.", credential.getClass()));
 
-	// Not AuthCredential?
-	if (!(credential instanceof AuthCredential)) {
-	    this.appLogger.warn("HttpAuthenticationMechanismBase is not being used. Returning CredentialValidationResult.NOT_VALIDATED_RESULT");
-
-	    return CredentialValidationResult.NOT_VALIDATED_RESULT;
-	}
-	AuthCredential authCredential = (AuthCredential) credential;
-	CredentialValidationResult result = null;
-
-	// RULES: First store that returns Status is not NOT_VALIDATED will be used
-	// Only IdentityStoreBase validated
-
-	for (IdentityStore store : this.identityStores) {
-	    if (!(store instanceof IdentityStoreBase)) {
-		continue;
-	    }
-	    if (!store.validationTypes().contains(ValidationType.VALIDATE)) {
-		continue;
-	    }
-
-	    // Validate authCredential
-	    result = store.validate(authCredential);
-
-	    if (result.getStatus() != Status.NOT_VALIDATED) {
-		break;
-	    }
-	}
-
-	// NOT_VALIDATED
-	if ((result == null) || (result.getStatus() == Status.NOT_VALIDATED)) {
-	    this.appLogger.warn(STR.fmt("No identity store found for validating credential type '{}'.", credential.getClass()));
-
-	    return CredentialValidationResult.NOT_VALIDATED_RESULT;
-	}
-
-	// INVALID
-	if (result.getStatus() == Status.INVALID) {
-	    return result;
-	}
-	AuthUserPrincipal principal = new AuthUserPrincipal((UserPrincipal) result.getCallerPrincipal(), authCredential);
-	return new CredentialValidationResult(principal, result.getCallerGroups());
+      return CredentialValidationResult.NOT_VALIDATED_RESULT;
     }
+
+    // INVALID
+    if (result.getStatus() == Status.INVALID) {
+      return result;
+    }
+    AuthUserPrincipal principal = new AuthUserPrincipal((UserPrincipal) result.getCallerPrincipal(), authCredential);
+    return new CredentialValidationResult(principal, result.getCallerGroups());
+  }
 }

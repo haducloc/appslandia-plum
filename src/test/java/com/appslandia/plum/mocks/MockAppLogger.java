@@ -31,24 +31,24 @@ import com.appslandia.common.logging.AppLogger;
  */
 public class MockAppLogger implements AppLogger {
 
-    @Override
-    public boolean isLoggable(Level level) {
-	return false;
-    }
+  @Override
+  public boolean isLoggable(Level level) {
+    return false;
+  }
 
-    @Override
-    public void log(Level level, String message) {
-    }
+  @Override
+  public void log(Level level, String message) {
+  }
 
-    @Override
-    public void log(Level level, String message, Throwable exception) {
-    }
+  @Override
+  public void log(Level level, String message, Throwable exception) {
+  }
 
-    @Override
-    public void log(Level level, Supplier<String> msgSupplier) {
-    }
+  @Override
+  public void log(Level level, Supplier<String> msgSupplier) {
+  }
 
-    @Override
-    public void log(Level level, Supplier<String> msgSupplier, Throwable exception) {
-    }
+  @Override
+  public void log(Level level, Supplier<String> msgSupplier, Throwable exception) {
+  }
 }

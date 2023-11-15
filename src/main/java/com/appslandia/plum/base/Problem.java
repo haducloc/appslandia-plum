@@ -34,144 +34,144 @@ import com.appslandia.common.utils.Asserts;
  * @see <a href="https://tools.ietf.org/html/rfc7807"></a>
  */
 public class Problem implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    // 4XX, 5XX
-    private Integer status;
+  // 4XX, 5XX
+  private Integer status;
 
-    @JsonIgnore
-    private ResKey titleKey;
-    private String title;
+  @JsonIgnore
+  private ResKey titleKey;
+  private String title;
 
-    @JsonIgnore
-    private ResKey detailKey;
-    private String detail;
+  @JsonIgnore
+  private ResKey detailKey;
+  private String detail;
 
-    private String type;
-    private String instance;
-    private Map<String, Object> extensions;
+  private String type;
+  private String instance;
+  private Map<String, Object> extensions;
 
-    @JsonIgnore
-    private Throwable exception;
-    private String stackTrace;
+  @JsonIgnore
+  private Throwable exception;
+  private String stackTrace;
 
-    private ModelState modelState;
+  private ModelState modelState;
 
-    public Integer getStatus() {
-	return this.status;
+  public Integer getStatus() {
+    return this.status;
+  }
+
+  public Problem setStatus(Integer status) {
+    Asserts.isTrue((status == null) || ((400 <= status) && (status < 600))); // 4XX, 5XX
+    this.status = status;
+    return this;
+  }
+
+  public ResKey getTitleKey() {
+    return this.titleKey;
+  }
+
+  public Problem setTitleKey(ResKey titleKey) {
+    this.titleKey = titleKey;
+    return this;
+  }
+
+  public Problem setTitleKey(String titleKey) {
+    return setTitleKey(new ResKey(titleKey));
+  }
+
+  public String getTitle() {
+    return this.title;
+  }
+
+  public Problem setTitle(String title) {
+    this.title = title;
+    return this;
+  }
+
+  public ResKey getDetailKey() {
+    return this.detailKey;
+  }
+
+  public Problem setDetailKey(ResKey detailKey) {
+    this.detailKey = detailKey;
+    return this;
+  }
+
+  public Problem setDetailKey(String detailKey) {
+    return setDetailKey(new ResKey(detailKey));
+  }
+
+  public String getDetail() {
+    return this.detail;
+  }
+
+  public Problem setDetail(String detail) {
+    this.detail = detail;
+    return this;
+  }
+
+  public String getType() {
+    return this.type;
+  }
+
+  public Problem setType(String type) {
+    this.type = type;
+    return this;
+  }
+
+  public String getInstance() {
+    return this.instance;
+  }
+
+  public Problem setInstance(String instance) {
+    this.instance = instance;
+    return this;
+  }
+
+  public Map<String, Object> getExtensions() {
+    return this.extensions;
+  }
+
+  public Problem setExtensions(Map<String, Object> extensions) {
+    this.extensions = extensions;
+    return this;
+  }
+
+  public Problem addExtension(String key, Object value) {
+    Asserts.notNull(key);
+
+    if (this.extensions == null) {
+      this.extensions = new LinkedHashMap<>();
     }
+    this.extensions.put(key, value);
+    return this;
+  }
 
-    public Problem setStatus(Integer status) {
-	Asserts.isTrue((status == null) || ((400 <= status) && (status < 600))); // 4XX, 5XX
-	this.status = status;
-	return this;
-    }
+  public Throwable getException() {
+    return this.exception;
+  }
 
-    public ResKey getTitleKey() {
-	return this.titleKey;
-    }
+  public Problem setException(Throwable exception) {
+    this.exception = exception;
+    return this;
+  }
 
-    public Problem setTitleKey(ResKey titleKey) {
-	this.titleKey = titleKey;
-	return this;
-    }
+  public String getStackTrace() {
+    return this.stackTrace;
+  }
 
-    public Problem setTitleKey(String titleKey) {
-	return setTitleKey(new ResKey(titleKey));
-    }
+  public Problem setStackTrace(String stackTrace) {
+    this.stackTrace = stackTrace;
+    return this;
+  }
 
-    public String getTitle() {
-	return this.title;
-    }
+  public ModelState getModelState() {
+    return this.modelState;
+  }
 
-    public Problem setTitle(String title) {
-	this.title = title;
-	return this;
-    }
-
-    public ResKey getDetailKey() {
-	return this.detailKey;
-    }
-
-    public Problem setDetailKey(ResKey detailKey) {
-	this.detailKey = detailKey;
-	return this;
-    }
-
-    public Problem setDetailKey(String detailKey) {
-	return setDetailKey(new ResKey(detailKey));
-    }
-
-    public String getDetail() {
-	return this.detail;
-    }
-
-    public Problem setDetail(String detail) {
-	this.detail = detail;
-	return this;
-    }
-
-    public String getType() {
-	return this.type;
-    }
-
-    public Problem setType(String type) {
-	this.type = type;
-	return this;
-    }
-
-    public String getInstance() {
-	return this.instance;
-    }
-
-    public Problem setInstance(String instance) {
-	this.instance = instance;
-	return this;
-    }
-
-    public Map<String, Object> getExtensions() {
-	return this.extensions;
-    }
-
-    public Problem setExtensions(Map<String, Object> extensions) {
-	this.extensions = extensions;
-	return this;
-    }
-
-    public Problem addExtension(String key, Object value) {
-	Asserts.notNull(key);
-
-	if (this.extensions == null) {
-	    this.extensions = new LinkedHashMap<>();
-	}
-	this.extensions.put(key, value);
-	return this;
-    }
-
-    public Throwable getException() {
-	return this.exception;
-    }
-
-    public Problem setException(Throwable exception) {
-	this.exception = exception;
-	return this;
-    }
-
-    public String getStackTrace() {
-	return this.stackTrace;
-    }
-
-    public Problem setStackTrace(String stackTrace) {
-	this.stackTrace = stackTrace;
-	return this;
-    }
-
-    public ModelState getModelState() {
-	return this.modelState;
-    }
-
-    public Problem setModelState(ModelState modelState) {
-	this.modelState = modelState;
-	return this;
-    }
+  public Problem setModelState(ModelState modelState) {
+    this.modelState = modelState;
+    return this;
+  }
 }

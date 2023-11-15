@@ -56,44 +56,45 @@ import jakarta.servlet.http.HttpServletResponse;
 @CacheControl(nocache = true)
 public class DefaultCaptchaController {
 
-    @Inject
-    protected SimpleCaptchaManager captchaManager;
+  @Inject
+  protected SimpleCaptchaManager captchaManager;
 
-    @Inject
-    protected CaptchaProducer captchaProducer;
+  @Inject
+  protected CaptchaProducer captchaProducer;
 
-    @Inject
-    protected ActionParser actionParser;
+  @Inject
+  protected ActionParser actionParser;
 
-    @HttpGetPost
-    public Result index(RequestAccessor request, HttpServletResponse response) throws Exception {
-	this.captchaManager.initCaptcha(request);
+  @HttpGetPost
+  public Result index(RequestAccessor request, HttpServletResponse response) throws Exception {
+    this.captchaManager.initCaptcha(request);
 
-	String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
-	Map<String, Object> params = new Params().set(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
+    String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
+    Map<String, Object> params = new Params().set(SimpleCaptchaManager.PARAM_CAPTCHA_ID, captchaId);
 
-	String wordsUrl = this.actionParser.toActionUrl(request, "captcha", "words", params, false);
-	return new Result().setData(captchaId).setLink(response.encodeURL(wordsUrl));
+    String wordsUrl = this.actionParser.toActionUrl(request, "captcha", "words", params, false);
+    return new Result().setData(captchaId).setLink(response.encodeURL(wordsUrl));
+  }
+
+  @HttpGet
+  public ActionResult words(RequestAccessor request) throws Exception {
+    String captchaWords = this.captchaManager.getCaptchaWords(request);
+    if (captchaWords == null) {
+      throw new BadRequestException(request.res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
     }
+    final BufferedImage img = this.captchaProducer.produce(captchaWords);
 
-    @HttpGet
-    public ActionResult words(RequestAccessor request) throws Exception {
-	String captchaWords = this.captchaManager.getCaptchaWords(request);
-	if (captchaWords == null) {
-	    throw new BadRequestException(request.res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
-	}
-	final BufferedImage img = this.captchaProducer.produce(captchaWords);
+    return new ActionResult() {
 
-	return new ActionResult() {
+      @Override
+      public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+          throws Exception {
+        response.setContentType("image/png");
 
-	    @Override
-	    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-		response.setContentType("image/png");
-
-		try (OutputStream os = response.getOutputStream()) {
-		    ImageIO.write(img, "png", os);
-		}
-	    }
-	};
-    }
+        try (OutputStream os = response.getOutputStream()) {
+          ImageIO.write(img, "png", os);
+        }
+      }
+    };
+  }
 }

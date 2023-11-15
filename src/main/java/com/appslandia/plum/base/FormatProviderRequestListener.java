@@ -33,18 +33,19 @@ import jakarta.servlet.annotation.WebListener;
 @WebListener
 public class FormatProviderRequestListener implements ServletRequestListener {
 
-    @Inject
-    protected FormatProviderManager formatProviderManager;
+  @Inject
+  protected FormatProviderManager formatProviderManager;
 
-    @Override
-    public void requestDestroyed(ServletRequestEvent sre) {
-	if (sre.getServletRequest().isAsyncStarted()) {
-	    return;
-	}
-	RequestContext requestContext = (RequestContext) sre.getServletRequest().getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-	if (requestContext == null) {
-	    return;
-	}
-	this.formatProviderManager.put(requestContext.getLanguage(), requestContext.getFormatProvider());
+  @Override
+  public void requestDestroyed(ServletRequestEvent sre) {
+    if (sre.getServletRequest().isAsyncStarted()) {
+      return;
     }
+    RequestContext requestContext = (RequestContext) sre.getServletRequest()
+        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
+    if (requestContext == null) {
+      return;
+    }
+    this.formatProviderManager.put(requestContext.getLanguage(), requestContext.getFormatProvider());
+  }
 }

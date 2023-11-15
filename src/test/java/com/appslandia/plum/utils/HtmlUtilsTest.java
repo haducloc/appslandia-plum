@@ -34,33 +34,33 @@ import com.appslandia.common.base.StringWriter;
  */
 public class HtmlUtilsTest {
 
-    @Test
-    public void test_escAttribute() {
-	StringWriter out = new StringWriter();
-	try {
-	    HtmlUtils.escAttribute(out, "title", "test < title");
-	    Assertions.assertTrue(out.toString().contains("title=\"test &lt; title\""));
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-	out = new StringWriter();
-	try {
-	    HtmlUtils.escAttribute(out, "title", "");
-	    Assertions.assertTrue(out.toString().contains("title=\"\""));
-	} catch (IOException ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+  @Test
+  public void test_escAttribute() {
+    StringWriter out = new StringWriter();
+    try {
+      HtmlUtils.escAttribute(out, "title", "test < title");
+      Assertions.assertTrue(out.toString().contains("title=\"test &lt; title\""));
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
-
-    @Test
-    public void test_toTagId() {
-	String id = HtmlUtils.toValueTagId("user.userName");
-	Assertions.assertEquals("user_userName", id);
-
-	id = HtmlUtils.toValueTagId("user.location.address");
-	Assertions.assertEquals("user_location_address", id);
-
-	id = HtmlUtils.toValueTagId("user.addresses[1].location");
-	Assertions.assertEquals("user_addresses_1__location", id);
+    out = new StringWriter();
+    try {
+      HtmlUtils.escAttribute(out, "title", "");
+      Assertions.assertTrue(out.toString().contains("title=\"\""));
+    } catch (IOException ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
+
+  @Test
+  public void test_toTagId() {
+    String id = HtmlUtils.toValueTagId("user.userName");
+    Assertions.assertEquals("user_userName", id);
+
+    id = HtmlUtils.toValueTagId("user.location.address");
+    Assertions.assertEquals("user_location_address", id);
+
+    id = HtmlUtils.toValueTagId("user.addresses[1].location");
+    Assertions.assertEquals("user_addresses_1__location", id);
+  }
 }

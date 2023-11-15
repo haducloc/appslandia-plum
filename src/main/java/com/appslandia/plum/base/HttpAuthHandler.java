@@ -34,46 +34,48 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class HttpAuthHandler implements AuthHandler {
 
-    protected abstract Credential createCredential(String credential) throws Exception;
+  protected abstract Credential createCredential(String credential) throws Exception;
 
-    @Override
-    public Credential parseCredential(HttpServletRequest request) {
-	String authorization = request.getHeader("Authorization");
-	if (authorization == null) {
-	    return null;
-	}
-	int idx = authorization.indexOf(' ');
-	if (idx <= 0) {
-	    return null;
-	}
-	String authMethod = authorization.substring(0, idx);
-	String credential = authorization.substring(idx + 1);
-
-	if (!getAuthMethod().equalsIgnoreCase(authMethod)) {
-	    return null;
-	}
-	if (credential.isEmpty()) {
-	    return null;
-	}
-	try {
-	    return createCredential(credential);
-	} catch (Exception ex) {
-	    return null;
-	}
+  @Override
+  public Credential parseCredential(HttpServletRequest request) {
+    String authorization = request.getHeader("Authorization");
+    if (authorization == null) {
+      return null;
     }
-
-    @Override
-    public boolean isRememberMe(HttpMessageContext httpMessageContext) {
-	return Boolean.TRUE.toString().equalsIgnoreCase(httpMessageContext.getRequest().getParameter("rememberMe"));
+    int idx = authorization.indexOf(' ');
+    if (idx <= 0) {
+      return null;
     }
+    String authMethod = authorization.substring(0, idx);
+    String credential = authorization.substring(idx + 1);
 
-    @Override
-    public void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	ServletUtils.setWWWAuthenticate(response, getAuthMethod(), requestContext.getModule());
+    if (!getAuthMethod().equalsIgnoreCase(authMethod)) {
+      return null;
     }
+    if (credential.isEmpty()) {
+      return null;
+    }
+    try {
+      return createCredential(credential);
+    } catch (Exception ex) {
+      return null;
+    }
+  }
 
-    @Override
-    public void askReauthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public boolean isRememberMe(HttpMessageContext httpMessageContext) {
+    return Boolean.TRUE.toString().equalsIgnoreCase(httpMessageContext.getRequest().getParameter("rememberMe"));
+  }
+
+  @Override
+  public void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    ServletUtils.setWWWAuthenticate(response, getAuthMethod(), requestContext.getModule());
+  }
+
+  @Override
+  public void askReauthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    throw new UnsupportedOperationException();
+  }
 }

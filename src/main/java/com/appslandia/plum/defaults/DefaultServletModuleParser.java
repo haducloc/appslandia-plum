@@ -33,8 +33,8 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class DefaultServletModuleParser implements ServletModuleParser {
 
-    @Override
-    public String parseModule(HttpServletRequest request) {
-	return null;
-    }
+  @Override
+  public String parseModule(HttpServletRequest request) {
+    return null;
+  }
 }

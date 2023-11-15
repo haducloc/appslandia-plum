@@ -27,60 +27,60 @@ package com.appslandia.plum.base;
  */
 public class PagerItem {
 
-    static final int TYPE_INDEX = 1;
-    static final int TYPE_DOT = 2;
-    static final int TYPE_PREV = 3;
-    static final int TYPE_NEXT = 4;
+  static final int TYPE_INDEX = 1;
+  static final int TYPE_DOT = 2;
+  static final int TYPE_PREV = 3;
+  static final int TYPE_NEXT = 4;
 
-    private int type;
-    private int index;
+  private int type;
+  private int index;
 
-    public PagerItem(int type, int index) {
-	this.type = type;
-	this.index = index;
+  public PagerItem(int type, int index) {
+    this.type = type;
+    this.index = index;
+  }
+
+  public int getType() {
+    return this.type;
+  }
+
+  public int getIndex() {
+    return this.index;
+  }
+
+  public boolean isIndexType() {
+    return this.type == TYPE_INDEX;
+  }
+
+  public boolean isDotType() {
+    return this.type == TYPE_DOT;
+  }
+
+  public boolean isPrevType() {
+    return this.type == TYPE_PREV;
+  }
+
+  public boolean isNextType() {
+    return this.type == TYPE_NEXT;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 1, p = 31;
+    hash = p * hash + this.type;
+    hash = p * hash + this.index;
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-
-    public int getType() {
-	return this.type;
+    if (!(obj instanceof PagerItem)) {
+      return false;
     }
-
-    public int getIndex() {
-	return this.index;
-    }
-
-    public boolean isIndexType() {
-	return this.type == TYPE_INDEX;
-    }
-
-    public boolean isDotType() {
-	return this.type == TYPE_DOT;
-    }
-
-    public boolean isPrevType() {
-	return this.type == TYPE_PREV;
-    }
-
-    public boolean isNextType() {
-	return this.type == TYPE_NEXT;
-    }
-
-    @Override
-    public int hashCode() {
-	int hash = 1, p = 31;
-	hash = p * hash + this.type;
-	hash = p * hash + this.index;
-	return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (!(obj instanceof PagerItem)) {
-	    return false;
-	}
-	PagerItem another = (PagerItem) obj;
-	return (this.type == another.type) && (this.index == another.index);
-    }
+    PagerItem another = (PagerItem) obj;
+    return (this.type == another.type) && (this.index == another.index);
+  }
 }

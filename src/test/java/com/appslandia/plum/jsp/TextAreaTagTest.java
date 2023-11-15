@@ -40,59 +40,60 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class TextAreaTagTest extends MockTestBase {
 
-    TextAreaTag tag = new TextAreaTag();
-    TestModel model = new TestModel();
+  TextAreaTag tag = new TextAreaTag();
+  TestModel model = new TestModel();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      tag.setPath("model.notes");
+      model.setNotes("testNotes");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("<textarea id=\"notes\" name=\"notes\">testNotes</textarea>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  public static class TestModel {
+    private String notes;
+
+    public String getNotes() {
+      return this.notes;
     }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+    public void setNotes(String notes) {
+      this.notes = notes;
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    tag.setPath("model.notes");
-	    model.setNotes("testNotes");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<textarea id=\"notes\" name=\"notes\">testNotes</textarea>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    public static class TestModel {
-	private String notes;
-
-	public String getNotes() {
-	    return this.notes;
-	}
-
-	public void setNotes(String notes) {
-	    this.notes = notes;
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

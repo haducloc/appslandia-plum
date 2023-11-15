@@ -32,10 +32,10 @@ import io.pebbletemplates.pebble.extension.DynamicNamedArguments;
  */
 public abstract class DynPebbleFunction extends PebbleFunction implements DynamicNamedArguments {
 
-    private static final List<String> DYN_NAMED_ARGS = Arrays.asList("dynamicNamedArguments");
+  private static final List<String> DYN_NAMED_ARGS = Arrays.asList("dynamicNamedArguments");
 
-    @Override
-    public List<String> getArgumentNames() {
-	return DYN_NAMED_ARGS;
-    }
+  @Override
+  public List<String> getArgumentNames() {
+    return DYN_NAMED_ARGS;
+  }
 }

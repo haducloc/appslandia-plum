@@ -36,31 +36,32 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "const", dynamicAttributes = false)
 public class ConstTag extends TagBase {
 
-    protected String group;
-    protected Object value;
+  protected String group;
+  protected Object value;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	if (this.value == null) {
-	    return;
-	}
-	ConstDescProvider constDescProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), ConstDescProvider.class);
-	String descKey = constDescProvider.getDescKey(this.group, this.value);
-
-	if (descKey != null) {
-	    this.pageContext.getOut().write(this.getRequestContext().escXml(descKey));
-	} else {
-	    XmlEscaper.escapeXml(this.pageContext.getOut(), this.value.toString());
-	}
+  @Override
+  public void doTag() throws JspException, IOException {
+    if (this.value == null) {
+      return;
     }
+    ConstDescProvider constDescProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
+        ConstDescProvider.class);
+    String descKey = constDescProvider.getDescKey(this.group, this.value);
 
-    @Attribute(required = true, rtexprvalue = false)
-    public void setGroup(String group) {
-	this.group = group;
+    if (descKey != null) {
+      this.pageContext.getOut().write(this.getRequestContext().escXml(descKey));
+    } else {
+      XmlEscaper.escapeXml(this.pageContext.getOut(), this.value.toString());
     }
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
-    }
+  @Attribute(required = true, rtexprvalue = false)
+  public void setGroup(String group) {
+    this.group = group;
+  }
+
+  @Attribute(required = true, rtexprvalue = true)
+  public void setValue(Object value) {
+    this.value = value;
+  }
 }

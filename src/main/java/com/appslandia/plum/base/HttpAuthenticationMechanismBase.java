@@ -41,111 +41,119 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticationMechanism {
 
-    @Inject
-    protected IdentityStoreHandler identityStoreHandler;
+  @Inject
+  protected IdentityStoreHandler identityStoreHandler;
 
-    @Inject
-    protected AuthHandlerProvider authHandlerProvider;
+  @Inject
+  protected AuthHandlerProvider authHandlerProvider;
 
-    @Inject
-    protected RequestContextParser requestContextParser;
+  @Inject
+  protected RequestContextParser requestContextParser;
 
-    /**
-     * 
-     * @param request
-     * @param response
-     * @param httpMessageContext
-     * @return AuthenticationStatus.SUCCESS or AuthenticationStatus.NOT_DONE
-     * @throws AuthenticationException
-     */
-    @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
-	// AuthHandler
-	RequestContext requestContext = this.requestContextParser.parse(request, response);
-	AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
+  /**
+   * 
+   * @param request
+   * @param response
+   * @param httpMessageContext
+   * @return AuthenticationStatus.SUCCESS or AuthenticationStatus.NOT_DONE
+   * @throws AuthenticationException
+   */
+  @Override
+  public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response,
+      HttpMessageContext httpMessageContext) throws AuthenticationException {
+    // AuthHandler
+    RequestContext requestContext = this.requestContextParser.parse(request, response);
+    AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
 
-	// Credential
-	Credential credential = httpMessageContext.isAuthenticationRequest() ? httpMessageContext.getAuthParameters().getCredential() : authHandler.parseCredential(request);
-	if (credential == null) {
-	    return httpMessageContext.doNothing();
-	}
-
-	// AuthCredential
-	AuthenticationParameters parameters = httpMessageContext.getAuthParameters();
-	boolean reauthentication = (parameters instanceof AuthParameters) ? ((AuthParameters) parameters).isReauthentication() : authHandler.isReauthentication(request);
-
-	AuthCredential authCredential = new AuthCredential(credential, requestContext.getModule(), httpMessageContext.isAuthenticationRequest(), reauthentication,
-		parameters.isRememberMe());
-
-	// Validate authCredential
-	CredentialValidationResult result = null;
-	try {
-	    result = this.identityStoreHandler.validate(authCredential);
-	} catch (RuntimeException ex) {
-	    result = InvalidAuthResult.ID_STORE_EXCEPTION;
-	}
-
-	// Store CredentialValidationResult
-	request.setAttribute(CredentialValidationResult.class.getName(), result);
-
-	// VALID
-	if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-	    return httpMessageContext.notifyContainerAboutLogin(result);
-	}
-	return httpMessageContext.doNothing();
+    // Credential
+    Credential credential = httpMessageContext.isAuthenticationRequest()
+        ? httpMessageContext.getAuthParameters().getCredential()
+        : authHandler.parseCredential(request);
+    if (credential == null) {
+      return httpMessageContext.doNothing();
     }
 
-    @Override
-    public AuthenticationStatus secureResponse(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
-	RequestContext requestContext = this.requestContextParser.parse(request, response);
-	AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
-	return authHandler.secureResponse(request, response, httpMessageContext);
+    // AuthCredential
+    AuthenticationParameters parameters = httpMessageContext.getAuthParameters();
+    boolean reauthentication = (parameters instanceof AuthParameters)
+        ? ((AuthParameters) parameters).isReauthentication()
+        : authHandler.isReauthentication(request);
+
+    AuthCredential authCredential = new AuthCredential(credential, requestContext.getModule(),
+        httpMessageContext.isAuthenticationRequest(), reauthentication, parameters.isRememberMe());
+
+    // Validate authCredential
+    CredentialValidationResult result = null;
+    try {
+      result = this.identityStoreHandler.validate(authCredential);
+    } catch (RuntimeException ex) {
+      result = InvalidAuthResult.ID_STORE_EXCEPTION;
     }
 
-    private static final String REQUEST_ATTRIBUTE_CLEAN_SUBJECT = HttpAuthenticationMechanismBase.class.getName() + ".cleanSubject";
+    // Store CredentialValidationResult
+    request.setAttribute(CredentialValidationResult.class.getName(), result);
 
-    @Override
-    public void cleanSubject(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
-	// FIX: cleanSubject was called twice
-	if (request.getAttribute(REQUEST_ATTRIBUTE_CLEAN_SUBJECT) == null) {
-	    request.setAttribute(REQUEST_ATTRIBUTE_CLEAN_SUBJECT, true);
-
-	    String module = ServletUtils.getRequestContext(request).getModule();
-	    AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(module);
-	    authHandler.cleanSubject(request, response, httpMessageContext);
-	}
+    // VALID
+    if (result.getStatus() == CredentialValidationResult.Status.VALID) {
+      return httpMessageContext.notifyContainerAboutLogin(result);
     }
+    return httpMessageContext.doNothing();
+  }
 
-    // @RememberMe(
-    // isRememberMeExpression = "#{self.rememberMe(httpMessageContext)}",
-    // cookieName = "#{self.rememberMeCookieName()}",
-    // cookieMaxAgeSecondsExpression = "#{self.rememberMeCookieAge()}",
-    // cookieSecureOnlyExpression="#{self.rememberMeCookieSecure()}",
-    // cookieHttpOnlyExpression="#{self.rememberMeCookieHttpOnly()}"
-    // )
+  @Override
+  public AuthenticationStatus secureResponse(HttpServletRequest request, HttpServletResponse response,
+      HttpMessageContext httpMessageContext) throws AuthenticationException {
+    RequestContext requestContext = this.requestContextParser.parse(request, response);
+    AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
+    return authHandler.secureResponse(request, response, httpMessageContext);
+  }
 
-    @Inject
-    protected AppConfig appConfig;
+  private static final String REQUEST_ATTRIBUTE_CLEAN_SUBJECT = HttpAuthenticationMechanismBase.class.getName()
+      + ".cleanSubject";
 
-    public boolean rememberMe(HttpMessageContext httpMessageContext) {
-	String module = ServletUtils.getRequestContext(httpMessageContext.getRequest()).getModule();
-	AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(module);
-	return authHandler.isRememberMe(httpMessageContext);
+  @Override
+  public void cleanSubject(HttpServletRequest request, HttpServletResponse response,
+      HttpMessageContext httpMessageContext) {
+    // FIX: cleanSubject was called twice
+    if (request.getAttribute(REQUEST_ATTRIBUTE_CLEAN_SUBJECT) == null) {
+      request.setAttribute(REQUEST_ATTRIBUTE_CLEAN_SUBJECT, true);
+
+      String module = ServletUtils.getRequestContext(request).getModule();
+      AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(module);
+      authHandler.cleanSubject(request, response, httpMessageContext);
     }
+  }
 
-    public String rememberMeCookieName() {
-	return this.appConfig.getStringReq(AppConfig.CONFIG_REMME_COOKIE_NAME);
-    }
+  // @RememberMe(
+  // isRememberMeExpression = "#{self.rememberMe(httpMessageContext)}",
+  // cookieName = "#{self.rememberMeCookieName()}",
+  // cookieMaxAgeSecondsExpression = "#{self.rememberMeCookieAge()}",
+  // cookieSecureOnlyExpression="#{self.rememberMeCookieSecure()}",
+  // cookieHttpOnlyExpression="#{self.rememberMeCookieHttpOnly()}"
+  // )
 
-    public int rememberMeCookieAge() {
-	return this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE);
-    }
+  @Inject
+  protected AppConfig appConfig;
 
-    public boolean rememberMeCookieSecure() {
-	return this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SECURE);
-    }
+  public boolean rememberMe(HttpMessageContext httpMessageContext) {
+    String module = ServletUtils.getRequestContext(httpMessageContext.getRequest()).getModule();
+    AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(module);
+    return authHandler.isRememberMe(httpMessageContext);
+  }
 
-    public boolean rememberMeCookieHttpOnly() {
-	return this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY);
-    }
+  public String rememberMeCookieName() {
+    return this.appConfig.getStringReq(AppConfig.CONFIG_REMME_COOKIE_NAME);
+  }
+
+  public int rememberMeCookieAge() {
+    return this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE);
+  }
+
+  public boolean rememberMeCookieSecure() {
+    return this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SECURE);
+  }
+
+  public boolean rememberMeCookieHttpOnly() {
+    return this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY);
+  }
 }

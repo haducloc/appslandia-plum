@@ -33,30 +33,30 @@ import com.appslandia.common.base.Mutex;
  */
 public abstract class ResourcesProvider {
 
-    final Map<String, Resources> resourcesMap = new HashMap<>();
+  final Map<String, Resources> resourcesMap = new HashMap<>();
 
-    final Mutex mutex = new Mutex();
+  final Mutex mutex = new Mutex();
 
-    public Resources getResources(String language) throws InitializeException {
-	Resources impl = this.resourcesMap.get(language);
-	if (impl == null) {
-	    synchronized (this.mutex) {
-		impl = this.resourcesMap.get(language);
-		if (impl == null) {
+  public Resources getResources(String language) throws InitializeException {
+    Resources impl = this.resourcesMap.get(language);
+    if (impl == null) {
+      synchronized (this.mutex) {
+        impl = this.resourcesMap.get(language);
+        if (impl == null) {
 
-		    impl = loadResources(language);
-		    this.resourcesMap.put(language, impl);
-		}
-	    }
-	}
-	return impl;
+          impl = loadResources(language);
+          this.resourcesMap.put(language, impl);
+        }
+      }
     }
+    return impl;
+  }
 
-    public void clearResources() {
-	synchronized (this.mutex) {
-	    this.resourcesMap.clear();
-	}
+  public void clearResources() {
+    synchronized (this.mutex) {
+      this.resourcesMap.clear();
     }
+  }
 
-    protected abstract Resources loadResources(String language) throws InitializeException;
+  protected abstract Resources loadResources(String language) throws InitializeException;
 }

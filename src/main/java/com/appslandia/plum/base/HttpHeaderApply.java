@@ -29,5 +29,5 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public interface HttpHeaderApply {
 
-    void apply(HttpServletResponse response);
+  void apply(HttpServletResponse response);
 }

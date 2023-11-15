@@ -30,19 +30,19 @@ import com.appslandia.common.validators.ModelValidator;
  */
 public abstract class ConfirmEmailValidator<T extends ConfirmEmailModel> extends ModelValidator<T> {
 
-    public static final String MESSAGE_TEMPLATE = "{com.appslandia.plum.models.ConfirmEmailValidator.message}";
+  public static final String MESSAGE_TEMPLATE = "{com.appslandia.plum.models.ConfirmEmailValidator.message}";
 
-    @Override
-    public boolean validate(T model) {
-	if (model.getEmail() == null) {
-	    return true;
-	}
-	if (model.getConfirmEmail() == null) {
-	    return true;
-	}
-	if (!EmailUtils.isValid(model.getEmail())) {
-	    return true;
-	}
-	return model.getConfirmEmail().equals(model.getEmail());
+  @Override
+  public boolean validate(T model) {
+    if (model.getEmail() == null) {
+      return true;
     }
+    if (model.getConfirmEmail() == null) {
+      return true;
+    }
+    if (!EmailUtils.isValid(model.getEmail())) {
+      return true;
+    }
+    return model.getConfirmEmail().equals(model.getEmail());
+  }
 }

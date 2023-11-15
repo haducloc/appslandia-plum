@@ -29,5 +29,5 @@ import com.appslandia.common.base.ConfigMap;
  */
 public interface AppConfigLoader {
 
-    void load(ConfigMap configMap) throws Exception;
+  void load(ConfigMap configMap) throws Exception;
 }

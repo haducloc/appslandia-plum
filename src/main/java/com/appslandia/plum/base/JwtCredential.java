@@ -29,13 +29,13 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public class JwtCredential implements Credential {
 
-    final String token;
+  final String token;
 
-    public JwtCredential(String token) {
-	this.token = token;
-    }
+  public JwtCredential(String token) {
+    this.token = token;
+  }
 
-    public String getToken() {
-	return this.token;
-    }
+  public String getToken() {
+    return this.token;
+  }
 }

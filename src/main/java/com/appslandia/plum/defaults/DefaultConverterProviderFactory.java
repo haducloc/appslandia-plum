@@ -47,43 +47,44 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultConverterProviderFactory implements CDIFactory<ConverterProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public ConverterProvider produce() {
-	final ConverterProvider impl = new ConverterProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public ConverterProvider produce() {
+    final ConverterProvider impl = new ConverterProvider();
 
-	CDIUtils.scanReferences(this.beanManager, Converter.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class, (mappedId, bi) -> {
+    CDIUtils.scanReferences(this.beanManager, Converter.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
+        (mappedId, bi) -> {
 
-	    impl.addConverter(mappedId.value(), bi.get());
+          impl.addConverter(mappedId.value(), bi.get());
 
-	    beanInstances.add(bi);
-	});
+          beanInstances.add(bi);
+        });
 
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, Converter.class, (bi) -> {
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, Converter.class, (bi) -> {
 
-	    Map<String, Converter<?>> m = ObjectUtils.cast(bi.get().get());
+      Map<String, Converter<?>> m = ObjectUtils.cast(bi.get().get());
 
-	    for (Entry<String, Converter<?>> entry : m.entrySet()) {
-		impl.addConverter(entry.getKey(), entry.getValue());
-	    }
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+      for (Entry<String, Converter<?>> entry : m.entrySet()) {
+        impl.addConverter(entry.getKey(), entry.getValue());
+      }
+      beanInstances.add(bi);
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes ConverterProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes ConverterProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

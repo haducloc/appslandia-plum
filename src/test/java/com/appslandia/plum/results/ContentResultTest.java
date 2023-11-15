@@ -37,52 +37,52 @@ import com.appslandia.plum.base.MockTestBase;
  */
 public class ContentResultTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testTextResult() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testContentResult");
+
+      Assertions.assertEquals("Some text", getCurrentResponse().getContent().toString(StandardCharsets.UTF_8.name()));
+      Assertions.assertEquals("text/plain", getCurrentResponse().getContentType());
+
+      Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testTextResult_ISO_8859_1() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testContentResult_ISO_8859_1");
+
+      Assertions.assertEquals("Some text", getCurrentResponse().getContent().toString(StandardCharsets.ISO_8859_1));
+      Assertions.assertEquals("text/plain", getCurrentResponse().getContentType());
+
+      Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult testContentResult() throws Exception {
+      return new ContentResult("Some text", "text/plain");
     }
 
-    @Test
-    public void test_testTextResult() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testContentResult");
-
-	    Assertions.assertEquals("Some text", getCurrentResponse().getContent().toString(StandardCharsets.UTF_8.name()));
-	    Assertions.assertEquals("text/plain", getCurrentResponse().getContentType());
-
-	    Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public ActionResult testContentResult_ISO_8859_1() throws Exception {
+      return new ContentResult("Some text", "text/plain", StandardCharsets.ISO_8859_1.name());
     }
-
-    @Test
-    public void test_testTextResult_ISO_8859_1() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testContentResult_ISO_8859_1");
-
-	    Assertions.assertEquals("Some text", getCurrentResponse().getContent().toString(StandardCharsets.ISO_8859_1));
-	    Assertions.assertEquals("text/plain", getCurrentResponse().getContentType());
-
-	    Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult testContentResult() throws Exception {
-	    return new ContentResult("Some text", "text/plain");
-	}
-
-	@HttpGet
-	public ActionResult testContentResult_ISO_8859_1() throws Exception {
-	    return new ContentResult("Some text", "text/plain", StandardCharsets.ISO_8859_1.name());
-	}
-    }
+  }
 }

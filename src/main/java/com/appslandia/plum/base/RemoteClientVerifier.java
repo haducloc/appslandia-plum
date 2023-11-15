@@ -29,5 +29,5 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface RemoteClientVerifier {
 
-    boolean allowClient(HttpServletRequest request);
+  boolean allowClient(HttpServletRequest request);
 }

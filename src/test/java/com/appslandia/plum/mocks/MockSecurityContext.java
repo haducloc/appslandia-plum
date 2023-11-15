@@ -41,41 +41,42 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class MockSecurityContext implements SecurityContext {
 
-    @Inject
-    protected HttpAuthenticationMechanism httpAuthenticationMechanism;
+  @Inject
+  protected HttpAuthenticationMechanism httpAuthenticationMechanism;
 
-    @Override
-    public Principal getCallerPrincipal() {
-	MockHttpServletRequest currentRequest = MockContainer.currentRequestHolder.get();
-	Asserts.isTrue(currentRequest != null, "currentRequest is null.");
-	return currentRequest.getUserPrincipal();
-    }
+  @Override
+  public Principal getCallerPrincipal() {
+    MockHttpServletRequest currentRequest = MockContainer.currentRequestHolder.get();
+    Asserts.isTrue(currentRequest != null, "currentRequest is null.");
+    return currentRequest.getUserPrincipal();
+  }
 
-    @Override
-    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> pType) {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public <T extends Principal> Set<T> getPrincipalsByType(Class<T> pType) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public boolean isCallerInRole(String role) {
-	MockHttpServletRequest currentRequest = MockContainer.currentRequestHolder.get();
-	Asserts.isTrue(currentRequest != null, "currentRequest is null.");
-	return currentRequest.isUserInRole(role);
-    }
+  @Override
+  public boolean isCallerInRole(String role) {
+    MockHttpServletRequest currentRequest = MockContainer.currentRequestHolder.get();
+    Asserts.isTrue(currentRequest != null, "currentRequest is null.");
+    return currentRequest.isUserInRole(role);
+  }
 
-    @Override
-    public boolean hasAccessToWebResource(String resource, String... methods) {
-	throw new UnsupportedOperationException();
-    }
+  @Override
+  public boolean hasAccessToWebResource(String resource, String... methods) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    public AuthenticationStatus authenticate(HttpServletRequest request, HttpServletResponse response, AuthenticationParameters parameters) {
-	MockHttpMessageContext httpMessageContext = new MockHttpMessageContext().withRequest(request).withResponse(response).withAuthParameters(parameters)
-		.withAuthenticationRequest();
-	try {
-	    return this.httpAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
-	} catch (AuthenticationException ex) {
-	    throw new RuntimeException(ex);
-	}
+  @Override
+  public AuthenticationStatus authenticate(HttpServletRequest request, HttpServletResponse response,
+      AuthenticationParameters parameters) {
+    MockHttpMessageContext httpMessageContext = new MockHttpMessageContext().withRequest(request).withResponse(response)
+        .withAuthParameters(parameters).withAuthenticationRequest();
+    try {
+      return this.httpAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
+    } catch (AuthenticationException ex) {
+      throw new RuntimeException(ex);
     }
+  }
 }

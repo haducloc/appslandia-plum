@@ -31,15 +31,15 @@ import jakarta.validation.constraints.NotNull;
  */
 public class PasswordModel {
 
-    @NotNull
-    @Password
-    private String password;
+  @NotNull
+  @Password
+  private String password;
 
-    public String getPassword() {
-	return this.password;
-    }
+  public String getPassword() {
+    return this.password;
+  }
 
-    public void setPassword(String password) {
-	this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 }

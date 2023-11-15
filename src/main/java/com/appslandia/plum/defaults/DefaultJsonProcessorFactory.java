@@ -40,42 +40,42 @@ import jakarta.json.bind.JsonbConfig;
 @ApplicationScoped
 public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public JsonProcessor produce() {
-	return createJsonbProcessor(true, false);
-    }
+  @Produces
+  @ApplicationScoped
+  @Override
+  public JsonProcessor produce() {
+    return createJsonbProcessor(true, false);
+  }
 
-    @Override
-    public void dispose(@Disposes JsonProcessor impl) {
-	impl.destroy();
-    }
+  @Override
+  public void dispose(@Disposes JsonProcessor impl) {
+    impl.destroy();
+  }
 
-    @Produces
-    @ApplicationScoped
-    @Json(Profile.COMPACT)
-    public JsonProcessor produceCompact() {
-	return createJsonbProcessor(true, false);
-    }
+  @Produces
+  @ApplicationScoped
+  @Json(Profile.COMPACT)
+  public JsonProcessor produceCompact() {
+    return createJsonbProcessor(true, false);
+  }
 
-    public void disposeCompact(@Disposes @Json(Profile.COMPACT) JsonProcessor impl) {
-	impl.destroy();
-    }
+  public void disposeCompact(@Disposes @Json(Profile.COMPACT) JsonProcessor impl) {
+    impl.destroy();
+  }
 
-    @Produces
-    @ApplicationScoped
-    @Json(Profile.PRETTY)
-    public JsonProcessor producePretty() {
-	return createJsonbProcessor(true, true);
-    }
+  @Produces
+  @ApplicationScoped
+  @Json(Profile.PRETTY)
+  public JsonProcessor producePretty() {
+    return createJsonbProcessor(true, true);
+  }
 
-    public void disposePretty(@Disposes @Json(Profile.PRETTY) JsonProcessor impl) {
-	impl.destroy();
-    }
+  public void disposePretty(@Disposes @Json(Profile.PRETTY) JsonProcessor impl) {
+    impl.destroy();
+  }
 
-    static JsonbProcessor createJsonbProcessor(boolean serializeNulls, boolean formatting) {
-	JsonbConfig config = JoseJsonb.newJsonbConfig(serializeNulls, formatting);
-	return new JsonbProcessor().setConfig(config);
-    }
+  static JsonbProcessor createJsonbProcessor(boolean serializeNulls, boolean formatting) {
+    JsonbConfig config = JoseJsonb.newJsonbConfig(serializeNulls, formatting);
+    return new JsonbProcessor().setConfig(config);
+  }
 }

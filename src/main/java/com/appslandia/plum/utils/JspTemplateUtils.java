@@ -37,28 +37,29 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class JspTemplateUtils {
 
-    public static String executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model) throws ServletException, IOException {
-	return executeJsp(request, response, jspPath, model, StandardCharsets.UTF_8.name());
+  public static String executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath,
+      Object model) throws ServletException, IOException {
+    return executeJsp(request, response, jspPath, model, StandardCharsets.UTF_8.name());
+  }
+
+  public static String executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath,
+      Object model, String contentEncoding) throws ServletException, IOException {
+    RequestAttributes backupAttributes = new RequestAttributes(request);
+    request.setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+
+    final String ce = response.getCharacterEncoding();
+    try {
+      response.setCharacterEncoding(contentEncoding);
+
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, false, false);
+      ServletUtils.include(request, wrapper, jspPath);
+
+      wrapper.finishWrapper();
+      return wrapper.getContent().toString(contentEncoding);
+
+    } finally {
+      response.setCharacterEncoding(ce);
+      backupAttributes.restore(request);
     }
-
-    public static String executeJsp(HttpServletRequest request, HttpServletResponse response, String jspPath, Object model, String contentEncoding)
-	    throws ServletException, IOException {
-	RequestAttributes backupAttributes = new RequestAttributes(request);
-	request.setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
-
-	final String ce = response.getCharacterEncoding();
-	try {
-	    response.setCharacterEncoding(contentEncoding);
-
-	    ContentResponseWrapper wrapper = new ContentResponseWrapper(response, false, false);
-	    ServletUtils.include(request, wrapper, jspPath);
-
-	    wrapper.finishWrapper();
-	    return wrapper.getContent().toString(contentEncoding);
-
-	} finally {
-	    response.setCharacterEncoding(ce);
-	    backupAttributes.restore(request);
-	}
-    }
+  }
 }

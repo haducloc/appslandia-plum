@@ -41,55 +41,55 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public class InputUtils {
 
-    static final Map<String, Integer> DTN_INPUT_FEATURES;
+  static final Map<String, Integer> DTN_INPUT_FEATURES;
 
-    static {
-	Map<String, Integer> map = new HashMap<>();
+  static {
+    Map<String, Integer> map = new HashMap<>();
 
-	map.put("number", BrowserFeatures.INPUT_NUMBER);
-	map.put("range", BrowserFeatures.INPUT_RANGE);
+    map.put("number", BrowserFeatures.INPUT_NUMBER);
+    map.put("range", BrowserFeatures.INPUT_RANGE);
 
-	map.put("date", BrowserFeatures.INPUT_DATE);
-	map.put("time", BrowserFeatures.INPUT_TIME);
-	map.put("datetime-local", BrowserFeatures.INPUT_DATETIME_LOCAL);
+    map.put("date", BrowserFeatures.INPUT_DATE);
+    map.put("time", BrowserFeatures.INPUT_TIME);
+    map.put("datetime-local", BrowserFeatures.INPUT_DATETIME_LOCAL);
 
-	map.put("month", BrowserFeatures.INPUT_MONTH);
-	map.put("week", BrowserFeatures.INPUT_WEEK);
+    map.put("month", BrowserFeatures.INPUT_MONTH);
+    map.put("week", BrowserFeatures.INPUT_WEEK);
 
-	DTN_INPUT_FEATURES = Collections.unmodifiableMap(map);
+    DTN_INPUT_FEATURES = Collections.unmodifiableMap(map);
+  }
+
+  public static Integer getDTNInputFeature(String type) {
+    Asserts.notNull(type);
+
+    return DTN_INPUT_FEATURES.get(type);
+  }
+
+  static final Set<String> UNLOCALIZED_TYPES = CollectionUtils.unmodifiableSet("hidden", "select", "checkbox", "radio");
+
+  public static boolean getLocalize(HttpServletRequest request, String type) {
+    if (type == null) {
+      return true;
     }
 
-    public static Integer getDTNInputFeature(String type) {
-	Asserts.notNull(type);
-
-	return DTN_INPUT_FEATURES.get(type);
+    if (UNLOCALIZED_TYPES.contains(type)) {
+      return false;
     }
 
-    static final Set<String> UNLOCALIZED_TYPES = CollectionUtils.unmodifiableSet("hidden", "select", "checkbox", "radio");
-
-    public static boolean getLocalize(HttpServletRequest request, String type) {
-	if (type == null) {
-	    return true;
-	}
-
-	if (UNLOCALIZED_TYPES.contains(type)) {
-	    return false;
-	}
-
-	Integer feature = getDTNInputFeature(type);
-	if (feature == null) {
-	    return true;
-	}
-
-	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-	if (!appConfig.getBool(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, false)) {
-	    return false;
-	}
-
-	RequestContext context = ServletUtils.getRequestContext(request);
-	if (context.getBrowserFeatures() == null) {
-	    return false;
-	}
-	return (context.getBrowserFeatures() & feature) != feature;
+    Integer feature = getDTNInputFeature(type);
+    if (feature == null) {
+      return true;
     }
+
+    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+    if (!appConfig.getBool(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, false)) {
+      return false;
+    }
+
+    RequestContext context = ServletUtils.getRequestContext(request);
+    if (context.getBrowserFeatures() == null) {
+      return false;
+    }
+    return (context.getBrowserFeatures() & feature) != feature;
+  }
 }

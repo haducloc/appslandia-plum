@@ -38,71 +38,71 @@ import jakarta.validation.constraints.NotNull;
 @Validate(modelValidator = ResetPasswordByEmailModel.CONFIRM_PASSWORD_VALIDATOR, message = ConfirmPasswordValidator.MESSAGE_TEMPLATE, reportProperty = "confirmPassword")
 public class ResetPasswordByEmailModel implements ConfirmPasswordModel {
 
-    public static final String CONFIRM_PASSWORD_VALIDATOR = "resetPasswordByEmailModel.confirmPasswordValidator";
+  public static final String CONFIRM_PASSWORD_VALIDATOR = "resetPasswordByEmailModel.confirmPasswordValidator";
 
-    static {
-	ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ResetPasswordByEmailModel>() {
-	});
-    }
-    @NotNull
-    @MaxLength(128)
-    private String series;
+  static {
+    ModelValidator.addValidator(CONFIRM_PASSWORD_VALIDATOR, new ConfirmPasswordValidator<ResetPasswordByEmailModel>() {
+    });
+  }
+  @NotNull
+  @MaxLength(128)
+  private String series;
 
-    @NotNull
-    @MaxLength(255)
-    private String token;
+  @NotNull
+  @MaxLength(255)
+  private String token;
 
-    @Bind(converter = Converter.STRING_LC)
-    @NotNull
-    @Email
-    private String email;
+  @Bind(converter = Converter.STRING_LC)
+  @NotNull
+  @Email
+  private String email;
 
-    @NotNull
-    @Password
-    private String newPassword;
+  @NotNull
+  @Password
+  private String newPassword;
 
-    @NotNull
-    private String confirmPassword;
+  @NotNull
+  private String confirmPassword;
 
-    public String getSeries() {
-	return this.series;
-    }
+  public String getSeries() {
+    return this.series;
+  }
 
-    public void setSeries(String series) {
-	this.series = series;
-    }
+  public void setSeries(String series) {
+    this.series = series;
+  }
 
-    public String getToken() {
-	return this.token;
-    }
+  public String getToken() {
+    return this.token;
+  }
 
-    public void setToken(String token) {
-	this.token = token;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 
-    public String getEmail() {
-	return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmail(String email) {
-	this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    @Override
-    public String getNewPassword() {
-	return this.newPassword;
-    }
+  @Override
+  public String getNewPassword() {
+    return this.newPassword;
+  }
 
-    public void setNewPassword(String newPassword) {
-	this.newPassword = newPassword;
-    }
+  public void setNewPassword(String newPassword) {
+    this.newPassword = newPassword;
+  }
 
-    @Override
-    public String getConfirmPassword() {
-	return this.confirmPassword;
-    }
+  @Override
+  public String getConfirmPassword() {
+    return this.confirmPassword;
+  }
 
-    public void setConfirmPassword(String confirmPassword) {
-	this.confirmPassword = confirmPassword;
-    }
+  public void setConfirmPassword(String confirmPassword) {
+    this.confirmPassword = confirmPassword;
+  }
 }

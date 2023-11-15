@@ -41,54 +41,56 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public abstract class FormAuthHandler implements AuthHandler {
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Override
-    public String getAuthMethod() {
-	return "Form";
+  @Override
+  public String getAuthMethod() {
+    return "Form";
+  }
+
+  @Override
+  public Credential parseCredential(HttpServletRequest request) {
+    return null;
+  }
+
+  @Override
+  public boolean isRememberMe(HttpMessageContext httpMessageContext) {
+    if (!httpMessageContext.isAuthenticationRequest()) {
+      return false;
+    }
+    return httpMessageContext.getAuthParameters().isRememberMe();
+  }
+
+  @Override
+  public void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    String returnUrl = getUriAndQuery(request);
+
+    StringBuilder url = ServletUtils.getLoginUrl(request);
+    url.append('?').append(ServletUtils.PARAM_RETURN_URL).append('=').append(URLEncoding.encodeParam(returnUrl));
+
+    // Append tempDataId
+    String tempDataId = request.getParameter(TempDataManager.PARAM_TEMP_DATA_ID);
+    if (tempDataId != null) {
+      url.append('&').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
+    }
+    response
+        .sendRedirect(this.appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
+  }
+
+  static String getUriAndQuery(HttpServletRequest request) {
+    if (request.getParameter(TempDataManager.PARAM_TEMP_DATA_ID) == null) {
+      return ServletUtils.appendUriQuery(request, ServletUtils.newUrlBuilder()).toString();
     }
 
-    @Override
-    public Credential parseCredential(HttpServletRequest request) {
-	return null;
+    // Remove tempDataId
+    Map<String, String[]> copyParams = new HashMap<>(request.getParameterMap());
+    copyParams.remove(TempDataManager.PARAM_TEMP_DATA_ID);
+
+    if (copyParams.isEmpty()) {
+      return request.getRequestURI();
     }
-
-    @Override
-    public boolean isRememberMe(HttpMessageContext httpMessageContext) {
-	if (!httpMessageContext.isAuthenticationRequest()) {
-	    return false;
-	}
-	return httpMessageContext.getAuthParameters().isRememberMe();
-    }
-
-    @Override
-    public void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	String returnUrl = getUriAndQuery(request);
-
-	StringBuilder url = ServletUtils.getLoginUrl(request);
-	url.append('?').append(ServletUtils.PARAM_RETURN_URL).append('=').append(URLEncoding.encodeParam(returnUrl));
-
-	// Append tempDataId
-	String tempDataId = request.getParameter(TempDataManager.PARAM_TEMP_DATA_ID);
-	if (tempDataId != null) {
-	    url.append('&').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
-	}
-	response.sendRedirect(this.appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
-    }
-
-    static String getUriAndQuery(HttpServletRequest request) {
-	if (request.getParameter(TempDataManager.PARAM_TEMP_DATA_ID) == null) {
-	    return ServletUtils.appendUriQuery(request, ServletUtils.newUrlBuilder()).toString();
-	}
-
-	// Remove tempDataId
-	Map<String, String[]> copyParams = new HashMap<>(request.getParameterMap());
-	copyParams.remove(TempDataManager.PARAM_TEMP_DATA_ID);
-
-	if (copyParams.isEmpty()) {
-	    return request.getRequestURI();
-	}
-	return request.getRequestURI() + "?" + URLUtils.toQueryParams(ObjectUtils.cast(copyParams));
-    }
+    return request.getRequestURI() + "?" + URLUtils.toQueryParams(ObjectUtils.cast(copyParams));
+  }
 }

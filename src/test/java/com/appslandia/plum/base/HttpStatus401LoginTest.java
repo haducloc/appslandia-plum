@@ -39,66 +39,66 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class HttpStatus401LoginTest extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
-	container.getAppConfig().set(AppConfig.CONFIG_DEFAULT_MODULE, "form");
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+    container.getAppConfig().set(AppConfig.CONFIG_DEFAULT_MODULE, "form");
 
-	MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
-	memUserDatabase.addUser("user1", "password");
+    MemUserDatabase memUserDatabase = container.getObject(MemUserDatabase.class);
+    memUserDatabase.addUser("user1", "password");
+  }
+
+  @Test
+  public void test_testAction_unAuthenticated() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(302, getCurrentResponse().getStatus());
+      String location = getCurrentResponse().getHeader("Location");
+      Asserts.notNull(location);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_loginAction() {
+    try {
+      executeCurrent("POST", "http://localhost/app/testController/loginAction");
+
+      Asserts.notNull(getCurrentRequest().getUserPrincipal());
+      Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @Inject
+    protected AuthContext authContext;
+
+    @HttpGet
+    @Authorize
+    public void testAction() throws Exception {
     }
 
-    @Test
-    public void test_testAction_unAuthenticated() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+    @HttpGetPost
+    @FormLogin
+    public void loginAction(RequestAccessor request, HttpServletResponse response) throws Exception {
+      if (request.isGetOrHead()) {
+        return;
+      }
+      Out<String> invalidCode = new Out<>();
+      MemUserPasswordCredential credential = new MemUserPasswordCredential("user1", "password");
+      boolean isValid = this.authContext.authenticate(request, response, credential, false, invalidCode);
 
-	    Assertions.assertEquals(302, getCurrentResponse().getStatus());
-	    String location = getCurrentResponse().getHeader("Location");
-	    Asserts.notNull(location);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+      if (!isValid) {
+        throw new AuthException(invalidCode.val());
+      }
     }
-
-    @Test
-    public void test_loginAction() {
-	try {
-	    executeCurrent("POST", "http://localhost/app/testController/loginAction");
-
-	    Asserts.notNull(getCurrentRequest().getUserPrincipal());
-	    Assertions.assertEquals(200, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@Inject
-	protected AuthContext authContext;
-
-	@HttpGet
-	@Authorize
-	public void testAction() throws Exception {
-	}
-
-	@HttpGetPost
-	@FormLogin
-	public void loginAction(RequestAccessor request, HttpServletResponse response) throws Exception {
-	    if (request.isGetOrHead()) {
-		return;
-	    }
-	    Out<String> invalidCode = new Out<>();
-	    MemUserPasswordCredential credential = new MemUserPasswordCredential("user1", "password");
-	    boolean isValid = this.authContext.authenticate(request, response, credential, false, invalidCode);
-
-	    if (!isValid) {
-		throw new AuthException(invalidCode.val());
-	    }
-	}
-    }
+  }
 }

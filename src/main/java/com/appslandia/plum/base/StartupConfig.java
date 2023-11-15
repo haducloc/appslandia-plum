@@ -36,9 +36,9 @@ import java.lang.annotation.Target;
 @Documented
 public @interface StartupConfig {
 
-    int priority() default 0;
+  int priority() default 0;
 
-    Class<? extends Startup>[] removeClasses() default {};
+  Class<? extends Startup>[] removeClasses() default {};
 
-    String[] removeNames() default {};
+  String[] removeNames() default {};
 }

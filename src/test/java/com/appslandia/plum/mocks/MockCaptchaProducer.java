@@ -31,8 +31,8 @@ import com.appslandia.plum.captcha.CaptchaProducer;
  */
 public class MockCaptchaProducer extends CaptchaProducer {
 
-    @Override
-    public BufferedImage produce(String words) {
-	return new BufferedImage(250, 50, BufferedImage.TYPE_INT_ARGB);
-    }
+  @Override
+  public BufferedImage produce(String words) {
+    return new BufferedImage(250, 50, BufferedImage.TYPE_INT_ARGB);
+  }
 }

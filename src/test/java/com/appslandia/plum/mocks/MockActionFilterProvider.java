@@ -38,20 +38,20 @@ import jakarta.inject.Inject;
  */
 public class MockActionFilterProvider extends ActionFilterProvider {
 
-    @Inject
-    protected Instance<ActionFilter> filterInstance;
+  @Inject
+  protected Instance<ActionFilter> filterInstance;
 
-    @Override
-    protected void init() throws Exception {
-	List<ActionFilter> filters = this.filterInstance.stream().collect(Collectors.toList());
+  @Override
+  protected void init() throws Exception {
+    List<ActionFilter> filters = this.filterInstance.stream().collect(Collectors.toList());
 
-	for (ActionFilter filter : filters) {
+    for (ActionFilter filter : filters) {
 
-	    MappedID mappedID = filter.getClass().getDeclaredAnnotation(MappedID.class);
-	    Asserts.notNull(mappedID);
+      MappedID mappedID = filter.getClass().getDeclaredAnnotation(MappedID.class);
+      Asserts.notNull(mappedID);
 
-	    addActionFilter(mappedID.value(), filter);
-	}
-	super.init();
+      addActionFilter(mappedID.value(), filter);
     }
+    super.init();
+  }
 }

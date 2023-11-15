@@ -37,43 +37,43 @@ import com.appslandia.common.utils.Asserts;
  */
 public class GradientBgProducer extends InitializeObject implements BackgroundProducer {
 
-    private Color fromColor;
-    private Color toColor;
+  private Color fromColor;
+  private Color toColor;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.fromColor, "fromColor is required.");
-	Asserts.notNull(this.toColor, "toColor is required.");
-    }
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.fromColor, "fromColor is required.");
+    Asserts.notNull(this.toColor, "toColor is required.");
+  }
 
-    @Override
-    public BufferedImage produce(int width, int height) {
-	this.initialize();
+  @Override
+  public BufferedImage produce(int width, int height) {
+    this.initialize();
 
-	// RGB
-	BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-	Graphics2D g = img.createGraphics();
+    // RGB
+    BufferedImage img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+    Graphics2D g = img.createGraphics();
 
-	RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-	g.setRenderingHints(hints);
-	g.setPaint(new GradientPaint(0, 0, this.fromColor, width, height, this.toColor));
+    RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+    g.setRenderingHints(hints);
+    g.setPaint(new GradientPaint(0, 0, this.fromColor, width, height, this.toColor));
 
-	g.fill(new Rectangle2D.Double(0, 0, width, height));
-	g.drawImage(img, 0, 0, null);
+    g.fill(new Rectangle2D.Double(0, 0, width, height));
+    g.drawImage(img, 0, 0, null);
 
-	g.dispose();
-	return img;
-    }
+    g.dispose();
+    return img;
+  }
 
-    public GradientBgProducer setFromColor(Color fromColor) {
-	this.assertNotInitialized();
-	this.fromColor = fromColor;
-	return this;
-    }
+  public GradientBgProducer setFromColor(Color fromColor) {
+    this.assertNotInitialized();
+    this.fromColor = fromColor;
+    return this;
+  }
 
-    public GradientBgProducer setToColor(Color toColor) {
-	this.assertNotInitialized();
-	this.toColor = toColor;
-	return this;
-    }
+  public GradientBgProducer setToColor(Color toColor) {
+    this.assertNotInitialized();
+    this.toColor = toColor;
+    return this;
+  }
 }

@@ -31,24 +31,24 @@ import com.appslandia.plum.base.SessionCsrfManager;
  */
 public class MockCsrfManager extends SessionCsrfManager {
 
-    public static final String MOCK_CSRF_ID = "mockCsrfId";
+  public static final String MOCK_CSRF_ID = "mockCsrfId";
 
-    final TextGenerator csrfIdGenerator = new TextGenerator() {
-
-	@Override
-	public String generate() {
-	    return MOCK_CSRF_ID;
-	}
-
-	@Override
-	public boolean verify(String value) {
-	    Asserts.notNull(value);
-	    return value.equals(MOCK_CSRF_ID);
-	}
-    };
+  final TextGenerator csrfIdGenerator = new TextGenerator() {
 
     @Override
-    protected TextGenerator getCsrfIdGenerator() {
-	return this.csrfIdGenerator;
+    public String generate() {
+      return MOCK_CSRF_ID;
     }
+
+    @Override
+    public boolean verify(String value) {
+      Asserts.notNull(value);
+      return value.equals(MOCK_CSRF_ID);
+    }
+  };
+
+  @Override
+  protected TextGenerator getCsrfIdGenerator() {
+    return this.csrfIdGenerator;
+  }
 }

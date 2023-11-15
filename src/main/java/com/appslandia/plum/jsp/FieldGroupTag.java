@@ -36,57 +36,58 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "group", bodyContent = "scriptless")
 public class FieldGroupTag extends UITagBase {
 
-    protected String form;
-    protected String fieldName;
+  protected String form;
+  protected String fieldName;
 
-    @Override
-    protected String getTagName() {
-	return "div";
+  @Override
+  protected String getTagName() {
+    return "div";
+  }
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    boolean isValid = !Objects.equals(this.form, this.getModelState().getForm())
+        || this.getModelState().isValid(this.fieldName);
+
+    if (!isValid) {
+      this.clazz = (this.clazz == null) ? "l-error-group" : this.clazz + " l-error-group";
     }
+  }
 
-    @Override
-    protected void initTag() throws JspException, IOException {
-	boolean isValid = !Objects.equals(this.form, this.getModelState().getForm()) || this.getModelState().isValid(this.fieldName);
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (this.id != null)
+      HtmlUtils.escAttribute(out, "id", this.id);
+    if (this.hidden)
+      HtmlUtils.hidden(out);
 
-	if (!isValid) {
-	    this.clazz = (this.clazz == null) ? "l-error-group" : this.clazz + " l-error-group";
-	}
-    }
+    if (this.datatag != null)
+      HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    if (this.clazz != null)
+      HtmlUtils.escAttribute(out, "class", this.clazz);
+    if (this.style != null)
+      HtmlUtils.escAttribute(out, "style", this.style);
+    if (this.title != null)
+      HtmlUtils.escAttribute(out, "title", this.title);
+  }
 
-    @Override
-    protected void writeAttributes(JspWriter out) throws JspException, IOException {
-	if (this.id != null)
-	    HtmlUtils.escAttribute(out, "id", this.id);
-	if (this.hidden)
-	    HtmlUtils.hidden(out);
+  @Override
+  protected boolean hasBody() {
+    return this.body != null;
+  }
 
-	if (this.datatag != null)
-	    HtmlUtils.escAttribute(out, "data-tag", this.datatag);
-	if (this.clazz != null)
-	    HtmlUtils.escAttribute(out, "class", this.clazz);
-	if (this.style != null)
-	    HtmlUtils.escAttribute(out, "style", this.style);
-	if (this.title != null)
-	    HtmlUtils.escAttribute(out, "title", this.title);
-    }
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    this.body.invoke(out);
+  }
 
-    @Override
-    protected boolean hasBody() {
-	return this.body != null;
-    }
+  @Attribute(required = false, rtexprvalue = false)
+  public void setForm(String form) {
+    this.form = form;
+  }
 
-    @Override
-    protected void writeBody(JspWriter out) throws JspException, IOException {
-	this.body.invoke(out);
-    }
-
-    @Attribute(required = false, rtexprvalue = false)
-    public void setForm(String form) {
-	this.form = form;
-    }
-
-    @Attribute(required = true, rtexprvalue = true)
-    public void setFieldName(String fieldName) {
-	this.fieldName = fieldName;
-    }
+  @Attribute(required = true, rtexprvalue = true)
+  public void setFieldName(String fieldName) {
+    this.fieldName = fieldName;
+  }
 }

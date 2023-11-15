@@ -30,210 +30,210 @@ import java.util.List;
  */
 public class ActionDesc {
 
-    private String controller;
-    private String action;
-    private Method method;
-    private Class<?> controllerClass;
+  private String controller;
+  private String action;
+  private Method method;
+  private Class<?> controllerClass;
 
-    private List<ParamDesc> paramDescs;
-    private List<PathParam> pathParams;
-    private int pathParamCount;
-    private String module;
+  private List<ParamDesc> paramDescs;
+  private List<PathParam> pathParams;
+  private int pathParamCount;
+  private String module;
 
-    private List<String> allowMethods;
-    private String allowMethodsString;
-    private ConsumeType consumeType;
-    private EnableFilters enableFilters;
+  private List<String> allowMethods;
+  private String allowMethodsString;
+  private ConsumeType consumeType;
+  private EnableFilters enableFilters;
 
-    private Authorize authorize;
-    private CacheControl cacheControl;
-    private EnableCors enableCors;
+  private Authorize authorize;
+  private CacheControl cacheControl;
+  private EnableCors enableCors;
 
-    private EnableGzip enableGzip;
-    private EnableParts enableParts;
+  private EnableGzip enableGzip;
+  private EnableParts enableParts;
 
-    private EnableEtag enableEtag;
-    private EnableCsrf enableCsrf;
-    private EnableCaptcha enableCaptcha;
-    private EnableJsonError enableJsonError;
+  private EnableEtag enableEtag;
+  private EnableCsrf enableCsrf;
+  private EnableCaptcha enableCaptcha;
+  private EnableJsonError enableJsonError;
 
-    private ChildAction childAction;
+  private ChildAction childAction;
 
-    public String getController() {
-	return this.controller;
-    }
+  public String getController() {
+    return this.controller;
+  }
 
-    protected void setController(String controller) {
-	this.controller = controller;
-    }
+  protected void setController(String controller) {
+    this.controller = controller;
+  }
 
-    public String getAction() {
-	return this.action;
-    }
+  public String getAction() {
+    return this.action;
+  }
 
-    protected void setAction(String action) {
-	this.action = action;
-    }
+  protected void setAction(String action) {
+    this.action = action;
+  }
 
-    public Method getMethod() {
-	return this.method;
-    }
+  public Method getMethod() {
+    return this.method;
+  }
 
-    protected void setMethod(Method method) {
-	this.method = method;
-    }
+  protected void setMethod(Method method) {
+    this.method = method;
+  }
 
-    public Class<?> getControllerClass() {
-	return this.controllerClass;
-    }
+  public Class<?> getControllerClass() {
+    return this.controllerClass;
+  }
 
-    protected void setControllerClass(Class<?> controllerClass) {
-	this.controllerClass = controllerClass;
-    }
+  protected void setControllerClass(Class<?> controllerClass) {
+    this.controllerClass = controllerClass;
+  }
 
-    public List<ParamDesc> getParamDescs() {
-	return this.paramDescs;
-    }
+  public List<ParamDesc> getParamDescs() {
+    return this.paramDescs;
+  }
 
-    protected void setParamDescs(List<ParamDesc> paramDescs) {
-	this.paramDescs = paramDescs;
-    }
+  protected void setParamDescs(List<ParamDesc> paramDescs) {
+    this.paramDescs = paramDescs;
+  }
 
-    public List<PathParam> getPathParams() {
-	return this.pathParams;
-    }
+  public List<PathParam> getPathParams() {
+    return this.pathParams;
+  }
 
-    protected void setPathParams(List<PathParam> pathParams) {
-	this.pathParams = pathParams;
-	this.pathParamCount = ActionDescProvider.getPathParamCount(pathParams);
-    }
+  protected void setPathParams(List<PathParam> pathParams) {
+    this.pathParams = pathParams;
+    this.pathParamCount = ActionDescProvider.getPathParamCount(pathParams);
+  }
 
-    public int getPathParamCount() {
-	return this.pathParamCount;
-    }
+  public int getPathParamCount() {
+    return this.pathParamCount;
+  }
 
-    protected void setPathParamCount(int pathParamCount) {
-	this.pathParamCount = pathParamCount;
-    }
+  protected void setPathParamCount(int pathParamCount) {
+    this.pathParamCount = pathParamCount;
+  }
 
-    public String getModule() {
-	return this.module;
-    }
+  public String getModule() {
+    return this.module;
+  }
 
-    protected void setModule(String module) {
-	this.module = module;
-    }
+  protected void setModule(String module) {
+    this.module = module;
+  }
 
-    public List<String> getAllowMethods() {
-	return this.allowMethods;
-    }
+  public List<String> getAllowMethods() {
+    return this.allowMethods;
+  }
 
-    protected void setAllowMethods(List<String> allowMethods) {
-	this.allowMethods = allowMethods;
-	this.allowMethodsString = String.join(", ", allowMethods);
-    }
+  protected void setAllowMethods(List<String> allowMethods) {
+    this.allowMethods = allowMethods;
+    this.allowMethodsString = String.join(", ", allowMethods);
+  }
 
-    public String getAllowMethodsString() {
-	return this.allowMethodsString;
-    }
+  public String getAllowMethodsString() {
+    return this.allowMethodsString;
+  }
 
-    protected void setAllowMethodsString(String allowMethodsString) {
-	this.allowMethodsString = allowMethodsString;
-    }
+  protected void setAllowMethodsString(String allowMethodsString) {
+    this.allowMethodsString = allowMethodsString;
+  }
 
-    public ConsumeType getConsumeType() {
-	return this.consumeType;
-    }
+  public ConsumeType getConsumeType() {
+    return this.consumeType;
+  }
 
-    protected void setConsumeType(ConsumeType consumeType) {
-	this.consumeType = consumeType;
-    }
+  protected void setConsumeType(ConsumeType consumeType) {
+    this.consumeType = consumeType;
+  }
 
-    public EnableFilters getEnableFilters() {
-	return this.enableFilters;
-    }
+  public EnableFilters getEnableFilters() {
+    return this.enableFilters;
+  }
 
-    protected void setEnableFilters(EnableFilters enableFilters) {
-	this.enableFilters = enableFilters;
-    }
+  protected void setEnableFilters(EnableFilters enableFilters) {
+    this.enableFilters = enableFilters;
+  }
 
-    public Authorize getAuthorize() {
-	return this.authorize;
-    }
+  public Authorize getAuthorize() {
+    return this.authorize;
+  }
 
-    protected void setAuthorize(Authorize authorize) {
-	this.authorize = authorize;
-    }
+  protected void setAuthorize(Authorize authorize) {
+    this.authorize = authorize;
+  }
 
-    public CacheControl getCacheControl() {
-	return this.cacheControl;
-    }
+  public CacheControl getCacheControl() {
+    return this.cacheControl;
+  }
 
-    protected void setCacheControl(CacheControl cacheControl) {
-	this.cacheControl = cacheControl;
-    }
+  protected void setCacheControl(CacheControl cacheControl) {
+    this.cacheControl = cacheControl;
+  }
 
-    public EnableCors getEnableCors() {
-	return this.enableCors;
-    }
+  public EnableCors getEnableCors() {
+    return this.enableCors;
+  }
 
-    protected void setEnableCors(EnableCors enableCors) {
-	this.enableCors = enableCors;
-    }
+  protected void setEnableCors(EnableCors enableCors) {
+    this.enableCors = enableCors;
+  }
 
-    public EnableGzip getEnableGzip() {
-	return this.enableGzip;
-    }
+  public EnableGzip getEnableGzip() {
+    return this.enableGzip;
+  }
 
-    protected void setEnableGzip(EnableGzip enableGzip) {
-	this.enableGzip = enableGzip;
-    }
+  protected void setEnableGzip(EnableGzip enableGzip) {
+    this.enableGzip = enableGzip;
+  }
 
-    public EnableParts getEnableParts() {
-	return this.enableParts;
-    }
+  public EnableParts getEnableParts() {
+    return this.enableParts;
+  }
 
-    protected void setEnableParts(EnableParts enableParts) {
-	this.enableParts = enableParts;
-    }
+  protected void setEnableParts(EnableParts enableParts) {
+    this.enableParts = enableParts;
+  }
 
-    public EnableEtag getEnableEtag() {
-	return this.enableEtag;
-    }
+  public EnableEtag getEnableEtag() {
+    return this.enableEtag;
+  }
 
-    protected void setEnableEtag(EnableEtag enableEtag) {
-	this.enableEtag = enableEtag;
-    }
+  protected void setEnableEtag(EnableEtag enableEtag) {
+    this.enableEtag = enableEtag;
+  }
 
-    public EnableCsrf getEnableCsrf() {
-	return this.enableCsrf;
-    }
+  public EnableCsrf getEnableCsrf() {
+    return this.enableCsrf;
+  }
 
-    protected void setEnableCsrf(EnableCsrf enableCsrf) {
-	this.enableCsrf = enableCsrf;
-    }
+  protected void setEnableCsrf(EnableCsrf enableCsrf) {
+    this.enableCsrf = enableCsrf;
+  }
 
-    public EnableCaptcha getEnableCaptcha() {
-	return this.enableCaptcha;
-    }
+  public EnableCaptcha getEnableCaptcha() {
+    return this.enableCaptcha;
+  }
 
-    protected void setEnableCaptcha(EnableCaptcha enableCaptcha) {
-	this.enableCaptcha = enableCaptcha;
-    }
+  protected void setEnableCaptcha(EnableCaptcha enableCaptcha) {
+    this.enableCaptcha = enableCaptcha;
+  }
 
-    public EnableJsonError getEnableJsonError() {
-	return this.enableJsonError;
-    }
+  public EnableJsonError getEnableJsonError() {
+    return this.enableJsonError;
+  }
 
-    protected void setEnableJsonError(EnableJsonError enableJsonError) {
-	this.enableJsonError = enableJsonError;
-    }
+  protected void setEnableJsonError(EnableJsonError enableJsonError) {
+    this.enableJsonError = enableJsonError;
+  }
 
-    public ChildAction getChildAction() {
-	return this.childAction;
-    }
+  public ChildAction getChildAction() {
+    return this.childAction;
+  }
 
-    protected void setChildAction(ChildAction childAction) {
-	this.childAction = childAction;
-    }
+  protected void setChildAction(ChildAction childAction) {
+    this.childAction = childAction;
+  }
 }

@@ -30,36 +30,36 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public class AuthParameters extends AuthenticationParameters {
 
-    private boolean reauthentication;
+  private boolean reauthentication;
 
-    public boolean isReauthentication() {
-	return this.reauthentication;
-    }
+  public boolean isReauthentication() {
+    return this.reauthentication;
+  }
 
-    public void setReauthentication(boolean reauthentication) {
-	this.reauthentication = reauthentication;
-    }
+  public void setReauthentication(boolean reauthentication) {
+    this.reauthentication = reauthentication;
+  }
 
-    public AuthParameters reauthentication(boolean reauthentication) {
-	setReauthentication(reauthentication);
-	return this;
-    }
+  public AuthParameters reauthentication(boolean reauthentication) {
+    setReauthentication(reauthentication);
+    return this;
+  }
 
-    @Override
-    public AuthParameters credential(Credential credential) {
-	super.setCredential(credential);
-	return this;
-    }
+  @Override
+  public AuthParameters credential(Credential credential) {
+    super.setCredential(credential);
+    return this;
+  }
 
-    @Override
-    public AuthParameters newAuthentication(boolean newAuthentication) {
-	super.setNewAuthentication(newAuthentication);
-	return this;
-    }
+  @Override
+  public AuthParameters newAuthentication(boolean newAuthentication) {
+    super.setNewAuthentication(newAuthentication);
+    return this;
+  }
 
-    @Override
-    public AuthParameters rememberMe(boolean rememberMe) {
-	super.setRememberMe(rememberMe);
-	return this;
-    }
+  @Override
+  public AuthParameters rememberMe(boolean rememberMe) {
+    super.setRememberMe(rememberMe);
+    return this;
+  }
 }

@@ -43,186 +43,186 @@ import com.appslandia.common.utils.ValueUtils;
  */
 public class CorsPolicy extends InitializeObject {
 
-    public static final String ANY = "*";
+  public static final String ANY = "*";
 
-    private String name;
-    private boolean anyOrigin;
-    private List<Pattern> allowOrigins;
+  private String name;
+  private boolean anyOrigin;
+  private List<Pattern> allowOrigins;
 
-    private Set<String> allowHeaders;
-    private String allowHeadersString;
+  private Set<String> allowHeaders;
+  private String allowHeadersString;
 
-    private Set<String> exposeHeaders;
-    private String exposeHeadersString;
+  private Set<String> exposeHeaders;
+  private String exposeHeadersString;
 
-    private boolean allowCredentials;
-    private int maxAge;
+  private boolean allowCredentials;
+  private int maxAge;
 
-    @Override
-    protected void init() throws Exception {
-	Asserts.notNull(this.name);
+  @Override
+  protected void init() throws Exception {
+    Asserts.notNull(this.name);
 
-	// allowOrigins
-	Asserts.isTrue(this.anyOrigin || (this.allowOrigins != null), "No allow origin configured.");
+    // allowOrigins
+    Asserts.isTrue(this.anyOrigin || (this.allowOrigins != null), "No allow origin configured.");
 
-	if (this.allowOrigins != null) {
-	    this.allowOrigins = Collections.unmodifiableList(this.allowOrigins);
-	}
-
-	// allowHeaders
-	if (this.allowHeaders != null) {
-	    this.allowHeadersString = String.join(", ", this.allowHeaders);
-	    this.allowHeaders = Collections.unmodifiableSet(this.allowHeaders);
-	}
-
-	// exposeHeaders
-	if (this.exposeHeaders != null) {
-	    this.exposeHeadersString = String.join(", ", this.exposeHeaders);
-	    this.exposeHeaders = Collections.unmodifiableSet(this.exposeHeaders);
-	}
+    if (this.allowOrigins != null) {
+      this.allowOrigins = Collections.unmodifiableList(this.allowOrigins);
     }
 
-    public boolean allowOrigin(String origin) {
-	this.initialize();
-
-	if (this.anyOrigin) {
-	    return true;
-	}
-	for (Pattern p : this.allowOrigins) {
-	    if (p.matcher(origin).matches()) {
-		return true;
-	    }
-	}
-	return false;
+    // allowHeaders
+    if (this.allowHeaders != null) {
+      this.allowHeadersString = String.join(", ", this.allowHeaders);
+      this.allowHeaders = Collections.unmodifiableSet(this.allowHeaders);
     }
 
-    public boolean allowHeaders(String headers) {
-	this.initialize();
-	Asserts.notNull(headers);
-
-	if (this.allowHeaders == null) {
-	    return false;
-	}
-	for (String header : SplitUtils.splitByComma(headers)) {
-	    if (!this.allowHeaders.contains(header)) {
-		return false;
-	    }
-	}
-	return true;
+    // exposeHeaders
+    if (this.exposeHeaders != null) {
+      this.exposeHeadersString = String.join(", ", this.exposeHeaders);
+      this.exposeHeaders = Collections.unmodifiableSet(this.exposeHeaders);
     }
+  }
 
-    public String getAllowOrigin(String origin) {
-	this.initialize();
-	if (this.anyOrigin) {
-	    return ANY;
-	}
-	return origin;
+  public boolean allowOrigin(String origin) {
+    this.initialize();
+
+    if (this.anyOrigin) {
+      return true;
     }
-
-    public String getName() {
-	this.initialize();
-	return this.name;
+    for (Pattern p : this.allowOrigins) {
+      if (p.matcher(origin).matches()) {
+        return true;
+      }
     }
+    return false;
+  }
 
-    public CorsPolicy setName(String name) {
-	assertNotInitialized();
-	this.name = name;
-	return this;
+  public boolean allowHeaders(String headers) {
+    this.initialize();
+    Asserts.notNull(headers);
+
+    if (this.allowHeaders == null) {
+      return false;
     }
-
-    public boolean isAnyOrigin() {
-	this.initialize();
-	return this.anyOrigin;
+    for (String header : SplitUtils.splitByComma(headers)) {
+      if (!this.allowHeaders.contains(header)) {
+        return false;
+      }
     }
+    return true;
+  }
 
-    public CorsPolicy setAllowOrigins(String... allowOrigins) {
-	this.assertNotInitialized();
-	if (allowOrigins != null) {
-	    this.anyOrigin = Arrays.stream(allowOrigins).anyMatch(o -> ANY.equals(o));
-
-	    if (this.anyOrigin) {
-		this.allowOrigins = null;
-	    } else {
-		this.allowOrigins = CollectionUtils.toList(PatternUtils.compile(allowOrigins));
-	    }
-	}
-	return this;
+  public String getAllowOrigin(String origin) {
+    this.initialize();
+    if (this.anyOrigin) {
+      return ANY;
     }
+    return origin;
+  }
 
-    public CorsPolicy anyOrigin() {
-	return setAllowOrigins(ANY);
+  public String getName() {
+    this.initialize();
+    return this.name;
+  }
+
+  public CorsPolicy setName(String name) {
+    assertNotInitialized();
+    this.name = name;
+    return this;
+  }
+
+  public boolean isAnyOrigin() {
+    this.initialize();
+    return this.anyOrigin;
+  }
+
+  public CorsPolicy setAllowOrigins(String... allowOrigins) {
+    this.assertNotInitialized();
+    if (allowOrigins != null) {
+      this.anyOrigin = Arrays.stream(allowOrigins).anyMatch(o -> ANY.equals(o));
+
+      if (this.anyOrigin) {
+        this.allowOrigins = null;
+      } else {
+        this.allowOrigins = CollectionUtils.toList(PatternUtils.compile(allowOrigins));
+      }
     }
+    return this;
+  }
 
-    public List<Pattern> getAllowOrigins() {
-	this.initialize();
-	return this.allowOrigins;
+  public CorsPolicy anyOrigin() {
+    return setAllowOrigins(ANY);
+  }
+
+  public List<Pattern> getAllowOrigins() {
+    this.initialize();
+    return this.allowOrigins;
+  }
+
+  public Set<String> getAllowHeaders() {
+    this.initialize();
+    return this.allowHeaders;
+  }
+
+  public CorsPolicy setAllowHeaders(String... allowHeaders) {
+    this.assertNotInitialized();
+    if (allowHeaders != null) {
+      if (Arrays.stream(allowHeaders).anyMatch(o -> ANY.equals(o))) {
+
+        this.allowHeaders = CollectionUtils.toSet(ANY);
+      } else {
+        this.allowHeaders = CollectionUtils.toSet(new CaseInsensitiveSet(new LinkedHashSet<>()), allowHeaders);
+      }
     }
+    return this;
+  }
 
-    public Set<String> getAllowHeaders() {
-	this.initialize();
-	return this.allowHeaders;
+  public CorsPolicy anyHeader() {
+    return setAllowHeaders(ANY);
+  }
+
+  public String getAllowHeadersString() {
+    this.initialize();
+    return this.allowHeadersString;
+  }
+
+  public Set<String> getExposeHeaders() {
+    this.initialize();
+    return this.exposeHeaders;
+  }
+
+  public CorsPolicy setExposeHeaders(String... exposeHeaders) {
+    this.assertNotInitialized();
+    if (exposeHeaders != null) {
+      this.exposeHeaders = CollectionUtils.toSet(new CaseInsensitiveSet(new LinkedHashSet<>()), exposeHeaders);
     }
+    return this;
+  }
 
-    public CorsPolicy setAllowHeaders(String... allowHeaders) {
-	this.assertNotInitialized();
-	if (allowHeaders != null) {
-	    if (Arrays.stream(allowHeaders).anyMatch(o -> ANY.equals(o))) {
+  public String getExposeHeadersString() {
+    this.initialize();
+    return this.exposeHeadersString;
+  }
 
-		this.allowHeaders = CollectionUtils.toSet(ANY);
-	    } else {
-		this.allowHeaders = CollectionUtils.toSet(new CaseInsensitiveSet(new LinkedHashSet<>()), allowHeaders);
-	    }
-	}
-	return this;
-    }
+  public boolean isAllowCredentials() {
+    this.initialize();
+    return this.allowCredentials;
+  }
 
-    public CorsPolicy anyHeader() {
-	return setAllowHeaders(ANY);
-    }
+  public CorsPolicy setAllowCredentials(boolean allowCredentials) {
+    this.assertNotInitialized();
+    this.allowCredentials = allowCredentials;
+    return this;
+  }
 
-    public String getAllowHeadersString() {
-	this.initialize();
-	return this.allowHeadersString;
-    }
+  public int getMaxAge() {
+    this.initialize();
+    return this.maxAge;
+  }
 
-    public Set<String> getExposeHeaders() {
-	this.initialize();
-	return this.exposeHeaders;
-    }
-
-    public CorsPolicy setExposeHeaders(String... exposeHeaders) {
-	this.assertNotInitialized();
-	if (exposeHeaders != null) {
-	    this.exposeHeaders = CollectionUtils.toSet(new CaseInsensitiveSet(new LinkedHashSet<>()), exposeHeaders);
-	}
-	return this;
-    }
-
-    public String getExposeHeadersString() {
-	this.initialize();
-	return this.exposeHeadersString;
-    }
-
-    public boolean isAllowCredentials() {
-	this.initialize();
-	return this.allowCredentials;
-    }
-
-    public CorsPolicy setAllowCredentials(boolean allowCredentials) {
-	this.assertNotInitialized();
-	this.allowCredentials = allowCredentials;
-	return this;
-    }
-
-    public int getMaxAge() {
-	this.initialize();
-	return this.maxAge;
-    }
-
-    public CorsPolicy setMaxAge(int maxAge, TimeUnit unit) {
-	this.assertNotInitialized();
-	long ageInSec = TimeUnit.SECONDS.convert(maxAge, unit);
-	this.maxAge = ValueUtils.valueOrMin((int) ageInSec, 0);
-	return this;
-    }
+  public CorsPolicy setMaxAge(int maxAge, TimeUnit unit) {
+    this.assertNotInitialized();
+    long ageInSec = TimeUnit.SECONDS.convert(maxAge, unit);
+    this.maxAge = ValueUtils.valueOrMin((int) ageInSec, 0);
+    return this;
+  }
 }

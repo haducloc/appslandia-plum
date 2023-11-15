@@ -40,65 +40,65 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class FmtStringTagTest extends MockTestBase {
 
-    FmtStringTag tag = new FmtStringTag();
-    StringFormatProvider stringFormatProvider;
+  FmtStringTag tag = new FmtStringTag();
+  StringFormatProvider stringFormatProvider;
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+
+    stringFormatProvider = container.getObject(StringFormatProvider.class);
+    stringFormatProvider.addStringFormat("phoneFormat", new StringFormat("({3}) {3}-{4}"));
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      tag.setValue("4024130224");
+      tag.setFormat("phoneFormat");
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("(402) 413-0224", html);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Test
+  public void test_invalidLength() {
+    try {
+      tag.setValue("+14024130224");
+      tag.setFormat("phoneFormat");
 
-	stringFormatProvider = container.getObject(StringFormatProvider.class);
-	stringFormatProvider.addStringFormat("phoneFormat", new StringFormat("({3}) {3}-{4}"));
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals("+14024130224", html);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    tag.setValue("4024130224");
-	    tag.setFormat("phoneFormat");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("(402) 413-0224", html);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_invalidLength() {
-	try {
-	    tag.setValue("+14024130224");
-	    tag.setFormat("phoneFormat");
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("+14024130224", html);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

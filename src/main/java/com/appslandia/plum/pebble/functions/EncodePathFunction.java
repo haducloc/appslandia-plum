@@ -35,13 +35,13 @@ import io.pebbletemplates.pebble.error.PebbleException;
  */
 public class EncodePathFunction extends DynPebbleFunction {
 
-    @Override
-    protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
-	Object value = context.getArgument("value");
-	if (value == null) {
-	    return null;
-	}
-
-	return URLEncoding.encodePath(value.toString());
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
+    Object value = context.getArgument("value");
+    if (value == null) {
+      return null;
     }
+
+    return URLEncoding.encodePath(value.toString());
+  }
 }

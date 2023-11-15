@@ -36,26 +36,26 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class CacheChangeListener {
 
-    @Inject
-    protected AppCacheManager appCacheManager;
+  @Inject
+  protected AppCacheManager appCacheManager;
 
-    public void onEvent(@Observes CacheChange event) {
-	clearCache(event);
+  public void onEvent(@Observes CacheChange event) {
+    clearCache(event);
+  }
+
+  public void onEventAsync(@ObservesAsync CacheChange event) {
+    clearCache(event);
+  }
+
+  void clearCache(CacheChange event) {
+    AppCache<Object, Object> cache = this.appCacheManager.getRequiredCache(event.getCacheName());
+
+    if (event.getKeys().isEmpty()) {
+      cache.clear();
+    } else {
+      for (String key : event.getKeys()) {
+        cache.remove(key);
+      }
     }
-
-    public void onEventAsync(@ObservesAsync CacheChange event) {
-	clearCache(event);
-    }
-
-    void clearCache(CacheChange event) {
-	AppCache<Object, Object> cache = this.appCacheManager.getRequiredCache(event.getCacheName());
-
-	if (event.getKeys().isEmpty()) {
-	    cache.clear();
-	} else {
-	    for (String key : event.getKeys()) {
-		cache.remove(key);
-	    }
-	}
-    }
+  }
 }

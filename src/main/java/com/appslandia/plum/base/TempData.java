@@ -30,56 +30,56 @@ import java.util.Map;
  *
  */
 public class TempData implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    public static final String REQUEST_ATTRIBUTE_ID = "tempData";
+  public static final String REQUEST_ATTRIBUTE_ID = "tempData";
 
-    private Messages messages;
-    private Map<String, String> data;
+  private Messages messages;
+  private Map<String, String> data;
 
-    public Messages exportMessages() {
-	Messages val = this.messages;
-	this.messages = null;
-	return val;
+  public Messages exportMessages() {
+    Messages val = this.messages;
+    this.messages = null;
+    return val;
+  }
+
+  public void importMessages(Messages messages) {
+    this.messages = messages;
+  }
+
+  public TempData set(String key, String value) {
+    if (this.data == null) {
+      this.data = new HashMap<String, String>();
     }
+    this.data.put(key, value);
+    return this;
+  }
 
-    public void importMessages(Messages messages) {
-	this.messages = messages;
-    }
+  public String get(String key) {
+    return (this.data != null) ? this.data.get(key) : null;
+  }
 
-    public TempData set(String key, String value) {
-	if (this.data == null) {
-	    this.data = new HashMap<String, String>();
-	}
-	this.data.put(key, value);
-	return this;
-    }
+  public boolean isEmpty() {
+    return ((this.messages == null) || this.messages.isEmpty()) && ((this.data == null) || this.data.isEmpty());
+  }
 
-    public String get(String key) {
-	return (this.data != null) ? this.data.get(key) : null;
-    }
+  public TempData set(String key, boolean value) {
+    this.data.put(key, Boolean.toString(value));
+    return this;
+  }
 
-    public boolean isEmpty() {
-	return ((this.messages == null) || this.messages.isEmpty()) && ((this.data == null) || this.data.isEmpty());
-    }
+  public TempData set(String key, int value) {
+    this.data.put(key, Integer.toString(value));
+    return this;
+  }
 
-    public TempData set(String key, boolean value) {
-	this.data.put(key, Boolean.toString(value));
-	return this;
-    }
+  public TempData set(String key, long value) {
+    this.data.put(key, Long.toString(value));
+    return this;
+  }
 
-    public TempData set(String key, int value) {
-	this.data.put(key, Integer.toString(value));
-	return this;
-    }
-
-    public TempData set(String key, long value) {
-	this.data.put(key, Long.toString(value));
-	return this;
-    }
-
-    public TempData set(String key, double value) {
-	this.data.put(key, Double.toString(value));
-	return this;
-    }
+  public TempData set(String key, double value) {
+    this.data.put(key, Double.toString(value));
+    return this;
+  }
 }

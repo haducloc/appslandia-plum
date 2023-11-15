@@ -27,11 +27,11 @@ package com.appslandia.plum.base;
  */
 public interface LongTaskManager {
 
-    void save(LongTask longTask);
+  void save(LongTask longTask);
 
-    LongTask load(String series);
+  LongTask load(String series);
 
-    void updateDone(String series, String status, String message, long doneAt);
+  void updateDone(String series, String status, String message, long doneAt);
 
-    void remove(String series);
+  void remove(String series);
 }

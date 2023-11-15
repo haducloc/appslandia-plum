@@ -30,29 +30,29 @@ import org.junit.jupiter.api.Test;
  */
 public class HttpStatus400Test extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testAction() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testAction");
+
+      Assertions.assertEquals(400, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+  }
 
-    @Test
-    public void test_testAction() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testAction");
+  @Controller("testController")
+  public static class TestController {
 
-	    Assertions.assertEquals(400, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void testAction() throws Exception {
+      throw new BadRequestException("testAction");
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void testAction() throws Exception {
-	    throw new BadRequestException("testAction");
-	}
-    }
+  }
 }

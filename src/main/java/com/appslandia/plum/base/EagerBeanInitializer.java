@@ -43,36 +43,37 @@ import jakarta.servlet.ServletContext;
 @ApplicationScoped
 public class EagerBeanInitializer {
 
-    @Inject
-    protected AppLogger appLogger;
+  @Inject
+  protected AppLogger appLogger;
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
+  public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
 
-	this.appLogger.info("Initializing eager beans...");
+    this.appLogger.info("Initializing eager beans...");
 
-	CDIUtils.scanReferences(this.beanManager, Object.class, new Annotation[] { EagerLiteral.IMPL }, null, (ann, inst) -> {
+    CDIUtils.scanReferences(this.beanManager, Object.class, new Annotation[] { EagerLiteral.IMPL }, null,
+        (ann, inst) -> {
 
-	    this.appLogger.info("Initializing eager bean: {}", inst.get().toString());
+          this.appLogger.info("Initializing eager bean: {}", inst.get().toString());
 
-	    this.beanInstances.add(inst);
-	});
+          this.beanInstances.add(inst);
+        });
 
-	this.appLogger.info("Finished initializing eager beans.");
-    }
+    this.appLogger.info("Finished initializing eager beans.");
+  }
 
-    public void contextDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext sc) {
-	this.beanInstances.forEach(bi -> {
-	    try {
-		bi.destroy();
+  public void contextDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext sc) {
+    this.beanInstances.forEach(bi -> {
+      try {
+        bi.destroy();
 
-	    } catch (RuntimeException ex) {
-		this.appLogger.error(ex);
-	    }
-	});
-    }
+      } catch (RuntimeException ex) {
+        this.appLogger.error(ex);
+      }
+    });
+  }
 }

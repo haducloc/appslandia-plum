@@ -34,40 +34,40 @@ import jakarta.validation.constraints.NotNull;
  */
 public class EmailSeriesToken {
 
-    @NotNull
-    @MaxLength(128)
-    private String series;
+  @NotNull
+  @MaxLength(128)
+  private String series;
 
-    @NotNull
-    @MaxLength(255)
-    private String token;
+  @NotNull
+  @MaxLength(255)
+  private String token;
 
-    @Bind(converter = Converter.STRING_LC)
-    @NotNull
-    @Email
-    private String email;
+  @Bind(converter = Converter.STRING_LC)
+  @NotNull
+  @Email
+  private String email;
 
-    public String getSeries() {
-	return series;
-    }
+  public String getSeries() {
+    return series;
+  }
 
-    public void setSeries(String series) {
-	this.series = series;
-    }
+  public void setSeries(String series) {
+    this.series = series;
+  }
 
-    public String getToken() {
-	return token;
-    }
+  public String getToken() {
+    return token;
+  }
 
-    public void setToken(String token) {
-	this.token = token;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 
-    public String getEmail() {
-	return email;
-    }
+  public String getEmail() {
+    return email;
+  }
 
-    public void setEmail(String email) {
-	this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 }

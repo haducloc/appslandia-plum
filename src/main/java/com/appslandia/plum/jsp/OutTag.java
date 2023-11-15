@@ -34,24 +34,24 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "out", dynamicAttributes = false, bodyContent = "empty")
 public class OutTag extends TagBase {
 
-    protected Object value;
-    protected boolean render = true;
+  protected Object value;
+  protected boolean render = true;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	if (this.render && this.value != null) {
+  @Override
+  public void doTag() throws JspException, IOException {
+    if (this.render && this.value != null) {
 
-	    XmlEscaper.escapeXml(this.pageContext.getOut(), this.value.toString());
-	}
+      XmlEscaper.escapeXml(this.pageContext.getOut(), this.value.toString());
     }
+  }
 
-    @Attribute(required = true, rtexprvalue = true)
-    public void setValue(Object value) {
-	this.value = value;
-    }
+  @Attribute(required = true, rtexprvalue = true)
+  public void setValue(Object value) {
+    this.value = value;
+  }
 
-    @Attribute(required = false, rtexprvalue = true)
-    public void setRender(boolean render) {
-	this.render = render;
-    }
+  @Attribute(required = false, rtexprvalue = true)
+  public void setRender(boolean render) {
+    this.render = render;
+  }
 }

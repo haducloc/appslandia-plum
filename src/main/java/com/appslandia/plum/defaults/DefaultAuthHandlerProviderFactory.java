@@ -43,33 +43,34 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultAuthHandlerProviderFactory implements CDIFactory<AuthHandlerProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public AuthHandlerProvider produce() {
-	final AuthHandlerProvider impl = new AuthHandlerProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public AuthHandlerProvider produce() {
+    final AuthHandlerProvider impl = new AuthHandlerProvider();
 
-	CDIUtils.scanReferences(this.beanManager, AuthHandler.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class, (mappedId, bi) -> {
+    CDIUtils.scanReferences(this.beanManager, AuthHandler.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
+        (mappedId, bi) -> {
 
-	    impl.addAuthHandler(mappedId.value(), bi.get());
+          impl.addAuthHandler(mappedId.value(), bi.get());
 
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+          beanInstances.add(bi);
+        });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes AuthHandlerProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes AuthHandlerProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

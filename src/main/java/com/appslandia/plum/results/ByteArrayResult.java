@@ -32,21 +32,21 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ByteArrayResult extends FilenameResult {
 
-    private byte[] content;
+  private byte[] content;
 
-    public ByteArrayResult(byte[] content, String fileName, String contentType) {
-	this(content, fileName, contentType, false);
-    }
+  public ByteArrayResult(byte[] content, String fileName, String contentType) {
+    this(content, fileName, contentType, false);
+  }
 
-    public ByteArrayResult(byte[] content, String fileName, String contentType, boolean inline) {
-	super(fileName, contentType, inline);
-	this.content = content;
-    }
+  public ByteArrayResult(byte[] content, String fileName, String contentType, boolean inline) {
+    super(fileName, contentType, inline);
+    this.content = content;
+  }
 
-    @Override
-    protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
-	response.setContentLength(this.content.length);
-	response.getOutputStream().write(this.content);
-	response.getOutputStream().flush();
-    }
+  @Override
+  protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentLength(this.content.length);
+    response.getOutputStream().write(this.content);
+    response.getOutputStream().flush();
+  }
 }

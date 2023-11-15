@@ -38,84 +38,88 @@ import com.appslandia.plum.pebble.PebbleUtils;
  */
 public class ActionUrlFunctionTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+  protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+  }
+
+  @Test
+  public void test() {
+    String templateContent = """
+        {{ actionUrl(action='index', __par1='value1', __par2='value 2') }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("/app/testController/?par1=value1&amp;par2=value+2&amp;encodeURL=true", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
     }
+  }
 
-    @Test
-    public void test() {
-	String templateContent = """
-		{{ actionUrl(action='index', __par1='value1', __par2='value 2') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+  @Test
+  public void test_not_escXml() {
+    String templateContent = """
+        {{ actionUrl(action='index', __par1='value1', __par2='value 2', escXml=false) }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null, getCurrentRequestContext().getLanguage().getLocale());
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null,
+          getCurrentRequestContext().getLanguage().getLocale());
 
-	    String content = out.toString();
-	    Assertions.assertEquals("/app/testController/?par1=value1&amp;par2=value+2&amp;encodeURL=true", content);
+      String content = out.toString();
+      Assertions.assertEquals("/app/testController/?par1=value1&par2=value+2&encodeURL=true", content);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex);
     }
+  }
 
-    @Test
-    public void test_not_escXml() {
-	String templateContent = """
-		{{ actionUrl(action='index', __par1='value1', __par2='value 2', escXml=false) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+  @Test
+  public void test_absUrl() {
+    String templateContent = """
+        {{ actionUrl(action='index', __par1='value1', __par2='value 2', absUrl=true) }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
 
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null, getCurrentRequestContext().getLanguage().getLocale());
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null,
+          getCurrentRequestContext().getLanguage().getLocale());
 
-	    String content = out.toString();
-	    Assertions.assertEquals("/app/testController/?par1=value1&par2=value+2&encodeURL=true", content);
+      String content = out.toString();
+      Assertions.assertEquals("http://localhost/app/testController/?par1=value1&amp;par2=value+2&amp;encodeURL=true",
+          content);
 
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    } catch (Exception ex) {
+      Assertions.fail(ex);
     }
+  }
 
-    @Test
-    public void test_absUrl() {
-	String templateContent = """
-		{{ actionUrl(action='index', __par1='value1', __par2='value 2', absUrl=true) }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+  @Controller("testController")
+  public static class TestController {
 
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", null, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("http://localhost/app/testController/?par1=value1&amp;par2=value+2&amp;encodeURL=true", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    @HttpGet
+    public ActionResult index() throws Exception {
+      return ActionResult.EMPTY;
     }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult index() throws Exception {
-	    return ActionResult.EMPTY;
-	}
-    }
+  }
 }

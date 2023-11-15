@@ -29,5 +29,5 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface ServletModuleParser {
 
-    String parseModule(HttpServletRequest request);
+  String parseModule(HttpServletRequest request);
 }

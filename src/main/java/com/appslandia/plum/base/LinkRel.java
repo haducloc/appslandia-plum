@@ -29,63 +29,64 @@ import java.util.Objects;
  */
 public class LinkRel {
 
-    public static final String HREFLANG_X_DEFAULT = "x-default";
+  public static final String HREFLANG_X_DEFAULT = "x-default";
 
-    private String rel;
-    private String hreflang;
-    private String href;
+  private String rel;
+  private String hreflang;
+  private String href;
 
-    public LinkRel() {
+  public LinkRel() {
+  }
+
+  public LinkRel(String rel, String hreflang, String href) {
+    this.rel = rel;
+    this.hreflang = hreflang;
+    this.href = href;
+  }
+
+  public String getRel() {
+    return this.rel;
+  }
+
+  public void setRel(String rel) {
+    this.rel = rel;
+  }
+
+  public String getHreflang() {
+    return this.hreflang;
+  }
+
+  public void setHreflang(String hreflang) {
+    this.hreflang = hreflang;
+  }
+
+  public String getHref() {
+    return this.href;
+  }
+
+  public void setHref(String href) {
+    this.href = href;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 1, p = 31;
+    hash = p * hash + Objects.hashCode(this.rel);
+    hash = p * hash + Objects.hashCode(this.hreflang);
+    hash = p * hash + Objects.hashCode(this.href);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-
-    public LinkRel(String rel, String hreflang, String href) {
-	this.rel = rel;
-	this.hreflang = hreflang;
-	this.href = href;
+    if (!(obj instanceof LinkRel)) {
+      return false;
     }
-
-    public String getRel() {
-	return this.rel;
-    }
-
-    public void setRel(String rel) {
-	this.rel = rel;
-    }
-
-    public String getHreflang() {
-	return this.hreflang;
-    }
-
-    public void setHreflang(String hreflang) {
-	this.hreflang = hreflang;
-    }
-
-    public String getHref() {
-	return this.href;
-    }
-
-    public void setHref(String href) {
-	this.href = href;
-    }
-
-    @Override
-    public int hashCode() {
-	int hash = 1, p = 31;
-	hash = p * hash + Objects.hashCode(this.rel);
-	hash = p * hash + Objects.hashCode(this.hreflang);
-	hash = p * hash + Objects.hashCode(this.href);
-	return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (!(obj instanceof LinkRel)) {
-	    return false;
-	}
-	LinkRel another = (LinkRel) obj;
-	return Objects.equals(this.rel, another.rel) && Objects.equals(this.hreflang, another.hreflang) && Objects.equals(this.href, another.href);
-    }
+    LinkRel another = (LinkRel) obj;
+    return Objects.equals(this.rel, another.rel) && Objects.equals(this.hreflang, another.hreflang)
+        && Objects.equals(this.href, another.href);
+  }
 }

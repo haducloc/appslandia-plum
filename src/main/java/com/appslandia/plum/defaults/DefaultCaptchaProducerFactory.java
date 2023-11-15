@@ -40,18 +40,19 @@ import jakarta.enterprise.inject.Produces;
 @ApplicationScoped
 public class DefaultCaptchaProducerFactory implements CDIFactory<CaptchaProducer> {
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public CaptchaProducer produce() {
-	CaptchaProducer impl = new CaptchaProducer();
-	impl.setBackgroundProducer(new GradientBgProducer().setFromColor(Color.LIGHT_GRAY).setToColor(Color.WHITE));
-	impl.addImageRenderer(new GridRenderer().setHColor(Color.GRAY).setVColor(Color.GRAY));
-	impl.setWordsRenderer(new WordsRendererImpl().addTextColor(new Color(136, 136, 136)).addTextColor(Color.GRAY).addTextColor(new Color(120, 120, 120)));
-	return impl;
-    }
+  @Produces
+  @ApplicationScoped
+  @Override
+  public CaptchaProducer produce() {
+    CaptchaProducer impl = new CaptchaProducer();
+    impl.setBackgroundProducer(new GradientBgProducer().setFromColor(Color.LIGHT_GRAY).setToColor(Color.WHITE));
+    impl.addImageRenderer(new GridRenderer().setHColor(Color.GRAY).setVColor(Color.GRAY));
+    impl.setWordsRenderer(new WordsRendererImpl().addTextColor(new Color(136, 136, 136)).addTextColor(Color.GRAY)
+        .addTextColor(new Color(120, 120, 120)));
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes CaptchaProducer impl) {
-    }
+  @Override
+  public void dispose(@Disposes CaptchaProducer impl) {
+  }
 }

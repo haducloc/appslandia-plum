@@ -31,15 +31,15 @@ import java.awt.image.BufferedImage;
  */
 public class TransparentBgProducer implements BackgroundProducer {
 
-    @Override
-    public BufferedImage produce(int width, int height) {
-	// TRANSLUCENT
-	BufferedImage bg = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
-	Graphics2D g = bg.createGraphics();
+  @Override
+  public BufferedImage produce(int width, int height) {
+    // TRANSLUCENT
+    BufferedImage bg = new BufferedImage(width, height, BufferedImage.TRANSLUCENT);
+    Graphics2D g = bg.createGraphics();
 
-	g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
-	g.fillRect(0, 0, width, height);
-	g.dispose();
-	return bg;
-    }
+    g.setComposite(AlphaComposite.getInstance(AlphaComposite.CLEAR, 0.0f));
+    g.fillRect(0, 0, width, height);
+    g.dispose();
+    return bg;
+  }
 }

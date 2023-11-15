@@ -30,46 +30,46 @@ import org.junit.jupiter.api.Test;
  */
 public class HttpStatus500Test extends MockTestBase {
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @Test
+  public void test_testException() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testException");
+
+      Assertions.assertEquals(500, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_testRuntimeException() {
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/testRuntimeException");
+
+      Assertions.assertEquals(500, getCurrentResponse().getStatus());
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void testException() throws Exception {
+      throw new Exception();
     }
 
-    @Test
-    public void test_testException() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testException");
-
-	    Assertions.assertEquals(500, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
+    @HttpGet
+    public void testRuntimeException() throws Exception {
+      throw new RuntimeException();
     }
-
-    @Test
-    public void test_testRuntimeException() {
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/testRuntimeException");
-
-	    Assertions.assertEquals(500, getCurrentResponse().getStatus());
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void testException() throws Exception {
-	    throw new Exception();
-	}
-
-	@HttpGet
-	public void testRuntimeException() throws Exception {
-	    throw new RuntimeException();
-	}
-    }
+  }
 }

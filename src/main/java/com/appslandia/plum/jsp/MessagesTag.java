@@ -40,71 +40,71 @@ import jakarta.servlet.jsp.JspWriter;
 @Tag(name = "messages", dynamicAttributes = false)
 public class MessagesTag extends TagBase {
 
-    protected String type;
-    protected String listClass;
-    protected String itemClass;
+  protected String type;
+  protected String listClass;
+  protected String itemClass;
 
-    @Override
-    public void doTag() throws JspException, IOException {
-	List<Message> messages = (Messages) this.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
-	if (!CollectionUtils.hasElements(messages)) {
-	    return;
-	}
-
-	int typeId = MessageUtils.getMsgType(this.type);
-	List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
-	if (msgs.isEmpty()) {
-	    return;
-	}
-	JspWriter out = this.pageContext.getOut();
-
-	out.write("<ul");
-	if (this.listClass != null) {
-	    HtmlUtils.escAttribute(out, "class", this.listClass);
-	}
-	out.write(">");
-
-	for (Message msg : msgs) {
-	    out.newLine();
-
-	    String typeClass = MessageUtils.getMsgClass(typeId);
-	    out.write("<li");
-
-	    if (this.itemClass == null) {
-		HtmlUtils.escAttribute(out, "class", typeClass);
-	    } else {
-		out.write(" class=\"");
-		out.write(this.itemClass);
-		out.write(" ");
-		out.write(typeClass);
-		out.write("\"");
-	    }
-	    out.write(">");
-
-	    if (msg.isEscXml()) {
-		XmlEscaper.escapeXml(out, msg.getText());
-	    } else {
-		out.write(msg.getText());
-	    }
-	    out.write("</li>");
-	}
-
-	out.newLine();
-	out.write("</ul>");
+  @Override
+  public void doTag() throws JspException, IOException {
+    List<Message> messages = (Messages) this.getRequest().getAttribute(Messages.REQUEST_ATTRIBUTE_ID);
+    if (!CollectionUtils.hasElements(messages)) {
+      return;
     }
 
-    @Attribute(required = true, rtexprvalue = false, description = "error|warn|notice|info")
-    public void setType(String type) {
-	this.type = type;
+    int typeId = MessageUtils.getMsgType(this.type);
+    List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
+    if (msgs.isEmpty()) {
+      return;
+    }
+    JspWriter out = this.pageContext.getOut();
+
+    out.write("<ul");
+    if (this.listClass != null) {
+      HtmlUtils.escAttribute(out, "class", this.listClass);
+    }
+    out.write(">");
+
+    for (Message msg : msgs) {
+      out.newLine();
+
+      String typeClass = MessageUtils.getMsgClass(typeId);
+      out.write("<li");
+
+      if (this.itemClass == null) {
+        HtmlUtils.escAttribute(out, "class", typeClass);
+      } else {
+        out.write(" class=\"");
+        out.write(this.itemClass);
+        out.write(" ");
+        out.write(typeClass);
+        out.write("\"");
+      }
+      out.write(">");
+
+      if (msg.isEscXml()) {
+        XmlEscaper.escapeXml(out, msg.getText());
+      } else {
+        out.write(msg.getText());
+      }
+      out.write("</li>");
     }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setListClass(String listClass) {
-	this.listClass = listClass;
-    }
+    out.newLine();
+    out.write("</ul>");
+  }
 
-    @Attribute(required = false, rtexprvalue = false)
-    public void setItemClass(String itemClass) {
-	this.itemClass = itemClass;
-    }
+  @Attribute(required = true, rtexprvalue = false, description = "error|warn|notice|info")
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setListClass(String listClass) {
+    this.listClass = listClass;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setItemClass(String itemClass) {
+    this.itemClass = itemClass;
+  }
 }

@@ -34,14 +34,14 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class CacheChangeEvent {
 
-    @Inject
-    protected Event<CacheChange> event;
+  @Inject
+  protected Event<CacheChange> event;
 
-    public void fire(String cacheName, String... keys) {
-	this.event.fire(new CacheChange(cacheName, keys));
-    }
+  public void fire(String cacheName, String... keys) {
+    this.event.fire(new CacheChange(cacheName, keys));
+  }
 
-    public CompletionStage<CacheChange> fireAsync(String cacheName, String... keys) {
-	return this.event.fireAsync(new CacheChange(cacheName, keys));
-    }
+  public CompletionStage<CacheChange> fireAsync(String cacheName, String... keys) {
+    return this.event.fireAsync(new CacheChange(cacheName, keys));
+  }
 }

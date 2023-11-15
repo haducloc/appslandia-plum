@@ -39,144 +39,145 @@ import com.appslandia.plum.mocks.MockSessionCookieConfig;
  */
 public class ServletUtilsTest {
 
-    MockServletContext servletContext;
+  MockServletContext servletContext;
 
-    @BeforeEach
-    public void initialize() {
-	servletContext = new MockServletContext(new MockSessionCookieConfig());
-    }
+  @BeforeEach
+  public void initialize() {
+    servletContext = new MockServletContext(new MockSessionCookieConfig());
+  }
 
-    @Test
-    public void test_appendUriQuery() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	request.setRequestURL("http://localhost/app/main");
-	Assertions.assertEquals("/app/main", ServletUtils.appendUriQuery(request, new StringBuilder()).toString());
+  @Test
+  public void test_appendUriQuery() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    request.setRequestURL("http://localhost/app/main");
+    Assertions.assertEquals("/app/main", ServletUtils.appendUriQuery(request, new StringBuilder()).toString());
 
-	request = new MockHttpServletRequest(servletContext);
-	request.setRequestURL("http://localhost/app/main?param1=value1");
-	Assertions.assertEquals("/app/main?param1=value1", ServletUtils.appendUriQuery(request, new StringBuilder()).toString());
-    }
+    request = new MockHttpServletRequest(servletContext);
+    request.setRequestURL("http://localhost/app/main?param1=value1");
+    Assertions.assertEquals("/app/main?param1=value1",
+        ServletUtils.appendUriQuery(request, new StringBuilder()).toString());
+  }
 
-    @Test
-    public void test_toEtag() {
-	byte[] md5 = new DigesterImpl("MD5").digest(RandomUtils.nextBytes(16));
-	String weakEtag = ServletUtils.toEtag(md5);
+  @Test
+  public void test_toEtag() {
+    byte[] md5 = new DigesterImpl("MD5").digest(RandomUtils.nextBytes(16));
+    String weakEtag = ServletUtils.toEtag(md5);
 
-	Assertions.assertTrue(weakEtag.length() == 34);
-	Assertions.assertTrue(weakEtag.startsWith("\""));
-	Assertions.assertTrue(weakEtag.endsWith("\""));
-    }
+    Assertions.assertTrue(weakEtag.length() == 34);
+    Assertions.assertTrue(weakEtag.startsWith("\""));
+    Assertions.assertTrue(weakEtag.endsWith("\""));
+  }
 
-    @Test
-    public void test_checkNotModified_lastModified() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkNotModified_lastModified() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	long ifModifiedSince = DateUtils.clearMs(System.currentTimeMillis());
-	request.setHeaderValues("If-Modified-Since", HeaderUtils.toDateHeaderString(ifModifiedSince));
+    long ifModifiedSince = DateUtils.clearMs(System.currentTimeMillis());
+    request.setHeaderValues("If-Modified-Since", HeaderUtils.toDateHeaderString(ifModifiedSince));
 
-	long lastModified = ifModifiedSince;
-	boolean notModified = ServletUtils.checkNotModified(request, response, lastModified);
-	Assertions.assertTrue(notModified);
-	Assertions.assertEquals(lastModified, response.getDateHeader("Last-Modified"));
-	Assertions.assertEquals(304, response.getStatus());
-    }
+    long lastModified = ifModifiedSince;
+    boolean notModified = ServletUtils.checkNotModified(request, response, lastModified);
+    Assertions.assertTrue(notModified);
+    Assertions.assertEquals(lastModified, response.getDateHeader("Last-Modified"));
+    Assertions.assertEquals(304, response.getStatus());
+  }
 
-    @Test
-    public void test_checkNotModified_lastModified_modified() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkNotModified_lastModified_modified() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	long ifModifiedSince = DateUtils.clearMs(System.currentTimeMillis());
-	request.setHeaderValues("If-Modified-Since", HeaderUtils.toDateHeaderString(ifModifiedSince));
+    long ifModifiedSince = DateUtils.clearMs(System.currentTimeMillis());
+    request.setHeaderValues("If-Modified-Since", HeaderUtils.toDateHeaderString(ifModifiedSince));
 
-	long lastModified = ifModifiedSince + 1000;
-	boolean notModified = ServletUtils.checkNotModified(request, response, lastModified);
-	Assertions.assertFalse(notModified);
+    long lastModified = ifModifiedSince + 1000;
+    boolean notModified = ServletUtils.checkNotModified(request, response, lastModified);
+    Assertions.assertFalse(notModified);
 
-	Assertions.assertEquals(lastModified, response.getDateHeader("Last-Modified"));
-	Assertions.assertEquals(200, response.getStatus());
-    }
+    Assertions.assertEquals(lastModified, response.getDateHeader("Last-Modified"));
+    Assertions.assertEquals(200, response.getStatus());
+  }
 
-    @Test
-    public void test_checkNotModified_etag() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkNotModified_etag() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	String ifNoneMatch = "etag";
-	request.setHeaderValues("If-None-Match", ifNoneMatch);
+    String ifNoneMatch = "etag";
+    request.setHeaderValues("If-None-Match", ifNoneMatch);
 
-	String etag = "etag";
-	boolean notModified = ServletUtils.checkNotModified(request, response, etag);
-	Assertions.assertTrue(notModified);
-	Assertions.assertEquals(etag, response.getHeader("ETag"));
-	Assertions.assertEquals(304, response.getStatus());
-    }
+    String etag = "etag";
+    boolean notModified = ServletUtils.checkNotModified(request, response, etag);
+    Assertions.assertTrue(notModified);
+    Assertions.assertEquals(etag, response.getHeader("ETag"));
+    Assertions.assertEquals(304, response.getStatus());
+  }
 
-    @Test
-    public void test_checkNotModified_etag_modified() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkNotModified_etag_modified() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	String ifNoneMatch = "etag";
-	request.setHeaderValues("If-None-Match", ifNoneMatch);
+    String ifNoneMatch = "etag";
+    request.setHeaderValues("If-None-Match", ifNoneMatch);
 
-	String etag = "etag1";
-	boolean notModified = ServletUtils.checkNotModified(request, response, etag);
-	Assertions.assertFalse(notModified);
-	Assertions.assertEquals(etag, response.getHeader("ETag"));
-	Assertions.assertEquals(200, response.getStatus());
-    }
+    String etag = "etag1";
+    boolean notModified = ServletUtils.checkNotModified(request, response, etag);
+    Assertions.assertFalse(notModified);
+    Assertions.assertEquals(etag, response.getHeader("ETag"));
+    Assertions.assertEquals(200, response.getStatus());
+  }
 
-    @Test
-    public void test_checkPrecondition_lastModified() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkPrecondition_lastModified() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	long ifUnmodifiedSince = DateUtils.clearMs(System.currentTimeMillis());
-	request.setHeaderValues("If-Unmodified-Since", HeaderUtils.toDateHeaderString(ifUnmodifiedSince));
+    long ifUnmodifiedSince = DateUtils.clearMs(System.currentTimeMillis());
+    request.setHeaderValues("If-Unmodified-Since", HeaderUtils.toDateHeaderString(ifUnmodifiedSince));
 
-	long lastModified = ifUnmodifiedSince + 999;
-	boolean notModified = ServletUtils.checkPrecondition(request, response, lastModified);
-	Assertions.assertTrue(notModified);
-    }
+    long lastModified = ifUnmodifiedSince + 999;
+    boolean notModified = ServletUtils.checkPrecondition(request, response, lastModified);
+    Assertions.assertTrue(notModified);
+  }
 
-    @Test
-    public void test_checkPrecondition_lastModified_modified() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkPrecondition_lastModified_modified() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	long ifUnmodifiedSince = DateUtils.clearMs(System.currentTimeMillis());
-	request.setHeaderValues("If-Unmodified-Since", HeaderUtils.toDateHeaderString(ifUnmodifiedSince));
+    long ifUnmodifiedSince = DateUtils.clearMs(System.currentTimeMillis());
+    request.setHeaderValues("If-Unmodified-Since", HeaderUtils.toDateHeaderString(ifUnmodifiedSince));
 
-	long lastModified = ifUnmodifiedSince + 1000;
-	boolean notModified = ServletUtils.checkPrecondition(request, response, lastModified);
-	Assertions.assertFalse(notModified);
-    }
+    long lastModified = ifUnmodifiedSince + 1000;
+    boolean notModified = ServletUtils.checkPrecondition(request, response, lastModified);
+    Assertions.assertFalse(notModified);
+  }
 
-    @Test
-    public void test_checkPrecondition_etag() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkPrecondition_etag() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	String ifMatch = "etag";
-	request.setHeaderValues("If-Match", ifMatch);
+    String ifMatch = "etag";
+    request.setHeaderValues("If-Match", ifMatch);
 
-	String etag = "etag";
-	boolean notModified = ServletUtils.checkPrecondition(request, response, etag);
-	Assertions.assertTrue(notModified);
-    }
+    String etag = "etag";
+    boolean notModified = ServletUtils.checkPrecondition(request, response, etag);
+    Assertions.assertTrue(notModified);
+  }
 
-    @Test
-    public void test_checkPrecondition_etag_modified() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
+  @Test
+  public void test_checkPrecondition_etag_modified() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
 
-	String ifMatch = "etag";
-	request.setHeaderValues("If-Match", ifMatch);
+    String ifMatch = "etag";
+    request.setHeaderValues("If-Match", ifMatch);
 
-	String etag = "etag1";
-	boolean notModified = ServletUtils.checkPrecondition(request, response, etag);
-	Assertions.assertFalse(notModified);
-    }
+    String etag = "etag1";
+    boolean notModified = ServletUtils.checkPrecondition(request, response, etag);
+    Assertions.assertFalse(notModified);
+  }
 }

@@ -34,13 +34,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultIdentityValidator implements IdentityValidator {
 
-    @Override
-    public PrincipalRoles validate(String module, String identity, Out<String> invalidCode) {
-	throw new UnsupportedOperationException("Not implemented.");
-    }
+  @Override
+  public PrincipalRoles validate(String module, String identity, Out<String> invalidCode) {
+    throw new UnsupportedOperationException("Not implemented.");
+  }
 
-    @Override
-    public PrincipalRoles validate(String module, String username, String password, Out<String> invalidCode) {
-	throw new UnsupportedOperationException("Not implemented.");
-    }
+  @Override
+  public PrincipalRoles validate(String module, String username, String password, Out<String> invalidCode) {
+    throw new UnsupportedOperationException("Not implemented.");
+  }
 }

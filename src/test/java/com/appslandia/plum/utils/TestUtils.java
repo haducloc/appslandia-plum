@@ -47,41 +47,41 @@ import jakarta.servlet.RequestDispatcher;
  */
 public class TestUtils {
 
-    public static void setDeployEnv(DeployEnv env) {
-	Field field = ReflectionUtils.findField(DeployEnv.class, "current");
-	Asserts.notNull(field);
-	field.setAccessible(true);
-	ReflectionUtils.set(field, null, env);
-    }
+  public static void setDeployEnv(DeployEnv env) {
+    Field field = ReflectionUtils.findField(DeployEnv.class, "current");
+    Asserts.notNull(field);
+    field.setAccessible(true);
+    ReflectionUtils.set(field, null, env);
+  }
 
-    public static void initExpressionEvaluator() {
-	Field field = ReflectionUtils.findField(ExpressionEvaluator.class, "__default");
-	Asserts.notNull(field);
-	field.setAccessible(true);
-	ReflectionUtils.set(field, null, new MockExpressionEvaluator());
-    }
+  public static void initExpressionEvaluator() {
+    Field field = ReflectionUtils.findField(ExpressionEvaluator.class, "__default");
+    Asserts.notNull(field);
+    field.setAccessible(true);
+    ReflectionUtils.set(field, null, new MockExpressionEvaluator());
+  }
 
-    public static String ungzipToString(MemoryStream gzipContent) throws IOException {
-	if (gzipContent.size() == 0) {
-	    return StringUtils.EMPTY_STRING;
-	}
-	try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(gzipContent.toByteArray()))) {
-	    return IOUtils.toString(gis, StandardCharsets.UTF_8.name());
-	}
+  public static String ungzipToString(MemoryStream gzipContent) throws IOException {
+    if (gzipContent.size() == 0) {
+      return StringUtils.EMPTY_STRING;
     }
+    try (GZIPInputStream gis = new GZIPInputStream(new ByteArrayInputStream(gzipContent.toByteArray()))) {
+      return IOUtils.toString(gis, StandardCharsets.UTF_8.name());
+    }
+  }
 
-    public static void printException(MockHttpServletRequest request) {
-	Throwable error = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-	if (error != null) {
-	    error.printStackTrace();
-	}
+  public static void printException(MockHttpServletRequest request) {
+    Throwable error = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+    if (error != null) {
+      error.printStackTrace();
     }
+  }
 
-    public static void printHeaders(MockHttpServletRequest request) {
-	System.out.println(new ToStringBuilder().toStringHeaders(request));
-    }
+  public static void printHeaders(MockHttpServletRequest request) {
+    System.out.println(new ToStringBuilder().toStringHeaders(request));
+  }
 
-    public static void printHeaders(MockHttpServletResponse response) {
-	System.out.println(new ToStringBuilder().toStringHeaders(response));
-    }
+  public static void printHeaders(MockHttpServletResponse response) {
+    System.out.println(new ToStringBuilder().toStringHeaders(response));
+  }
 }

@@ -34,38 +34,38 @@ import jakarta.validation.constraints.NotNull;
  */
 public class EmailLoginModel {
 
-    @Bind(converter = Converter.STRING_LC)
-    @NotNull
-    @Email
-    private String email;
+  @Bind(converter = Converter.STRING_LC)
+  @NotNull
+  @Email
+  private String email;
 
-    @NotNull
-    @Password
-    private String password;
+  @NotNull
+  @Password
+  private String password;
 
-    private boolean rememberMe;
+  private boolean rememberMe;
 
-    public String getEmail() {
-	return this.email;
-    }
+  public String getEmail() {
+    return this.email;
+  }
 
-    public void setEmail(String email) {
-	this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  }
 
-    public String getPassword() {
-	return this.password;
-    }
+  public String getPassword() {
+    return this.password;
+  }
 
-    public void setPassword(String password) {
-	this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public boolean isRememberMe() {
-	return this.rememberMe;
-    }
+  public boolean isRememberMe() {
+    return this.rememberMe;
+  }
 
-    public void setRememberMe(boolean rememberMe) {
-	this.rememberMe = rememberMe;
-    }
+  public void setRememberMe(boolean rememberMe) {
+    this.rememberMe = rememberMe;
+  }
 }

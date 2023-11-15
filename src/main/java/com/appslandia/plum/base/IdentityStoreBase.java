@@ -35,31 +35,31 @@ import jakarta.security.enterprise.identitystore.IdentityStore;
  */
 public abstract class IdentityStoreBase implements IdentityStore {
 
-    public abstract Class<? extends Credential> getAcceptedCredentialType();
+  public abstract Class<? extends Credential> getAcceptedCredentialType();
 
-    @Override
-    public CredentialValidationResult validate(Credential credential) {
-	// Not AuthCredential
-	if (!(credential instanceof AuthCredential)) {
-	    return CredentialValidationResult.NOT_VALIDATED_RESULT;
-	}
-	AuthCredential authCredential = (AuthCredential) credential;
+  @Override
+  public CredentialValidationResult validate(Credential credential) {
+    // Not AuthCredential
+    if (!(credential instanceof AuthCredential)) {
+      return CredentialValidationResult.NOT_VALIDATED_RESULT;
+    }
+    AuthCredential authCredential = (AuthCredential) credential;
 
-	// Check credential type
-	if (getAcceptedCredentialType() != authCredential.getCredential().getClass()) {
-	    return CredentialValidationResult.NOT_VALIDATED_RESULT;
-	}
-
-	// Validate credential
-	Out<String> invalidCode = new Out<>();
-	PrincipalRoles principalRoles = doValidate(authCredential.getModule(), authCredential.getCredential(), invalidCode);
-
-	if (principalRoles == null) {
-	    String code = Asserts.notNull(invalidCode.value, "invalidCode is required.");
-	    return InvalidAuthResult.valueOf(code);
-	}
-	return SecurityUtils.createIdentityStoreResult(principalRoles.getPrincipal(), principalRoles.getRoles());
+    // Check credential type
+    if (getAcceptedCredentialType() != authCredential.getCredential().getClass()) {
+      return CredentialValidationResult.NOT_VALIDATED_RESULT;
     }
 
-    protected abstract PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode);
+    // Validate credential
+    Out<String> invalidCode = new Out<>();
+    PrincipalRoles principalRoles = doValidate(authCredential.getModule(), authCredential.getCredential(), invalidCode);
+
+    if (principalRoles == null) {
+      String code = Asserts.notNull(invalidCode.value, "invalidCode is required.");
+      return InvalidAuthResult.valueOf(code);
+    }
+    return SecurityUtils.createIdentityStoreResult(principalRoles.getPrincipal(), principalRoles.getRoles());
+  }
+
+  protected abstract PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode);
 }

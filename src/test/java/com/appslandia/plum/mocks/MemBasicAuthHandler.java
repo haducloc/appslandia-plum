@@ -34,8 +34,8 @@ import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 @MappedID(Modules.DEFAULT)
 public class MemBasicAuthHandler extends BasicAuthHandler {
 
-    @Override
-    protected UsernamePasswordCredential createCredential(String userName, String password) {
-	return new MemUserPasswordCredential(userName, password);
-    }
+  @Override
+  protected UsernamePasswordCredential createCredential(String userName, String password) {
+    return new MemUserPasswordCredential(userName, password);
+  }
 }

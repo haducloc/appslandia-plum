@@ -38,101 +38,102 @@ import jakarta.servlet.http.Cookie;
  */
 public class MockServletUtils {
 
-    public static void addHeaderValues(Map<String, MockHttpHeader> headers, String name, String[] values) {
-	MockHttpHeader header = MockHttpHeader.getByName(headers, name);
-	if (header == null) {
-	    header = new MockHttpHeader();
-	    headers.put(name, header);
-	}
-	header.addValues(values);
+  public static void addHeaderValues(Map<String, MockHttpHeader> headers, String name, String[] values) {
+    MockHttpHeader header = MockHttpHeader.getByName(headers, name);
+    if (header == null) {
+      header = new MockHttpHeader();
+      headers.put(name, header);
     }
+    header.addValues(values);
+  }
 
-    public static void setHeaderValues(Map<String, MockHttpHeader> headers, String name, String[] values) {
-	MockHttpHeader header = MockHttpHeader.getByName(headers, name);
-	if (header == null) {
-	    header = new MockHttpHeader();
-	    headers.put(name, header);
-	}
-	header.setValues(values);
+  public static void setHeaderValues(Map<String, MockHttpHeader> headers, String name, String[] values) {
+    MockHttpHeader header = MockHttpHeader.getByName(headers, name);
+    if (header == null) {
+      header = new MockHttpHeader();
+      headers.put(name, header);
     }
+    header.setValues(values);
+  }
 
-    public static long getDateHeader(Map<String, MockHttpHeader> headers, String name) {
-	MockHttpHeader header = MockHttpHeader.getByName(headers, name);
-	String value = (header != null) ? header.getValue() : null;
-	if (value != null) {
-	    return HeaderUtils.parseDateHeader((String) value);
-	}
-	return -1L;
+  public static long getDateHeader(Map<String, MockHttpHeader> headers, String name) {
+    MockHttpHeader header = MockHttpHeader.getByName(headers, name);
+    String value = (header != null) ? header.getValue() : null;
+    if (value != null) {
+      return HeaderUtils.parseDateHeader((String) value);
     }
+    return -1L;
+  }
 
-    public static int getIntHeader(Map<String, MockHttpHeader> headers, String name) {
-	MockHttpHeader header = MockHttpHeader.getByName(headers, name);
-	String value = (header != null) ? header.getValue() : null;
-	if (value != null) {
-	    return Integer.parseInt((String) value);
-	}
-	return -1;
+  public static int getIntHeader(Map<String, MockHttpHeader> headers, String name) {
+    MockHttpHeader header = MockHttpHeader.getByName(headers, name);
+    String value = (header != null) ? header.getValue() : null;
+    if (value != null) {
+      return Integer.parseInt((String) value);
     }
+    return -1;
+  }
 
-    public static Cookie createCookie(ServletContext sc, String name, String value, int maxAge) {
-	return createCookie(sc, name, value, maxAge, false, false, null, null);
+  public static Cookie createCookie(ServletContext sc, String name, String value, int maxAge) {
+    return createCookie(sc, name, value, maxAge, false, false, null, null);
+  }
+
+  public static Cookie createCookie(ServletContext sc, String name, String value, int maxAge, boolean secure,
+      boolean httpOnly, String domain, String path) {
+    Cookie cookie = new Cookie(name, value);
+
+    if (domain != null) {
+      cookie.setDomain(domain);
+    } else if (sc.getSessionCookieConfig().getDomain() != null) {
+      cookie.setDomain(sc.getSessionCookieConfig().getDomain());
     }
-
-    public static Cookie createCookie(ServletContext sc, String name, String value, int maxAge, boolean secure, boolean httpOnly, String domain, String path) {
-	Cookie cookie = new Cookie(name, value);
-
-	if (domain != null) {
-	    cookie.setDomain(domain);
-	} else if (sc.getSessionCookieConfig().getDomain() != null) {
-	    cookie.setDomain(sc.getSessionCookieConfig().getDomain());
-	}
-	if (path != null) {
-	    cookie.setPath(path);
-	} else if (sc.getSessionCookieConfig().getPath() != null) {
-	    cookie.setPath(sc.getSessionCookieConfig().getPath());
-	} else {
-	    cookie.setPath("/");
-	}
-	if (maxAge >= 0) {
-	    cookie.setMaxAge(maxAge);
-	}
-	cookie.setSecure(secure);
-	cookie.setHttpOnly(httpOnly);
-	return cookie;
+    if (path != null) {
+      cookie.setPath(path);
+    } else if (sc.getSessionCookieConfig().getPath() != null) {
+      cookie.setPath(sc.getSessionCookieConfig().getPath());
+    } else {
+      cookie.setPath("/");
     }
-
-    public static Cookie createSessionCookie(ServletContext sc, String value) {
-	Cookie cookie = new Cookie(sc.getSessionCookieConfig().getName(), value);
-	if (sc.getSessionCookieConfig().getDomain() != null) {
-	    cookie.setDomain(sc.getSessionCookieConfig().getDomain());
-	}
-	cookie.setPath(sc.getSessionCookieConfig().getPath());
-
-	cookie.setSecure(sc.getSessionCookieConfig().isSecure());
-	cookie.setHttpOnly(sc.getSessionCookieConfig().isHttpOnly());
-	return cookie;
+    if (maxAge >= 0) {
+      cookie.setMaxAge(maxAge);
     }
+    cookie.setSecure(secure);
+    cookie.setHttpOnly(httpOnly);
+    return cookie;
+  }
 
-    public static Cookie getCookie(List<Cookie> cookies, String name) {
-	for (Cookie cookie : cookies) {
-	    if (name.equals(cookie.getName())) {
-		return cookie;
-	    }
-	}
-	return null;
+  public static Cookie createSessionCookie(ServletContext sc, String value) {
+    Cookie cookie = new Cookie(sc.getSessionCookieConfig().getName(), value);
+    if (sc.getSessionCookieConfig().getDomain() != null) {
+      cookie.setDomain(sc.getSessionCookieConfig().getDomain());
     }
+    cookie.setPath(sc.getSessionCookieConfig().getPath());
 
-    public static void addParameter(Map<String, String[]> parameterMap, String name, String... moreValues) {
-	String[] values = parameterMap.get(name);
-	if (values == null) {
-	    parameterMap.put(name, moreValues);
-	} else {
-	    parameterMap.put(name, ArrayUtils.append(values, moreValues));
-	}
-    }
+    cookie.setSecure(sc.getSessionCookieConfig().isSecure());
+    cookie.setHttpOnly(sc.getSessionCookieConfig().isHttpOnly());
+    return cookie;
+  }
 
-    public static String createBasicCredential(String userName, String password) {
-	String credential = userName + ":" + password;
-	return BaseEncoder.BASE64.encode(credential.getBytes(StandardCharsets.UTF_8));
+  public static Cookie getCookie(List<Cookie> cookies, String name) {
+    for (Cookie cookie : cookies) {
+      if (name.equals(cookie.getName())) {
+        return cookie;
+      }
     }
+    return null;
+  }
+
+  public static void addParameter(Map<String, String[]> parameterMap, String name, String... moreValues) {
+    String[] values = parameterMap.get(name);
+    if (values == null) {
+      parameterMap.put(name, moreValues);
+    } else {
+      parameterMap.put(name, ArrayUtils.append(values, moreValues));
+    }
+  }
+
+  public static String createBasicCredential(String userName, String password) {
+    String credential = userName + ":" + password;
+    return BaseEncoder.BASE64.encode(credential.getBytes(StandardCharsets.UTF_8));
+  }
 }

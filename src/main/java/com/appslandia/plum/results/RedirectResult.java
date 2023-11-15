@@ -41,143 +41,146 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class RedirectResult implements ActionResult {
 
-    private String controller;
-    private String action;
-    private Map<String, Object> params;
-    private int status = HttpServletResponse.SC_MOVED_TEMPORARILY;
+  private String controller;
+  private String action;
+  private Map<String, Object> params;
+  private int status = HttpServletResponse.SC_MOVED_TEMPORARILY;
 
-    public RedirectResult() {
+  public RedirectResult() {
+  }
+
+  public RedirectResult(String action) {
+    this.action = action;
+  }
+
+  public RedirectResult(String action, String controller) {
+    this.action = action;
+    this.controller = controller;
+  }
+
+  public RedirectResult status(int status) {
+    this.status = status;
+    return this;
+  }
+
+  public RedirectResult query(String name, Object value) {
+    getParams().put(name, value);
+    return this;
+  }
+
+  private Map<String, Object> getParams() {
+    if (this.params == null) {
+      this.params = new LinkedHashMap<>();
+    }
+    return this.params;
+  }
+
+  @Override
+  public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+    TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
+
+    // Controller/action
+    Asserts.notNull(this.action);
+    if (this.controller == null) {
+      this.controller = requestContext.getActionDesc().getController();
     }
 
-    public RedirectResult(String action) {
-	this.action = action;
+    // TempData
+    String tempDataId = tempDataManager.saveTempData(request, response);
+    if (tempDataId != null) {
+      query(TempDataManager.PARAM_TEMP_DATA_ID, tempDataId);
     }
 
-    public RedirectResult(String action, String controller) {
-	this.action = action;
-	this.controller = controller;
-    }
+    // URL
+    ActionParser actionParser = ServletUtils.getAppScoped(request.getServletContext(), ActionParser.class);
+    String url = actionParser.toActionUrl(request, this.controller, this.action, this.params, false);
+    sendRedirect(response, url, appConfig.isEnableSession());
+  }
 
-    public RedirectResult status(int status) {
-	this.status = status;
-	return this;
+  protected void sendRedirect(HttpServletResponse response, String url, boolean enableSession) throws Exception {
+    if (this.status == HttpServletResponse.SC_MOVED_TEMPORARILY) {
+      response.sendRedirect(enableSession ? response.encodeRedirectURL(url) : url);
+    } else {
+      ServletUtils.sendRedirect(response, enableSession ? response.encodeRedirectURL(url) : url, this.status);
     }
+  }
 
-    public RedirectResult query(String name, Object value) {
-	getParams().put(name, value);
-	return this;
-    }
+  public static final RedirectResult INDEX = new RedirectResult() {
 
-    private Map<String, Object> getParams() {
-	if (this.params == null) {
-	    this.params = new LinkedHashMap<>();
-	}
-	return this.params;
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+        throws Exception {
+      AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+      TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
+
+      // URL
+      StringBuilder url = new StringBuilder();
+      url.append(request.getServletContext().getContextPath());
+
+      // Language
+      if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+        url.append('/').append(requestContext.getLanguageId());
+      }
+
+      // Controller
+      url.append('/').append(requestContext.getActionDesc().getController());
+      url.append('/');
+
+      // TempData
+      String tempDataId = tempDataManager.saveTempData(request, response);
+      if (tempDataId != null) {
+        url.append('?').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
+      }
+      response.sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
     }
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-	TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
-
-	// Controller/action
-	Asserts.notNull(this.action);
-	if (this.controller == null) {
-	    this.controller = requestContext.getActionDesc().getController();
-	}
-
-	// TempData
-	String tempDataId = tempDataManager.saveTempData(request, response);
-	if (tempDataId != null) {
-	    query(TempDataManager.PARAM_TEMP_DATA_ID, tempDataId);
-	}
-
-	// URL
-	ActionParser actionParser = ServletUtils.getAppScoped(request.getServletContext(), ActionParser.class);
-	String url = actionParser.toActionUrl(request, this.controller, this.action, this.params, false);
-	sendRedirect(response, url, appConfig.isEnableSession());
+    public RedirectResult status(int status) {
+      throw new UnsupportedOperationException();
     }
 
-    protected void sendRedirect(HttpServletResponse response, String url, boolean enableSession) throws Exception {
-	if (this.status == HttpServletResponse.SC_MOVED_TEMPORARILY) {
-	    response.sendRedirect(enableSession ? response.encodeRedirectURL(url) : url);
-	} else {
-	    ServletUtils.sendRedirect(response, enableSession ? response.encodeRedirectURL(url) : url, this.status);
-	}
+    @Override
+    public RedirectResult query(String name, Object value) {
+      throw new UnsupportedOperationException();
+    }
+  };
+
+  public static final RedirectResult ROOT = new RedirectResult() {
+
+    @Override
+    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+        throws Exception {
+      AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+      TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
+
+      // URL
+      StringBuilder url = new StringBuilder();
+      url.append(request.getServletContext().getContextPath());
+
+      // Language
+      if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+        url.append('/').append(requestContext.getLanguageId());
+      }
+      url.append('/');
+
+      // TempData
+      String tempDataId = tempDataManager.saveTempData(request, response);
+      if (tempDataId != null) {
+        url.append('?').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
+      }
+      response.sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
     }
 
-    public static final RedirectResult INDEX = new RedirectResult() {
+    @Override
+    public RedirectResult status(int status) {
+      throw new UnsupportedOperationException();
+    }
 
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-	    TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
-
-	    // URL
-	    StringBuilder url = new StringBuilder();
-	    url.append(request.getServletContext().getContextPath());
-
-	    // Language
-	    if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
-		url.append('/').append(requestContext.getLanguageId());
-	    }
-
-	    // Controller
-	    url.append('/').append(requestContext.getActionDesc().getController());
-	    url.append('/');
-
-	    // TempData
-	    String tempDataId = tempDataManager.saveTempData(request, response);
-	    if (tempDataId != null) {
-		url.append('?').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
-	    }
-	    response.sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
-	}
-
-	@Override
-	public RedirectResult status(int status) {
-	    throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public RedirectResult query(String name, Object value) {
-	    throw new UnsupportedOperationException();
-	}
-    };
-
-    public static final RedirectResult ROOT = new RedirectResult() {
-
-	@Override
-	public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-	    TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
-
-	    // URL
-	    StringBuilder url = new StringBuilder();
-	    url.append(request.getServletContext().getContextPath());
-
-	    // Language
-	    if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
-		url.append('/').append(requestContext.getLanguageId());
-	    }
-	    url.append('/');
-
-	    // TempData
-	    String tempDataId = tempDataManager.saveTempData(request, response);
-	    if (tempDataId != null) {
-		url.append('?').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
-	    }
-	    response.sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
-	}
-
-	@Override
-	public RedirectResult status(int status) {
-	    throw new UnsupportedOperationException();
-	}
-
-	@Override
-	public RedirectResult query(String name, Object value) {
-	    throw new UnsupportedOperationException();
-	}
-    };
+    @Override
+    public RedirectResult query(String name, Object value) {
+      throw new UnsupportedOperationException();
+    }
+  };
 }

@@ -42,153 +42,155 @@ import com.appslandia.plum.utils.TestUtils;
  */
 public class SelectTagTest extends MockTestBase {
 
-    SelectTag tag = new SelectTag();
-    TestModel model = new TestModel();
+  SelectTag tag = new SelectTag();
+  TestModel model = new TestModel();
 
-    @BeforeAll
-    public static void beforeAllTests() {
-	TestUtils.initExpressionEvaluator();
+  @BeforeAll
+  public static void beforeAllTests() {
+    TestUtils.initExpressionEvaluator();
+  }
+
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
+  }
+
+  @BeforeEach
+  public void beforeEachTest() {
+    tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
+    getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+    executeCurrent("GET", "http://localhost/app/testController/index");
+  }
+
+  @Test
+  public void test() {
+    try {
+      model.setUserType(2);
+
+      tag.setPath("model.userType");
+      tag.setItems(CollectionUtils.toList(new SelectItemImpl(1, "type1"), new SelectItemImpl(2, "type2")));
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_addOption() {
+    try {
+      model.setUserType(2);
+      tag.setPath("model.userType");
+
+      tag.addOption("type1", 1);
+      tag.addOption("type2", 2);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_unselected() {
+    try {
+      tag.setPath("model.userType");
+
+      tag.addOption("type1", 1);
+      tag.addOption("type2", 2);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      Assertions.assertEquals(
+          "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\">type2</option> </select>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_selected_readonly() {
+    try {
+      model.setUserType(2);
+      tag.setPath("model.userType");
+
+      tag.addOption("type1", 1);
+      tag.addOption("type2", 2);
+
+      tag.setReadonly(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      // type1 is removed from the options
+      // plus hidden
+      Assertions.assertEquals(
+          "<select id=\"userType\" name=\"userType\" disabled=\"disabled\"> <option value=\"2\" selected=\"selected\">type2</option> </select> <input name=\"userType\" value=\"2\" type=\"hidden\" />",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_unselected_readonly() {
+    try {
+      model.setUserType(0);
+      tag.setPath("model.userType");
+
+      tag.addOption("type1", 1);
+      tag.addOption("type2", 2);
+
+      tag.setReadonly(true);
+
+      tag.doTag();
+      String html = tag.getPageContext().getOut().toString();
+
+      // Empty dropdown in this case
+      // No hidden
+
+      Assertions.assertEquals("<select id=\"userType\" name=\"userType\" disabled=\"disabled\"> </select>",
+          NormalizeUtils.toSingleLine(html));
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  public static class TestModel {
+
+    private int userType;
+
+    public int getUserType() {
+      return this.userType;
     }
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+    public void setUserType(int userType) {
+      this.userType = userType;
     }
+  }
 
-    @BeforeEach
-    public void beforeEachTest() {
-	tag.setJspContext(new MockJspContext(getCurrentRequest(), getCurrentResponse()));
-	getCurrentRequest().setAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
-	executeCurrent("GET", "http://localhost/app/testController/index");
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public void index() {
     }
-
-    @Test
-    public void test() {
-	try {
-	    model.setUserType(2);
-
-	    tag.setPath("model.userType");
-	    tag.setItems(CollectionUtils.toList(new SelectItemImpl(1, "type1"), new SelectItemImpl(2, "type2")));
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals(
-		    "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
-		    NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_addOption() {
-	try {
-	    model.setUserType(2);
-	    tag.setPath("model.userType");
-
-	    tag.addOption("type1", 1);
-	    tag.addOption("type2", 2);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals(
-		    "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
-		    NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unselected() {
-	try {
-	    tag.setPath("model.userType");
-
-	    tag.addOption("type1", 1);
-	    tag.addOption("type2", 2);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\">type2</option> </select>",
-		    NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_selected_readonly() {
-	try {
-	    model.setUserType(2);
-	    tag.setPath("model.userType");
-
-	    tag.addOption("type1", 1);
-	    tag.addOption("type2", 2);
-
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    // type1 is removed from the options
-	    // plus hidden
-	    Assertions.assertEquals(
-		    "<select id=\"userType\" name=\"userType\" disabled=\"disabled\"> <option value=\"2\" selected=\"selected\">type2</option> </select> <input name=\"userType\" value=\"2\" type=\"hidden\" />",
-		    NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    @Test
-    public void test_unselected_readonly() {
-	try {
-	    model.setUserType(0);
-	    tag.setPath("model.userType");
-
-	    tag.addOption("type1", 1);
-	    tag.addOption("type2", 2);
-
-	    tag.setReadonly(true);
-
-	    tag.doTag();
-	    String html = tag.getPageContext().getOut().toString();
-
-	    // Empty dropdown in this case
-	    // No hidden
-
-	    Assertions.assertEquals("<select id=\"userType\" name=\"userType\" disabled=\"disabled\"> </select>", NormalizeUtils.toSingleLine(html));
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-    }
-
-    public static class TestModel {
-
-	private int userType;
-
-	public int getUserType() {
-	    return this.userType;
-	}
-
-	public void setUserType(int userType) {
-	    this.userType = userType;
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public void index() {
-	}
-    }
+  }
 }

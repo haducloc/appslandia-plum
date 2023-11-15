@@ -40,168 +40,169 @@ import jakarta.servlet.http.HttpServletRequestWrapper;
  */
 public class RequestAccessor extends HttpServletRequestWrapper {
 
-    public RequestAccessor(HttpServletRequest request) {
-	super(request);
+  public RequestAccessor(HttpServletRequest request) {
+    super(request);
+  }
+
+  public <T> T getParamOrNull(String name, Class<T> targetType) {
+    String value = getParamOrNull(name);
+    Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
+    Asserts.notNull(converter);
+
+    try {
+      return converter.parse(value, getRequestContext().getFormatProvider());
+    } catch (ConverterException ex) {
+      return null;
     }
+  }
 
-    public <T> T getParamOrNull(String name, Class<T> targetType) {
-	String value = getParamOrNull(name);
-	Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
-	Asserts.notNull(converter);
+  public String getParamOrNull(String name) {
+    return StringUtils.trimToNull(getParameter(name));
+  }
 
-	try {
-	    return converter.parse(value, getRequestContext().getFormatProvider());
-	} catch (ConverterException ex) {
-	    return null;
-	}
+  public boolean isFormAction(String action) {
+    return action.equalsIgnoreCase(getParamOrNull(ServletUtils.PARAM_FORM_ACTION));
+  }
+
+  public boolean isGetOrHead() {
+    return getRequestContext().isGetOrHead();
+  }
+
+  public boolean isAjaxRequest() {
+    return ServletUtils.isAjaxRequest(this);
+  }
+
+  public ZoneId getClientZoneId(ZoneId orZoneId) {
+    Asserts.notNull(orZoneId);
+
+    ZoneId zoneId = ServletUtils.getClientZoneId(this);
+    return (zoneId != null) ? zoneId : orZoneId;
+  }
+
+  public void store(String key, Object value) {
+    setAttribute(key, value);
+  }
+
+  public void storeModel(Object model) {
+    store(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+  }
+
+  public void storePagerModel(PagerModel model) {
+    store(PagerModel.REQUEST_ATTRIBUTE_ID, model);
+  }
+
+  public void storeSortModel(SortModel model) {
+    store(SortModel.REQUEST_ATTRIBUTE_ID, model);
+  }
+
+  public boolean isModuleAuthenticated() {
+    return (getUserPrincipal() != null)
+        && getUserPrincipal().getModule().equalsIgnoreCase(getRequestContext().getModule());
+  }
+
+  @Override
+  public UserPrincipal getUserPrincipal() {
+    return ServletUtils.getUserPrincipal((HttpServletRequest) super.getRequest());
+  }
+
+  public UserPrincipal getRequiredPrincipal() {
+    return Asserts.notNull(getUserPrincipal(), "getUserPrincipal() is required.");
+  }
+
+  public boolean isUserInRoles(String... roles) {
+    Asserts.hasElements(roles);
+    return Arrays.stream(roles).anyMatch(role -> isUserInRole(role));
+  }
+
+  public RequestContext getRequestContext() {
+    return ServletUtils.getRequestContext(this);
+  }
+
+  public ModelState getModelState() {
+    return ServletUtils.getModelState(this);
+  }
+
+  public TempData getTempData() {
+    return ServletUtils.getTempData(this);
+  }
+
+  public Messages getMessages() {
+    return ServletUtils.getMessages(this);
+  }
+
+  public Resources getResources() {
+    return getRequestContext().getResources();
+  }
+
+  public PrefCookie getPrefCookie() {
+    return ServletUtils.getPrefCookie(this);
+  }
+
+  public String res(String key) {
+    return getResources().get(key);
+  }
+
+  public String res(String key, Object... params) {
+    return getResources().get(key, params);
+  }
+
+  public String res(String key, Map<String, Object> params) {
+    return getResources().get(key, params);
+  }
+
+  public void assertTrue(boolean expr) throws BadRequestException {
+    if (!expr) {
+      throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
     }
+  }
 
-    public String getParamOrNull(String name) {
-	return StringUtils.trimToNull(getParameter(name));
+  public <T> T assertNotNull(T value) throws BadRequestException {
+    if (value == null) {
+      throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
     }
+    return value;
+  }
 
-    public boolean isFormAction(String action) {
-	return action.equalsIgnoreCase(getParamOrNull(ServletUtils.PARAM_FORM_ACTION));
+  public void assertPositive(int value) throws BadRequestException {
+    if (value <= 0) {
+      throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
     }
+  }
 
-    public boolean isGetOrHead() {
-	return getRequestContext().isGetOrHead();
+  public void assertValidFields(String... fieldNames) throws BadRequestException {
+    if (!getModelState().areValid(fieldNames)) {
+      throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
     }
+  }
 
-    public boolean isAjaxRequest() {
-	return ServletUtils.isAjaxRequest(this);
+  public void assertValidModel() throws BadRequestException {
+    if (!getModelState().isValid()) {
+      throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
     }
+  }
 
-    public ZoneId getClientZoneId(ZoneId orZoneId) {
-	Asserts.notNull(orZoneId);
+  public void assertInRoles(String[] roles) throws ForbiddenException {
+    Asserts.hasElements(roles);
 
-	ZoneId zoneId = ServletUtils.getClientZoneId(this);
-	return (zoneId != null) ? zoneId : orZoneId;
+    if (!isUserInRoles(roles)) {
+      throw new ForbiddenException(res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
     }
+  }
 
-    public void store(String key, Object value) {
-	setAttribute(key, value);
+  public void assertForbidden(boolean expr) throws ForbiddenException {
+    if (!expr) {
+      throw new ForbiddenException(res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
     }
+  }
 
-    public void storeModel(Object model) {
-	store(ServletUtils.REQUEST_ATTRIBUTE_MODEL, model);
+  public void assertNotFound(boolean expr) throws ForbiddenException {
+    if (!expr) {
+      throw new NotFoundException(res(Resources.ERROR_NOT_FOUND)).setTitleKey(Resources.ERROR_NOT_FOUND);
     }
+  }
 
-    public void storePagerModel(PagerModel model) {
-	store(PagerModel.REQUEST_ATTRIBUTE_ID, model);
-    }
-
-    public void storeSortModel(SortModel model) {
-	store(SortModel.REQUEST_ATTRIBUTE_ID, model);
-    }
-
-    public boolean isModuleAuthenticated() {
-	return (getUserPrincipal() != null) && getUserPrincipal().getModule().equalsIgnoreCase(getRequestContext().getModule());
-    }
-
-    @Override
-    public UserPrincipal getUserPrincipal() {
-	return ServletUtils.getUserPrincipal((HttpServletRequest) super.getRequest());
-    }
-
-    public UserPrincipal getRequiredPrincipal() {
-	return Asserts.notNull(getUserPrincipal(), "getUserPrincipal() is required.");
-    }
-
-    public boolean isUserInRoles(String... roles) {
-	Asserts.hasElements(roles);
-	return Arrays.stream(roles).anyMatch(role -> isUserInRole(role));
-    }
-
-    public RequestContext getRequestContext() {
-	return ServletUtils.getRequestContext(this);
-    }
-
-    public ModelState getModelState() {
-	return ServletUtils.getModelState(this);
-    }
-
-    public TempData getTempData() {
-	return ServletUtils.getTempData(this);
-    }
-
-    public Messages getMessages() {
-	return ServletUtils.getMessages(this);
-    }
-
-    public Resources getResources() {
-	return getRequestContext().getResources();
-    }
-
-    public PrefCookie getPrefCookie() {
-	return ServletUtils.getPrefCookie(this);
-    }
-
-    public String res(String key) {
-	return getResources().get(key);
-    }
-
-    public String res(String key, Object... params) {
-	return getResources().get(key, params);
-    }
-
-    public String res(String key, Map<String, Object> params) {
-	return getResources().get(key, params);
-    }
-
-    public void assertTrue(boolean expr) throws BadRequestException {
-	if (!expr) {
-	    throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
-	}
-    }
-
-    public <T> T assertNotNull(T value) throws BadRequestException {
-	if (value == null) {
-	    throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
-	}
-	return value;
-    }
-
-    public void assertPositive(int value) throws BadRequestException {
-	if (value <= 0) {
-	    throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
-	}
-    }
-
-    public void assertValidFields(String... fieldNames) throws BadRequestException {
-	if (!getModelState().areValid(fieldNames)) {
-	    throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
-	}
-    }
-
-    public void assertValidModel() throws BadRequestException {
-	if (!getModelState().isValid()) {
-	    throw new BadRequestException(res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);
-	}
-    }
-
-    public void assertInRoles(String[] roles) throws ForbiddenException {
-	Asserts.hasElements(roles);
-
-	if (!isUserInRoles(roles)) {
-	    throw new ForbiddenException(res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
-	}
-    }
-
-    public void assertForbidden(boolean expr) throws ForbiddenException {
-	if (!expr) {
-	    throw new ForbiddenException(res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);
-	}
-    }
-
-    public void assertNotFound(boolean expr) throws ForbiddenException {
-	if (!expr) {
-	    throw new NotFoundException(res(Resources.ERROR_NOT_FOUND)).setTitleKey(Resources.ERROR_NOT_FOUND);
-	}
-    }
-
-    @Override
-    public String toString() {
-	return "[" + getClass().getSimpleName() + "] " + getRequest();
-    }
+  @Override
+  public String toString() {
+    return "[" + getClass().getSimpleName() + "] " + getRequest();
+  }
 }

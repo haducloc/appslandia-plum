@@ -36,33 +36,34 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class ContentResult implements ActionResult {
 
-    protected String content;
-    protected String contentType;
-    protected String contentEncoding;
+  protected String content;
+  protected String contentType;
+  protected String contentEncoding;
 
-    public ContentResult(String content) {
-	this(content, MimeTypes.TEXT_PLAIN);
+  public ContentResult(String content) {
+    this(content, MimeTypes.TEXT_PLAIN);
+  }
+
+  public ContentResult(String content, String contentType) {
+    this(content, contentType, StandardCharsets.UTF_8.name());
+  }
+
+  public ContentResult(String content, String contentType, String contentEncoding) {
+    this.content = content;
+    this.contentType = contentType;
+    this.contentEncoding = contentEncoding;
+  }
+
+  @Override
+  public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    response.setContentType(this.contentType);
+
+    if (this.contentEncoding != null) {
+      response.setCharacterEncoding(this.contentEncoding);
     }
 
-    public ContentResult(String content, String contentType) {
-	this(content, contentType, StandardCharsets.UTF_8.name());
-    }
-
-    public ContentResult(String content, String contentType, String contentEncoding) {
-	this.content = content;
-	this.contentType = contentType;
-	this.contentEncoding = contentEncoding;
-    }
-
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) throws Exception {
-	response.setContentType(this.contentType);
-
-	if (this.contentEncoding != null) {
-	    response.setCharacterEncoding(this.contentEncoding);
-	}
-
-	response.getWriter().write(this.content);
-	response.getWriter().flush();
-    }
+    response.getWriter().write(this.content);
+    response.getWriter().flush();
+  }
 }

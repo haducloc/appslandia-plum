@@ -39,56 +39,56 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class FormatProviderManager {
 
-    public static final int DEFAULT_POOL_SIZE = 50;
+  public static final int DEFAULT_POOL_SIZE = 50;
 
-    public static final String CONFIG_POOL_SIZE = FormatProviderManager.class.getName() + ".pool_size";
-    public static final String CONFIG_POOL_DISABLED = FormatProviderManager.class.getName() + ".pool_disabled";
+  public static final String CONFIG_POOL_SIZE = FormatProviderManager.class.getName() + ".pool_size";
+  public static final String CONFIG_POOL_DISABLED = FormatProviderManager.class.getName() + ".pool_disabled";
 
-    final Map<Language, SimplePool<FormatProvider>> pools = new HashMap<>();
-    final Object mutex = new Object();
+  final Map<Language, SimplePool<FormatProvider>> pools = new HashMap<>();
+  final Object mutex = new Object();
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected FormatProviderFactory formatProviderFactory;
+  @Inject
+  protected FormatProviderFactory formatProviderFactory;
 
-    private boolean poolDisabled;
+  private boolean poolDisabled;
 
-    @PostConstruct
-    protected void initialize() {
-	this.poolDisabled = this.appConfig.getBool(CONFIG_POOL_DISABLED, false);
+  @PostConstruct
+  protected void initialize() {
+    this.poolDisabled = this.appConfig.getBool(CONFIG_POOL_DISABLED, false);
+  }
+
+  protected int getPoolSize() {
+    return this.appConfig.getInt(CONFIG_POOL_SIZE, DEFAULT_POOL_SIZE);
+  }
+
+  public FormatProvider get(Language language) {
+    if (this.poolDisabled) {
+      this.formatProviderFactory.produce(language);
     }
+    FormatProvider formatProvider = getPool(language).get();
+    return (formatProvider != null) ? formatProvider : this.formatProviderFactory.produce(language);
+  }
 
-    protected int getPoolSize() {
-	return this.appConfig.getInt(CONFIG_POOL_SIZE, DEFAULT_POOL_SIZE);
+  public void put(Language language, FormatProvider formatProvider) {
+    if (this.poolDisabled) {
+      return;
     }
+    getPool(language).put(formatProvider);
+  }
 
-    public FormatProvider get(Language language) {
-	if (this.poolDisabled) {
-	    this.formatProviderFactory.produce(language);
-	}
-	FormatProvider formatProvider = getPool(language).get();
-	return (formatProvider != null) ? formatProvider : this.formatProviderFactory.produce(language);
+  protected SimplePool<FormatProvider> getPool(Language language) {
+    SimplePool<FormatProvider> pool = this.pools.get(language);
+    if (pool == null) {
+      synchronized (this.mutex) {
+        if ((pool = this.pools.get(language)) == null) {
+          pool = new SimplePool<>(getPoolSize());
+          this.pools.put(language, pool);
+        }
+      }
     }
-
-    public void put(Language language, FormatProvider formatProvider) {
-	if (this.poolDisabled) {
-	    return;
-	}
-	getPool(language).put(formatProvider);
-    }
-
-    protected SimplePool<FormatProvider> getPool(Language language) {
-	SimplePool<FormatProvider> pool = this.pools.get(language);
-	if (pool == null) {
-	    synchronized (this.mutex) {
-		if ((pool = this.pools.get(language)) == null) {
-		    pool = new SimplePool<>(getPoolSize());
-		    this.pools.put(language, pool);
-		}
-	    }
-	}
-	return pool;
-    }
+    return pool;
+  }
 }

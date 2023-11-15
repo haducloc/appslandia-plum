@@ -29,7 +29,7 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public interface CaptchaManager {
 
-    void initCaptcha(HttpServletRequest request);
+  void initCaptcha(HttpServletRequest request);
 
-    boolean verifyCaptcha(HttpServletRequest request);
+  boolean verifyCaptcha(HttpServletRequest request);
 }

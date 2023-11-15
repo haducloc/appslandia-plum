@@ -46,37 +46,37 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultStringFormatProviderFactory implements CDIFactory<StringFormatProvider> {
 
-    @Inject
-    protected BeanManager beanManager;
+  @Inject
+  protected BeanManager beanManager;
 
-    final BeanInstances beanInstances = new BeanInstances();
+  final BeanInstances beanInstances = new BeanInstances();
 
-    @Produces
-    @ApplicationScoped
-    @Override
-    public StringFormatProvider produce() {
-	final StringFormatProvider impl = new StringFormatProvider();
+  @Produces
+  @ApplicationScoped
+  @Override
+  public StringFormatProvider produce() {
+    final StringFormatProvider impl = new StringFormatProvider();
 
-	// @Supplier(StringFormat.class)
-	CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, StringFormat.class, (bi) -> {
+    // @Supplier(StringFormat.class)
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, StringFormat.class, (bi) -> {
 
-	    Map<String, StringFormat> m = ObjectUtils.cast(bi.get().get());
+      Map<String, StringFormat> m = ObjectUtils.cast(bi.get().get());
 
-	    for (Entry<String, StringFormat> entry : m.entrySet()) {
-		impl.addStringFormat(entry.getKey(), entry.getValue());
-	    }
-	    beanInstances.add(bi);
-	});
-	return impl;
-    }
+      for (Entry<String, StringFormat> entry : m.entrySet()) {
+        impl.addStringFormat(entry.getKey(), entry.getValue());
+      }
+      beanInstances.add(bi);
+    });
+    return impl;
+  }
 
-    @Override
-    public void dispose(@Disposes StringFormatProvider impl) {
-    }
+  @Override
+  public void dispose(@Disposes StringFormatProvider impl) {
+  }
 
-    @PreDestroy
-    public void dispose() {
+  @PreDestroy
+  public void dispose() {
 
-	this.beanInstances.destroy();
-    }
+    this.beanInstances.destroy();
+  }
 }

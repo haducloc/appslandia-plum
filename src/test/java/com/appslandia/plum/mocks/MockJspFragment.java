@@ -35,58 +35,58 @@ import jakarta.servlet.jsp.tagext.SimpleTag;
  */
 public class MockJspFragment extends JspFragment {
 
-    private JspContext jspContext;
+  private JspContext jspContext;
 
-    private String bodyContent;
-    private SimpleTag[] tags;
+  private String bodyContent;
+  private SimpleTag[] tags;
 
-    public MockJspFragment(JspContext jspContext) {
-	this.jspContext = jspContext;
+  public MockJspFragment(JspContext jspContext) {
+    this.jspContext = jspContext;
+  }
+
+  public MockJspFragment(JspContext jspContext, String bodyContent) {
+    this.jspContext = jspContext;
+    this.bodyContent = bodyContent;
+  }
+
+  public MockJspFragment(JspContext jspContext, SimpleTag parent, SimpleTag... tags) {
+    this.jspContext = jspContext;
+    this.tags = tags;
+
+    initTags(parent);
+  }
+
+  protected void initTags(SimpleTag parent) {
+    for (SimpleTag tag : this.tags) {
+      if (!(tag instanceof SimpleTag)) {
+        continue;
+      }
+      SimpleTag t = (SimpleTag) tag;
+      t.setParent(parent);
+      t.setJspContext(this.jspContext);
     }
+  }
 
-    public MockJspFragment(JspContext jspContext, String bodyContent) {
-	this.jspContext = jspContext;
-	this.bodyContent = bodyContent;
+  @Override
+  public void invoke(Writer out) throws JspException, IOException {
+    if (this.tags != null) {
+      for (SimpleTag tag : this.tags) {
+        tag.doTag();
+      }
+      return;
     }
-
-    public MockJspFragment(JspContext jspContext, SimpleTag parent, SimpleTag... tags) {
-	this.jspContext = jspContext;
-	this.tags = tags;
-
-	initTags(parent);
+    if (this.bodyContent != null) {
+      if (out != null) {
+        out.write(this.bodyContent);
+      } else {
+        jspContext.getOut().write(this.bodyContent);
+      }
+      return;
     }
+  }
 
-    protected void initTags(SimpleTag parent) {
-	for (SimpleTag tag : this.tags) {
-	    if (!(tag instanceof SimpleTag)) {
-		continue;
-	    }
-	    SimpleTag t = (SimpleTag) tag;
-	    t.setParent(parent);
-	    t.setJspContext(this.jspContext);
-	}
-    }
-
-    @Override
-    public void invoke(Writer out) throws JspException, IOException {
-	if (this.tags != null) {
-	    for (SimpleTag tag : this.tags) {
-		tag.doTag();
-	    }
-	    return;
-	}
-	if (this.bodyContent != null) {
-	    if (out != null) {
-		out.write(this.bodyContent);
-	    } else {
-		jspContext.getOut().write(this.bodyContent);
-	    }
-	    return;
-	}
-    }
-
-    @Override
-    public JspContext getJspContext() {
-	return this.jspContext;
-    }
+  @Override
+  public JspContext getJspContext() {
+    return this.jspContext;
+  }
 }

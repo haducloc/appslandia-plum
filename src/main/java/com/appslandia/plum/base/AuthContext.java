@@ -50,94 +50,97 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class AuthContext {
 
-    @Inject
-    protected AppConfig appConfig;
+  @Inject
+  protected AppConfig appConfig;
 
-    @Inject
-    protected SecurityContext securityContext;
+  @Inject
+  protected SecurityContext securityContext;
 
-    @Inject
-    protected IdentityValidator identityValidator;
+  @Inject
+  protected IdentityValidator identityValidator;
 
-    @Inject
-    protected Instance<HttpAuthenticationMechanismBase> authenticationMechanism;
+  @Inject
+  protected Instance<HttpAuthenticationMechanismBase> authenticationMechanism;
 
-    @PostConstruct
-    protected void initialize() {
-	if (!this.authenticationMechanism.isResolvable()) {
-	    throw new InitializeException("HttpAuthenticationMechanismBase is not resolvable.");
-	}
+  @PostConstruct
+  protected void initialize() {
+    if (!this.authenticationMechanism.isResolvable()) {
+      throw new InitializeException("HttpAuthenticationMechanismBase is not resolvable.");
+    }
+  }
+
+  public boolean authenticate(HttpServletRequest request, HttpServletResponse response, Credential credential,
+      boolean rememberMe, Out<String> invalidCode) throws ServletException {
+
+    final boolean hasPrincipal = request.getUserPrincipal() != null;
+
+    // If hasPrincipal
+    if (hasPrincipal) {
+      UserPrincipal principal = ServletUtils.getUserPrincipal(request);
+
+      // Validate the credential in advance to make sure the given credential is valid
+
+      // UsernamePasswordCredential
+      if (credential instanceof UsernamePasswordCredential) {
+
+        UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
+        Asserts.isTrue(principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller()));
+
+        if (this.identityValidator.validate(principal.getModule(), usernamePasswordCredential.getCaller(),
+            usernamePasswordCredential.getPasswordAsString(), invalidCode) == null) {
+          return false;
+        }
+      }
+
+      // LOGOUT
+      request.logout();
     }
 
-    public boolean authenticate(HttpServletRequest request, HttpServletResponse response, Credential credential, boolean rememberMe, Out<String> invalidCode)
-	    throws ServletException {
+    // AUTHENTICATE
 
-	final boolean hasPrincipal = request.getUserPrincipal() != null;
+    // AuthParameters
+    AuthParameters authParameters = new AuthParameters().credential(credential).rememberMe(rememberMe)
+        .reauthentication(hasPrincipal);
+    AuthenticationStatus authStatus = this.securityContext.authenticate(request, response, authParameters);
 
-	// If hasPrincipal
-	if (hasPrincipal) {
-	    UserPrincipal principal = ServletUtils.getUserPrincipal(request);
+    // HttpAuthenticationMechanismBase.validateRequest() is supposed to be called
+    CredentialValidationResult authResult = (CredentialValidationResult) request
+        .getAttribute(CredentialValidationResult.class.getName());
+    Asserts.notNull(authResult, "HttpAuthenticationMechanismBase.validateRequest() was not called.");
 
-	    // Validate the credential in advance to make sure the given credential is valid
+    if (authResult.getStatus() == CredentialValidationResult.Status.VALID) {
+      Asserts.isTrue(authStatus == AuthenticationStatus.SUCCESS);
 
-	    // UsernamePasswordCredential
-	    if (credential instanceof UsernamePasswordCredential) {
+      // Authenticated successfully: Change sessionId
+      if (this.appConfig.isEnableSession() && (request.getSession(false) != null)) {
+        request.changeSessionId();
+      }
+      return true;
 
-		UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
-		Asserts.isTrue(principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller()));
-
-		if (this.identityValidator.validate(principal.getModule(), usernamePasswordCredential.getCaller(), usernamePasswordCredential.getPasswordAsString(),
-			invalidCode) == null) {
-		    return false;
-		}
-	    }
-
-	    // LOGOUT
-	    request.logout();
-	}
-
-	// AUTHENTICATE
-
-	// AuthParameters
-	AuthParameters authParameters = new AuthParameters().credential(credential).rememberMe(rememberMe).reauthentication(hasPrincipal);
-	AuthenticationStatus authStatus = this.securityContext.authenticate(request, response, authParameters);
-
-	// HttpAuthenticationMechanismBase.validateRequest() is supposed to be called
-	CredentialValidationResult authResult = (CredentialValidationResult) request.getAttribute(CredentialValidationResult.class.getName());
-	Asserts.notNull(authResult, "HttpAuthenticationMechanismBase.validateRequest() was not called.");
-
-	if (authResult.getStatus() == CredentialValidationResult.Status.VALID) {
-	    Asserts.isTrue(authStatus == AuthenticationStatus.SUCCESS);
-
-	    // Authenticated successfully: Change sessionId
-	    if (this.appConfig.isEnableSession() && (request.getSession(false) != null)) {
-		request.changeSessionId();
-	    }
-	    return true;
-
-	} else {
-	    invalidCode.value = (authResult instanceof InvalidAuthResult) ? ((InvalidAuthResult) authResult).getCode() : InvalidAuthResult.CREDENTIAL_INVALID.getCode();
-	    return false;
-	}
+    } else {
+      invalidCode.value = (authResult instanceof InvalidAuthResult) ? ((InvalidAuthResult) authResult).getCode()
+          : InvalidAuthResult.CREDENTIAL_INVALID.getCode();
+      return false;
     }
+  }
 
-    public boolean isCallerInRoles(String... roles) {
-	Asserts.hasElements(roles);
-	return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
-    }
+  public boolean isCallerInRoles(String... roles) {
+    Asserts.hasElements(roles);
+    return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
+  }
 
-    public UserPrincipal getUserPrincipal() {
-	Principal principal = this.securityContext.getCallerPrincipal();
-	if (principal == null) {
-	    return null;
-	}
-	if (!(principal instanceof UserPrincipal)) {
-	    throw new AssertException("securityContext.getCallerPrincipal() must be UserPrincipal.");
-	}
-	return (UserPrincipal) principal;
+  public UserPrincipal getUserPrincipal() {
+    Principal principal = this.securityContext.getCallerPrincipal();
+    if (principal == null) {
+      return null;
     }
+    if (!(principal instanceof UserPrincipal)) {
+      throw new AssertException("securityContext.getCallerPrincipal() must be UserPrincipal.");
+    }
+    return (UserPrincipal) principal;
+  }
 
-    public UserPrincipal getRequiredPrincipal() {
-	return Asserts.notNull(getUserPrincipal(), "securityContext.getCallerPrincipal() is required.");
-    }
+  public UserPrincipal getRequiredPrincipal() {
+    return Asserts.notNull(getUserPrincipal(), "securityContext.getCallerPrincipal() is required.");
+  }
 }

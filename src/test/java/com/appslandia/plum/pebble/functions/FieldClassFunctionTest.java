@@ -46,83 +46,85 @@ import jakarta.validation.constraints.NotNull;
  */
 public class FieldClassFunctionTest extends MockTestBase {
 
-    protected MemPebbleTemplateProvider pebbleTemplateProvider;
+  protected MemPebbleTemplateProvider pebbleTemplateProvider;
 
-    @Override
-    protected void initialize() {
-	container.register(TestController.class, TestController.class);
+  @Override
+  protected void initialize() {
+    container.register(TestController.class, TestController.class);
 
-	pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+    pebbleTemplateProvider = container.getObject(MemPebbleTemplateProvider.class);
+  }
+
+  @Test
+  public void test() {
+    String templateContent = """
+        {{ fieldClass(fieldName='username') }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      getCurrentRequest().addParameter("username", "user1");
+      executeCurrent("GET", "http://localhost/app/testController/index");
+
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals(TagUtils.CSS_NOOP, content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Test
+  public void test_error() {
+    String templateContent = """
+        {{ fieldClass(fieldName='username') }}
+        """;
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+
+    try {
+      executeCurrent("GET", "http://localhost/app/testController/index");
+      Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
+
+      StringWriter out = new StringWriter();
+      PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
+          getCurrentRequestContext().getLanguage().getLocale());
+
+      String content = out.toString();
+      Assertions.assertEquals("l-error-field", content);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex);
+    }
+  }
+
+  @Controller("testController")
+  public static class TestController {
+
+    @HttpGet
+    public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
+      request.storeModel(model);
+
+      return ActionResult.EMPTY;
+    }
+  }
+
+  public static class UserModel {
+
+    @NotNull
+    private String username;
+
+    public String getUsername() {
+      return username;
     }
 
-    @Test
-    public void test() {
-	String templateContent = """
-		{{ fieldClass(fieldName='username') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    getCurrentRequest().addParameter("username", "user1");
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals(TagUtils.CSS_NOOP, content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
+    public void setUsername(String username) {
+      this.username = username;
     }
-
-    @Test
-    public void test_error() {
-	String templateContent = """
-		{{ fieldClass(fieldName='username') }}
-		""";
-	pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
-
-	try {
-	    executeCurrent("GET", "http://localhost/app/testController/index");
-	    Map<String, Object> model = new Params().set("model", getCurrentRequest().getAttribute("model"));
-
-	    StringWriter out = new StringWriter();
-	    PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model, getCurrentRequestContext().getLanguage().getLocale());
-
-	    String content = out.toString();
-	    Assertions.assertEquals("l-error-field", content);
-
-	} catch (Exception ex) {
-	    Assertions.fail(ex);
-	}
-    }
-
-    @Controller("testController")
-    public static class TestController {
-
-	@HttpGet
-	public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
-	    request.storeModel(model);
-
-	    return ActionResult.EMPTY;
-	}
-    }
-
-    public static class UserModel {
-
-	@NotNull
-	private String username;
-
-	public String getUsername() {
-	    return username;
-	}
-
-	public void setUsername(String username) {
-	    this.username = username;
-	}
-    }
+  }
 }

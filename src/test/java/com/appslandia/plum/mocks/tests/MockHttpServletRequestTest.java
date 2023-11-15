@@ -39,131 +39,132 @@ import jakarta.servlet.DispatcherType;
  */
 public class MockHttpServletRequestTest {
 
-    MockServletContext servletContext;
+  MockServletContext servletContext;
 
-    @BeforeEach
-    public void beforeEachTest() {
-	servletContext = new MockServletContext(new MockSessionCookieConfig());
+  @BeforeEach
+  public void beforeEachTest() {
+    servletContext = new MockServletContext(new MockSessionCookieConfig());
+  }
+
+  @Test
+  public void test() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    request.setMethod("POST");
+    Assertions.assertEquals("POST", request.getMethod());
+
+    request.setCharacterEncoding("UTF-8");
+    Assertions.assertEquals("UTF-8", request.getCharacterEncoding());
+
+    request.setDispatcherType(DispatcherType.ERROR);
+    Assertions.assertEquals(DispatcherType.ERROR, request.getDispatcherType());
+
+    request.setHeader("Accept-Encoding", "gzip");
+    Assertions.assertEquals("gzip", request.getHeader("Accept-Encoding"));
+  }
+
+  @Test
+  public void test_setRequestURL() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    try {
+      request.setRequestURL("http://localhost/app/main?param1=value1");
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+    Assertions.assertEquals("http", request.getScheme());
+    Assertions.assertEquals("localhost", request.getServerName());
+    Assertions.assertEquals(80, request.getServerPort());
 
-    @Test
-    public void test() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	request.setMethod("POST");
-	Assertions.assertEquals("POST", request.getMethod());
+    Assertions.assertEquals("/app/main", request.getRequestURI());
+    Assertions.assertEquals("/main", request.getServletPath());
+    Assertions.assertEquals("param1=value1", request.getQueryString());
 
-	request.setCharacterEncoding("UTF-8");
-	Assertions.assertEquals("UTF-8", request.getCharacterEncoding());
-
-	request.setDispatcherType(DispatcherType.ERROR);
-	Assertions.assertEquals(DispatcherType.ERROR, request.getDispatcherType());
-
-	request.setHeader("Accept-Encoding", "gzip");
-	Assertions.assertEquals("gzip", request.getHeader("Accept-Encoding"));
+    try {
+      request.setRequestURL("http://localhost:8080/app/main");
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
     }
+    Assertions.assertEquals(8080, request.getServerPort());
+  }
 
-    @Test
-    public void test_setRequestURL() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	try {
-	    request.setRequestURL("http://localhost/app/main?param1=value1");
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-	Assertions.assertEquals("http", request.getScheme());
-	Assertions.assertEquals("localhost", request.getServerName());
-	Assertions.assertEquals(80, request.getServerPort());
+  @Test
+  public void test_attributes() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    request.setAttribute("attr1", "value1");
+    request.setAttribute("attr2", "value2");
 
-	Assertions.assertEquals("/app/main", request.getRequestURI());
-	Assertions.assertEquals("/main", request.getServletPath());
-	Assertions.assertEquals("param1=value1", request.getQueryString());
+    request.setAttribute("attr3", "value3");
+    request.setAttribute("attr3", null);
 
-	try {
-	    request.setRequestURL("http://localhost:8080/app/main");
-	} catch (Exception ex) {
-	    Assertions.fail(ex.getMessage());
-	}
-	Assertions.assertEquals(8080, request.getServerPort());
-    }
+    Assertions.assertEquals("value1", request.getAttribute("attr1"));
+    Assertions.assertNull(request.getAttribute("attr3"));
 
-    @Test
-    public void test_attributes() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	request.setAttribute("attr1", "value1");
-	request.setAttribute("attr2", "value2");
+    request.removeAttribute("attr2");
+    Assertions.assertNull(request.getAttribute("attr2"));
+  }
 
-	request.setAttribute("attr3", "value3");
-	request.setAttribute("attr3", null);
+  @Test
+  public void test_parameters() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    request.addParameter("p1", "v1");
+    request.addParameter("p2", "v21", "v22");
 
-	Assertions.assertEquals("value1", request.getAttribute("attr1"));
-	Assertions.assertNull(request.getAttribute("attr3"));
+    request.addParameter("p3", "v31");
+    request.addParameter("p3", "v32");
 
-	request.removeAttribute("attr2");
-	Assertions.assertNull(request.getAttribute("attr2"));
-    }
+    Assertions.assertEquals("v1", request.getParameter("p1"));
+    Assertions.assertEquals("v21", request.getParameter("p2"));
+    Assertions.assertEquals("v31", request.getParameter("p3"));
 
-    @Test
-    public void test_parameters() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	request.addParameter("p1", "v1");
-	request.addParameter("p2", "v21", "v22");
+    Assertions.assertArrayEquals(new String[] { "v21", "v22" }, request.getParameterValues("p2"));
+    Assertions.assertArrayEquals(new String[] { "v31", "v32" }, request.getParameterValues("p3"));
+  }
 
-	request.addParameter("p3", "v31");
-	request.addParameter("p3", "v32");
+  @Test
+  public void test_headers() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    request.setHeaderValues("h1", "v1");
+    request.setHeaderValues("h2", "v21", "v22");
 
-	Assertions.assertEquals("v1", request.getParameter("p1"));
-	Assertions.assertEquals("v21", request.getParameter("p2"));
-	Assertions.assertEquals("v31", request.getParameter("p3"));
+    Assertions.assertEquals("v1", request.getHeader("h1"));
+    Assertions.assertEquals("v21", request.getHeader("h2"));
+    Assertions.assertEquals("v21", request.getHeaders("h2").nextElement());
 
-	Assertions.assertArrayEquals(new String[] { "v21", "v22" }, request.getParameterValues("p2"));
-	Assertions.assertArrayEquals(new String[] { "v31", "v32" }, request.getParameterValues("p3"));
-    }
+    request.addSessionCookie("session-1");
+    Assertions.assertEquals("session-1",
+        request.getCookie(request.getServletContext().getSessionCookieConfig().getName()).getValue());
+  }
 
-    @Test
-    public void test_headers() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	request.setHeaderValues("h1", "v1");
-	request.setHeaderValues("h2", "v21", "v22");
+  @Test
+  public void test_cookies() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    Assertions.assertNull(request.getCookies());
 
-	Assertions.assertEquals("v1", request.getHeader("h1"));
-	Assertions.assertEquals("v21", request.getHeader("h2"));
-	Assertions.assertEquals("v21", request.getHeaders("h2").nextElement());
+    request.addCookie(MockServletUtils.createCookie(servletContext, "cookie1", "v1", 1000));
+    Assertions.assertNotNull(request.getCookies());
 
-	request.addSessionCookie("session-1");
-	Assertions.assertEquals("session-1", request.getCookie(request.getServletContext().getSessionCookieConfig().getName()).getValue());
-    }
+    String cookie = ServletUtils.getCookieValue(request, "cookie1");
+    Assertions.assertEquals("v1", cookie);
 
-    @Test
-    public void test_cookies() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	Assertions.assertNull(request.getCookies());
+    request.addSessionCookie("session-1");
+    Assertions.assertEquals("session-1", request.getRequestedSessionId());
+  }
 
-	request.addCookie(MockServletUtils.createCookie(servletContext, "cookie1", "v1", 1000));
-	Assertions.assertNotNull(request.getCookies());
+  @Test
+  public void test_invalidate() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    request.getSession().invalidate();
 
-	String cookie = ServletUtils.getCookieValue(request, "cookie1");
-	Assertions.assertEquals("v1", cookie);
+    Assertions.assertNull(request.getSession(false));
+    Assertions.assertNotNull(request.getSession());
+  }
 
-	request.addSessionCookie("session-1");
-	Assertions.assertEquals("session-1", request.getRequestedSessionId());
-    }
+  @Test
+  public void test_session() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+    Assertions.assertNotNull(request.getServletContext());
 
-    @Test
-    public void test_invalidate() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	request.getSession().invalidate();
-
-	Assertions.assertNull(request.getSession(false));
-	Assertions.assertNotNull(request.getSession());
-    }
-
-    @Test
-    public void test_session() {
-	MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
-	Assertions.assertNotNull(request.getServletContext());
-
-	Assertions.assertNull(request.getSession(false));
-	Assertions.assertNotNull(request.getSession(true));
-	Assertions.assertEquals(request.getSession(), request.getSession(true));
-    }
+    Assertions.assertNull(request.getSession(false));
+    Assertions.assertNotNull(request.getSession(true));
+    Assertions.assertEquals(request.getSession(), request.getSession(true));
+  }
 }

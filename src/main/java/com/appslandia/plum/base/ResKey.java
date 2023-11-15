@@ -32,49 +32,49 @@ import com.appslandia.common.utils.Asserts;
  *
  */
 public class ResKey implements Serializable {
-    private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-    private String key;
-    private Map<String, Object> params;
+  private String key;
+  private Map<String, Object> params;
 
-    public ResKey(String key) {
-	this(key, null);
+  public ResKey(String key) {
+    this(key, null);
+  }
+
+  public ResKey(String key, Map<String, Object> params) {
+    this.key = Asserts.notNull(key);
+    this.params = params;
+  }
+
+  public String getKey() {
+    return this.key;
+  }
+
+  public Map<String, Object> getParams() {
+    return this.params;
+  }
+
+  public String getRes(Resources resources) {
+    if (this.params == null) {
+      return resources.get(this.key);
     }
+    return resources.get(this.key, this.params);
+  }
 
-    public ResKey(String key, Map<String, Object> params) {
-	this.key = Asserts.notNull(key);
-	this.params = params;
-    }
+  @Override
+  public int hashCode() {
+    return Objects.hashCode(this.key);
+  }
 
-    public String getKey() {
-	return this.key;
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-
-    public Map<String, Object> getParams() {
-	return this.params;
+    if (!(obj instanceof ResKey)) {
+      return false;
     }
-
-    public String getRes(Resources resources) {
-	if (this.params == null) {
-	    return resources.get(this.key);
-	}
-	return resources.get(this.key, this.params);
-    }
-
-    @Override
-    public int hashCode() {
-	return Objects.hashCode(this.key);
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-	if (this == obj) {
-	    return true;
-	}
-	if (!(obj instanceof ResKey)) {
-	    return false;
-	}
-	ResKey another = (ResKey) obj;
-	return Objects.equals(this.key, another.key);
-    }
+    ResKey another = (ResKey) obj;
+    return Objects.equals(this.key, another.key);
+  }
 }
