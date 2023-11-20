@@ -21,6 +21,7 @@
 ### VERSIONS
 - [appslandia-plum](https://search.maven.org/search?q=a:appslandia-plum)
 - [appslandia-common](https://search.maven.org/search?q=a:appslandia-common)
+- Java 21
 
 ### Maven
 ```XML
