@@ -20,10 +20,10 @@
 
 package com.appslandia.plum.results;
 
-import java.io.OutputStreamWriter;
+import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
 
-import com.appslandia.common.base.BOMOutputStream;
+import com.appslandia.common.utils.IOUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,23 +33,20 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextFileResult extends FilenameResult {
+public abstract class TextFileResult extends FilenameResult {
 
   protected String contentEncoding;
-  protected String content;
 
-  public TextFileResult(String content, String fileName, String contentType) {
-    this(content, fileName, contentType, StandardCharsets.UTF_8.name(), false);
+  public TextFileResult(String fileName, String contentType) {
+    this(fileName, contentType, StandardCharsets.UTF_8.name(), false);
   }
 
-  public TextFileResult(String content, String fileName, String contentType, String contentEncoding) {
-    this(content, fileName, contentType, contentEncoding, false);
+  public TextFileResult(String fileName, String contentType, String contentEncoding) {
+    this(fileName, contentType, contentEncoding, false);
   }
 
-  public TextFileResult(String content, String fileName, String contentType, String contentEncoding, boolean inline) {
+  public TextFileResult(String fileName, String contentType, String contentEncoding, boolean inline) {
     super(fileName, contentType, inline);
-
-    this.content = content;
     this.contentEncoding = contentEncoding;
   }
 
@@ -59,11 +56,11 @@ public class TextFileResult extends FilenameResult {
       response.setCharacterEncoding(this.contentEncoding);
     }
 
-    OutputStreamWriter out = new OutputStreamWriter(
-        new BOMOutputStream(response.getOutputStream(), response.getCharacterEncoding()),
-        response.getCharacterEncoding());
-    out.write(this.content);
+    BufferedWriter out = IOUtils.textWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
 
+    writeContent(out);
     out.flush();
   }
+
+  protected abstract void writeContent(BufferedWriter out) throws Exception;
 }

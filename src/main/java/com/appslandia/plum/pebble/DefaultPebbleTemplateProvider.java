@@ -20,10 +20,8 @@
 
 package com.appslandia.plum.pebble;
 
-import io.pebbletemplates.pebble.PebbleEngine.Builder;
 import io.pebbletemplates.pebble.loader.Loader;
 import io.pebbletemplates.pebble.loader.Servlet5Loader;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
 
@@ -32,8 +30,7 @@ import jakarta.servlet.ServletContext;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class DefaultPebbleTemplateProvider extends PebbleTemplateProvider {
+public abstract class DefaultPebbleTemplateProvider extends PebbleTemplateProvider {
 
   @Inject
   protected ServletContext servletContext;
@@ -41,9 +38,5 @@ public class DefaultPebbleTemplateProvider extends PebbleTemplateProvider {
   @Override
   protected Loader<?> getLoader() {
     return new Servlet5Loader(this.servletContext);
-  }
-
-  @Override
-  protected void configure(Builder builder) {
   }
 }

@@ -27,14 +27,12 @@ import com.appslandia.plum.pebble.PebbleExtensionProvider;
 
 import io.pebbletemplates.pebble.extension.Function;
 import io.pebbletemplates.pebble.extension.Test;
-import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
 public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
 
   @Override

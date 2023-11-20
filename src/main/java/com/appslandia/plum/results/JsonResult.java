@@ -20,11 +20,13 @@
 
 package com.appslandia.plum.results;
 
-import java.io.BufferedWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 
-import com.appslandia.common.utils.IOUtils;
+import com.appslandia.common.json.JsonProcessor;
+import com.appslandia.common.utils.MimeTypes;
+import com.appslandia.plum.base.ActionResult;
+import com.appslandia.plum.base.RequestContext;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,38 +36,33 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class CsvResult<T> extends FilenameResult {
+public class JsonResult implements ActionResult {
 
-  protected String contentEncoding;
-  protected List<T> records;
+  protected Object content;
+  protected String contentType;
 
-  public CsvResult(String fileName, String contentType) {
-    this(fileName, contentType, StandardCharsets.UTF_8.name(), false);
+  final String contentEncoding = StandardCharsets.UTF_8.name();
+
+  public JsonResult(Object content) {
+    this(content, MimeTypes.APP_JSON);
   }
 
-  public CsvResult(String fileName, String contentType, String contentEncoding) {
-    this(fileName, contentType, contentEncoding, false);
-  }
-
-  public CsvResult(String fileName, String contentType, String contentEncoding, boolean inline) {
-    super(fileName, contentType, inline);
-
-    this.contentEncoding = contentEncoding;
+  public JsonResult(Object content, String contentType) {
+    this.content = content;
+    this.contentType = contentType;
   }
 
   @Override
-  protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
+  public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+      throws Exception {
+    response.setContentType(this.contentType);
+
     if (this.contentEncoding != null) {
       response.setCharacterEncoding(this.contentEncoding);
     }
 
-    BufferedWriter out = IOUtils.textWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
-
-    for (T r : this.records) {
-      writeRecord(out, r);
-    }
-    out.flush();
+    JsonProcessor jsonProcessor = ServletUtils.getAppScoped(request.getServletContext(), JsonProcessor.class);
+    jsonProcessor.write(response.getWriter(), this.content);
+    response.getWriter().flush();
   }
-
-  protected abstract void writeRecord(BufferedWriter out, T record) throws Exception;
 }

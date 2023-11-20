@@ -26,10 +26,12 @@ import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.jose.JoseJsonb;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.json.JsonbProcessor;
+import com.appslandia.plum.base.AppConfig;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
+import jakarta.inject.Inject;
 import jakarta.json.bind.JsonbConfig;
 
 /**
@@ -40,11 +42,15 @@ import jakarta.json.bind.JsonbConfig;
 @ApplicationScoped
 public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
 
+  @Inject
+  protected AppConfig appConfig;
+
   @Produces
   @ApplicationScoped
   @Override
   public JsonProcessor produce() {
-    return createJsonbProcessor(true, false);
+    boolean prettyPrinting = this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_PRETTY_PRINTING, true);
+    return createJsonbProcessor(true, prettyPrinting);
   }
 
   @Override
@@ -74,8 +80,8 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
     impl.destroy();
   }
 
-  static JsonbProcessor createJsonbProcessor(boolean serializeNulls, boolean formatting) {
-    JsonbConfig config = JoseJsonb.newJsonbConfig(serializeNulls, formatting);
+  static JsonbProcessor createJsonbProcessor(boolean serializeNulls, boolean prettyPrinting) {
+    JsonbConfig config = JoseJsonb.newJsonbConfig(serializeNulls, prettyPrinting);
     return new JsonbProcessor().setConfig(config);
   }
 }

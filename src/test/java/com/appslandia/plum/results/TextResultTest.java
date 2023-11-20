@@ -20,14 +20,19 @@
 
 package com.appslandia.plum.results;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.base.BOMInputStream;
+import com.appslandia.common.csv.CsvProcessor;
+import com.appslandia.common.csv.CsvRecord;
 import com.appslandia.common.utils.IOUtils;
+import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
@@ -53,11 +58,18 @@ public class TextResultTest extends MockTestBase {
       Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
       Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
 
-      try (BOMInputStream bis = new BOMInputStream(
-          new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()))) {
-        String content = IOUtils.toString(bis, StandardCharsets.UTF_8.name());
-        Assertions.assertEquals("item1, item2, item3", content);
+      try (BufferedReader reader = IOUtils.textReaderBOM(
+          new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()), StandardCharsets.UTF_8.name())) {
+
+        List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader);
+
+        Assertions.assertTrue(records.size() == 1);
+        String recordAsString = records.get(0).toString();
+
+        Assertions.assertEquals("item1,item2,item3", recordAsString);
+
       }
+
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());
     }
@@ -71,11 +83,19 @@ public class TextResultTest extends MockTestBase {
       Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
       Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
 
-      try (BOMInputStream bis = new BOMInputStream(
-          new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()))) {
-        String content = IOUtils.toString(bis, StandardCharsets.ISO_8859_1.name());
-        Assertions.assertEquals("item1, item2, item3", content);
+      try (BufferedReader reader = IOUtils.textReaderBOM(
+          new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()),
+          StandardCharsets.ISO_8859_1.name())) {
+
+        List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader);
+
+        Assertions.assertTrue(records.size() == 1);
+        String recordAsString = records.get(0).toString();
+
+        Assertions.assertEquals("item1,item2,item3", recordAsString);
+
       }
+
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());
     }
@@ -86,14 +106,28 @@ public class TextResultTest extends MockTestBase {
 
     @HttpGet
     public ActionResult testTextFileResult() throws Exception {
-      String content = "item1, item2, item3";
-      return new TextFileResult(content, "test.csv", "application/csv");
+      return new CsvFileResult("test.csv", new String[] { "item1", "item2", "item3" }, StandardCharsets.UTF_8.name());
     }
 
     @HttpGet
     public ActionResult testTextFileResult_ISO_8859_1() throws Exception {
-      String content = "item1, item2, item3";
-      return new TextFileResult(content, "test.csv", "application/csv", StandardCharsets.ISO_8859_1.name());
+      return new CsvFileResult("test.csv", new String[] { "item1", "item2", "item3" },
+          StandardCharsets.ISO_8859_1.name());
+    }
+  }
+
+  static class CsvFileResult extends TextFileResult {
+
+    final String[] content;
+
+    public CsvFileResult(String fileName, String[] content, String encoding) {
+      super(fileName, MimeTypes.APP_CSV, encoding);
+      this.content = content;
+    }
+
+    @Override
+    protected void writeContent(BufferedWriter out) throws Exception {
+      out.write(new CsvRecord(this.content).toString());
     }
   }
 }

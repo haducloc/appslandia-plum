@@ -80,7 +80,7 @@ public abstract class PebbleTemplateProvider {
       extensionProviders.add(extensionProvider);
     });
 
-    this.configure(builder);
+    this.preBuild(builder);
     PebbleEngine engine = builder.build();
 
     // Destroy extensionProvider
@@ -94,5 +94,5 @@ public abstract class PebbleTemplateProvider {
 
   protected abstract Loader<?> getLoader();
 
-  protected abstract void configure(PebbleEngine.Builder builder);
+  protected abstract void preBuild(PebbleEngine.Builder builder);
 }

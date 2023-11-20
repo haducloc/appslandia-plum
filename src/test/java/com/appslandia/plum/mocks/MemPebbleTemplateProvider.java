@@ -41,7 +41,7 @@ public class MemPebbleTemplateProvider extends PebbleTemplateProvider {
   }
 
   @Override
-  protected void configure(Builder builder) {
+  protected void preBuild(Builder builder) {
   }
 
   public void addTemplate(String templateLocation, String templateContent) {

@@ -47,6 +47,7 @@ public class AppConfig extends InitializeObject implements Config {
 
   public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
   public static final String CONFIG_ENABLE_JSON_ERROR = "config.enable_json_error";
+  public static final String CONFIG_ENABLE_JSON_PRETTY_PRINTING = "config.enable_json_pretty_printing";
 
   public static final String CONFIG_REMME_COOKIE_NAME = "config.remme_cookie_name";
   public static final String CONFIG_REMME_COOKIE_AGE = "config.remme_cookie_age";
@@ -96,6 +97,7 @@ public class AppConfig extends InitializeObject implements Config {
 
     this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));
     this.config.putIfAbsent(CONFIG_ENABLE_JSON_ERROR, String.valueOf(false));
+    this.config.putIfAbsent(CONFIG_ENABLE_JSON_PRETTY_PRINTING, String.valueOf(true));
 
     this.config.putIfAbsent(CONFIG_REMME_COOKIE_NAME, "JREMEMBERMEID");
     this.config.putIfAbsent(CONFIG_REMME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(14, TimeUnit.DAYS)));
