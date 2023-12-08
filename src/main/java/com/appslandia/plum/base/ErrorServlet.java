@@ -31,7 +31,7 @@ import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.utils.ServletUtils;
-import com.appslandia.plum.utils.WebBeanToStringDecision;
+import com.appslandia.plum.utils.WebBeanTSPolicy;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.DispatcherType;
@@ -167,8 +167,8 @@ public class ErrorServlet extends HttpServlet {
       out.println();
     }
     out.println();
-    out.append("Request Info: ").append(new ToStringBuilder(4)
-        .toStringDecision(new WebBeanToStringDecision(true, true, true, false)).toString(request));
+    out.append("Request Info: ")
+        .append(new ToStringBuilder(4).setTSPolicy(new WebBeanTSPolicy(true, true, true, false)).toString(request));
     out.flush();
   }
 

@@ -34,18 +34,18 @@ import jakarta.servlet.http.HttpSession;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class WebBeanToStringDecision extends ToStringBuilder.ToStringDecision {
+public class WebBeanTSPolicy extends ToStringBuilder.TSPolicy {
 
   final boolean printRequest;
   final boolean printResponse;
   final boolean printSession;
   final boolean printServletContext;
 
-  public WebBeanToStringDecision() {
+  public WebBeanTSPolicy() {
     this(false, false, false, false);
   }
 
-  public WebBeanToStringDecision(boolean printRequest, boolean printResponse, boolean printSession,
+  public WebBeanTSPolicy(boolean printRequest, boolean printResponse, boolean printSession,
       boolean printServletContext) {
     this.printRequest = printRequest;
     this.printResponse = printResponse;
@@ -54,8 +54,8 @@ public class WebBeanToStringDecision extends ToStringBuilder.ToStringDecision {
   }
 
   @Override
-  public boolean tsIdHash(Object value, Field field) {
-    if (super.tsIdHash(value, field)) {
+  public boolean tsIdHash(Field field, Object value) {
+    if (super.tsIdHash(field, value)) {
       return true;
     }
     if (value instanceof ServletRequest) {
@@ -70,16 +70,8 @@ public class WebBeanToStringDecision extends ToStringBuilder.ToStringDecision {
     if (value instanceof ServletContext) {
       return !this.printServletContext;
     }
-    if (value.getClass().getName().endsWith("$Proxy$_$$_WeldClientProxy")) {
+    if (value.getClass().getName().endsWith("_$$_Weld")) {
       return true;
-    }
-    if (field != null) {
-      if (field.getName().startsWith("weld$$$") || field.getName().startsWith("weld_proxy_field$$$")) {
-        return true;
-      }
-      if (field.getType().getName().startsWith("org.jboss.weld")) {
-        return true;
-      }
     }
     return false;
   }

@@ -56,7 +56,7 @@ public abstract class TextFileResult extends FilenameResult {
       response.setCharacterEncoding(this.contentEncoding);
     }
 
-    BufferedWriter out = IOUtils.textWriterBOM(response.getOutputStream(), response.getCharacterEncoding());
+    BufferedWriter out = IOUtils.writerBOM(response.getOutputStream(), response.getCharacterEncoding());
 
     writeContent(out);
     out.flush();

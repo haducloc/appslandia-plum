@@ -58,7 +58,7 @@ public class TextResultTest extends MockTestBase {
       Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
       Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
 
-      try (BufferedReader reader = IOUtils.textReaderBOM(
+      try (BufferedReader reader = IOUtils.readerBOM(
           new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()), StandardCharsets.UTF_8.name())) {
 
         List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader);
@@ -83,7 +83,7 @@ public class TextResultTest extends MockTestBase {
       Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
       Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
 
-      try (BufferedReader reader = IOUtils.textReaderBOM(
+      try (BufferedReader reader = IOUtils.readerBOM(
           new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()),
           StandardCharsets.ISO_8859_1.name())) {
 
