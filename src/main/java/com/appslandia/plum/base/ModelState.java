@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  *
@@ -118,5 +119,11 @@ public class ModelState implements Serializable {
   public Map<String, String> toErrorMap() {
     return this.errors.entrySet().stream().collect(
         Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get(0).getText(), (v1, v2) -> v1, TreeMap::new));
+  }
+
+  public Integer getErrorChildIndex(int childrenCount, Function<Integer, String> childPathBuilder) {
+    var errIdx = IntStream.range(0, childrenCount).filter(idx -> this.errors.containsKey(childPathBuilder.apply(idx)))
+        .findFirst();
+    return errIdx.isPresent() ? errIdx.getAsInt() : null;
   }
 }
