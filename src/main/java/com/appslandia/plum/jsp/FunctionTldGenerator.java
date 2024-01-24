@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.appslandia.common.base.TextBuilder;
+import com.appslandia.common.utils.XmlEscaper;
 
 /**
  *
@@ -68,7 +69,19 @@ public class FunctionTldGenerator {
       String signature = functionSignature(functionMth);
 
       String name = function.name().length() == 0 ? functionMth.getName() : function.name();
-      String desc = function.description().length() == 0 ? signature : function.description();
+      StringBuilder desc = new StringBuilder();
+
+      if (!function.description().isEmpty()) {
+        desc.append("description=").append(function.description());
+      } else {
+        desc.append("description=");
+      }
+
+      String mth = functionMth.toString();
+      if (mth.startsWith("public static ")) {
+        mth = mth.substring("public static ".length());
+      }
+      desc.append(";method=").append(mth);
 
       if (sb.length() == 0) {
         sb.appendtab().append("<function>");
@@ -77,7 +90,7 @@ public class FunctionTldGenerator {
         sb.appendln(2).appendtab().append("<function>");
         sb.appendln();
       }
-      sb.appendtab(2).append("<description>" + desc + "</description>");
+      sb.appendtab(2).append("<description>" + XmlEscaper.escapeXml(desc.toString()) + "</description>");
       sb.appendln();
       sb.appendtab(2).append("<name>" + name + "</name>");
       sb.appendln();

@@ -11,175 +11,175 @@
 	<uri>http://www.appslandia.com/jstl/functions</uri>
 
 	<function>
-		<description>java.lang.String checked(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.checked(boolean)</description>
 		<name>checked</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String checked(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String disabled(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.disabled(boolean)</description>
 		<name>disabled</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String disabled(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String encParam(java.lang.String)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.encParam(java.lang.Object)</description>
 		<name>encParam</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String encParam(java.lang.String)</function-signature>
+		<function-signature>java.lang.String encParam(java.lang.Object)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String encPath(java.lang.String)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.encPath(java.lang.Object)</description>
 		<name>encPath</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
-		<function-signature>java.lang.String encPath(java.lang.String)</function-signature>
+		<function-signature>java.lang.String encPath(java.lang.Object)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String envName()</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.envName()</description>
 		<name>envName</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String envName()</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String escXml(java.lang.Object)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.escXml(java.lang.Object)</description>
 		<name>escXml</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String escXml(java.lang.Object)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String hardWrap(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.hardWrap(boolean)</description>
 		<name>hardWrap</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String hardWrap(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>boolean hasCookie(jakarta.servlet.http.HttpServletRequest, java.lang.String)</description>
+		<description>description=;method=boolean com.appslandia.plum.jsp.Functions.hasCookie(jakarta.servlet.http.HttpServletRequest,java.lang.String)</description>
 		<name>hasCookie</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>boolean hasCookie(jakarta.servlet.http.HttpServletRequest, java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String hidden(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.hidden(boolean)</description>
 		<name>hidden</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String hidden(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String ifClass(boolean, java.lang.String)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.ifClass(boolean,java.lang.String)</description>
 		<name>ifClass</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String ifClass(boolean, java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String iifEscXml(boolean, java.lang.Object, java.lang.Object)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.iifEscXml(boolean,java.lang.Object,java.lang.Object)</description>
 		<name>iifEscXml</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String iifEscXml(boolean, java.lang.Object, java.lang.Object)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String multiple(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.multiple(boolean)</description>
 		<name>multiple</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String multiple(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String novalidate(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.novalidate(boolean)</description>
 		<name>novalidate</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String novalidate(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>long nowMs()</description>
+		<description>description=;method=long com.appslandia.plum.jsp.Functions.nowMs()</description>
 		<name>nowMs</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>long nowMs()</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String readonly(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.readonly(boolean)</description>
 		<name>readonly</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String readonly(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String required(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.required(boolean)</description>
 		<name>required</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String required(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String selected(boolean)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Functions.selected(boolean)</description>
 		<name>selected</name>
 		<function-class>com.appslandia.plum.jsp.Functions</function-class>
 		<function-signature>java.lang.String selected(boolean)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forCssString</description>
+		<description>description=org.owasp.encoder.Encode.forCssString;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escCssString(java.lang.String)</description>
 		<name>escCssString</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escCssString(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forCssUrl</description>
+		<description>description=org.owasp.encoder.Encode.forCssUrl;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escCssUrl(java.lang.String)</description>
 		<name>escCssUrl</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escCssUrl(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forJavaScript</description>
+		<description>description=org.owasp.encoder.Encode.forJavaScript;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escJS(java.lang.String)</description>
 		<name>escJS</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJS(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forJavaScriptAttribute</description>
+		<description>description=org.owasp.encoder.Encode.forJavaScriptAttribute;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escJSAttr(java.lang.String)</description>
 		<name>escJSAttr</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJSAttr(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forJavaScriptBlock</description>
+		<description>description=org.owasp.encoder.Encode.forJavaScriptBlock;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escJSBlock(java.lang.String)</description>
 		<name>escJSBlock</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJSBlock(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forJavaScriptSource</description>
+		<description>description=org.owasp.encoder.Encode.forJavaScriptSource;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escJSSource(java.lang.String)</description>
 		<name>escJSSource</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escJSSource(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>org.owasp.encoder.Encode.forXmlComment</description>
+		<description>description=org.owasp.encoder.Encode.forXmlComment;method=java.lang.String com.appslandia.plum.jsp.OwaspFunctions.escXmlComment(java.lang.String)</description>
 		<name>escXmlComment</name>
 		<function-class>com.appslandia.plum.jsp.OwaspFunctions</function-class>
 		<function-signature>java.lang.String escXmlComment(java.lang.String)</function-signature>
 	</function>
 
 	<function>
-		<description>java.lang.String transform(java.lang.Object, java.lang.String)</description>
+		<description>description=;method=java.lang.String com.appslandia.plum.jsp.Pipe.transform(java.lang.Object,java.lang.String)</description>
 		<name>pipe</name>
 		<function-class>com.appslandia.plum.jsp.Pipe</function-class>
 		<function-signature>java.lang.String transform(java.lang.Object, java.lang.String)</function-signature>
