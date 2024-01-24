@@ -93,7 +93,7 @@ public class MessagesTag extends TagBase {
     out.write("</ul>");
   }
 
-  @Attribute(required = true, rtexprvalue = false, description = "error|warn|notice|info")
+  @Attribute(required = true, rtexprvalue = false, description = "fatal|error|warn|notice|info")
   public void setType(String type) {
     this.type = type;
   }

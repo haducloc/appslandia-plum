@@ -29,6 +29,7 @@ import java.util.Locale;
 import com.appslandia.common.base.TextBuilder;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.StringUtils;
+import com.appslandia.common.utils.XmlEscaper;
 
 /**
  *
@@ -94,16 +95,20 @@ public class TagTldGenerator {
     String name = tag.name().length() == 0
         ? tagClass.getSimpleName().substring(0, tagClass.getSimpleName().lastIndexOf("Tag"))
         : tag.name();
+
     StringBuilder desc = new StringBuilder();
 
     if (!tag.description().isEmpty()) {
-      desc.append(tag.description());
+      desc.append("description=").append(tag.description());
     } else {
-      desc.append(name);
+      desc.append("description=");
     }
-    desc.append("|body=" + tag.bodyContent());
+
+    desc.append(";type=").append(tagClass.getName());
+    desc.append(";body=" + tag.bodyContent());
+
     if (tag.dynamicAttributes()) {
-      desc.append("|dynamicAttributes");
+      desc.append(";dynamicAttributes");
     }
     if (sb.length() == 0) {
       sb.appendtab().append("<tag>");
@@ -112,7 +117,7 @@ public class TagTldGenerator {
       sb.appendln(2).appendtab().append("<tag>");
       sb.appendln();
     }
-    sb.appendtab(2).append("<description>" + desc + "</description>");
+    sb.appendtab(2).append("<description>" + XmlEscaper.escapeXml(desc.toString()) + "</description>");
     sb.appendln();
     sb.appendtab(2).append("<name>" + name + "</name>");
     sb.appendln();
@@ -135,20 +140,22 @@ public class TagTldGenerator {
       StringBuilder attrDesc = new StringBuilder();
 
       if (!attribute.description().isEmpty()) {
-        attrDesc.append(attribute.description());
+        attrDesc.append("description=").append(attribute.description());
       } else {
-        attrDesc.append(attrName);
+        attrDesc.append("description=");
       }
-      attrDesc.append("|type=" + type.getName());
+
+      attrDesc.append(";type=" + type.getName());
       if (attribute.rtexprvalue()) {
-        attrDesc.append("|expression");
+        attrDesc.append(";expression");
       }
       if (!attribute.defaultValue().isEmpty()) {
-        attrDesc.append("|default=" + attribute.defaultValue());
+        attrDesc.append(";default=" + attribute.defaultValue());
       }
+
       sb.appendtab(2).append("<attribute>");
       sb.appendln();
-      sb.appendtab(3).append("<description>" + attrDesc + "</description>");
+      sb.appendtab(3).append("<description>" + XmlEscaper.escapeXml(attrDesc.toString()) + "</description>");
       sb.appendln();
       sb.appendtab(3).append("<name>" + attrName + "</name>");
       sb.appendln();
