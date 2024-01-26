@@ -91,7 +91,7 @@ public class PebbleUtils {
 
       @Override
       public int size() {
-        return StreamUtils.stream(request.getAttributeNames()).mapToInt(a -> 1).sum();
+        return (int) StreamUtils.stream(request.getAttributeNames()).count();
       }
 
       @Override
@@ -118,7 +118,7 @@ public class PebbleUtils {
         if (session == null) {
           return 0;
         }
-        return StreamUtils.stream(session.getAttributeNames()).mapToInt(a -> 1).sum();
+        return (int) StreamUtils.stream(session.getAttributeNames()).count();
       }
 
       @Override
@@ -149,7 +149,7 @@ public class PebbleUtils {
 
       @Override
       public int size() {
-        return StreamUtils.stream(request.getServletContext().getAttributeNames()).mapToInt(a -> 1).sum();
+        return (int) StreamUtils.stream(request.getServletContext().getAttributeNames()).count();
       }
 
       @Override
