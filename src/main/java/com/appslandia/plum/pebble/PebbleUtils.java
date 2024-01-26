@@ -58,6 +58,11 @@ public class PebbleUtils {
     return appConfig.getString("pebble.template_dir", "/WEB-INF/pebble");
   }
 
+  public String getPebblePath(ServletContext servletContext, String path) {
+    String pebbleDir = getPebbleDir(servletContext);
+    return new StringBuilder(pebbleDir.length() + path.length()).append(pebbleDir).append(path).toString();
+  }
+
   public static void executePebble(HttpServletRequest request, HttpServletResponse response, Writer out,
       String pebblePath, Map<String, Object> model, Locale locale) throws IOException {
     // Variables
