@@ -80,6 +80,7 @@ public abstract class AuthTokenHandler {
     // Identity
     identity = identity.toLowerCase(Locale.ENGLISH);
     if (!getIdentityDigester().verify(identity, authToken.getHashIdentity())) {
+      invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
       return false;
     }
 
