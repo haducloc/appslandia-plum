@@ -49,14 +49,11 @@ public @interface Authorize {
   String[] policies() default {};
 
   @Nonbinding
-  boolean module() default true;
-
-  @Nonbinding
   boolean reauth() default false;
 
   @Nonbinding
   boolean removed() default false;
 
   public static final Authorize IMPL = ActionDescUtils.createAuthorize(StringUtils.EMPTY_ARRAY, StringUtils.EMPTY_ARRAY,
-      true, false);
+      false);
 }

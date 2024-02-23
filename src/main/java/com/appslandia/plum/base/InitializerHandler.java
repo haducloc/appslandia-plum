@@ -189,23 +189,27 @@ public class InitializerHandler extends HttpFilter {
           return;
         }
 
-        // Check Module
-        if (authorize.module() && !requestContext.getModule().equalsIgnoreCase(principal.getModule())) {
-          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
-              .setTitleKey(Resources.ERROR_FORBIDDEN);
-        }
+        // Not APP module?
+        if (!Modules.APP.equalsIgnoreCase(requestContext.getModule())) {
 
-        // REAUTHENTICATE
-        if (authorize.reauth() && !isReauthenticated(principal)) {
-          this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response,
-              requestContext);
-          return;
-        }
+          // Check Module
+          if (!principal.getModule().equalsIgnoreCase(requestContext.getModule())) {
+            throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
+                .setTitleKey(Resources.ERROR_FORBIDDEN);
+          }
 
-        // Authorize
-        if (!authorize(request, principal, authorize)) {
-          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
-              .setTitleKey(Resources.ERROR_FORBIDDEN);
+          // REAUTHENTICATE
+          if (authorize.reauth() && !isReauthenticated(principal)) {
+            this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response,
+                requestContext);
+            return;
+          }
+
+          // Authorize
+          if (!authorize(request, principal, authorize)) {
+            throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
+                .setTitleKey(Resources.ERROR_FORBIDDEN);
+          }
         }
       }
 

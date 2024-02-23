@@ -61,7 +61,7 @@ public class ActionDescUtils {
     return true;
   }
 
-  public static Authorize createAuthorize(String[] roles, String[] policies, boolean module, boolean reauth) {
+  public static Authorize createAuthorize(String[] roles, String[] policies, boolean reauth) {
     return new Authorize() {
 
       final String[] _roles = ArrayUtils.copy(roles);
@@ -80,11 +80,6 @@ public class ActionDescUtils {
       @Override
       public String[] policies() {
         return ArrayUtils.copy(this._policies);
-      }
-
-      @Override
-      public boolean module() {
-        return module;
       }
 
       @Override
