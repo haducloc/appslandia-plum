@@ -124,10 +124,11 @@ public abstract class ActionDescProvider extends InitializeObject {
       actionDesc.setControllerClass(controllerClass);
 
       // Module
-      Controller controllerAnt = controllerClass.getDeclaredAnnotation(Controller.class);
-      String module = controllerAnt.module().isEmpty() ? this.appConfig.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE)
-          : controllerAnt.module();
-      actionDesc.setModule(module);
+      Module module = controllerClass.getDeclaredAnnotation(Module.class);
+      String moduleId = ((module == null) || module.value().isEmpty())
+          ? this.appConfig.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE)
+          : module.value();
+      actionDesc.setModule(moduleId);
 
       // HTTP Methods
       Out<Boolean> httpMethod = new Out<>();
@@ -240,6 +241,10 @@ public abstract class ActionDescProvider extends InitializeObject {
             actionDesc.setEnableJsonError(EnableJsonError.IMPL);
           }
         }
+
+        // @AppScoped
+        AppScoped appScoped = actionMethod.getDeclaredAnnotation(AppScoped.class);
+        actionDesc.setAppScoped(appScoped);
       }
 
       // @Removed

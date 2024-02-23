@@ -58,6 +58,7 @@ public class ActionDesc {
   private EnableJsonError enableJsonError;
 
   private ChildAction childAction;
+  private AppScoped appScoped;
 
   public String getController() {
     return this.controller;
@@ -235,5 +236,13 @@ public class ActionDesc {
 
   protected void setChildAction(ChildAction childAction) {
     this.childAction = childAction;
+  }
+
+  public AppScoped getAppScoped() {
+    return this.appScoped;
+  }
+
+  protected void setAppScoped(AppScoped appScoped) {
+    this.appScoped = appScoped;
   }
 }

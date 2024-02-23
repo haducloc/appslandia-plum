@@ -39,6 +39,4 @@ import com.appslandia.common.utils.StringUtils;
 public @interface Controller {
 
   String value() default StringUtils.EMPTY_STRING;
-
-  String module() default StringUtils.EMPTY_STRING;
 }

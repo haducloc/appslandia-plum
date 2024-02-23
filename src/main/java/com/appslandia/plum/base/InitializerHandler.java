@@ -189,11 +189,11 @@ public class InitializerHandler extends HttpFilter {
           return;
         }
 
-        // Not APP module?
-        if (!Modules.APP.equalsIgnoreCase(requestContext.getModule())) {
+        // Not @AppScoped?
+        if (requestContext.getActionDesc().getAppScoped() == null) {
 
           // Check Module
-          if (!principal.getModule().equalsIgnoreCase(requestContext.getModule())) {
+          if (!requestContext.getModule().equalsIgnoreCase(principal.getModule())) {
             throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
                 .setTitleKey(Resources.ERROR_FORBIDDEN);
           }

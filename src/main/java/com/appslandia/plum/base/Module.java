@@ -20,14 +20,23 @@
 
 package com.appslandia.plum.base;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.appslandia.common.utils.StringUtils;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class Modules {
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.TYPE })
+@Documented
+public @interface Module {
 
-  public static final String DEFAULT = "default";
-
-  public static final String ADMIN = "admin";
+  String value() default StringUtils.EMPTY_STRING;
 }
