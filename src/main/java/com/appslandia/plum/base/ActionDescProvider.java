@@ -241,10 +241,6 @@ public abstract class ActionDescProvider extends InitializeObject {
             actionDesc.setEnableJsonError(EnableJsonError.IMPL);
           }
         }
-
-        // @AppScoped
-        AppScoped appScoped = actionMethod.getDeclaredAnnotation(AppScoped.class);
-        actionDesc.setAppScoped(appScoped);
       }
 
       // @Removed
