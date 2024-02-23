@@ -241,6 +241,11 @@ public abstract class ActionDescProvider extends InitializeObject {
             actionDesc.setEnableJsonError(EnableJsonError.IMPL);
           }
         }
+
+        // @BypassModuleAuthorization
+        BypassModuleAuthorization bypassModuleAuthorization = actionMethod
+            .getDeclaredAnnotation(BypassModuleAuthorization.class);
+        actionDesc.setBypassModuleAuthorization(bypassModuleAuthorization);
       }
 
       // @Removed

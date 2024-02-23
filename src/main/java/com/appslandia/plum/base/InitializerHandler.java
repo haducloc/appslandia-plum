@@ -189,8 +189,8 @@ public class InitializerHandler extends HttpFilter {
           return;
         }
 
-        // Not Modules.APP
-        if (!Modules.APP.equalsIgnoreCase(requestContext.getModule())) {
+        // No @BypassModuleAuthorization
+        if (requestContext.getActionDesc().getBypassModuleAuthorization() == null) {
 
           // Check Module
           if (!principal.getModule().equalsIgnoreCase(requestContext.getModule())) {

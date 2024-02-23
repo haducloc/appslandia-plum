@@ -20,14 +20,19 @@
 
 package com.appslandia.plum.base;
 
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class Modules {
-
-  public static final String DEFAULT = "default";
-
-  public static final String ADMIN = "admin";
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ ElementType.METHOD })
+@Documented
+public @interface BypassModuleAuthorization {
 }
