@@ -189,8 +189,8 @@ public class InitializerHandler extends HttpFilter {
           return;
         }
 
-        // No @BypassModuleAuthorization
-        if (requestContext.getActionDesc().getBypassModuleAuthorization() == null) {
+        // No @BypassAuthorization
+        if (requestContext.getActionDesc().getBypassAuthorization() == null) {
 
           // Check Module
           if (!principal.getModule().equalsIgnoreCase(requestContext.getModule())) {
@@ -198,18 +198,18 @@ public class InitializerHandler extends HttpFilter {
                 .setTitleKey(Resources.ERROR_FORBIDDEN);
           }
 
-          // REAUTHENTICATE
-          if (authorize.reauth() && !isReauthenticated(principal)) {
-            this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response,
-                requestContext);
-            return;
-          }
-
           // Authorize
           if (!authorize(request, principal, authorize)) {
             throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
                 .setTitleKey(Resources.ERROR_FORBIDDEN);
           }
+        }
+
+        // Re-authenticate
+        if (authorize.reauth() && !isReauthenticated(principal)) {
+          this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response,
+              requestContext);
+          return;
         }
       }
 

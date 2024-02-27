@@ -242,10 +242,9 @@ public abstract class ActionDescProvider extends InitializeObject {
           }
         }
 
-        // @BypassModuleAuthorization
-        BypassModuleAuthorization bypassModuleAuthorization = actionMethod
-            .getDeclaredAnnotation(BypassModuleAuthorization.class);
-        actionDesc.setBypassModuleAuthorization(bypassModuleAuthorization);
+        // @BypassAuthorization
+        BypassAuthorization bypassAuthorization = actionMethod.getDeclaredAnnotation(BypassAuthorization.class);
+        actionDesc.setBypassAuthorization(bypassAuthorization);
       }
 
       // @Removed

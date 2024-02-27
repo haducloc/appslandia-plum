@@ -58,7 +58,7 @@ public class ActionDesc {
   private EnableJsonError enableJsonError;
 
   private ChildAction childAction;
-  private BypassModuleAuthorization bypassModuleAuthorization;
+  private BypassAuthorization bypassAuthorization;
 
   public String getController() {
     return this.controller;
@@ -238,11 +238,11 @@ public class ActionDesc {
     this.childAction = childAction;
   }
 
-  public BypassModuleAuthorization getBypassModuleAuthorization() {
-    return this.bypassModuleAuthorization;
+  public BypassAuthorization getBypassAuthorization() {
+    return this.bypassAuthorization;
   }
 
-  public void setBypassModuleAuthorization(BypassModuleAuthorization bypassModuleAuthorization) {
-    this.bypassModuleAuthorization = bypassModuleAuthorization;
+  protected void setBypassAuthorization(BypassAuthorization bypassAuthorization) {
+    this.bypassAuthorization = bypassAuthorization;
   }
 }

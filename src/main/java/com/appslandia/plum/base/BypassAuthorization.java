@@ -34,5 +34,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.METHOD })
 @Documented
-public @interface BypassModuleAuthorization {
+public @interface BypassAuthorization {
 }
