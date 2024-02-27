@@ -36,11 +36,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Model {
 
-  Source value() default Source.PARAMETER;
+  Source value() default Source.PARAM;
 
   String[] excludes() default {};
 
   public enum Source {
-    PARAMETER, JSON_BODY
+    PARAM, JSON_BODY
   }
 }

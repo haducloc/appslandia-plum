@@ -94,7 +94,7 @@ public class ActionInvoker {
       // @Model
       if (paramDesc.getModel() != null) {
         Object model = null;
-        if (paramDesc.getModel().value() == Model.Source.PARAMETER) {
+        if (paramDesc.getModel().value() == Model.Source.PARAM) {
           model = ReflectionUtils.newInstance(paramDesc.getParameter().getType());
           String[] excludes = paramDesc.getModel().excludes();
           if (excludes.length == 0) {
