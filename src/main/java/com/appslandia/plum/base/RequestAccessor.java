@@ -60,6 +60,22 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     return StringUtils.trimToNull(getParameter(name));
   }
 
+  public <T> T getCookieOrNull(String name, Class<T> targetType) {
+    String value = getCookieOrNull(name);
+    Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
+    Asserts.notNull(converter);
+
+    try {
+      return converter.parse(value, getRequestContext().getFormatProvider());
+    } catch (ConverterException ex) {
+      return null;
+    }
+  }
+
+  public String getCookieOrNull(String name) {
+    return StringUtils.trimToNull(ServletUtils.getCookieValue(this, name));
+  }
+
   public boolean isFormAction(String action) {
     return action.equalsIgnoreCase(getParamOrNull(ServletUtils.PARAM_FORM_ACTION));
   }
