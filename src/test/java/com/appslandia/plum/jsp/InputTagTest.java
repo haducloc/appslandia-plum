@@ -27,7 +27,6 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.NormalizeUtils;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.BrowserFeatures;
@@ -71,7 +70,7 @@ public class InputTagTest extends MockTestBase {
   @Test
   public void test() {
     try {
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
 
       tag.doTag();
@@ -106,7 +105,7 @@ public class InputTagTest extends MockTestBase {
   @Test
   public void test_hidden() {
     try {
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
       tag.setType("hidden");
 
@@ -124,7 +123,7 @@ public class InputTagTest extends MockTestBase {
   @Test
   public void test_type_text() {
     try {
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
 
       tag.setPath("model.dob");
       tag.setType("text");
@@ -144,7 +143,7 @@ public class InputTagTest extends MockTestBase {
   @Test
   public void test_type_date1() {
     try {
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
       tag.setType("date");
 
@@ -164,7 +163,7 @@ public class InputTagTest extends MockTestBase {
     try {
       setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
 
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
       tag.setType("date");
 
@@ -184,7 +183,7 @@ public class InputTagTest extends MockTestBase {
     try {
       setRequestContextField("browserFeatures", 0);
 
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
       tag.setType("date");
 
@@ -206,7 +205,7 @@ public class InputTagTest extends MockTestBase {
       container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
       setRequestContextField("browserFeatures", 0);
 
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
       tag.setType("date");
 
@@ -228,7 +227,7 @@ public class InputTagTest extends MockTestBase {
       container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
       setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
 
-      model.setDob(DateUtils.iso8601LocalDate("2000-01-01"));
+      model.setDob(LocalDate.parse("2000-01-01"));
       tag.setPath("model.dob");
       tag.setType("date");
 

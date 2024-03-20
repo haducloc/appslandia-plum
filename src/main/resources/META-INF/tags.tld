@@ -143,6 +143,13 @@
 		<tag-class>com.appslandia.plum.jsp.FormErrorsTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>divClass</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<description>description=username,password,etc.;type=java.lang.String</description>
 			<name>fieldOrders</name>
 			<required>false</required>
@@ -1902,6 +1909,13 @@
 		<body-content>empty</body-content>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
+			<name>divClass</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
 			<name>itemClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -1915,7 +1929,7 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
-			<description>description=fatal|error|warn|notice|info;type=java.lang.String</description>
+			<description>description=success|fatal|error|warn|notice|info;type=java.lang.String</description>
 			<name>type</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>

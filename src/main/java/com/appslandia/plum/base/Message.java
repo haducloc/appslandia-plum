@@ -38,6 +38,8 @@ public class Message implements Serializable {
   public static final int TYPE_ERROR = 4;
   public static final int TYPE_FATAL = 5;
 
+  public static final int TYPE_SUCCESS = 11;
+
   final int type;
   final String text;
   final boolean escXml;
@@ -81,6 +83,9 @@ public class Message implements Serializable {
     }
     if ("fatal".equalsIgnoreCase(type)) {
       return TYPE_ERROR;
+    }
+    if ("success".equalsIgnoreCase(type)) {
+      return TYPE_SUCCESS;
     }
     throw new IllegalArgumentException("type is invalid.");
   }

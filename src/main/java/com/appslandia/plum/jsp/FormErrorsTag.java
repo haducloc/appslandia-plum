@@ -52,6 +52,7 @@ public class FormErrorsTag extends TagBase {
   protected String fieldOrders;
   protected boolean includeFields = true;
 
+  protected String divClass;
   protected String listClass;
   protected String itemClass;
 
@@ -68,6 +69,10 @@ public class FormErrorsTag extends TagBase {
 
     if (hasErrors) {
       JspWriter out = this.pageContext.getOut();
+
+      out.write("<div");
+      HtmlUtils.escAttribute(out, "class", this.divClass);
+      out.write(">");
 
       out.write("<ul");
       if (this.listClass != null) {
@@ -104,6 +109,7 @@ public class FormErrorsTag extends TagBase {
 
       out.newLine();
       out.write("</ul>");
+      out.write("</div>");
     }
   }
 
@@ -112,12 +118,8 @@ public class FormErrorsTag extends TagBase {
       out.newLine();
 
       out.write("<li");
-      if (this.itemClass == null) {
-        HtmlUtils.escAttribute(out, "class", "l-fi-error");
-      } else {
-        out.write(" class=\"");
-        out.write(this.itemClass);
-        out.write(" l-fi-error\"");
+      if (this.itemClass != null) {
+        HtmlUtils.escAttribute(out, "class", this.itemClass);
       }
       out.write(">");
 
@@ -169,6 +171,11 @@ public class FormErrorsTag extends TagBase {
   @Attribute(required = false, rtexprvalue = false)
   public void setIncludeFields(boolean includeFields) {
     this.includeFields = includeFields;
+  }
+
+  @Attribute(required = true, rtexprvalue = false)
+  public void setDivClass(String divClass) {
+    this.divClass = divClass;
   }
 
   @Attribute(required = false, rtexprvalue = false)

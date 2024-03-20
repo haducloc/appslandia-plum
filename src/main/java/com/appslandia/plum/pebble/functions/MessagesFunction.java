@@ -28,7 +28,6 @@ import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.Message;
 import com.appslandia.plum.base.Messages;
-import com.appslandia.plum.jsp.MessageUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -42,7 +41,7 @@ public class MessagesFunction extends DynPebbleFunction {
 
   @Override
   public String getDescription() {
-    return "variables: type*, listClass, itemClass";
+    return "variables: type*, divClass, listClass, itemClass";
   }
 
   @Override
@@ -53,16 +52,21 @@ public class MessagesFunction extends DynPebbleFunction {
     }
 
     String type = context.getRequiredArgument("type");
+    String divClass = context.getRequiredArgument("divClass");
     String listClass = context.getArgument("listClass");
     String itemClass = context.getArgument("itemClass");
 
-    int typeId = MessageUtils.getMsgType(type);
+    int typeId = Message.parseType(type);
 
     List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
     if (msgs.isEmpty()) {
       return null;
     }
     StringWriter out = new StringWriter(msgs.size() * 128);
+
+    out.write("<div");
+    HtmlUtils.escAttribute(out, "class", divClass);
+    out.write(">");
 
     out.write("<ul");
     if (listClass != null)
@@ -72,17 +76,9 @@ public class MessagesFunction extends DynPebbleFunction {
     for (Message msg : msgs) {
       out.write(System.lineSeparator());
 
-      String typeClass = MessageUtils.getMsgClass(typeId);
       out.write("<li");
-
-      if (itemClass == null) {
-        HtmlUtils.escAttribute(out, "class", typeClass);
-      } else {
-        out.write(" class=\"");
-        out.write(itemClass);
-        out.write(" ");
-        out.write(typeClass);
-        out.write("\"");
+      if (itemClass != null) {
+        HtmlUtils.escAttribute(out, "class", itemClass);
       }
       out.write(">");
 
@@ -96,6 +92,7 @@ public class MessagesFunction extends DynPebbleFunction {
 
     out.write(System.lineSeparator());
     out.write("</ul>");
+    out.write("</div>");
     return out.toString();
   }
 }

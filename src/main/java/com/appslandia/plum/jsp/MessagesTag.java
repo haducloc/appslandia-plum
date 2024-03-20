@@ -41,6 +41,7 @@ import jakarta.servlet.jsp.JspWriter;
 public class MessagesTag extends TagBase {
 
   protected String type;
+  protected String divClass;
   protected String listClass;
   protected String itemClass;
 
@@ -51,12 +52,16 @@ public class MessagesTag extends TagBase {
       return;
     }
 
-    int typeId = MessageUtils.getMsgType(this.type);
+    int typeId = Message.parseType(this.type);
     List<Message> msgs = messages.stream().filter(m -> m.getType() == typeId).toList();
     if (msgs.isEmpty()) {
       return;
     }
     JspWriter out = this.pageContext.getOut();
+
+    out.write("<div");
+    HtmlUtils.escAttribute(out, "class", this.divClass);
+    out.write(">");
 
     out.write("<ul");
     if (this.listClass != null) {
@@ -67,17 +72,9 @@ public class MessagesTag extends TagBase {
     for (Message msg : msgs) {
       out.newLine();
 
-      String typeClass = MessageUtils.getMsgClass(typeId);
       out.write("<li");
-
-      if (this.itemClass == null) {
-        HtmlUtils.escAttribute(out, "class", typeClass);
-      } else {
-        out.write(" class=\"");
-        out.write(this.itemClass);
-        out.write(" ");
-        out.write(typeClass);
-        out.write("\"");
+      if (this.itemClass != null) {
+        HtmlUtils.escAttribute(out, "class", this.itemClass);
       }
       out.write(">");
 
@@ -91,11 +88,17 @@ public class MessagesTag extends TagBase {
 
     out.newLine();
     out.write("</ul>");
+    out.write("</div>");
   }
 
-  @Attribute(required = true, rtexprvalue = false, description = "fatal|error|warn|notice|info")
+  @Attribute(required = true, rtexprvalue = false, description = "success|fatal|error|warn|notice|info")
   public void setType(String type) {
     this.type = type;
+  }
+
+  @Attribute(required = true, rtexprvalue = false)
+  public void setDivClass(String divClass) {
+    this.divClass = divClass;
   }
 
   @Attribute(required = false, rtexprvalue = false)

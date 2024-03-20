@@ -58,6 +58,7 @@ public class FormErrorsFunction extends DynPebbleFunction {
     boolean includeFields = context.getBool("includeFields", true);
     String form = context.getArgument("form");
 
+    String divClass = context.getRequiredArgument("divClass");
     String listClass = context.getArgument("listClass");
     String itemClass = context.getArgument("itemClass");
 
@@ -72,6 +73,10 @@ public class FormErrorsFunction extends DynPebbleFunction {
 
     if (hasErrors) {
       StringWriter out = new StringWriter(context.getModelState().getErrors().size() * 128);
+
+      out.write("<div");
+      HtmlUtils.escAttribute(out, "class", divClass);
+      out.write(">");
 
       out.write("<ul");
       if (listClass != null)
@@ -109,6 +114,7 @@ public class FormErrorsFunction extends DynPebbleFunction {
 
       out.write(System.lineSeparator());
       out.write("</ul>");
+      out.write("</div>");
       return new SafeString(out.toString());
     }
     return null;
@@ -119,12 +125,8 @@ public class FormErrorsFunction extends DynPebbleFunction {
       out.write(System.lineSeparator());
 
       out.write("<li");
-      if (itemClass == null) {
-        HtmlUtils.escAttribute(out, "class", "l-fi-error");
-      } else {
-        out.write(" class=\"");
-        out.write(itemClass);
-        out.write(" l-fi-error\"");
+      if (itemClass != null) {
+        HtmlUtils.escAttribute(out, "class", itemClass);
       }
       out.write(">");
 

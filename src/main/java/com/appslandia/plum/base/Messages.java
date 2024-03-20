@@ -58,4 +58,8 @@ public class Messages extends ArrayList<Message> {
   public void addFatal(String text) {
     this.add(new Message(Message.TYPE_FATAL, text));
   }
+
+  public void addSuccess(String text) {
+    this.add(new Message(Message.TYPE_SUCCESS, text));
+  }
 }

@@ -69,7 +69,7 @@ public class FormTagTest extends MockTestBase {
       tag.doTag();
       String html = tag.getPageContext().getOut().toString();
 
-      Assertions.assertEquals("<form action=\"/app/testController/?encodeURL=true\"> </form>",
+      Assertions.assertEquals("<form action=\"/app/testController/?encodeURL=true\"></form>",
           NormalizeUtils.toSingleLine(html));
 
     } catch (Exception ex) {
@@ -90,7 +90,7 @@ public class FormTagTest extends MockTestBase {
       String html = tag.getPageContext().getOut().toString();
 
       Assertions.assertEquals(
-          "<form action=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\"> </form>",
+          "<form action=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\"></form>",
           NormalizeUtils.toSingleLine(html));
 
     } catch (Exception ex) {

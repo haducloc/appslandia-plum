@@ -125,16 +125,16 @@ public class FormTag extends UITagBase {
 
   @Override
   protected void writeBody(JspWriter out) throws JspException, IOException {
-    out.newLine();
-
     if (this.csrf) {
-      out.println(
-          STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", SimpleCsrfManager.PARAM_CSRF_ID));
+      out.newLine();
+      out.print(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", SimpleCsrfManager.PARAM_CSRF_ID));
     }
+
     if (this.formAction) {
-      out.println(
-          STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", ServletUtils.PARAM_FORM_ACTION));
+      out.newLine();
+      out.print(STR.fmt("<input type=\"hidden\" id=\"{}\" name=\"{}\" value=\"\" />", ServletUtils.PARAM_FORM_ACTION));
     }
+
     if (this.body != null) {
       this.body.invoke(out);
     }

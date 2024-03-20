@@ -56,8 +56,8 @@ public class DatalistFunction extends DynPebbleFunction {
 
     for (Object item : items) {
       String codeValue = context.getRequestContext().format(item, converter, localize);
-
       out.write(System.lineSeparator());
+
       out.write("<option");
       HtmlUtils.escAttribute(out, "value", codeValue);
       out.write(">");
