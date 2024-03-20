@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appslandia</groupId>
 	<artifactId>appslandia-plum</artifactId>
@@ -10,21 +12,21 @@
 	<properties>
 		<module.name>com.appslandia.plum</module.name>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<version.maven-compiler-plugin>3.8.1</version.maven-compiler-plugin>
-		<version.maven-jar-plugin>3.2.2</version.maven-jar-plugin>
-		<version.maven-source-plugin>3.2.1</version.maven-source-plugin>
-		<version.maven-javadoc-plugin>3.2.0</version.maven-javadoc-plugin>
-		<version.maven-gpg-plugin>3.0.1</version.maven-gpg-plugin>
-		<version.maven-surefire-plugin>3.0.0-M8</version.maven-surefire-plugin>
+		<version.maven-compiler-plugin>3.13.0</version.maven-compiler-plugin>
+		<version.maven-jar-plugin>3.3.0</version.maven-jar-plugin>
+		<version.maven-source-plugin>3.3.0</version.maven-source-plugin>
+		<version.maven-javadoc-plugin>3.6.3</version.maven-javadoc-plugin>
+		<version.maven-gpg-plugin>3.2.1</version.maven-gpg-plugin>
+		<version.maven-surefire-plugin>3.2.5</version.maven-surefire-plugin>
 		<version.nexus-staging-maven-plugin>1.6.13</version.nexus-staging-maven-plugin>
-		<version.gson>2.10</version.gson>
+		<version.gson>2.10.1</version.gson>
 		<version.owasp-encoder>1.2.3</version.owasp-encoder>
 		<version.pebble-templates>1.0</version.pebble-templates>
 		<version.appslandia-common>19.3.1</version.appslandia-common>
 		<version.jakarta.platform>10.0.0</version.jakarta.platform>
 		<version.glassfish-jakarta-el>5.0.0-M1</version.glassfish-jakarta-el>
-		<version.hibernate-validator>8.0.0.Final</version.hibernate-validator>
-		<version.junit-jupiter-api>5.9.2</version.junit-jupiter-api>
+		<version.hibernate-validator>8.0.1.Final</version.hibernate-validator>
+		<version.junit-jupiter-api>5.10.2</version.junit-jupiter-api>
 	</properties>
 	<licenses>
 		<license>
@@ -42,7 +44,8 @@
 	</developers>
 	<scm>
 		<connection>scm:git:https://github.com/haducloc/appslandia-plum.git</connection>
-		<developerConnection>scm:git:https://github.com/haducloc/appslandia-plum.git</developerConnection>
+		<developerConnection>
+			scm:git:https://github.com/haducloc/appslandia-plum.git</developerConnection>
 		<url>https://github.com/haducloc/appslandia-plum.git</url>
 	</scm>
 	<distributionManagement>
@@ -172,24 +175,26 @@
 			<artifactId>encoder-jsp</artifactId>
 			<version>${version.owasp-encoder}</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>${version.gson}</version>
-			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.appslandia</groupId>
 			<artifactId>pebble-templates</artifactId>
 			<version>${version.pebble-templates}</version>
 			<scope>provided</scope>
-		</dependency>		
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>${version.gson}</version>
+			<scope>test</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter-api</artifactId>
 			<version>${version.junit-jupiter-api}</version>
-			<scope>provided</scope>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.hibernate.validator</groupId>
