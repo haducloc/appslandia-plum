@@ -268,6 +268,7 @@ public class InitializerHandler extends HttpFilter {
         return;
       }
 
+      // Next filter?
       chain.doFilter(request, response);
 
     } catch (Exception ex) {
