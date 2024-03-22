@@ -40,6 +40,7 @@ public class FieldErrorTag extends UITagBase {
 
   protected String form;
   protected String fieldName;
+  protected String errorClass;
 
   protected boolean _isValid;
 
@@ -54,7 +55,8 @@ public class FieldErrorTag extends UITagBase {
         || this.getModelState().isValid(this.fieldName);
 
     if (!this._isValid) {
-      this.clazz = (this.clazz == null) ? "l-field-error" : (this.clazz + " l-field-error");
+      String errClass = (this.errorClass != null) ? this.errorClass : "l-field-error";
+      this.clazz = (this.clazz == null) ? errClass : this.clazz + " " + errClass;
     }
     this.render = !this._isValid;
   }
@@ -102,5 +104,10 @@ public class FieldErrorTag extends UITagBase {
   @Attribute(required = true, rtexprvalue = true)
   public void setFieldName(String fieldName) {
     this.fieldName = fieldName;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setErrorClass(String errorClass) {
+    this.errorClass = errorClass;
   }
 }

@@ -41,13 +41,14 @@ public class FieldErrorFunction extends DynPebbleFunction {
 
   @Override
   public String getDescription() {
-    return "variables: fieldName*, form, class";
+    return "variables: fieldName*, form, class, errorClass";
   }
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
     String fieldName = context.getRequiredArgument("fieldName");
     String form = context.getArgument("form");
+    String errorClass = context.getArgument("errorClass", "l-field-error");
 
     boolean isValid = !Objects.equals(form, context.getModelState().getForm())
         || context.getModelState().isValid(fieldName);
@@ -57,7 +58,7 @@ public class FieldErrorFunction extends DynPebbleFunction {
       StringWriter out = new StringWriter(128);
 
       String clazz = context.getArgument("class");
-      clazz = (clazz == null) ? "l-field-error" : (clazz + " l-field-error");
+      clazz = (clazz == null) ? errorClass : (clazz + " " + errorClass);
 
       out.append("<div");
       HtmlUtils.escAttribute(out, "class", clazz);

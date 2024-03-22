@@ -38,6 +38,7 @@ public class FieldGroupTag extends UITagBase {
 
   protected String form;
   protected String fieldName;
+  protected String errorClass;
 
   @Override
   protected String getTagName() {
@@ -50,7 +51,8 @@ public class FieldGroupTag extends UITagBase {
         || this.getModelState().isValid(this.fieldName);
 
     if (!isValid) {
-      this.clazz = (this.clazz == null) ? "l-error-group" : this.clazz + " l-error-group";
+      String errClass = (this.errorClass != null) ? this.errorClass : "l-error-field";
+      this.clazz = (this.clazz == null) ? errClass : this.clazz + " " + errClass;
     }
   }
 
@@ -89,5 +91,10 @@ public class FieldGroupTag extends UITagBase {
   @Attribute(required = true, rtexprvalue = true)
   public void setFieldName(String fieldName) {
     this.fieldName = fieldName;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setErrorClass(String errorClass) {
+    this.errorClass = errorClass;
   }
 }

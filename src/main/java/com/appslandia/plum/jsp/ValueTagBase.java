@@ -46,6 +46,7 @@ public abstract class ValueTagBase extends UITagBase {
   protected boolean autofocus;
   protected boolean readonly;
   protected String autocomplete;
+  protected String errorClass;
 
   protected String enterFn;
   protected String enterBtn;
@@ -98,7 +99,8 @@ public abstract class ValueTagBase extends UITagBase {
 
     // class
     if (!this._isValid) {
-      this.clazz = (this.clazz == null) ? "l-error-field" : this.clazz + " l-error-field";
+      String errClass = (this.errorClass != null) ? this.errorClass : "l-error-field";
+      this.clazz = (this.clazz == null) ? errClass : this.clazz + " " + errClass;
     }
   }
 
@@ -161,6 +163,11 @@ public abstract class ValueTagBase extends UITagBase {
   @Attribute(required = false, rtexprvalue = false)
   public void setAutocomplete(String autocomplete) {
     this.autocomplete = autocomplete;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setErrorClass(String errorClass) {
+    this.errorClass = errorClass;
   }
 
   @Attribute(required = false, rtexprvalue = false)

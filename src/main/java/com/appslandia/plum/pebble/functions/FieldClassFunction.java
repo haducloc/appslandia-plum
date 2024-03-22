@@ -38,18 +38,20 @@ public class FieldClassFunction extends DynPebbleFunction {
 
   @Override
   public String getDescription() {
-    return "variables: fieldName*, form";
+    return "variables: fieldName*, form, errorClass";
   }
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
     String fieldName = context.getRequiredArgument("fieldName");
     String form = context.getArgument("form");
+    String errorClass = context.getArgument("errorClass", "l-error-field");
 
     boolean isValid = !Objects.equals(form, context.getModelState().getForm())
         || context.getModelState().isValid(fieldName);
+
     if (!isValid) {
-      return new SafeString("l-error-field");
+      return new SafeString(errorClass);
     }
     return new SafeString(TagUtils.CSS_NOOP);
   }

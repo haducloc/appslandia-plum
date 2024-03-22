@@ -41,6 +41,9 @@ public class FieldLabelTag extends UITagBase {
   protected String labelKey;
   protected boolean required;
 
+  protected String requiredClass;
+  protected String errorClass;
+
   protected String _for;
 
   @Override
@@ -55,13 +58,16 @@ public class FieldLabelTag extends UITagBase {
     }
 
     if (this.required) {
-      this.clazz = (this.clazz == null) ? "l-required-label" : (this.clazz + " l-required-label");
+      String reqClass = (this.requiredClass != null) ? this.requiredClass : "l-required-label";
+      this.clazz = (this.clazz == null) ? reqClass : this.clazz + " " + reqClass;
     }
 
     boolean isValid = !Objects.equals(this.form, this.getModelState().getForm())
         || this.getModelState().isValid(this.fieldName);
+
     if (!isValid) {
-      this.clazz = (this.clazz == null) ? "l-error-label" : (this.clazz + " l-error-label");
+      String errClass = (this.errorClass != null) ? this.errorClass : "l-error-label";
+      this.clazz = (this.clazz == null) ? errClass : this.clazz + " " + errClass;
     }
   }
 
@@ -123,5 +129,15 @@ public class FieldLabelTag extends UITagBase {
   @Attribute(required = false, rtexprvalue = true)
   public void setRequired(boolean required) {
     this.required = required;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setRequiredClass(String requiredClass) {
+    this.requiredClass = requiredClass;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setErrorClass(String errorClass) {
+    this.errorClass = errorClass;
   }
 }

@@ -41,6 +41,7 @@ public class CaptchaWordsTag extends UITagBase {
   protected String maxlength;
   protected String placeholder;
   protected boolean required;
+  protected String errorClass;
 
   @Override
   protected String getTagName() {
@@ -51,9 +52,10 @@ public class CaptchaWordsTag extends UITagBase {
   protected void initTag() throws JspException, IOException {
     boolean isValid = !Objects.equals(this.form, getModelState().getForm())
         || getModelState().isValid(SimpleCaptchaManager.PARAM_CAPTCHA_WORDS);
-    if (!isValid) {
 
-      this.clazz = (this.clazz == null) ? "l-field-error" : this.clazz + " l-field-error";
+    if (!isValid) {
+      String errClass = (this.errorClass != null) ? this.errorClass : "l-error-field";
+      this.clazz = (this.clazz == null) ? errClass : this.clazz + " " + errClass;
     }
   }
 
@@ -106,5 +108,10 @@ public class CaptchaWordsTag extends UITagBase {
   @Attribute(required = false, rtexprvalue = false)
   public void setRequired(boolean required) {
     this.required = required;
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setErrorClass(String errorClass) {
+    this.errorClass = errorClass;
   }
 }
