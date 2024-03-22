@@ -73,11 +73,13 @@ public class MockSessionCookieConfig implements SessionCookieConfig {
     return getAttribute("path");
   }
 
+  @Deprecated
   @Override
   public void setComment(String comment) {
     setAttribute("comment", comment);
   }
 
+  @Deprecated
   @Override
   public String getComment() {
     return getAttribute("comment");
