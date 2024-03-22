@@ -9,7 +9,6 @@
 
 	<short-name>tags</short-name>
 	<uri>http://www.appslandia.com/jstl/tags</uri>
-
 	<tag>
 		<description>description=;type=com.appslandia.plum.jsp.FormTag;body=scriptless;dynamicAttributes</description>
 		<name>form</name>
@@ -207,6 +206,13 @@
 			<type>java.lang.Object</type>
 		</attribute>
 		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<description>description=;type=java.lang.String;expression</description>
 			<name>fieldName</name>
 			<required>true</required>
@@ -263,6 +269,13 @@
 			<type>boolean</type>
 		</attribute>
 		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>requiredClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
 			<description>description=;type=java.lang.String;expression</description>
 			<name>style</name>
 			<required>false</required>
@@ -297,6 +310,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String;expression</description>
@@ -407,6 +427,13 @@
 		<attribute>
 			<description>description=;type=java.lang.String</description>
 			<name>enterFn</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
@@ -640,6 +667,13 @@
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
 			<name>form</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -750,6 +784,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
@@ -874,6 +915,13 @@
 		<attribute>
 			<description>description=;type=java.lang.String</description>
 			<name>enterFn</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
@@ -1014,6 +1062,13 @@
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
 			<name>form</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -1103,6 +1158,13 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.Object</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String;expression</description>
@@ -1475,6 +1537,13 @@
 		<attribute>
 			<description>description=;type=java.lang.String</description>
 			<name>enterFn</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>
