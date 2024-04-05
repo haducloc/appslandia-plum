@@ -239,13 +239,8 @@ public class ServletUtils {
     if (builder.length() > 0) {
       builder.append(", ");
     }
-    builder.append("remoteHost=").append(request.getRemoteHost());
-    builder.append(", remotePort=").append(request.getRemotePort());
+    builder.append("remoteAddr=").append(request.getRemoteAddr());
     builder.append(", remoteUser=").append(request.getRemoteUser());
-
-    builder.append(", remoteAddr=").append(request.getRemoteAddr());
-    builder.append(", X-Forwarded-For=").append(request.getHeader("X-Forwarded-For"));
-
     builder.append(", User-Agent=").append(request.getHeader("User-Agent"));
     return builder;
   }
