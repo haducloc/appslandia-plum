@@ -9,6 +9,7 @@
 
 	<short-name>tags</short-name>
 	<uri>http://www.appslandia.com/jstl/tags</uri>
+
 	<tag>
 		<description>description=;type=com.appslandia.plum.jsp.FormTag;body=scriptless;dynamicAttributes</description>
 		<name>form</name>
@@ -2076,6 +2077,13 @@
 		<name>userDName</name>
 		<tag-class>com.appslandia.plum.jsp.UserDNameTag</tag-class>
 		<body-content>empty</body-content>
+		<attribute>
+			<description>description=;type=java.lang.String</description>
+			<name>module</name>
+			<required>false</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 

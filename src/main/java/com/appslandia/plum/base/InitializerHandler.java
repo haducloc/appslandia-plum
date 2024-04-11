@@ -194,8 +194,13 @@ public class InitializerHandler extends HttpFilter {
 
           // Check Module
           if (!principal.getModule().equalsIgnoreCase(requestContext.getModule())) {
-            throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
-                .setTitleKey(Resources.ERROR_FORBIDDEN);
+
+            this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askAuthenticate(request, response,
+                requestContext);
+            return;
+
+//            throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
+//                .setTitleKey(Resources.ERROR_FORBIDDEN);
           }
 
           // Authorize

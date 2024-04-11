@@ -23,10 +23,10 @@ package com.appslandia.plum.jsp;
 import java.io.IOException;
 
 import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.UserPrincipal;
 import com.appslandia.plum.utils.ServletUtils;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.jsp.JspException;
 
 /**
@@ -37,10 +37,24 @@ import jakarta.servlet.jsp.JspException;
 @Tag(name = "userDName", dynamicAttributes = false)
 public class UserDNameTag extends TagBase {
 
+  private String module;
+
   @Override
   public void doTag() throws JspException, IOException {
-    UserPrincipal principal = ServletUtils.getRequiredPrincipal((HttpServletRequest) pageContext.getRequest());
+    UserPrincipal principal = ServletUtils.getRequiredPrincipal(getRequest());
 
-    XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
+    if (this.module == null) {
+      AppConfig config = ServletUtils.getAppScoped(this.pageContext.getServletContext(), AppConfig.class);
+      this.module = config.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
+    }
+
+    if (principal.getModule().equalsIgnoreCase(this.module)) {
+      XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
+    }
+  }
+
+  @Attribute(required = false, rtexprvalue = false)
+  public void setModule(String module) {
+    this.module = module;
   }
 }
