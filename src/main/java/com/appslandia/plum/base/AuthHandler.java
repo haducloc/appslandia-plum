@@ -38,7 +38,7 @@ public interface AuthHandler {
 
   Credential parseCredential(HttpServletRequest request);
 
-  default boolean getLoginPage() {
+  default String getLoginPage() {
     throw new UnsupportedOperationException();
   }
 
