@@ -23,6 +23,7 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 
 import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.UserPrincipal;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -38,9 +39,25 @@ import io.pebbletemplates.pebble.extension.escaper.SafeString;
 public class UserDNameFunction extends DynPebbleFunction {
 
   @Override
-  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
+  public String getDescription() {
+    return "variables: module";
+  }
 
-    return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
+  @Override
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    // module
+    String module = context.getArgument("module");
+
+    if (module == null) {
+      AppConfig config = ServletUtils.getAppScoped(context.getRequest().getServletContext(), AppConfig.class);
+      module = config.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
+    }
+
+    UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
+    if (principal.isModule(module)) {
+
+      return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
+    }
+    return null;
   }
 }

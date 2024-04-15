@@ -41,14 +41,15 @@ public class UserDNameTag extends TagBase {
 
   @Override
   public void doTag() throws JspException, IOException {
-    UserPrincipal principal = ServletUtils.getRequiredPrincipal(getRequest());
-
+    // module
     if (this.module == null) {
       AppConfig config = ServletUtils.getAppScoped(this.pageContext.getServletContext(), AppConfig.class);
       this.module = config.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
+    UserPrincipal principal = ServletUtils.getRequiredPrincipal(getRequest());
     if (principal.isModule(this.module)) {
+
       XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
     }
   }
