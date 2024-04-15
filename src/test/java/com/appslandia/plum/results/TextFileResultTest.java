@@ -23,6 +23,8 @@ package com.appslandia.plum.results;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -43,7 +45,7 @@ import com.appslandia.plum.base.MockTestBase;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class TextResultTest extends MockTestBase {
+public class TextFileResultTest extends MockTestBase {
 
   @Override
   protected void initialize() {
@@ -51,9 +53,9 @@ public class TextResultTest extends MockTestBase {
   }
 
   @Test
-  public void test_testTextFileResult() {
+  public void test_testCsvResult() {
     try {
-      executeCurrent("GET", "http://localhost/app/testController/testTextFileResult");
+      executeCurrent("GET", "http://localhost/app/testController/testCsvResult");
 
       Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
       Assertions.assertEquals(StandardCharsets.UTF_8.name(), getCurrentResponse().getCharacterEncoding());
@@ -76,9 +78,9 @@ public class TextResultTest extends MockTestBase {
   }
 
   @Test
-  public void test_testTextFileResult_ISO_8859_1() {
+  public void test_testCsvResult_ISO_8859_1() {
     try {
-      executeCurrent("GET", "http://localhost/app/testController/testTextFileResult_ISO_8859_1");
+      executeCurrent("GET", "http://localhost/app/testController/testCsvResult_ISO_8859_1");
 
       Assertions.assertEquals("application/csv", getCurrentResponse().getContentType());
       Assertions.assertEquals(StandardCharsets.ISO_8859_1.name(), getCurrentResponse().getCharacterEncoding());
@@ -105,12 +107,12 @@ public class TextResultTest extends MockTestBase {
   public static class TestController {
 
     @HttpGet
-    public ActionResult testTextFileResult() throws Exception {
+    public ActionResult testCsvResult() throws Exception {
       return new CsvFileResult("test.csv", new String[] { "item1", "item2", "item3" }, StandardCharsets.UTF_8.name());
     }
 
     @HttpGet
-    public ActionResult testTextFileResult_ISO_8859_1() throws Exception {
+    public ActionResult testCsvResult_ISO_8859_1() throws Exception {
       return new CsvFileResult("test.csv", new String[] { "item1", "item2", "item3" },
           StandardCharsets.ISO_8859_1.name());
     }
@@ -123,6 +125,11 @@ public class TextResultTest extends MockTestBase {
     public CsvFileResult(String fileName, String[] content, String encoding) {
       super(fileName, MimeTypes.APP_CSV, encoding);
       this.content = content;
+    }
+
+    @Override
+    protected BufferedWriter createBufferedWriter(OutputStream os, String charset) throws IOException {
+      return IOUtils.writerBOM(os, charset);
     }
 
     @Override

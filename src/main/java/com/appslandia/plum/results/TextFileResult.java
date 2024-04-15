@@ -21,9 +21,10 @@
 package com.appslandia.plum.results;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.nio.charset.StandardCharsets;
-
-import com.appslandia.common.utils.IOUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -50,13 +51,17 @@ public abstract class TextFileResult extends FilenameResult {
     this.contentEncoding = contentEncoding;
   }
 
+  protected BufferedWriter createBufferedWriter(OutputStream os, String charset) throws IOException {
+    return new BufferedWriter(new OutputStreamWriter(os, charset));
+  }
+
   @Override
   protected void writeContent(HttpServletRequest request, HttpServletResponse response) throws Exception {
     if (this.contentEncoding != null) {
       response.setCharacterEncoding(this.contentEncoding);
     }
 
-    BufferedWriter out = IOUtils.writerBOM(response.getOutputStream(), response.getCharacterEncoding());
+    BufferedWriter out = createBufferedWriter(response.getOutputStream(), response.getCharacterEncoding());
 
     writeContent(out);
     out.flush();
