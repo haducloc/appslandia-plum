@@ -112,8 +112,11 @@ public class RequestAccessor extends HttpServletRequestWrapper {
   }
 
   public boolean isModuleAuthenticated() {
-    return (getUserPrincipal() != null)
-        && getUserPrincipal().getModule().equalsIgnoreCase(getRequestContext().getModule());
+    UserPrincipal principal = getUserPrincipal();
+    if (principal == null) {
+      return false;
+    }
+    return principal.isModule(getRequestContext().getModule());
   }
 
   @Override

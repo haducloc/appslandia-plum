@@ -77,6 +77,10 @@ public abstract class UserPrincipal extends CallerPrincipal {
     return (dn != null) ? dn : getName();
   }
 
+  public boolean isModule(String module) {
+    return getModule().equalsIgnoreCase(module);
+  }
+
   // Internal override only
 
   public String getModule() {

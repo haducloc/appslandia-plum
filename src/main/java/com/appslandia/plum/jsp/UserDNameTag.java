@@ -48,7 +48,7 @@ public class UserDNameTag extends TagBase {
       this.module = config.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
-    if (principal.getModule().equalsIgnoreCase(this.module)) {
+    if (principal.isModule(this.module)) {
       XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());
     }
   }
