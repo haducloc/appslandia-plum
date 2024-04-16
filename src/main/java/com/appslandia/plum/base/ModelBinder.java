@@ -228,7 +228,7 @@ public class ModelBinder {
 
           // Declare List|Concretes
           List<Object> subModel = (field.getType() == List.class) ? new ArrayList<>(subIndexes)
-              : ObjectUtils.cast(ReflectionUtils.newInstance(field.getType()));
+              : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
 
           int idx = 0;
           int count = 0;
@@ -237,7 +237,7 @@ public class ModelBinder {
 
             if (hasSubProperties(request, subIndexProp)) {
 
-              Object elementModel = ReflectionUtils.newInstance(elementType);
+              Object elementModel = elementType.getDeclaredConstructor().newInstance();
               subModel.add(elementModel);
               queue.add(new BindingNode(elementModel, subIndexProp));
 
@@ -266,14 +266,14 @@ public class ModelBinder {
 
           // Declare Map|Concretes
           Map<String, Object> subModel = (field.getType() == Map.class) ? new HashMap<String, Object>()
-              : ObjectUtils.cast(ReflectionUtils.newInstance(field.getType()));
+              : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
 
           for (String subKey : subKeys) {
             String subKeyProp = propertyPath + "[" + subKey + "]";
 
             if (hasSubProperties(request, subKeyProp)) {
 
-              Object valueModel = ReflectionUtils.newInstance(kvTypes[1]);
+              Object valueModel = kvTypes[1].getDeclaredConstructor().newInstance();
               subModel.put(subKey, valueModel);
 
               queue.add(new BindingNode(valueModel, subKeyProp));
@@ -292,7 +292,7 @@ public class ModelBinder {
         if (hasSubProperties(request, propertyPath)) {
           Object subModel = Asserts.notNull(property.getReadMethod()).invoke(bindNode.model);
           if (subModel == null) {
-            subModel = ReflectionUtils.newInstance(field.getType());
+            subModel = field.getType().getDeclaredConstructor().newInstance();
             property.getWriteMethod().invoke(bindNode.model, subModel);
           }
           queue.add(new BindingNode(subModel, propertyPath));

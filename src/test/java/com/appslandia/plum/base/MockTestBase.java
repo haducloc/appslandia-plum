@@ -114,7 +114,6 @@ public abstract class MockTestBase {
   protected void setRequestContextField(String fieldName, Object value) {
     Field field = ReflectionUtils.findField(RequestContext.class, fieldName);
     Asserts.notNull(field);
-    field.setAccessible(true);
 
     ReflectionUtils.set(field, getCurrentRequestContext(), value);
   }

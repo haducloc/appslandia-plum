@@ -33,7 +33,6 @@ import com.appslandia.common.converters.ConverterProvider;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
-import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -95,13 +94,15 @@ public class ActionInvoker {
       if (paramDesc.getModel() != null) {
         Object model = null;
         if (paramDesc.getModel().value() == Model.Source.PARAM) {
-          model = ReflectionUtils.newInstance(paramDesc.getParameter().getType());
+          model = paramDesc.getParameter().getType().getDeclaredConstructor().newInstance();
+
           String[] excludes = paramDesc.getModel().excludes();
           if (excludes.length == 0) {
             this.modelBinder.bindModel(request, model);
           } else {
             this.modelBinder.bindModel(request, model, p -> Arrays.stream(excludes).anyMatch(path -> p.equals(path)));
           }
+
         } else {
           model = this.jsonProcessor.read(request.getReader(), paramDesc.getParameter().getType());
           if (model != null) {

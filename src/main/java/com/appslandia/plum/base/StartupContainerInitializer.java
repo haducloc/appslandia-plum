@@ -30,7 +30,6 @@ import java.util.Set;
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.ObjectUtils;
-import com.appslandia.common.utils.ReflectionUtils;
 
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -82,7 +81,7 @@ public class StartupContainerInitializer implements ServletContainerInitializer 
         continue;
       }
       try {
-        Startup impl = ReflectionUtils.newInstance(clazz);
+        Startup impl = clazz.getDeclaredConstructor().newInstance();
         impl.onStartup(sc, unmodifiableClasses);
 
       } catch (Exception ex) {

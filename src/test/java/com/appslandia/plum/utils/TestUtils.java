@@ -50,14 +50,14 @@ public class TestUtils {
   public static void setDeployEnv(DeployEnv env) {
     Field field = ReflectionUtils.findField(DeployEnv.class, "current");
     Asserts.notNull(field);
-    field.setAccessible(true);
+
     ReflectionUtils.set(field, null, env);
   }
 
   public static void initExpressionEvaluator() {
     Field field = ReflectionUtils.findField(ExpressionEvaluator.class, "__default");
     Asserts.notNull(field);
-    field.setAccessible(true);
+
     ReflectionUtils.set(field, null, new MockExpressionEvaluator());
   }
 
