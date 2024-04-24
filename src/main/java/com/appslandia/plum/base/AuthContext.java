@@ -79,7 +79,6 @@ public class AuthContext {
 
     // If hasPrincipal
     if (principal != null) {
-
       // Validate the credential in advance to make sure the given credential is valid
 
       // UsernamePasswordCredential
