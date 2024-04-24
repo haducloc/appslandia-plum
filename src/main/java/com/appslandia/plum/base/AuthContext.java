@@ -27,7 +27,7 @@ import com.appslandia.common.base.AssertException;
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.utils.ServletUtils;
+import com.appslandia.common.utils.STR;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,7 +39,6 @@ import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -60,6 +59,9 @@ public class AuthContext {
   protected IdentityValidator identityValidator;
 
   @Inject
+  protected AuthTokenHandler authTokenHandler;
+
+  @Inject
   protected Instance<HttpAuthenticationMechanismBase> authenticationMechanism;
 
   @PostConstruct
@@ -69,14 +71,14 @@ public class AuthContext {
     }
   }
 
-  public boolean authenticate(HttpServletRequest request, HttpServletResponse response, Credential credential,
+  public boolean authenticate(RequestAccessor request, HttpServletResponse response, Credential credential,
       boolean rememberMe, Out<String> invalidCode) throws ServletException {
 
-    final boolean hasPrincipal = request.getUserPrincipal() != null;
+    boolean reauthentication = false;
+    UserPrincipal principal = request.getUserPrincipal();
 
     // If hasPrincipal
-    if (hasPrincipal) {
-      UserPrincipal principal = ServletUtils.getUserPrincipal(request);
+    if (principal != null) {
 
       // Validate the credential in advance to make sure the given credential is valid
 
@@ -84,12 +86,27 @@ public class AuthContext {
       if (credential instanceof UsernamePasswordCredential) {
 
         UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
-        Asserts.isTrue(principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller()));
+        reauthentication = principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller());
 
-        if (this.identityValidator.validate(principal.getModule(), usernamePasswordCredential.getCaller(),
-            usernamePasswordCredential.getPasswordAsString(), invalidCode) == null) {
+        if (this.identityValidator.validate(request.getRequestContext().getModule(),
+            usernamePasswordCredential.getCaller(), usernamePasswordCredential.getPasswordAsString(),
+            invalidCode) == null) {
           return false;
         }
+      }
+      // AuthByCodeCredential
+      else if (credential instanceof AuthByCodeCredential) {
+
+        AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
+        reauthentication = principal.getName().equalsIgnoreCase(authByCodeCredential.getIdentity());
+
+        if (!this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(), authByCodeCredential.getToken(),
+            authByCodeCredential.getIdentity(), authByCodeCredential.getCode(), 0, invalidCode)) {
+          return false;
+        }
+      } else {
+        throw new IllegalArgumentException(
+            STR.fmt("The given credential type '{}' is unhandled.", credential.getClass().getName()));
       }
 
       // LOGOUT
@@ -100,7 +117,7 @@ public class AuthContext {
 
     // AuthParameters
     AuthParameters authParameters = new AuthParameters().credential(credential).rememberMe(rememberMe)
-        .reauthentication(hasPrincipal);
+        .reauthentication(reauthentication);
     AuthenticationStatus authStatus = this.securityContext.authenticate(request, response, authParameters);
 
     // HttpAuthenticationMechanismBase.validateRequest() is supposed to be called
