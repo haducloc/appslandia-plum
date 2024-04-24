@@ -54,7 +54,7 @@ public class UserDNameFunction extends DynPebbleFunction {
     }
 
     UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
-    if (principal.isModule(module)) {
+    if (principal.isForModule(module)) {
 
       return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));
     }

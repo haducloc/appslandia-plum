@@ -74,8 +74,8 @@ public class AuthContext {
   public boolean authenticate(RequestAccessor request, HttpServletResponse response, Credential credential,
       boolean rememberMe, Out<String> invalidCode) throws ServletException {
 
+    final UserPrincipal principal = request.getUserPrincipal();
     boolean reauthentication = false;
-    UserPrincipal principal = request.getUserPrincipal();
 
     // If hasPrincipal
     if (principal != null) {
@@ -84,26 +84,31 @@ public class AuthContext {
 
       // UsernamePasswordCredential
       if (credential instanceof UsernamePasswordCredential) {
-
         UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
-        reauthentication = principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller());
 
         if (this.identityValidator.validate(request.getRequestContext().getModule(),
             usernamePasswordCredential.getCaller(), usernamePasswordCredential.getPasswordAsString(),
             invalidCode) == null) {
           return false;
         }
+
+        // reauthentication
+        reauthentication = principal.isForModule(request.getRequestContext().getModule())
+            && principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller());
       }
       // AuthByCodeCredential
       else if (credential instanceof AuthByCodeCredential) {
-
         AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
-        reauthentication = principal.getName().equalsIgnoreCase(authByCodeCredential.getIdentity());
 
         if (!this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(), authByCodeCredential.getToken(),
             authByCodeCredential.getIdentity(), authByCodeCredential.getCode(), 0, invalidCode)) {
           return false;
         }
+
+        // reauthentication
+        reauthentication = principal.isForModule(request.getRequestContext().getModule())
+            && principal.getName().equalsIgnoreCase(authByCodeCredential.getIdentity());
+
       } else {
         throw new IllegalArgumentException(
             STR.fmt("The given credential type '{}' is unhandled.", credential.getClass().getName()));

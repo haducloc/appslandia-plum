@@ -77,7 +77,7 @@ public abstract class UserPrincipal extends CallerPrincipal {
     return (dn != null) ? dn : getName();
   }
 
-  public boolean isModule(String module) {
+  public boolean isForModule(String module) {
     return getModule().equalsIgnoreCase(module);
   }
 

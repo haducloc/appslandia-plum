@@ -116,7 +116,7 @@ public class RequestAccessor extends HttpServletRequestWrapper {
     if (principal == null) {
       return false;
     }
-    return principal.isModule(getRequestContext().getModule());
+    return principal.isForModule(getRequestContext().getModule());
   }
 
   @Override

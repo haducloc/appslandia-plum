@@ -193,14 +193,11 @@ public class InitializerHandler extends HttpFilter {
         if (requestContext.getActionDesc().getBypassAuthorization() == null) {
 
           // Check Module
-          if (!principal.isModule(requestContext.getModule())) {
+          if (!principal.isForModule(requestContext.getModule())) {
 
             this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askAuthenticate(request, response,
                 requestContext);
             return;
-
-//            throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN))
-//                .setTitleKey(Resources.ERROR_FORBIDDEN);
           }
 
           // Authorize
