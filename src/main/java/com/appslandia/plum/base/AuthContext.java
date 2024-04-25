@@ -77,7 +77,12 @@ public class AuthContext {
     if (principal != null) {
 
       // Validate the credential in advance to verify its validity
-      CredentialValidationResult validationResult = this.identityStoreHandler.validate(credential);
+      // IdentityStoreHandlerBase only accepts AuthCredential
+
+      AuthCredential authCredential = new AuthCredential(credential, request.getRequestContext().getModule(), true,
+          false, false);
+      CredentialValidationResult validationResult = this.identityStoreHandler.validate(authCredential);
+
       if (validationResult.getStatus() != CredentialValidationResult.Status.VALID) {
         return false;
       }
