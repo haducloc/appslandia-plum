@@ -27,7 +27,6 @@ import com.appslandia.common.base.AssertException;
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.STR;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,8 +35,8 @@ import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.SecurityContext;
 import jakarta.security.enterprise.credential.Credential;
-import jakarta.security.enterprise.credential.UsernamePasswordCredential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
+import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -56,10 +55,7 @@ public class AuthContext {
   protected SecurityContext securityContext;
 
   @Inject
-  protected IdentityValidator identityValidator;
-
-  @Inject
-  protected AuthTokenHandler authTokenHandler;
+  protected IdentityStoreHandler identityStoreHandler;
 
   @Inject
   protected Instance<HttpAuthenticationMechanismBase> authenticationMechanism;
@@ -77,41 +73,18 @@ public class AuthContext {
     final UserPrincipal principal = request.getUserPrincipal();
     boolean reauthentication = false;
 
-    // If hasPrincipal
+    // If principal?
     if (principal != null) {
-      // Validate the credential in advance to make sure the given credential is valid
 
-      // UsernamePasswordCredential
-      if (credential instanceof UsernamePasswordCredential) {
-        UsernamePasswordCredential usernamePasswordCredential = (UsernamePasswordCredential) credential;
-
-        if (this.identityValidator.validate(request.getRequestContext().getModule(),
-            usernamePasswordCredential.getCaller(), usernamePasswordCredential.getPasswordAsString(),
-            invalidCode) == null) {
-          return false;
-        }
-
-        // reauthentication
-        reauthentication = principal.isForModule(request.getRequestContext().getModule())
-            && principal.getName().equalsIgnoreCase(usernamePasswordCredential.getCaller());
+      // Validate the credential in advance to verify its validity
+      CredentialValidationResult validationResult = this.identityStoreHandler.validate(credential);
+      if (validationResult.getStatus() != CredentialValidationResult.Status.VALID) {
+        return false;
       }
-      // AuthByCodeCredential
-      else if (credential instanceof AuthByCodeCredential) {
-        AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
 
-        if (!this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(), authByCodeCredential.getToken(),
-            authByCodeCredential.getIdentity(), authByCodeCredential.getCode(), 0, invalidCode)) {
-          return false;
-        }
-
-        // reauthentication
-        reauthentication = principal.isForModule(request.getRequestContext().getModule())
-            && principal.getName().equalsIgnoreCase(authByCodeCredential.getIdentity());
-
-      } else {
-        throw new IllegalArgumentException(
-            STR.fmt("The given credential type '{}' is unhandled.", credential.getClass().getName()));
-      }
+      // reauthentication
+      reauthentication = principal.isForModule(request.getRequestContext().getModule())
+          && principal.getName().equalsIgnoreCase(validationResult.getCallerPrincipal().getName());
 
       // LOGOUT
       request.logout();
