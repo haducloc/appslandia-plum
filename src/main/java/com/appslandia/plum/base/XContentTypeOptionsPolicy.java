@@ -20,43 +20,18 @@
 
 package com.appslandia.plum.base;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class XFrameOptions {
-
-  private boolean deny;
-  private boolean sameOrigin;
-  private String allowFrom;
-
-  public XFrameOptions deny() {
-    this.deny = true;
-    return this;
-  }
-
-  public XFrameOptions sameOrigin() {
-    this.sameOrigin = true;
-    return this;
-  }
-
-  public XFrameOptions allowFrom(String value) {
-    this.allowFrom = value;
-    return this;
-  }
+public class XContentTypeOptionsPolicy implements HeaderPolicy {
 
   @Override
-  public String toString() {
-    if (this.allowFrom != null) {
-      return "ALLOW-FROM " + this.allowFrom;
-    }
-    if (this.deny) {
-      return "DENY";
-    }
-    if (this.sameOrigin) {
-      return "SAMEORIGIN";
-    }
-    throw new IllegalStateException();
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
+    response.setHeader("X-Content-Type-Options", "nosniff");
   }
 }

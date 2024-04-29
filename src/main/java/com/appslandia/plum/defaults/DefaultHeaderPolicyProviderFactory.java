@@ -29,8 +29,14 @@ import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
+import com.appslandia.plum.base.CspBuilder;
+import com.appslandia.plum.base.CspPolicy;
+import com.appslandia.plum.base.CspValueBuilder;
 import com.appslandia.plum.base.HeaderPolicy;
 import com.appslandia.plum.base.HeaderPolicyProvider;
+import com.appslandia.plum.base.XContentTypeOptionsPolicy;
+import com.appslandia.plum.base.XFrameOptions;
+import com.appslandia.plum.base.XFrameOptionsPolicy;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -57,6 +63,7 @@ public class DefaultHeaderPolicyProviderFactory implements CDIFactory<HeaderPoli
   @Override
   public HeaderPolicyProvider produce() {
     final HeaderPolicyProvider impl = new HeaderPolicyProvider();
+    initHeaderPolicyProvider(impl);
 
     CDIUtils.scanReferences(this.beanManager, HeaderPolicy.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
         (mappedId, bi) -> {
@@ -79,13 +86,20 @@ public class DefaultHeaderPolicyProviderFactory implements CDIFactory<HeaderPoli
     return impl;
   }
 
+  protected void initHeaderPolicyProvider(HeaderPolicyProvider impl) {
+    impl.addHeaderPolicy("XContentTypeOptions", new XContentTypeOptionsPolicy());
+    impl.addHeaderPolicy("Csp-Self", new CspPolicy(new CspBuilder().defaultSrc(new CspValueBuilder().self())));
+
+    impl.addHeaderPolicy("XFrameOptions-Deny", new XFrameOptionsPolicy(new XFrameOptions().deny()));
+    impl.addHeaderPolicy("XFrameOptions-SameOrigin", new XFrameOptionsPolicy(new XFrameOptions().sameOrigin()));
+  }
+
   @Override
   public void dispose(@Disposes HeaderPolicyProvider impl) {
   }
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

@@ -37,13 +37,28 @@ public class CspValueBuilder {
     return this;
   }
 
+  public CspValueBuilder none() {
+    this.values.add("'none'");
+    return this;
+  }
+
   public CspValueBuilder self() {
     this.values.add("'self'");
     return this;
   }
 
-  public CspValueBuilder none() {
-    this.values.add("'none'");
+  public CspValueBuilder strictDynamic() {
+    this.values.add("'strict-dynamic'");
+    return this;
+  }
+
+  public CspValueBuilder reportSample() {
+    this.values.add("'report-sample'");
+    return this;
+  }
+
+  public CspValueBuilder inlineSpeculationRules() {
+    this.values.add("'inline-speculation-rules'");
     return this;
   }
 
@@ -57,8 +72,13 @@ public class CspValueBuilder {
     return this;
   }
 
-  public CspValueBuilder unsafeHashedAttributes() {
-    this.values.add("'unsafe-hashed-attributes'");
+  public CspValueBuilder unsafeHashes() {
+    this.values.add("'unsafe-hashes'");
+    return this;
+  }
+
+  public CspValueBuilder wasmUnsafeEval() {
+    this.values.add("'wasm-unsafe-eval'");
     return this;
   }
 
@@ -67,47 +87,37 @@ public class CspValueBuilder {
     return this;
   }
 
+  public CspValueBuilder http() {
+    this.values.add("http:");
+    return this;
+  }
+
   public CspValueBuilder data() {
     this.values.add("data:");
     return this;
   }
 
-  public CspValueBuilder mediastream() {
-    this.values.add("mediastream:");
+  public CspValueBuilder nonce(String nonce) {
+    this.values.add("'nonce-" + nonce + '\'');
     return this;
   }
 
-  public CspValueBuilder blob() {
-    this.values.add("blob:");
+  public CspValueBuilder sha256(String hash) {
+    this.values.add("'sha256-" + hash + '\'');
     return this;
   }
 
-  public CspValueBuilder filesystem() {
-    this.values.add("filesystem:");
+  public CspValueBuilder sha386(String hash) {
+    this.values.add("'sha386-" + hash + '\'');
     return this;
   }
 
-  public CspValueBuilder nonce(String value) {
-    this.values.add("'nonce-" + value + '\'');
+  public CspValueBuilder sha512(String hash) {
+    this.values.add("'sha512-" + hash + '\'');
     return this;
   }
 
-  public CspValueBuilder sha256(String value) {
-    this.values.add("'sha256-" + value + '\'');
-    return this;
-  }
-
-  public CspValueBuilder sha386(String value) {
-    this.values.add("'sha386-" + value + '\'');
-    return this;
-  }
-
-  public CspValueBuilder sha512(String value) {
-    this.values.add("'sha512-" + value + '\'');
-    return this;
-  }
-
-  public CspValueBuilder add(String value) {
+  public CspValueBuilder and(String value) {
     this.values.add(value);
     return this;
   }

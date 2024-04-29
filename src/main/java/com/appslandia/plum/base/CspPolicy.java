@@ -20,8 +20,6 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.Asserts;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -32,26 +30,14 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class CspPolicy implements HeaderPolicy {
 
-  public static final CspPolicy DEFAULT_SELF_IMPL = new CspPolicy(
-      new CspBuilder().defaultSrc(new CspValueBuilder().self()));
-
   final String csp;
-  final boolean addReportOnly;
 
   public CspPolicy(CspBuilder builder) {
-    this(builder, false);
-  }
-
-  public CspPolicy(CspBuilder builder, boolean addReportOnly) {
-    this.csp = Asserts.notNull(builder.toString());
-    this.addReportOnly = addReportOnly;
+    this.csp = builder.toString();
   }
 
   @Override
   public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
     response.setHeader("Content-Security-Policy", this.csp);
-    if (this.addReportOnly) {
-      response.setHeader("Content-Security-Policy-Report-Only", this.csp);
-    }
   }
 }

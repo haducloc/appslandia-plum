@@ -20,9 +20,6 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.StringUtils;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -34,40 +31,108 @@ public class CspBuilder extends HeaderBuilder {
     super("; ", ' ');
   }
 
-  public CspBuilder baseUri(String value) {
-    addPair("base-uri", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder baseUri(CspValueBuilder value) {
+    addPair("base-uri", value.toString());
     return this;
   }
 
-  public CspBuilder blockAllMixedContent(boolean value) {
-    if (value) {
-      addValue("block-all-mixed-content");
-    }
+  public CspBuilder childSrc(CspValueBuilder value) {
+    addPair("child-src", value.toString());
     return this;
   }
 
-  public CspBuilder formAction(String value) {
-    addPair("form-action", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder connectSrc(CspValueBuilder value) {
+    addPair("connect-src", value.toString());
     return this;
   }
 
-  public CspBuilder frameAncestors(String value) {
-    addPair("frame-ancestors", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder defaultSrc(CspValueBuilder value) {
+    addPair("default-src", value.toString());
     return this;
   }
 
-  public CspBuilder pluginTypes(String value) {
-    addPair("plugin-types", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder fencedFrameSrc(CspValueBuilder value) {
+    addPair("fenced-frame-src", value.toString());
     return this;
   }
 
-  public CspBuilder requireSriFor(String value) {
-    addPair("require-sri-for", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder fontSrc(CspValueBuilder value) {
+    addPair("font-src", value.toString());
     return this;
   }
 
-  public CspBuilder sandbox(String value) {
-    addPair("sandbox", toDirectiveValue(value));
+  public CspBuilder formAction(CspValueBuilder value) {
+    addPair("form-action", value.toString());
+    return this;
+  }
+
+  public CspBuilder frameAncestors(CspValueBuilder value) {
+    addPair("frame-ancestors", value.toString());
+    return this;
+  }
+
+  public CspBuilder frameSrc(CspValueBuilder value) {
+    addPair("frame-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder imgSrc(CspValueBuilder value) {
+    addPair("img-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder manifestSrc(CspValueBuilder value) {
+    addPair("manifest-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder mediaSrc(CspValueBuilder value) {
+    addPair("media-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder objectSrc(CspValueBuilder value) {
+    addPair("object-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder reportTo(String value) {
+    addPair("report-to", value);
+    return this;
+  }
+
+  public CspBuilder sandbox(CspValueBuilder value) {
+    addPair("sandbox", value.toString());
+    return this;
+  }
+
+  public CspBuilder scriptSrc(CspValueBuilder value) {
+    addPair("script-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder scriptSrcAttr(CspValueBuilder value) {
+    addPair("script-src-attr", value.toString());
+    return this;
+  }
+
+  public CspBuilder scriptSrcElem(CspValueBuilder value) {
+    addPair("script-src-elem", value.toString());
+    return this;
+  }
+
+  public CspBuilder styleSrc(CspValueBuilder value) {
+    addPair("style-src", value.toString());
+    return this;
+  }
+
+  public CspBuilder styleSrcAttr(CspValueBuilder value) {
+    addPair("style-src-attr", value.toString());
+    return this;
+  }
+
+  public CspBuilder styleSrcElem(CspValueBuilder value) {
+    addPair("style-src-elem", value.toString());
     return this;
   }
 
@@ -78,169 +143,13 @@ public class CspBuilder extends HeaderBuilder {
     return this;
   }
 
-  public CspBuilder childSrc(String value) {
-    addPair("child-src", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder workerSrc(CspValueBuilder value) {
+    addPair("worker-src", value.toString());
     return this;
   }
 
-  public CspBuilder connectSrc(String value) {
-    addPair("connect-src", Asserts.notNull(toDirectiveValue(value)));
+  public CspBuilder and(String value) {
+    addValue(value);
     return this;
-  }
-
-  public CspBuilder defaultSrc(String value) {
-    addPair("default-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder fontSrc(String value) {
-    addPair("font-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder imgSrc(String value) {
-    addPair("img-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder frameSrc(String value) {
-    addPair("frame-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder manifestSrc(String value) {
-    addPair("manifest-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder mediaSrc(String value) {
-    addPair("media-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder objectSrc(String value) {
-    addPair("object-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder scriptSrc(String value) {
-    addPair("script-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder styleSrc(String value) {
-    addPair("style-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  public CspBuilder workerSrc(String value) {
-    addPair("worker-src", Asserts.notNull(toDirectiveValue(value)));
-    return this;
-  }
-
-  // CspValueBuilder
-
-  public CspBuilder baseUri(CspValueBuilder builder) {
-    addPair("base-uri", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder formAction(CspValueBuilder builder) {
-    addPair("form-action", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder frameAncestors(CspValueBuilder builder) {
-    addPair("frame-ancestors", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder pluginTypes(CspValueBuilder builder) {
-    addPair("plugin-types", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder reportUri(String value) {
-    addPair("report-uri", Asserts.notNull(StringUtils.trimToNull(value)));
-    return this;
-  }
-
-  public CspBuilder reportTo(String value) {
-    addPair("report-to", Asserts.notNull(StringUtils.trimToNull(value)));
-    return this;
-  }
-
-  public CspBuilder requireSriFor(CspValueBuilder builder) {
-    addPair("require-sri-for", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder sandbox(CspValueBuilder builder) {
-    addPair("sandbox", builder.toString());
-    return this;
-  }
-
-  public CspBuilder childSrc(CspValueBuilder builder) {
-    addPair("child-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder connectSrc(CspValueBuilder builder) {
-    addPair("connect-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder defaultSrc(CspValueBuilder builder) {
-    addPair("default-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder fontSrc(CspValueBuilder builder) {
-    addPair("font-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder imgSrc(CspValueBuilder builder) {
-    addPair("img-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder frameSrc(CspValueBuilder builder) {
-    addPair("frame-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder manifestSrc(CspValueBuilder builder) {
-    addPair("manifest-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder mediaSrc(CspValueBuilder builder) {
-    addPair("media-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder objectSrc(CspValueBuilder builder) {
-    addPair("object-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder scriptSrc(CspValueBuilder builder) {
-    addPair("script-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder styleSrc(CspValueBuilder builder) {
-    addPair("style-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  public CspBuilder workerSrc(CspValueBuilder builder) {
-    addPair("worker-src", Asserts.notNull(builder.toString()));
-    return this;
-  }
-
-  private String toDirectiveValue(String value) {
-    return StringUtils.trimToNull(value);
   }
 }

@@ -20,8 +20,6 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.utils.Asserts;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -35,7 +33,7 @@ public class XFrameOptionsPolicy implements HeaderPolicy {
   final String xFrameOptions;
 
   public XFrameOptionsPolicy(XFrameOptions builder) {
-    this.xFrameOptions = Asserts.notNull(builder.toString());
+    this.xFrameOptions = builder.toString();
   }
 
   @Override
