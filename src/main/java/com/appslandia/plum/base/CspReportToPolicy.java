@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class CspReportToPolicy implements HeaderPolicy {
+public class CspReportToPolicy implements HeaderPolicy {
 
   final CspReportTo reportTo;
 
