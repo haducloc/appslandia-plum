@@ -60,11 +60,10 @@ public class BeanInstanceContextListener {
   }
 
   public static void destroyBeanInstances(ServletContext sc) {
-    Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
-
+    Map<InstanceKey, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
     if (beanInsts != null) {
-      beanInsts.values().stream().forEach(bi -> {
 
+      beanInsts.values().stream().forEach(bi -> {
         try {
           bi.destroy();
 
@@ -78,14 +77,15 @@ public class BeanInstanceContextListener {
 
   private static final Object MUTEX = new Object();
 
-  public static Map<Class<?>, BeanInstance<?>> getBeanInstances(ServletContext sc) {
-    Map<Class<?>, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
+  public static Map<InstanceKey, BeanInstance<?>> getBeanInstances(ServletContext sc) {
+    Map<InstanceKey, BeanInstance<?>> beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
     if (beanInsts == null) {
+
       synchronized (MUTEX) {
         beanInsts = ObjectUtils.cast(sc.getAttribute(ATTRIBUTE_BEAN_INSTANCES));
 
         if (beanInsts == null) {
-          beanInsts = new ConcurrentHashMap<Class<?>, BeanInstance<?>>();
+          beanInsts = new ConcurrentHashMap<>();
 
           sc.setAttribute(ATTRIBUTE_BEAN_INSTANCES, beanInsts);
         }

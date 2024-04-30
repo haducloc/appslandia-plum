@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.time.DateTimeException;
@@ -59,6 +60,7 @@ import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.AuthHandler;
 import com.appslandia.plum.base.AuthHandlerProvider;
 import com.appslandia.plum.base.BeanInstanceContextListener;
+import com.appslandia.plum.base.InstanceKey;
 import com.appslandia.plum.base.Messages;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.MutexContextListener;
@@ -600,13 +602,24 @@ public class ServletUtils {
     ServletUtils.getModelState(request).addError(fieldName, msg);
   }
 
-  public static <T> T getAppScoped(ServletContext sc, Class<T> beanType) {
-    Map<Class<?>, BeanInstance<?>> beanInsts = BeanInstanceContextListener.getBeanInstances(sc);
+  public static <T> T getAppScoped(ServletContext sc, Class<T> type) {
+    return getAppScoped(sc, type, null);
+  }
 
-    BeanInstance<?> bi = beanInsts.computeIfAbsent(beanType, t -> {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  public static <T> T getAppScoped(ServletContext sc, Class<T> type, Annotation qualifier) {
+    Map<InstanceKey, BeanInstance<?>> beanInsts = BeanInstanceContextListener.getBeanInstances(sc);
+    BeanInstance<?> bi = beanInsts.computeIfAbsent(new InstanceKey(type, qualifier), k -> {
 
-      Instance<T> inst = ObjectUtils.cast(CDI.current().select(t));
-      return new BeanInstance<T>(inst.get(), inst);
+      Instance<?> inst = null;
+      if (k.getQualifier() == null) {
+
+        inst = CDI.current().select(k.getType());
+      } else {
+        inst = CDI.current().select(k.getType(), k.getQualifier());
+      }
+
+      return ObjectUtils.cast(new BeanInstance(inst.get(), inst));
     });
 
     return ObjectUtils.cast(bi.get());

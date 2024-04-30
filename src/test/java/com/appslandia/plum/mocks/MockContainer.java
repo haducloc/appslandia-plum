@@ -66,6 +66,7 @@ import com.appslandia.plum.base.HeaderPolicyProvider;
 import com.appslandia.plum.base.HttpAuthenticationMechanismBase;
 import com.appslandia.plum.base.IdentityValidator;
 import com.appslandia.plum.base.InitializerHandler;
+import com.appslandia.plum.base.InstanceKey;
 import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.ModelBinder;
 import com.appslandia.plum.base.PrefCookieHandler;
@@ -134,32 +135,32 @@ public class MockContainer extends InitializeObject {
   protected void init() throws Exception {
     this.objectFactory.getObject(BeanInstanceContextListener.class).contextInitialized(this.servletContext);
 
-    Map<Class<?>, BeanInstance<?>> beanInstances = BeanInstanceContextListener.getBeanInstances(this.servletContext);
+    Map<InstanceKey, BeanInstance<?>> beanInstances = BeanInstanceContextListener.getBeanInstances(this.servletContext);
 
-    putBeanInst(AppConfig.class, beanInstances);
-    putBeanInst(LanguageProvider.class, beanInstances);
+    registerInstance(AppConfig.class, beanInstances);
+    registerInstance(LanguageProvider.class, beanInstances);
 
-    putBeanInst(ActionDescProvider.class, beanInstances);
-    putBeanInst(ActionParser.class, beanInstances);
-    putBeanInst(ActionInvoker.class, beanInstances);
-    putBeanInst(ControllerProvider.class, beanInstances);
+    registerInstance(ActionDescProvider.class, beanInstances);
+    registerInstance(ActionParser.class, beanInstances);
+    registerInstance(ActionInvoker.class, beanInstances);
+    registerInstance(ControllerProvider.class, beanInstances);
 
-    putBeanInst(ConverterProvider.class, beanInstances);
-    putBeanInst(TempDataManager.class, beanInstances);
-    putBeanInst(AppCacheManager.class, beanInstances);
+    registerInstance(ConverterProvider.class, beanInstances);
+    registerInstance(TempDataManager.class, beanInstances);
+    registerInstance(AppCacheManager.class, beanInstances);
 
-    putBeanInst(ConstDescProvider.class, beanInstances);
-    putBeanInst(StringFormatProvider.class, beanInstances);
+    registerInstance(ConstDescProvider.class, beanInstances);
+    registerInstance(StringFormatProvider.class, beanInstances);
 
-    putBeanInst(ModelBinder.class, beanInstances);
-    putBeanInst(ExceptionHandler.class, beanInstances);
+    registerInstance(ModelBinder.class, beanInstances);
+    registerInstance(ExceptionHandler.class, beanInstances);
 
-    putBeanInst(PebbleTemplateProvider.class, beanInstances);
+    registerInstance(PebbleTemplateProvider.class, beanInstances);
   }
 
-  protected <T> void putBeanInst(Class<T> type, Map<Class<?>, BeanInstance<?>> beanInstances) {
+  protected <T> void registerInstance(Class<T> type, Map<InstanceKey, BeanInstance<?>> beanInstances) {
     Instance<T> inst = this.objectFactory.select(type);
-    beanInstances.put(type, new BeanInstance<>(inst.get(), inst));
+    beanInstances.put(new InstanceKey(type, null), new BeanInstance<>(inst.get(), inst));
   }
 
   protected InitializerHandler getInitializerHandler() {
