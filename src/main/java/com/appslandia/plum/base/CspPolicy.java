@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import com.appslandia.plum.utils.ServletUtils;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -38,6 +40,13 @@ public class CspPolicy implements HeaderPolicy {
 
   @Override
   public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
-    response.setHeader("Content-Security-Policy", this.csp);
+    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+
+    if (appConfig.getBool(AppConfig.CONFIG_CSP_REPORT_ONLY, true)) {
+      response.setHeader("Content-Security-Policy-Report-Only", this.csp);
+
+    } else {
+      response.setHeader("Content-Security-Policy", this.csp);
+    }
   }
 }

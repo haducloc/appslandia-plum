@@ -69,6 +69,7 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
 
   public static final String CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE = "config.enable_browser_feature_input_type";
+  public static final String CONFIG_CSP_REPORT_ONLY = "config.csp_report_only";
 
   protected ConfigMap config;
 
@@ -117,6 +118,7 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(CONFIG_PARSE_PREF_COOKIE, String.valueOf(true));
 
     this.config.putIfAbsent(CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, String.valueOf(false));
+    this.config.putIfAbsent(CONFIG_CSP_REPORT_ONLY, String.valueOf(true));
 
     this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
     this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);
