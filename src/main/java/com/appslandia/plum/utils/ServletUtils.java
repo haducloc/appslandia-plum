@@ -148,11 +148,15 @@ public class ServletUtils {
     return url;
   }
 
+  public static String getProto(HttpServletRequest request) {
+    return ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Proto"), request.getScheme());
+  }
+
   static final Pattern X_FORWARDED_PORTS_PATTERN = Pattern.compile("\\s*\\d+\\s*,\\s*\\d+\\s*");
 
   public static StringBuilder absUrlBase(HttpServletRequest request) {
     // scheme
-    String scheme = ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Proto"), request.getScheme());
+    String scheme = getProto(request);
 
     // host
     String host = ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Host"), request.getServerName());

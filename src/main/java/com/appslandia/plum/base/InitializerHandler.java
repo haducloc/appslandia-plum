@@ -27,7 +27,6 @@ import java.util.Arrays;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
-import com.appslandia.common.utils.ValueUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -86,7 +85,7 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // HSTS
-    String scheme = ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Proto"), request.getScheme());
+    String scheme = ServletUtils.getProto(request);
     if ("https".equals(scheme)) {
 
       String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_STRICT_TRANSPORT_SECURITY);
