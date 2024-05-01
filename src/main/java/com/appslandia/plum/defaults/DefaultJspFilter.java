@@ -50,12 +50,12 @@ public class DefaultJspFilter extends HttpFilter {
   protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
 
-    if (this.appConfig.getBool(AppConfig.CONFIG_DIRECT_JSP_ACCESS)) {
+    if (this.appConfig.getBool(AppConfig.CONFIG_ACCESS_JSP_DIRECTLY)) {
       chain.doFilter(request, response);
 
     } else {
       response.sendError(HttpServletResponse.SC_FORBIDDEN,
-          STR.fmt("Couldn't access jsp pages directly. {}=false.", AppConfig.CONFIG_DIRECT_JSP_ACCESS));
+          STR.fmt("Couldn't access jsp pages directly. {}=false.", AppConfig.CONFIG_ACCESS_JSP_DIRECTLY));
     }
   }
 }

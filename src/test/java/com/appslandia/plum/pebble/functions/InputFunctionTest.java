@@ -240,7 +240,7 @@ public class InputFunctionTest extends MockTestBase {
     pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
     try {
-      container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+      container.getAppConfig().set(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE, true);
 
       getCurrentRequest().addParameter("dob", "2000-01-01");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -268,7 +268,7 @@ public class InputFunctionTest extends MockTestBase {
     pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
 
     try {
-      container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+      container.getAppConfig().set(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE, true);
 
       getCurrentRequest().addParameter("dob", "2000-01-01");
       executeCurrent("GET", "http://localhost/app/testController/index");

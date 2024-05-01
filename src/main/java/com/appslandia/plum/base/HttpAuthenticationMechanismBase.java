@@ -142,18 +142,18 @@ public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticat
   }
 
   public String rememberMeCookieName() {
-    return this.appConfig.getStringReq(AppConfig.CONFIG_REMME_COOKIE_NAME);
+    return this.appConfig.getStringReq(AppConfig.REMEMBER_ME_COOKIE_NAME);
   }
 
   public int rememberMeCookieAge() {
-    return this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE);
+    return this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE);
   }
 
   public boolean rememberMeCookieSecure() {
-    return this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SECURE);
+    return this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_SECURE);
   }
 
   public boolean rememberMeCookieHttpOnly() {
-    return this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_HTTPONLY);
+    return this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_HTTPONLY);
   }
 }

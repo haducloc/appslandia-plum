@@ -38,38 +38,44 @@ import com.appslandia.common.utils.Asserts;
 public class AppConfig extends InitializeObject implements Config {
 
   public static final String CONFIG_DEFAULT_MODULE = "config.default_module";
-
-  public static final String CONFIG_ENABLE_SESSION = "config.enable_session";
   public static final String CONFIG_ENABLE_DEBUG = "config.enable_debug";
 
-  public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
+  public static final String CONFIG_ENABLE_SESSION = "config.enable_session";
+  public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
   public static final String CONFIG_ENABLE_CORS = "config.enable_cors";
 
-  public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
+  public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
+  public static final String CONFIG_ENABLE_PREF_COOKIE = "config.enable_pref_cookie";
+
   public static final String CONFIG_ENABLE_JSON_ERROR = "config.enable_json_error";
-  public static final String CONFIG_ENABLE_JSON_PRETTY_PRINTING = "config.enable_json_pretty_printing";
+  public static final String CONFIG_ENABLE_JSON_PRETTY = "config.enable_json_pretty";
 
-  public static final String CONFIG_REMME_COOKIE_NAME = "config.remme_cookie_name";
-  public static final String CONFIG_REMME_COOKIE_AGE = "config.remme_cookie_age";
-  public static final String CONFIG_REMME_COOKIE_SECURE = "config.remme_cookie_secure";
-  public static final String CONFIG_REMME_COOKIE_HTTPONLY = "config.remme_cookie_httponly";
-  public static final String CONFIG_REMME_COOKIE_SLIDING = "config.remme_cookie_sliding";
-
-  public static final String CONFIG_REQUIRE_PATH_LANG = "config.require_path_lang";
+  public static final String CONFIG_ENABLE_PATH_LANG = "config.enable_path_lang";
+  public static final String CONFIG_ENABLE_HEADER_POLICIES = "config.enable_header_policies";
 
   public static final String CONFIG_JSP_DIR = "config.jsp_dir";
-  public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
-  public static final String CONFIG_ASYNC_TIMEOUT_MS = "config.async_timeout_ms";
-
-  public static final String CONFIG_DIRECT_JSP_ACCESS = "config.direct_jsp_access";
-  public static final String CONFIG_PARSE_PREF_COOKIE = "config.parse_pref_cookie";
+  public static final String CONFIG_ACCESS_JSP_DIRECTLY = "config.access_jsp_directly";
 
   public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
-  public static final String CONFIG_HEADER_POLICIES = "config.header_policies";
   public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
 
-  public static final String CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE = "config.enable_browser_feature_input_type";
-  public static final String CONFIG_CSP_REPORT_ONLY = "config.csp_report_only";
+  public static final String CONFIG_INPUT_TYPE_BROWSER_FEATURE = "config.input_type_browser_feature";
+  public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
+
+  public static final String REMEMBER_ME_COOKIE_NAME = "remember_me.cookie_name";
+  public static final String REMEMBER_ME_COOKIE_AGE = "remember_me.cookie_age";
+  public static final String REMEMBER_ME_COOKIE_SECURE = "remember_me.cookie_secure";
+  public static final String REMEMBER_ME_COOKIE_HTTPONLY = "remember_me.cookie_httponly";
+  public static final String REMEMBER_ME_COOKIE_SLIDING = "remember_me.cookie_sliding";
+
+  public static final String HEADER_POLICIES_STRICT_TRANSPORT_SECURITY = "header_policies.strict_transport_security";
+  public static final String HEADER_POLICIES_X_CONTENT_TYPE_OPTIONS = "header_policies.x_content_type_options";
+  public static final String HEADER_POLICIES_X_FRAME_OPTIONS = "header_policies.x_frame_options";
+  public static final String HEADER_POLICIES_X_XSS_PROTECTION = "header_policies.x_xss_protection";
+  public static final String HEADER_POLICIES_CONTENT_SECURITY_POLICY = "header_policies.content_security_policy";
+  public static final String HEADER_POLICIES_CONTENT_SECURITY_POLICY_REPORT_ONLY = "header_policies.content_security_policy_report_only";
+  public static final String HEADER_POLICIES_REPORT_TO = "header_policies.report_to";
+  public static final String HEADER_POLICIES_REFERRER_POLICY = "header_policies.referrer_policy";
 
   protected ConfigMap config;
 
@@ -89,36 +95,33 @@ public class AppConfig extends InitializeObject implements Config {
     Asserts.notNull(this.config, "config is required.");
 
     this.config.putIfAbsent(CONFIG_DEFAULT_MODULE, Modules.DEFAULT);
-
-    this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(true));
     this.config.putIfAbsent(CONFIG_ENABLE_DEBUG, String.valueOf(false));
 
-    this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
+    this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(true));
+    this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));
     this.config.putIfAbsent(CONFIG_ENABLE_CORS, String.valueOf(false));
 
-    this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));
+    this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
+    this.config.putIfAbsent(CONFIG_ENABLE_PREF_COOKIE, String.valueOf(true));
+
     this.config.putIfAbsent(CONFIG_ENABLE_JSON_ERROR, String.valueOf(false));
-    this.config.putIfAbsent(CONFIG_ENABLE_JSON_PRETTY_PRINTING, String.valueOf(true));
+    this.config.putIfAbsent(CONFIG_ENABLE_JSON_PRETTY, String.valueOf(true));
 
-    this.config.putIfAbsent(CONFIG_REMME_COOKIE_NAME, "JREMEMBERMEID");
-    this.config.putIfAbsent(CONFIG_REMME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(14, TimeUnit.DAYS)));
-    this.config.putIfAbsent(CONFIG_REMME_COOKIE_SECURE, String.valueOf(false));
-    this.config.putIfAbsent(CONFIG_REMME_COOKIE_HTTPONLY, String.valueOf(true));
-    this.config.putIfAbsent(CONFIG_REMME_COOKIE_SLIDING, String.valueOf(true));
-
-    this.config.putIfAbsent(CONFIG_REQUIRE_PATH_LANG, String.valueOf(false));
+    this.config.putIfAbsent(CONFIG_ENABLE_PATH_LANG, String.valueOf(false));
 
     this.config.putIfAbsent(CONFIG_JSP_DIR, "/WEB-INF/jsp");
+    this.config.putIfAbsent(CONFIG_ACCESS_JSP_DIRECTLY, String.valueOf(false));
+
+    this.config.putIfAbsent(CONFIG_INPUT_TYPE_BROWSER_FEATURE, String.valueOf(false));
+
     this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS,
         String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
-    this.config.putIfAbsent(CONFIG_ASYNC_TIMEOUT_MS,
-        String.valueOf(TimeUnit.MILLISECONDS.convert(180, TimeUnit.SECONDS)));
 
-    this.config.putIfAbsent(CONFIG_DIRECT_JSP_ACCESS, String.valueOf(false));
-    this.config.putIfAbsent(CONFIG_PARSE_PREF_COOKIE, String.valueOf(true));
-
-    this.config.putIfAbsent(CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, String.valueOf(false));
-    this.config.putIfAbsent(CONFIG_CSP_REPORT_ONLY, String.valueOf(true));
+    this.config.putIfAbsent(REMEMBER_ME_COOKIE_NAME, "JREMEMBERMEID");
+    this.config.putIfAbsent(REMEMBER_ME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(14, TimeUnit.DAYS)));
+    this.config.putIfAbsent(REMEMBER_ME_COOKIE_SECURE, String.valueOf(false));
+    this.config.putIfAbsent(REMEMBER_ME_COOKIE_HTTPONLY, String.valueOf(true));
+    this.config.putIfAbsent(REMEMBER_ME_COOKIE_SLIDING, String.valueOf(true));
 
     this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
     this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);

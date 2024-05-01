@@ -27,6 +27,7 @@ import java.util.Arrays;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
+import com.appslandia.common.utils.ValueUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -83,7 +84,60 @@ public class InitializerHandler extends HttpFilter {
     if (request.getCharacterEncoding() == null) {
       request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     }
-    for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_HEADER_POLICIES)) {
+
+    // HSTS
+    String scheme = ValueUtils.valueOrAlt(request.getHeader("X-Forwarded-Proto"), request.getScheme());
+    if ("https".equals(scheme)) {
+
+      String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_STRICT_TRANSPORT_SECURITY);
+      if (headerValue != null) {
+        response.setHeader("Strict-Transport-Security", headerValue);
+      }
+    }
+
+    // X-Content-Type-Options
+    String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_CONTENT_TYPE_OPTIONS);
+    if (headerValue != null) {
+      response.setHeader("X-Content-Type-Options", headerValue);
+    }
+
+    // X-Frame-Options
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_FRAME_OPTIONS);
+    if (headerValue != null) {
+      response.setHeader("X-Frame-Options", headerValue);
+    }
+
+    // X-XSS-Protection
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_XSS_PROTECTION);
+    if (headerValue != null) {
+      response.setHeader("X-XSS-Protection", headerValue);
+    }
+
+    // Content-Security-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Content-Security-Policy", headerValue);
+    }
+
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY_REPORT_ONLY);
+    if (headerValue != null) {
+      response.setHeader("Content-Security-Policy-Report-Only", headerValue);
+    }
+
+    // Referrer-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REFERRER_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Referrer-Policy", headerValue);
+    }
+
+    // Report-To
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORT_TO);
+    if (headerValue != null) {
+      response.setHeader("Report-To", headerValue);
+    }
+
+    // Header Policies
+    for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
       this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
   }
@@ -131,7 +185,7 @@ public class InitializerHandler extends HttpFilter {
       }
 
       // Language
-      if (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_REQUIRE_PATH_LANG)) {
+      if (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PATH_LANG)) {
         if (!requestContext.isGetOrHead()) {
           throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
         }

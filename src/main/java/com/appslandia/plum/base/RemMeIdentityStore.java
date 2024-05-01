@@ -84,7 +84,7 @@ public class RemMeIdentityStore implements RememberMeIdentityStore {
     String clearToken = this.authTokenHandler.getTokenGenerator().generate();
 
     final long curTimeMs = System.currentTimeMillis();
-    long expiresAt = curTimeMs + this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE) * 1000L;
+    long expiresAt = curTimeMs + this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE) * 1000L;
 
     String tokenData = this.authTokenHandler.getTokenData(authToken.getSeries(), clearToken, identity, expiresAt, null);
     String hashToken = this.authTokenHandler.getTokenDigester().digest(tokenData);
@@ -171,8 +171,8 @@ public class RemMeIdentityStore implements RememberMeIdentityStore {
     final long curTimeMs = System.currentTimeMillis();
     String clearToken = this.authTokenHandler.getTokenGenerator().generate();
 
-    long newExpiresAt = this.appConfig.getBool(AppConfig.CONFIG_REMME_COOKIE_SLIDING)
-        ? getNewExpiresAt(authToken.getExpiresAt(), curTimeMs, this.appConfig.getInt(AppConfig.CONFIG_REMME_COOKIE_AGE))
+    long newExpiresAt = this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_SLIDING)
+        ? getNewExpiresAt(authToken.getExpiresAt(), curTimeMs, this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE))
         : authToken.getExpiresAt();
 
     String newTokenData = this.authTokenHandler.getTokenData(loginToken.getSeries(), clearToken,
@@ -185,9 +185,9 @@ public class RemMeIdentityStore implements RememberMeIdentityStore {
     String newLoginToken = encodeLoginToken(new LoginToken().setSeries(loginToken.getSeries()).setToken(clearToken)
         .setModule(loginToken.getModule()).setIdentity(loginToken.getIdentity()));
 
-    // ReissuedToken
-    this.request.setAttribute(ReissuedToken.class.getName(),
-        new ReissuedToken(loginToken.getIdentity(), newLoginToken, remainingSec));
+    // RemMeToken
+    this.request.setAttribute(RemMeToken.class.getName(),
+        new RemMeToken(loginToken.getIdentity(), newLoginToken, remainingSec));
     return result;
   }
 
@@ -213,12 +213,12 @@ public class RemMeIdentityStore implements RememberMeIdentityStore {
     }
   }
 
-  static class ReissuedToken {
+  static class RemMeToken {
     final String identity;
     final String loginToken;
     final int maxAge;
 
-    public ReissuedToken(String identity, String loginToken, int maxAge) {
+    public RemMeToken(String identity, String loginToken, int maxAge) {
       this.identity = identity;
       this.loginToken = loginToken;
       this.maxAge = maxAge;

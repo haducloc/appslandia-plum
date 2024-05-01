@@ -202,7 +202,7 @@ public class InputTagTest extends MockTestBase {
   public void test_type_date4() {
     try {
 
-      container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+      container.getAppConfig().set(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE, true);
       setRequestContextField("browserFeatures", 0);
 
       model.setDob(LocalDate.parse("2000-01-01"));
@@ -224,7 +224,7 @@ public class InputTagTest extends MockTestBase {
   public void test_type_date5() {
     try {
 
-      container.getAppConfig().set(AppConfig.CONFIG_ENABLE_BROWSER_FEATURE_INPUT_TYPE, true);
+      container.getAppConfig().set(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE, true);
       setRequestContextField("browserFeatures", BrowserFeatures.INPUT_DATE);
 
       model.setDob(LocalDate.parse("2000-01-01"));

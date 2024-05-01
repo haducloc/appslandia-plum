@@ -83,7 +83,7 @@ public class RequestContextParser {
     Asserts.isTrue(request.getDispatcherType() == DispatcherType.REQUEST);
 
     // PrefCookie
-    if (this.appConfig.getBool(AppConfig.CONFIG_PARSE_PREF_COOKIE)) {
+    if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PREF_COOKIE)) {
       this.prefCookieHandler.loadPrefCookie(request, response);
     }
 
