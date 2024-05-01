@@ -118,7 +118,7 @@ public class AppConfig extends InitializeObject implements Config {
         String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
 
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_NAME, "JREMEMBERMEID");
-    this.config.putIfAbsent(REMEMBER_ME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(14, TimeUnit.DAYS)));
+    this.config.putIfAbsent(REMEMBER_ME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(30, TimeUnit.DAYS)));
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_SECURE, String.valueOf(false));
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_HTTPONLY, String.valueOf(true));
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_SLIDING, String.valueOf(true));
