@@ -287,7 +287,7 @@ public class InitializerHandler extends HttpFilter {
 
         if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
 
-          // If the cacheControl contains 'no-store', skip ETag
+          // if no-store, skip ETAG
           String cacheControl = response.getHeader("Cache-Control");
           if (cacheControl != null && cacheControl.contains("no-store")) {
             return;
