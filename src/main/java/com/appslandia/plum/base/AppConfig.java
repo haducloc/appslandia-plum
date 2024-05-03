@@ -38,19 +38,15 @@ import com.appslandia.common.utils.Asserts;
 public class AppConfig extends InitializeObject implements Config {
 
   public static final String CONFIG_DEFAULT_MODULE = "config.default_module";
+
   public static final String CONFIG_ENABLE_DEBUG = "config.enable_debug";
-
   public static final String CONFIG_ENABLE_SESSION = "config.enable_session";
-  public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
-  public static final String CONFIG_ENABLE_CORS = "config.enable_cors";
+
   public static final String CONFIG_NONCE_SIZE = "config.nouce_size";
-
   public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
+
   public static final String CONFIG_ENABLE_PREF_COOKIE = "config.enable_pref_cookie";
-
-  public static final String CONFIG_ENABLE_JSON_ERROR = "config.enable_json_error";
   public static final String CONFIG_ENABLE_JSON_PRETTY = "config.enable_json_pretty";
-
   public static final String CONFIG_ENABLE_PATH_LANG = "config.enable_path_lang";
   public static final String CONFIG_ENABLE_HEADER_POLICIES = "config.enable_header_policies";
 
@@ -74,9 +70,10 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String HEADER_POLICIES_X_FRAME_OPTIONS = "header_policies.x_frame_options";
   public static final String HEADER_POLICIES_X_XSS_PROTECTION = "header_policies.x_xss_protection";
   public static final String HEADER_POLICIES_CONTENT_SECURITY_POLICY = "header_policies.content_security_policy";
-  public static final String HEADER_POLICIES_CONTENT_SECURITY_POLICY_REPORT_ONLY = "header_policies.content_security_policy_report_only";
   public static final String HEADER_POLICIES_REPORT_TO = "header_policies.report_to";
   public static final String HEADER_POLICIES_REFERRER_POLICY = "header_policies.referrer_policy";
+
+  public static final String HEADER_POLICIES_CSP_REPORT_ONLY = "header_policies.csp_report_only";
 
   protected ConfigMap config;
 
@@ -99,16 +96,12 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(CONFIG_ENABLE_DEBUG, String.valueOf(false));
 
     this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(true));
-    this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));
-    this.config.putIfAbsent(CONFIG_ENABLE_CORS, String.valueOf(false));
     this.config.putIfAbsent(CONFIG_NONCE_SIZE, String.valueOf(16));
 
     this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
+
     this.config.putIfAbsent(CONFIG_ENABLE_PREF_COOKIE, String.valueOf(true));
-
-    this.config.putIfAbsent(CONFIG_ENABLE_JSON_ERROR, String.valueOf(false));
     this.config.putIfAbsent(CONFIG_ENABLE_JSON_PRETTY, String.valueOf(true));
-
     this.config.putIfAbsent(CONFIG_ENABLE_PATH_LANG, String.valueOf(false));
 
     this.config.putIfAbsent(CONFIG_JSP_DIR, "/WEB-INF/jsp");
@@ -124,6 +117,8 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_SECURE, String.valueOf(false));
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_HTTPONLY, String.valueOf(true));
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_SLIDING, String.valueOf(true));
+
+    this.config.putIfAbsent(HEADER_POLICIES_CSP_REPORT_ONLY, String.valueOf(true));
 
     this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
     this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);

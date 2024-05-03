@@ -35,8 +35,4 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 @Documented
 public @interface EnableGzip {
-
-  boolean removed() default false;
-
-  public static final EnableGzip IMPL = ActionDescUtils.createEnableGzip();
 }

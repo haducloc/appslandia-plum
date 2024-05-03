@@ -40,5 +40,5 @@ public @interface ConsumeType {
 
   String value();
 
-  public static final ConsumeType IMPL = ActionDescUtils.createConsumeType(MimeTypes.APP_JSON);
+  public static final ConsumeType APP_JSON = ActionDescUtils.createConsumeType(MimeTypes.APP_JSON);
 }

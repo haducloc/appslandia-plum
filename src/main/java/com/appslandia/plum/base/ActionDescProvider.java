@@ -157,7 +157,7 @@ public abstract class ActionDescProvider extends InitializeObject {
         // @ConsumeType
         if (parsedParamDescs.stream()
             .anyMatch(p -> (p.getModel() != null) && p.getModel().value() == Model.Source.JSON_BODY)) {
-          actionDesc.setConsumeType(ConsumeType.IMPL);
+          actionDesc.setConsumeType(ConsumeType.APP_JSON);
         } else {
           ConsumeType consumeType = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(ConsumeType.class),
               controllerClass.getDeclaredAnnotation(ConsumeType.class));
@@ -178,28 +178,23 @@ public abstract class ActionDescProvider extends InitializeObject {
         CacheControl cacheControl = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(CacheControl.class),
             controllerClass.getDeclaredAnnotation(CacheControl.class));
         if (cacheControl != null) {
-          if (!cacheControl.nocache()) {
-            actionDesc.setCacheControl(cacheControl);
+          if (cacheControl.nocache()) {
+            actionDesc.setCacheControl(CacheControl.NO_CACHE);
           } else {
-            actionDesc.setCacheControl(CacheControl.IMPL_NO_CACHE);
+            actionDesc.setCacheControl(cacheControl);
           }
         }
 
         // @EnableCors
         EnableCors enableCors = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableCors.class),
             controllerClass.getDeclaredAnnotation(EnableCors.class));
-        if (enableCors == null) {
-          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_CORS)) {
-            enableCors = EnableCors.IMPL;
-          }
-        }
-        actionDesc.setEnableCors(((enableCors != null) && !enableCors.removed()) ? enableCors : null);
+        actionDesc.setEnableCors(enableCors);
 
         // @EnableGzip
         if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_GZIP)) {
           EnableGzip enableGzip = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableGzip.class),
               controllerClass.getDeclaredAnnotation(EnableGzip.class));
-          actionDesc.setEnableGzip(((enableGzip != null) && !enableGzip.removed()) ? enableGzip : null);
+          actionDesc.setEnableGzip(enableGzip);
         }
 
         // @EnableParts
@@ -222,20 +217,11 @@ public abstract class ActionDescProvider extends InitializeObject {
         EnableJsonError enableJsonError = ValueUtils.valueOrAlt(
             actionMethod.getDeclaredAnnotation(EnableJsonError.class),
             controllerClass.getDeclaredAnnotation(EnableJsonError.class));
-        if (enableJsonError == null) {
-          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_ERROR)) {
-            enableJsonError = EnableJsonError.IMPL;
-          }
-        }
-        actionDesc
-            .setEnableJsonError(((enableJsonError != null) && !enableJsonError.removed()) ? enableJsonError : null);
 
-        if (actionDesc.getEnableJsonError() == null) {
-          if (!ActionDescUtils.isActionResultOrVoid(actionMethod)) {
-
-            actionDesc.setEnableJsonError(EnableJsonError.IMPL);
-          }
+        if ((enableJsonError == null) && !ActionDescUtils.isActionResultOrVoid(actionMethod)) {
+          enableJsonError = EnableJsonError.IMPL;
         }
+        actionDesc.setEnableJsonError(enableJsonError);
 
         // @BypassAuthorization
         BypassAuthorization bypassAuthorization = actionMethod.getDeclaredAnnotation(BypassAuthorization.class);

@@ -94,26 +94,6 @@ public class ActionDescUtils {
       public String value() {
         return policy;
       }
-
-      @Override
-      public boolean removed() {
-        return false;
-      }
-    };
-  };
-
-  public static EnableGzip createEnableGzip() {
-    return new EnableGzip() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return EnableGzip.class;
-      }
-
-      @Override
-      public boolean removed() {
-        return false;
-      }
     };
   };
 
@@ -123,11 +103,6 @@ public class ActionDescUtils {
       @Override
       public Class<? extends Annotation> annotationType() {
         return EnableJsonError.class;
-      }
-
-      @Override
-      public boolean removed() {
-        return false;
       }
     };
   };

@@ -40,7 +40,5 @@ public @interface EnableCors {
 
   String value() default DEFAULT_POLICY;
 
-  boolean removed() default false;
-
-  public static final EnableCors IMPL = ActionDescUtils.createEnableCors(DEFAULT_POLICY);
+  public static final EnableCors DEFAULT = ActionDescUtils.createEnableCors(DEFAULT_POLICY);
 }

@@ -44,5 +44,5 @@ public @interface CacheControl {
 
   boolean nocache() default false;
 
-  public static final CacheControl IMPL_NO_CACHE = ActionDescUtils.createCacheControl(NO_CACHE_POLICY);
+  public static final CacheControl NO_CACHE = ActionDescUtils.createCacheControl(NO_CACHE_POLICY);
 }

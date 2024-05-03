@@ -32,7 +32,6 @@ import java.util.Random;
 import com.appslandia.common.base.BaseEncoder;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.ConverterProvider;
-import com.appslandia.common.threading.SingletonSupplier;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ParseUtils;
 import com.appslandia.common.utils.RandomUtils;
@@ -83,6 +82,12 @@ public class RequestContextParser {
     static final Random instance = new SecureRandom();
   }
 
+  protected String generateNonce() {
+    int nouceSize = this.appConfig.getInt(AppConfig.CONFIG_NONCE_SIZE);
+    byte[] nonce = RandomUtils.nextBytes(nouceSize, RandomHolder.instance);
+    return BaseEncoder.BASE64_URL_NP.encode(nonce);
+  }
+
   public RequestContext parse(HttpServletRequest request, HttpServletResponse response) {
     RequestContext context = (RequestContext) request.getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
     if (context != null) {
@@ -126,13 +131,9 @@ public class RequestContextParser {
     context.setBrowserFeatures((browserFeatures != null) ? ParseUtils.parseInt(browserFeatures, 0) : null);
 
     // Nonce
-    int nouceSize = this.appConfig.getInt(AppConfig.CONFIG_NONCE_SIZE);
-    context.setNonce(new SingletonSupplier<String>(() -> {
-      byte[] nouce = RandomUtils.nextBytes(nouceSize, RandomHolder.instance);
-      return BaseEncoder.BASE64_URL_NP.encode(nouce);
-    }));
-
+    context.setNonce(generateNonce());
     request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, context);
+
     return context;
   }
 

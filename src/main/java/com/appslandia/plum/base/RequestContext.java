@@ -26,7 +26,6 @@ import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterProvider;
-import com.appslandia.common.threading.SingletonSupplier;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
 
@@ -51,7 +50,7 @@ public class RequestContext {
   private String clientId;
   private String module;
   private Integer browserFeatures;
-  private SingletonSupplier<String> nonce;
+  private String nonce;
 
   public RequestContext createRequestContext(ActionDesc actionDesc) {
     Asserts.isTrue(this.module.equalsIgnoreCase(actionDesc.getModule()));
@@ -177,10 +176,10 @@ public class RequestContext {
   }
 
   public String getNonce() {
-    return this.nonce.get();
+    return this.nonce;
   }
 
-  protected void setNonce(SingletonSupplier<String> nonce) {
+  protected void setNonce(String nonce) {
     this.nonce = nonce;
   }
 

@@ -36,7 +36,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EnableJsonError {
 
-  boolean removed() default false;
-
   public static final EnableJsonError IMPL = ActionDescUtils.createEnableJsonError();
 }

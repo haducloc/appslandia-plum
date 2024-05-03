@@ -92,7 +92,8 @@ public class ExceptionHandler {
 
     boolean jsonError = (requestContext.getActionDesc() != null)
         ? (requestContext.getActionDesc().getEnableJsonError() != null)
-        : this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_ERROR);
+        : false;
+
     if (jsonError) {
       writeJsonError(request, response, problem.getStatus(), problem);
     } else {

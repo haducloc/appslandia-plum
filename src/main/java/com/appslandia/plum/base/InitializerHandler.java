@@ -24,9 +24,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import com.appslandia.common.base.Params;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -80,6 +82,8 @@ public class InitializerHandler extends HttpFilter {
 
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
+
+    // CharacterEncoding
     if (request.getCharacterEncoding() == null) {
       request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     }
@@ -115,12 +119,15 @@ public class InitializerHandler extends HttpFilter {
     // Content-Security-Policy
     headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
     if (headerValue != null) {
-      response.setHeader("Content-Security-Policy", headerValue);
-    }
 
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY_REPORT_ONLY);
-    if (headerValue != null) {
-      response.setHeader("Content-Security-Policy-Report-Only", headerValue);
+      // ${nonce}
+      headerValue = STR.format(headerValue, new Params().set("nonce", requestContext.getNonce()));
+
+      if (this.appConfig.getBool(AppConfig.HEADER_POLICIES_CSP_REPORT_ONLY)) {
+        response.setHeader("Content-Security-Policy-Report-Only", headerValue);
+      } else {
+        response.setHeader("Content-Security-Policy", headerValue);
+      }
     }
 
     // Referrer-Policy
