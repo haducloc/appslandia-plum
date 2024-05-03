@@ -23,9 +23,12 @@ package com.appslandia.plum.captcha;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.RandomUtils;
 
 /**
  *
@@ -34,13 +37,18 @@ import com.appslandia.common.utils.Asserts;
  */
 public class GridRenderer extends InitializeObject implements ImageRenderer {
 
-  private Color hColor;
-  private Color vColor;
+  final List<Color> hColors = new ArrayList<Color>();
+  final List<Color> vColors = new ArrayList<Color>();
 
   @Override
   protected void init() throws Exception {
-    Asserts.notNull(this.hColor, "hColor is required.");
-    Asserts.notNull(this.vColor, "vColor is required.");
+    if (this.hColors.isEmpty()) {
+      hColor(Color.LIGHT_GRAY).hColor(Color.GRAY).hColor(Color.DARK_GRAY);
+    }
+
+    if (this.vColors.isEmpty()) {
+      vColor(Color.LIGHT_GRAY).vColor(Color.GRAY).vColor(Color.DARK_GRAY);
+    }
   }
 
   @Override
@@ -48,34 +56,31 @@ public class GridRenderer extends InitializeObject implements ImageRenderer {
     this.initialize();
     Graphics2D g = img.createGraphics();
 
-    int hStripes = height / 7;
-    int vStripes = width / 7;
-    int hSpace = height / (hStripes + 1);
-    int vSpace = width / (vStripes + 1);
+    Random rand = CaptchaUtils.RandomHolder.instance;
 
     // Horizontal Stripes
-    for (int i = hSpace; i < height; i = i + hSpace) {
-      g.setColor(this.hColor);
+    for (int i = 8; i < height; i = i + RandomUtils.nextInt(6, 10, rand)) {
+      g.setColor(this.hColors.get(rand.nextInt(this.hColors.size())));
       g.drawLine(0, i, width, i);
     }
 
     // Vertical Stripes
-    for (int i = vSpace; i < width; i = i + vSpace) {
-      g.setColor(this.vColor);
+    for (int i = 8; i < width; i = i + RandomUtils.nextInt(6, 10, rand)) {
+      g.setColor(this.vColors.get(rand.nextInt(this.vColors.size())));
       g.drawLine(i, 0, i, height);
     }
     g.dispose();
   }
 
-  public GridRenderer setHColor(Color hColor) {
+  public GridRenderer hColor(Color color) {
     this.assertNotInitialized();
-    this.hColor = hColor;
+    this.hColors.add(color);
     return this;
   }
 
-  public GridRenderer setVColor(Color vColor) {
+  public GridRenderer vColor(Color color) {
     this.assertNotInitialized();
-    this.vColor = vColor;
+    this.vColors.add(color);
     return this;
   }
 }

@@ -28,7 +28,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -42,8 +41,12 @@ public class GradientBgProducer extends InitializeObject implements BackgroundPr
 
   @Override
   protected void init() throws Exception {
-    Asserts.notNull(this.fromColor, "fromColor is required.");
-    Asserts.notNull(this.toColor, "toColor is required.");
+    if (this.fromColor == null) {
+      this.fromColor = Color.LIGHT_GRAY;
+    }
+    if (this.toColor == null) {
+      this.toColor = Color.WHITE;
+    }
   }
 
   @Override
@@ -56,7 +59,12 @@ public class GradientBgProducer extends InitializeObject implements BackgroundPr
 
     RenderingHints hints = new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
     g.setRenderingHints(hints);
-    g.setPaint(new GradientPaint(0, 0, this.fromColor, width, height, this.toColor));
+
+    if (CaptchaUtils.RandomHolder.instance.nextBoolean()) {
+      g.setPaint(new GradientPaint(0, 0, this.fromColor, width, height, this.toColor));
+    } else {
+      g.setPaint(new GradientPaint(0, 0, this.toColor, width, height, this.fromColor));
+    }
 
     g.fill(new Rectangle2D.Double(0, 0, width, height));
     g.drawImage(img, 0, 0, null);

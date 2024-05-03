@@ -26,13 +26,11 @@ import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.font.GlyphVector;
 import java.awt.image.BufferedImage;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.RandomUtils;
 
 /**
@@ -45,18 +43,15 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
   final List<Color> textColors = new ArrayList<Color>();
   final List<Font> textFonts = new ArrayList<Font>();
 
-  private static final class RandomHolder {
-    static final Random instance = new SecureRandom();
-  }
-
   @Override
   protected void init() throws Exception {
-    Asserts.isTrue(this.textColors.size() > 0, "textColor is required.");
+    if (this.textColors.isEmpty()) {
+      textColor(Color.LIGHT_GRAY).textColor(Color.GRAY).textColor(Color.DARK_GRAY);
+    }
 
     if (this.textFonts.isEmpty()) {
-      addTextFont(Font.SERIF, Font.PLAIN, 36);
-      addTextFont(Font.SANS_SERIF, Font.PLAIN, 36);
-      addTextFont(Font.DIALOG, Font.PLAIN, 36);
+      textFont(Font.SERIF, Font.PLAIN, 36).textFont(Font.SANS_SERIF, Font.PLAIN, 36).textFont(Font.DIALOG, Font.PLAIN,
+          36);
     }
   }
 
@@ -76,7 +71,7 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
 
     char[] drawChars = new char[1];
     char[] srcChars = words.toCharArray();
-    Random rand = RandomHolder.instance;
+    Random rand = CaptchaUtils.RandomHolder.instance;
 
     for (int i = 0; i < srcChars.length; i++) {
       drawChars[0] = srcChars[i];
@@ -102,19 +97,19 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
     g.dispose();
   }
 
-  public WordsRendererImpl addTextColor(Color color) {
+  public WordsRendererImpl textColor(Color color) {
     this.assertNotInitialized();
     this.textColors.add(color);
     return this;
   }
 
-  public WordsRendererImpl addTextFont(Font font) {
+  public WordsRendererImpl textFont(Font font) {
     this.assertNotInitialized();
     this.textFonts.add(font);
     return this;
   }
 
-  public WordsRendererImpl addTextFont(String name, int style, int size) {
+  public WordsRendererImpl textFont(String name, int style, int size) {
     this.assertNotInitialized();
     this.textFonts.add(new Font(name, style, size));
     return this;

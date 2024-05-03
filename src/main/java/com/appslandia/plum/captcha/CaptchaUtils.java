@@ -18,40 +18,19 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.defaults;
+package com.appslandia.plum.captcha;
 
-import com.appslandia.common.cdi.CDIFactory;
-import com.appslandia.plum.captcha.CaptchaProducer;
-import com.appslandia.plum.captcha.GradientBgProducer;
-import com.appslandia.plum.captcha.GridRenderer;
-import com.appslandia.plum.captcha.WordsRendererImpl;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Disposes;
-import jakarta.enterprise.inject.Produces;
+import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class DefaultCaptchaProducerFactory implements CDIFactory<CaptchaProducer> {
+public class CaptchaUtils {
 
-  @Produces
-  @ApplicationScoped
-  @Override
-  public CaptchaProducer produce() {
-    CaptchaProducer impl = new CaptchaProducer();
-
-    impl.setBackgroundProducer(new GradientBgProducer());
-    impl.addImageRenderer(new GridRenderer());
-    impl.setWordsRenderer(new WordsRendererImpl());
-
-    return impl;
-  }
-
-  @Override
-  public void dispose(@Disposes CaptchaProducer impl) {
+  static final class RandomHolder {
+    static final Random instance = new SecureRandom();
   }
 }
