@@ -26,8 +26,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import com.appslandia.common.utils.StringUtils;
-
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 
@@ -50,10 +48,4 @@ public @interface Authorize {
 
   @Nonbinding
   boolean reauth() default false;
-
-  @Nonbinding
-  boolean removed() default false;
-
-  public static final Authorize IMPL = ActionDescUtils.createAuthorize(StringUtils.EMPTY_ARRAY, StringUtils.EMPTY_ARRAY,
-      false);
 }

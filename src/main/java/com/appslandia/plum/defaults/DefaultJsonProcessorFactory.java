@@ -49,7 +49,7 @@ public class DefaultJsonProcessorFactory implements CDIFactory<JsonProcessor> {
   @ApplicationScoped
   @Override
   public JsonProcessor produce() {
-    boolean prettyPrinting = this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_PRETTY, true);
+    boolean prettyPrinting = this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_PRETTY);
     return createJsonbProcessor(true, prettyPrinting);
   }
 

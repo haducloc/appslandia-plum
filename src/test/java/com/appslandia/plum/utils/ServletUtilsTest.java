@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.utils;
 
+import java.util.Random;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -60,7 +62,8 @@ public class ServletUtilsTest {
 
   @Test
   public void test_toEtag() {
-    byte[] md5 = new DigesterImpl("MD5").digest(RandomUtils.nextBytes(16));
+    byte[] content = RandomUtils.nextBytes(100, new Random());
+    byte[] md5 = new DigesterImpl("MD5").digest(content);
     String weakEtag = ServletUtils.toEtag(md5);
 
     Assertions.assertTrue(weakEtag.length() == 34);

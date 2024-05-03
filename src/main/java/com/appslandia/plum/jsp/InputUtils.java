@@ -82,7 +82,7 @@ public class InputUtils {
     }
 
     AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-    if (!appConfig.getBool(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE, false)) {
+    if (!appConfig.getBool(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE)) {
       return false;
     }
 

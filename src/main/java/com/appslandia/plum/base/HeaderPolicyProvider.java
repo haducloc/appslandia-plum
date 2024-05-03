@@ -43,6 +43,7 @@ public class HeaderPolicyProvider extends InitializeObject {
   @Override
   protected void init() throws Exception {
     if (!this.headerPolicyMap.containsKey(CacheControl.NO_CACHE_POLICY)) {
+
       this.headerPolicyMap.put(CacheControl.NO_CACHE_POLICY, new HeaderPolicy() {
         final String noCache = new CacheControlBuilder().maxAge(0, TimeUnit.SECONDS).noCache().noStore()
             .mustRevalidate().toString();

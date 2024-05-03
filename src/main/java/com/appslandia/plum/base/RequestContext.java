@@ -21,6 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
@@ -50,6 +51,7 @@ public class RequestContext {
   private String clientId;
   private String module;
   private Integer browserFeatures;
+  private Supplier<String> nonce;
 
   public RequestContext createRequestContext(ActionDesc actionDesc) {
     Asserts.isTrue(this.module.equalsIgnoreCase(actionDesc.getModule()));
@@ -66,6 +68,8 @@ public class RequestContext {
     context.clientId = this.clientId;
     context.module = this.module;
     context.browserFeatures = this.browserFeatures;
+
+    context.nonce = this.nonce;
     return context;
   }
 
@@ -170,6 +174,14 @@ public class RequestContext {
 
   protected void setBrowserFeatures(Integer browserFeatures) {
     this.browserFeatures = browserFeatures;
+  }
+
+  public String getNonce() {
+    return this.nonce.get();
+  }
+
+  protected void setNonce(Supplier<String> nonce) {
+    this.nonce = nonce;
   }
 
   public String res(String key) {

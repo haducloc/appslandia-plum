@@ -58,7 +58,7 @@ public class AuthorizeInterceptor implements Serializable {
     if (authorize == null) {
       authorize = context.getTarget().getClass().getAnnotation(Authorize.class);
     }
-    if ((authorize == null) || authorize.removed()) {
+    if (authorize == null) {
       return context.proceed();
     }
 

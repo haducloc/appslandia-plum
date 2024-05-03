@@ -172,12 +172,7 @@ public abstract class ActionDescProvider extends InitializeObject {
         // @Authorize
         Authorize authorize = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(Authorize.class),
             controllerClass.getDeclaredAnnotation(Authorize.class));
-        if (authorize == null) {
-          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_AUTHORIZE, false)) {
-            authorize = Authorize.IMPL;
-          }
-        }
-        actionDesc.setAuthorize(((authorize != null) && !authorize.removed()) ? authorize : null);
+        actionDesc.setAuthorize(authorize);
 
         // @CacheControl
         CacheControl cacheControl = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(CacheControl.class),
@@ -194,14 +189,14 @@ public abstract class ActionDescProvider extends InitializeObject {
         EnableCors enableCors = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableCors.class),
             controllerClass.getDeclaredAnnotation(EnableCors.class));
         if (enableCors == null) {
-          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_CORS, false)) {
+          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_CORS)) {
             enableCors = EnableCors.IMPL;
           }
         }
         actionDesc.setEnableCors(((enableCors != null) && !enableCors.removed()) ? enableCors : null);
 
         // @EnableGzip
-        if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_GZIP, true)) {
+        if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_GZIP)) {
           EnableGzip enableGzip = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableGzip.class),
               controllerClass.getDeclaredAnnotation(EnableGzip.class));
           actionDesc.setEnableGzip(((enableGzip != null) && !enableGzip.removed()) ? enableGzip : null);
@@ -228,7 +223,7 @@ public abstract class ActionDescProvider extends InitializeObject {
             actionMethod.getDeclaredAnnotation(EnableJsonError.class),
             controllerClass.getDeclaredAnnotation(EnableJsonError.class));
         if (enableJsonError == null) {
-          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_ERROR, false)) {
+          if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_JSON_ERROR)) {
             enableJsonError = EnableJsonError.IMPL;
           }
         }

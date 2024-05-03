@@ -20,17 +20,21 @@
 
 package com.appslandia.plum.base;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Random;
 
+import com.appslandia.common.base.BaseEncoder;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.ConverterProvider;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ParseUtils;
+import com.appslandia.common.utils.RandomUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -74,6 +78,10 @@ public class RequestContextParser {
   @Inject
   protected ServletModuleParser servletModuleParser;
 
+  private static final class RandomHolder {
+    static final Random instance = new SecureRandom();
+  }
+
   public RequestContext parse(HttpServletRequest request, HttpServletResponse response) {
     RequestContext context = (RequestContext) request.getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
     if (context != null) {
@@ -115,6 +123,13 @@ public class RequestContextParser {
     // Browser Features
     String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
     context.setBrowserFeatures((browserFeatures != null) ? ParseUtils.parseInt(browserFeatures, 0) : null);
+
+    // Nonce
+    int nouceSize = this.appConfig.getInt(AppConfig.CONFIG_NONCE_SIZE);
+    context.setNonce(() -> {
+      byte[] nouce = RandomUtils.nextBytes(nouceSize, RandomHolder.instance);
+      return BaseEncoder.BASE64_URL_NP.encode(nouce);
+    });
 
     request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, context);
     return context;

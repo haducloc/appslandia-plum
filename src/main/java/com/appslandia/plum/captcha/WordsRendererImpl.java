@@ -45,7 +45,9 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
   final List<Color> textColors = new ArrayList<Color>();
   final List<Font> textFonts = new ArrayList<Font>();
 
-  final Random random = new SecureRandom();
+  private static final class RandomHolder {
+    static final Random instance = new SecureRandom();
+  }
 
   @Override
   protected void init() throws Exception {
@@ -74,19 +76,21 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
 
     char[] drawChars = new char[1];
     char[] srcChars = words.toCharArray();
+    Random rand = RandomHolder.instance;
+
     for (int i = 0; i < srcChars.length; i++) {
       drawChars[0] = srcChars[i];
 
-      g.setColor(this.textColors.get(this.random.nextInt(this.textColors.size())));
-      Font rdFont = this.textFonts.get(this.random.nextInt(this.textFonts.size()));
+      g.setColor(this.textColors.get(rand.nextInt(this.textColors.size())));
+      Font rdFont = this.textFonts.get(rand.nextInt(this.textFonts.size()));
       g.setFont(rdFont);
 
       if (i > 0) {
-        xBaseline += RandomUtils.nextInt(0, 8, this.random);
+        xBaseline += RandomUtils.nextInt(0, 8, rand);
       }
-      yBaseline += RandomUtils.nextInt(-4, 4, this.random);
+      yBaseline += RandomUtils.nextInt(-4, 4, rand);
 
-      double rotationAngle = this.random.nextDouble() * Math.PI / 12;
+      double rotationAngle = rand.nextDouble() * Math.PI / 12;
       g.rotate(rotationAngle, xBaseline, yBaseline);
 
       g.drawChars(drawChars, 0, drawChars.length, xBaseline, yBaseline);

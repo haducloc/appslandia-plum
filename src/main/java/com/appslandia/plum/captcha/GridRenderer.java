@@ -23,8 +23,6 @@ package com.appslandia.plum.captcha;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.security.SecureRandom;
-import java.util.Random;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.Asserts;
@@ -38,8 +36,6 @@ public class GridRenderer extends InitializeObject implements ImageRenderer {
 
   private Color hColor;
   private Color vColor;
-
-  final Random random = new SecureRandom();
 
   @Override
   protected void init() throws Exception {

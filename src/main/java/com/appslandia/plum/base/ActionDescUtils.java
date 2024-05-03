@@ -25,7 +25,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.ArrayUtils;
 
 /**
  *
@@ -60,39 +59,6 @@ public class ActionDescUtils {
     }
     return true;
   }
-
-  public static Authorize createAuthorize(String[] roles, String[] policies, boolean reauth) {
-    return new Authorize() {
-
-      final String[] _roles = ArrayUtils.copy(roles);
-      final String[] _policies = ArrayUtils.copy(policies);
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return Authorize.class;
-      }
-
-      @Override
-      public String[] roles() {
-        return ArrayUtils.copy(this._roles);
-      }
-
-      @Override
-      public String[] policies() {
-        return ArrayUtils.copy(this._policies);
-      }
-
-      @Override
-      public boolean reauth() {
-        return reauth;
-      }
-
-      @Override
-      public boolean removed() {
-        return false;
-      }
-    };
-  };
 
   public static CacheControl createCacheControl(String policy) {
     return new CacheControl() {

@@ -43,6 +43,7 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String CONFIG_ENABLE_SESSION = "config.enable_session";
   public static final String CONFIG_ENABLE_AUTHORIZE = "config.enable_authorize";
   public static final String CONFIG_ENABLE_CORS = "config.enable_cors";
+  public static final String CONFIG_NONCE_SIZE = "config.nouce_size";
 
   public static final String CONFIG_DISABLE_GZIP = "config.disable_gzip";
   public static final String CONFIG_ENABLE_PREF_COOKIE = "config.enable_pref_cookie";
@@ -100,6 +101,7 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(CONFIG_ENABLE_SESSION, String.valueOf(true));
     this.config.putIfAbsent(CONFIG_ENABLE_AUTHORIZE, String.valueOf(false));
     this.config.putIfAbsent(CONFIG_ENABLE_CORS, String.valueOf(false));
+    this.config.putIfAbsent(CONFIG_NONCE_SIZE, String.valueOf(16));
 
     this.config.putIfAbsent(CONFIG_DISABLE_GZIP, String.valueOf(true));
     this.config.putIfAbsent(CONFIG_ENABLE_PREF_COOKIE, String.valueOf(true));
