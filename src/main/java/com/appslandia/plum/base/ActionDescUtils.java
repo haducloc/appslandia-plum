@@ -82,21 +82,6 @@ public class ActionDescUtils {
     };
   };
 
-  public static EnableCors createEnableCors(String policy) {
-    return new EnableCors() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return EnableCors.class;
-      }
-
-      @Override
-      public String value() {
-        return policy;
-      }
-    };
-  };
-
   public static EnableJsonError createEnableJsonError() {
     return new EnableJsonError() {
 

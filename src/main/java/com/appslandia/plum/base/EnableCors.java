@@ -36,9 +36,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface EnableCors {
 
-  public static final String DEFAULT_POLICY = "default";
-
-  String value() default DEFAULT_POLICY;
-
-  public static final EnableCors DEFAULT = ActionDescUtils.createEnableCors(DEFAULT_POLICY);
+  String value();
 }
