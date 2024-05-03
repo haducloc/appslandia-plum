@@ -46,7 +46,7 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
   @Override
   protected void init() throws Exception {
     if (this.textColors.isEmpty()) {
-      textColor(Color.LIGHT_GRAY).textColor(Color.GRAY).textColor(Color.DARK_GRAY);
+      textColor(Color.LIGHT_GRAY.darker()).textColor(Color.GRAY).textColor(Color.DARK_GRAY);
     }
 
     if (this.textFonts.isEmpty()) {
