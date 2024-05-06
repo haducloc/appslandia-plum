@@ -22,10 +22,13 @@ package com.appslandia.plum.base;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.appslandia.common.base.MapAccessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
+import com.appslandia.common.utils.StringFormat;
 import com.appslandia.common.utils.StringUtils;
 
 /**
@@ -84,6 +87,8 @@ public class Resources implements MapAccessor<String, String> {
 
   @Override
   public String get(Object key) {
+    Asserts.notNull(key);
+
     String msg = this.resources.get(key);
     if (msg == null) {
       return this.language + ":" + key;
@@ -93,6 +98,8 @@ public class Resources implements MapAccessor<String, String> {
 
   @Override
   public String getOrDefault(Object key, String defaultValue) {
+    Asserts.notNull(key);
+
     String msg = this.resources.get(key);
     if (msg == null) {
       return defaultValue;
@@ -101,20 +108,31 @@ public class Resources implements MapAccessor<String, String> {
   }
 
   public String get(String key, Object... params) {
+    Asserts.notNull(key);
+
     String msg = this.resources.get(key);
     if (msg == null) {
       return this.language + ":" + key + "[]";
     }
-    return STR.format(msg, params);
+
+    StringFormat format = StringFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
+    return format.format(msg, params);
   }
 
   public String get(String key, Map<String, Object> params) {
+    Asserts.notNull(key);
     Asserts.notNull(params);
 
     String msg = this.resources.get(key);
     if (msg == null) {
       return this.language + ":" + key + "{}";
     }
-    return STR.format(msg, params);
+
+    StringFormat format = StringFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
+    return format.format(msg, params);
+  }
+
+  private static final class StringFormatHolder {
+    private static final ConcurrentMap<String, StringFormat> FORMATS = new ConcurrentHashMap<>();
   }
 }
