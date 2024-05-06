@@ -81,7 +81,7 @@ public class TagTldGenerator {
     generateTag(PagerTag.class, sb);
 
     generateTag(FmtDaysTag.class, sb);
-    generateTag(FmtStringTag.class, sb);
+    generateTag(FmtGroupTag.class, sb);
     generateTag(IfEnvTag.class, sb);
     generateTag(OutTag.class, sb);
 

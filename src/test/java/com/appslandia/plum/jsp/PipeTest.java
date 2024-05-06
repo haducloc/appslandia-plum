@@ -63,9 +63,9 @@ public class PipeTest {
   }
 
   @Test
-  public void test_fmtString() {
+  public void test_fmtGroup() {
     try {
-      Object v = Pipe.transform("4028888888", "fmtString:{3}-{3}-{4}");
+      Object v = Pipe.transform("4028888888", "fmtGroup:{3}-{3}-{4}");
       Assertions.assertEquals("402-888-8888", v);
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());

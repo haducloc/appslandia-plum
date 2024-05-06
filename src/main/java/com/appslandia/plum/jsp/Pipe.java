@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.appslandia.common.base.StringFormat;
+import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.base.ToStringBuilder;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
@@ -95,9 +95,9 @@ public abstract class Pipe {
         return (s.length() > len) ? s.substring(0, len) + "&ellipsis;" : s;
       }
     });
-    pipes.put("fmtString", new Pipe() {
+    pipes.put("fmtGroup", new Pipe() {
 
-      final ConcurrentMap<String, StringFormat> formats = new ConcurrentHashMap<>();
+      final ConcurrentMap<String, GroupFormat> formats = new ConcurrentHashMap<>();
 
       @Override
       public Object apply(Object value, String arg) {
@@ -105,9 +105,9 @@ public abstract class Pipe {
           return null;
         }
         if (value.getClass() != String.class) {
-          throw new IllegalArgumentException("fmtString: value must be a string.");
+          throw new IllegalArgumentException("fmtGroup: value must be a string.");
         }
-        return this.formats.computeIfAbsent(arg, (format) -> new StringFormat(format)).format((String) value);
+        return this.formats.computeIfAbsent(arg, (format) -> new GroupFormat(format)).format((String) value);
       }
     });
     pipes.put("maskStart", new Pipe() {

@@ -18,38 +18,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.pebble.functions;
+package com.appslandia.plum.base;
 
-import java.io.IOException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
-import com.appslandia.common.base.StringFormat;
-import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.StringFormatProvider;
-import com.appslandia.plum.pebble.DynPebbleFunction;
-import com.appslandia.plum.pebble.TemplateEvaluationContext;
-import com.appslandia.plum.utils.ServletUtils;
-
-import io.pebbletemplates.pebble.extension.escaper.SafeString;
+import com.appslandia.common.base.GroupFormat;
+import com.appslandia.common.base.InitializeObject;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class FmtStringFunction extends DynPebbleFunction {
+public class GroupFormatProvider extends InitializeObject {
+
+  private Map<String, GroupFormat> groupFormatMap = new HashMap<>();
 
   @Override
-  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String value = context.getArgument("value");
-    if (value == null) {
-      return null;
-    }
+  protected void init() throws Exception {
+    this.groupFormatMap = Collections.unmodifiableMap(this.groupFormatMap);
+  }
 
-    StringFormatProvider stringFormatProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(),
-        StringFormatProvider.class);
-    String format = context.getRequiredArgument("format");
-    StringFormat stringFormat = stringFormatProvider.getStringFormat(format);
+  public GroupFormat getGroupFormat(String name) {
+    this.initialize();
+    GroupFormat impl = this.groupFormatMap.get(name);
+    return Asserts.notNull(impl);
+  }
 
-    return new SafeString(XmlEscaper.escapeXml(stringFormat.format(value)));
+  public void addGroupFormat(String name, GroupFormat impl) {
+    this.assertNotInitialized();
+    this.groupFormatMap.put(name, impl);
   }
 }

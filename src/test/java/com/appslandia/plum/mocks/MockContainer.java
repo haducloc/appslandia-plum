@@ -76,7 +76,7 @@ import com.appslandia.plum.base.RemoteClientVerifier;
 import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
 import com.appslandia.plum.base.ServletModuleParser;
-import com.appslandia.plum.base.StringFormatProvider;
+import com.appslandia.plum.base.GroupFormatProvider;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.captcha.CaptchaProducer;
@@ -150,7 +150,7 @@ public class MockContainer extends InitializeObject {
     registerInstance(AppCacheManager.class, beanInstances);
 
     registerInstance(ConstDescProvider.class, beanInstances);
-    registerInstance(StringFormatProvider.class, beanInstances);
+    registerInstance(GroupFormatProvider.class, beanInstances);
 
     registerInstance(ModelBinder.class, beanInstances);
     registerInstance(ExceptionHandler.class, beanInstances);
@@ -318,7 +318,7 @@ public class MockContainer extends InitializeObject {
     factory.register(CorsPolicyHandler.class, CorsPolicyHandler.class);
     factory.register(HeaderPolicyProvider.class, HeaderPolicyProvider.class);
     factory.register(ConstDescProvider.class, ConstDescProvider.class);
-    factory.register(StringFormatProvider.class, StringFormatProvider.class);
+    factory.register(GroupFormatProvider.class, GroupFormatProvider.class);
 
     factory.register(CaptchaManager.class, MockCaptchaManager.class);
     factory.register(CaptchaProducer.class, MockCaptchaProducer.class);

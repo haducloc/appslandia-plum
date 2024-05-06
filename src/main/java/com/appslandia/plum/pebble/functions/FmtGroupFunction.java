@@ -18,38 +18,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.base;
+package com.appslandia.plum.pebble.functions;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.IOException;
 
-import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.base.StringFormat;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.base.GroupFormat;
+import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.base.GroupFormatProvider;
+import com.appslandia.plum.pebble.DynPebbleFunction;
+import com.appslandia.plum.pebble.TemplateEvaluationContext;
+import com.appslandia.plum.utils.ServletUtils;
+
+import io.pebbletemplates.pebble.extension.escaper.SafeString;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class StringFormatProvider extends InitializeObject {
-
-  private Map<String, StringFormat> stringFormatMap = new HashMap<>();
+public class FmtGroupFunction extends DynPebbleFunction {
 
   @Override
-  protected void init() throws Exception {
-    this.stringFormatMap = Collections.unmodifiableMap(this.stringFormatMap);
-  }
+  protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
+    String value = context.getArgument("value");
+    if (value == null) {
+      return null;
+    }
 
-  public StringFormat getStringFormat(String name) {
-    this.initialize();
-    StringFormat impl = this.stringFormatMap.get(name);
-    return Asserts.notNull(impl);
-  }
+    GroupFormatProvider groupFormatProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(),
+        GroupFormatProvider.class);
+    String name = context.getRequiredArgument("name");
+    GroupFormat groupFormat = groupFormatProvider.getGroupFormat(name);
 
-  public void addStringFormat(String name, StringFormat impl) {
-    this.assertNotInitialized();
-    this.stringFormatMap.put(name, impl);
+    return new SafeString(XmlEscaper.escapeXml(groupFormat.format(value)));
   }
 }

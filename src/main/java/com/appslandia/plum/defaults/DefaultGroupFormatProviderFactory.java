@@ -23,13 +23,13 @@ package com.appslandia.plum.defaults;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.appslandia.common.base.StringFormat;
+import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
-import com.appslandia.plum.base.StringFormatProvider;
+import com.appslandia.plum.base.GroupFormatProvider;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -44,7 +44,7 @@ import jakarta.inject.Inject;
  *
  */
 @ApplicationScoped
-public class DefaultStringFormatProviderFactory implements CDIFactory<StringFormatProvider> {
+public class DefaultGroupFormatProviderFactory implements CDIFactory<GroupFormatProvider> {
 
   @Inject
   protected BeanManager beanManager;
@@ -54,16 +54,16 @@ public class DefaultStringFormatProviderFactory implements CDIFactory<StringForm
   @Produces
   @ApplicationScoped
   @Override
-  public StringFormatProvider produce() {
-    final StringFormatProvider impl = new StringFormatProvider();
+  public GroupFormatProvider produce() {
+    final GroupFormatProvider impl = new GroupFormatProvider();
 
-    // @Supplier(StringFormat.class)
-    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, StringFormat.class, (bi) -> {
+    // @Supplier(GroupFormat.class)
+    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, GroupFormat.class, (bi) -> {
 
-      Map<String, StringFormat> m = ObjectUtils.cast(bi.get().get());
+      Map<String, GroupFormat> m = ObjectUtils.cast(bi.get().get());
 
-      for (Entry<String, StringFormat> entry : m.entrySet()) {
-        impl.addStringFormat(entry.getKey(), entry.getValue());
+      for (Entry<String, GroupFormat> entry : m.entrySet()) {
+        impl.addGroupFormat(entry.getKey(), entry.getValue());
       }
       beanInstances.add(bi);
     });
@@ -71,12 +71,11 @@ public class DefaultStringFormatProviderFactory implements CDIFactory<StringForm
   }
 
   @Override
-  public void dispose(@Disposes StringFormatProvider impl) {
+  public void dispose(@Disposes GroupFormatProvider impl) {
   }
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

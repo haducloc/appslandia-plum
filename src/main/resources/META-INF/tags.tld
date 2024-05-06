@@ -2210,13 +2210,13 @@
 	</tag>
 
 	<tag>
-		<description>description=;type=com.appslandia.plum.jsp.FmtStringTag;body=empty</description>
-		<name>fmtString</name>
-		<tag-class>com.appslandia.plum.jsp.FmtStringTag</tag-class>
+		<description>description=;type=com.appslandia.plum.jsp.FmtGroupTag;body=empty</description>
+		<name>fmtGroup</name>
+		<tag-class>com.appslandia.plum.jsp.FmtGroupTag</tag-class>
 		<body-content>empty</body-content>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
-			<name>format</name>
+			<name>name</name>
 			<required>true</required>
 			<rtexprvalue>false</rtexprvalue>
 			<type>java.lang.String</type>

@@ -25,11 +25,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.base.StringFormat;
+import com.appslandia.common.base.GroupFormat;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
-import com.appslandia.plum.base.StringFormatProvider;
+import com.appslandia.plum.base.GroupFormatProvider;
 import com.appslandia.plum.mocks.MockJspContext;
 import com.appslandia.plum.utils.TestUtils;
 
@@ -38,10 +38,10 @@ import com.appslandia.plum.utils.TestUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class FmtStringTagTest extends MockTestBase {
+public class FmtGroupTagTest extends MockTestBase {
 
-  FmtStringTag tag = new FmtStringTag();
-  StringFormatProvider stringFormatProvider;
+  FmtGroupTag tag = new FmtGroupTag();
+  GroupFormatProvider groupFormatProvider;
 
   @BeforeAll
   public static void beforeAllTests() {
@@ -52,8 +52,8 @@ public class FmtStringTagTest extends MockTestBase {
   protected void initialize() {
     container.register(TestController.class, TestController.class);
 
-    stringFormatProvider = container.getObject(StringFormatProvider.class);
-    stringFormatProvider.addStringFormat("phoneFormat", new StringFormat("({3}) {3}-{4}"));
+    groupFormatProvider = container.getObject(GroupFormatProvider.class);
+    groupFormatProvider.addGroupFormat("phoneFormat", new GroupFormat("({3}) {3}-{4}"));
   }
 
   @BeforeEach
@@ -66,7 +66,7 @@ public class FmtStringTagTest extends MockTestBase {
   public void test() {
     try {
       tag.setValue("4024130224");
-      tag.setFormat("phoneFormat");
+      tag.setName("phoneFormat");
 
       tag.doTag();
       String html = tag.getPageContext().getOut().toString();
@@ -82,7 +82,7 @@ public class FmtStringTagTest extends MockTestBase {
   public void test_invalidLength() {
     try {
       tag.setValue("+14024130224");
-      tag.setFormat("phoneFormat");
+      tag.setName("phoneFormat");
 
       tag.doTag();
       String html = tag.getPageContext().getOut().toString();

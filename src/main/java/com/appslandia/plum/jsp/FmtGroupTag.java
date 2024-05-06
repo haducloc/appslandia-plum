@@ -22,9 +22,9 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
-import com.appslandia.common.base.StringFormat;
+import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.base.StringFormatProvider;
+import com.appslandia.plum.base.GroupFormatProvider;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.jsp.JspException;
@@ -34,10 +34,10 @@ import jakarta.servlet.jsp.JspException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Tag(name = "fmtString", dynamicAttributes = false)
-public class FmtStringTag extends TagBase {
+@Tag(name = "fmtGroup", dynamicAttributes = false)
+public class FmtGroupTag extends TagBase {
 
-  protected String format;
+  protected String name;
   protected String value;
 
   @Override
@@ -45,16 +45,16 @@ public class FmtStringTag extends TagBase {
     if (this.value == null) {
       return;
     }
-    StringFormatProvider groupFormatProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
-        StringFormatProvider.class);
-    StringFormat groupFormat = groupFormatProvider.getStringFormat(this.format);
+    GroupFormatProvider groupFormatProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
+        GroupFormatProvider.class);
+    GroupFormat groupFormat = groupFormatProvider.getGroupFormat(this.name);
 
     XmlEscaper.escapeXml(this.pageContext.getOut(), groupFormat.format(this.value));
   }
 
   @Attribute(required = true, rtexprvalue = false)
-  public void setFormat(String format) {
-    this.format = format;
+  public void setName(String name) {
+    this.name = name;
   }
 
   @Attribute(required = true, rtexprvalue = true)
