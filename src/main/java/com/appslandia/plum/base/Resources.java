@@ -115,8 +115,8 @@ public class Resources implements MapAccessor<String, String> {
       return this.language + ":" + key + "[]";
     }
 
-    StringFormat format = StringFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
-    return format.format(msg, params);
+    StringFormat format = ResourceFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
+    return format.format(params);
   }
 
   public String get(String key, Map<String, Object> params) {
@@ -128,11 +128,11 @@ public class Resources implements MapAccessor<String, String> {
       return this.language + ":" + key + "{}";
     }
 
-    StringFormat format = StringFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
-    return format.format(msg, params);
+    StringFormat format = ResourceFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
+    return format.format(params);
   }
 
-  private static final class StringFormatHolder {
+  private static final class ResourceFormatHolder {
     private static final ConcurrentMap<String, StringFormat> FORMATS = new ConcurrentHashMap<>();
   }
 }

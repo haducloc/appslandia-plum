@@ -23,12 +23,15 @@ package com.appslandia.plum.base;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.appslandia.common.base.Params;
 import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.STR;
+import com.appslandia.common.utils.StringFormat;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -80,6 +83,10 @@ public class InitializerHandler extends HttpFilter {
   @Inject
   protected RemoteClientVerifier remoteClientVerifier;
 
+  private static final class HeaderValueFormatHolder {
+    private static final ConcurrentMap<String, StringFormat> FORMATS = new ConcurrentHashMap<>();
+  }
+
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
 
@@ -117,16 +124,18 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // Content-Security-Policy
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
-    if (headerValue != null) {
-
+    String cspValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
+    if (cspValue != null) {
       // ${nonce}
-      headerValue = STR.format(headerValue, new Params().set("nonce", requestContext.getNonce()));
+      StringFormat format = HeaderValueFormatHolder.FORMATS
+          .computeIfAbsent(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY, k -> STR.compile(cspValue));
+
+      String csp = format.format(new Params().set("nonce", requestContext.getNonce()));
 
       if (this.appConfig.getBool(AppConfig.HEADER_POLICIES_CSP_REPORT_ONLY)) {
-        response.setHeader("Content-Security-Policy-Report-Only", headerValue);
+        response.setHeader("Content-Security-Policy-Report-Only", csp);
       } else {
-        response.setHeader("Content-Security-Policy", headerValue);
+        response.setHeader("Content-Security-Policy", csp);
       }
     }
 
