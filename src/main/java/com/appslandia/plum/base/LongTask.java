@@ -26,8 +26,6 @@ import com.appslandia.common.models.EntityBase;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
@@ -45,7 +43,6 @@ public class LongTask extends EntityBase {
   public static final String DONE_FAILURE = "done_failure";
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
   private String series;
 
   @NotNull
