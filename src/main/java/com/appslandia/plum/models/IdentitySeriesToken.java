@@ -20,9 +20,6 @@
 
 package com.appslandia.plum.models;
 
-import com.appslandia.common.base.Bind;
-import com.appslandia.common.converters.Converter;
-import com.appslandia.common.validators.Email;
 import com.appslandia.common.validators.MaxLength;
 
 import jakarta.validation.constraints.NotNull;
@@ -32,20 +29,19 @@ import jakarta.validation.constraints.NotNull;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class EmailSeriesToken {
+public class IdentitySeriesToken {
 
   @NotNull
-  @MaxLength(128)
+  @MaxLength(255)
   private String series;
 
   @NotNull
   @MaxLength(255)
   private String token;
 
-  @Bind(converter = Converter.STRING_LC)
   @NotNull
-  @Email
-  private String email;
+  @MaxLength(255)
+  private String identity;
 
   public String getSeries() {
     return series;
@@ -56,18 +52,18 @@ public class EmailSeriesToken {
   }
 
   public String getToken() {
-    return token;
+    return this.token;
   }
 
   public void setToken(String token) {
     this.token = token;
   }
 
-  public String getEmail() {
-    return email;
+  public String getIdentity() {
+    return this.identity;
   }
 
-  public void setEmail(String email) {
-    this.email = email;
+  public void setIdentity(String identity) {
+    this.identity = identity;
   }
 }

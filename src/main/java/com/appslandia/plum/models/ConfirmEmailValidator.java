@@ -43,6 +43,6 @@ public abstract class ConfirmEmailValidator<T extends ConfirmEmailModel> extends
     if (!EmailUtils.isValid(model.getEmail())) {
       return true;
     }
-    return model.getConfirmEmail().equals(model.getEmail());
+    return model.getEmail().equalsIgnoreCase(model.getConfirmEmail());
   }
 }

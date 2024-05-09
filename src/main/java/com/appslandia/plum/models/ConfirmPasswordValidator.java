@@ -43,6 +43,6 @@ public abstract class ConfirmPasswordValidator<T extends ConfirmPasswordModel> e
     if (!PasswordUtil.isValid(model.getNewPassword())) {
       return true;
     }
-    return model.getConfirmPassword().equals(model.getNewPassword());
+    return model.getNewPassword().equals(model.getConfirmPassword());
   }
 }

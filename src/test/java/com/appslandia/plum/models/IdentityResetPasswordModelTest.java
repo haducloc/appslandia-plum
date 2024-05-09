@@ -35,7 +35,7 @@ import com.appslandia.plum.utils.ServletUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ResetPasswordByEmailModelTest extends MockTestBase {
+public class IdentityResetPasswordModelTest extends MockTestBase {
 
   @Override
   protected void initialize() {
@@ -50,7 +50,7 @@ public class ResetPasswordByEmailModelTest extends MockTestBase {
 
       executeCurrent("POST", "http://localhost/app/testController/resetpwd");
 
-      ResetPasswordByEmailModel model = (ResetPasswordByEmailModel) getCurrentRequest()
+      IdentityResetPasswordModel model = (IdentityResetPasswordModel) getCurrentRequest()
           .getAttribute(ServletUtils.REQUEST_ATTRIBUTE_MODEL);
       Assertions.assertNotNull(model);
       Assertions.assertFalse(getCurrentModelState().isValid("confirmPassword"));
@@ -64,7 +64,7 @@ public class ResetPasswordByEmailModelTest extends MockTestBase {
   public static class TestController {
 
     @HttpPost
-    public void resetpwd(@Model ResetPasswordByEmailModel model, RequestAccessor request) throws Exception {
+    public void resetpwd(@Model IdentityResetPasswordModel model, RequestAccessor request) throws Exception {
       request.storeModel(model);
     }
   }
