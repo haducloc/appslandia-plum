@@ -67,7 +67,7 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
 
     // Baseline
     int xBaseline = (int) (0.05f * width);
-    int yBaseline = (int) (0.75f * height);
+    int yBaseline = (int) (0.80f * height);
 
     char[] drawChars = new char[1];
     char[] srcChars = words.toCharArray();
