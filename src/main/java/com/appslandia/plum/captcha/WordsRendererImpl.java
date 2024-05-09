@@ -85,7 +85,9 @@ public class WordsRendererImpl extends InitializeObject implements WordsRenderer
       }
       yBaseline += RandomUtils.nextInt(-4, 4, rand);
 
-      double rotationAngle = rand.nextDouble() * Math.PI / 12;
+      double rotationAngle = CaptchaUtils.RandomHolder.instance.nextBoolean() ? rand.nextDouble() * Math.PI / 12
+          : -rand.nextDouble() * Math.PI / 12;
+
       g.rotate(rotationAngle, xBaseline, yBaseline);
 
       g.drawChars(drawChars, 0, drawChars.length, xBaseline, yBaseline);
