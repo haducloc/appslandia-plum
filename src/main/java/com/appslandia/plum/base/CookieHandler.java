@@ -22,12 +22,12 @@ package com.appslandia.plum.base;
 
 import java.util.function.Consumer;
 
+import com.appslandia.plum.base.CookieImpl.SameSite;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -43,8 +43,8 @@ public class CookieHandler {
   protected ServletContext servletContext;
 
   public void saveCookie(HttpServletResponse response, String cookieName, String cookieValue, int maxAge,
-      Consumer<Cookie> cookieInit) {
-    Cookie cookie = new Cookie(cookieName, cookieValue);
+      Consumer<CookieImpl> cookieInit) {
+    CookieImpl cookie = new CookieImpl(cookieName, cookieValue);
     cookie.setMaxAge(maxAge);
 
     String domain = this.servletContext.getSessionCookieConfig().getDomain();
@@ -55,6 +55,11 @@ public class CookieHandler {
 
     if (cookieInit != null) {
       cookieInit.accept(cookie);
+    }
+
+    // SameSite
+    if (cookie.getSameSite() == null) {
+      cookie.setSameSite(SameSite.LAX);
     }
     response.addCookie(cookie);
   }
