@@ -96,7 +96,7 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // HSTS
-    String scheme = ServletUtils.getProto(request);
+    String scheme = ServletUtils.getScheme(request);
     if ("https".equals(scheme)) {
 
       String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_STRICT_TRANSPORT_SECURITY);
