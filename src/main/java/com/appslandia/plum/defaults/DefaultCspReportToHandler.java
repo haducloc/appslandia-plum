@@ -78,9 +78,9 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
       if (curTime - prevTime > getReportIntervalMs()) {
         return curTime;
       }
-
       return prevTime;
     });
+
     this.appLogger.warn("CSP reported: " + md5);
 
     if (curTime == time) {
