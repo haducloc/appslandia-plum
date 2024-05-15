@@ -70,16 +70,16 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
     String md5 = this.md5Digester.digest(json);
     long curTime = System.currentTimeMillis();
 
-    Long time = this.reportedLog.compute(md5, (md, t) -> {
-      if (t == null) {
+    Long time = this.reportedLog.compute(md5, (md, prevTime) -> {
+      if (prevTime == null) {
         return curTime;
       }
 
-      if (curTime - t > getReportIntervalMs()) {
+      if (curTime - prevTime > getReportIntervalMs()) {
         return curTime;
       }
 
-      return t;
+      return prevTime;
     });
     this.appLogger.warn("CSP reported: " + md5);
 
