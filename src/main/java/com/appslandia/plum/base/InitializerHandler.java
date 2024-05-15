@@ -151,6 +151,12 @@ public class InitializerHandler extends HttpFilter {
       response.setHeader("Report-To", headerValue);
     }
 
+    // Reporting-Endpoints
+    headerValue = this.appConfig.getString(AppConfig.HEADER_REPORTING_ENDPOINTS);
+    if (headerValue != null) {
+      response.setHeader("Reporting-Endpoints", headerValue);
+    }
+
     // Header Policies
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
       this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);

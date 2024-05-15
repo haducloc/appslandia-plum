@@ -70,9 +70,10 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String HEADER_POLICIES_X_FRAME_OPTIONS = "header_policies.x_frame_options";
   public static final String HEADER_POLICIES_X_XSS_PROTECTION = "header_policies.x_xss_protection";
   public static final String HEADER_POLICIES_CONTENT_SECURITY_POLICY = "header_policies.content_security_policy";
-  public static final String HEADER_POLICIES_REPORT_TO = "header_policies.report_to";
   public static final String HEADER_POLICIES_REFERRER_POLICY = "header_policies.referrer_policy";
 
+  public static final String HEADER_POLICIES_REPORT_TO = "header_policies.report_to";
+  public static final String HEADER_REPORTING_ENDPOINTS = "header_policies.reporting_endpoints";
   public static final String HEADER_POLICIES_CSP_REPORT_ONLY = "header_policies.csp_report_only";
 
   protected ConfigMap config;
