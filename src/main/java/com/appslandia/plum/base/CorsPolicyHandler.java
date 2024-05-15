@@ -54,7 +54,7 @@ public class CorsPolicyHandler {
     if (origin == null) {
       return null;
     }
-    StringBuilder url = ServletUtils.absUrlBase(request);
+    StringBuilder url = ServletUtils.absHostBase(request);
 
     if (origin.equals(url.toString())) {
       return null;

@@ -158,7 +158,7 @@ public class ServletUtils {
 
   static final Pattern X_FORWARDED_PORTS_PATTERN = Pattern.compile("\\s*\\d+\\s*,\\s*\\d+\\s*");
 
-  public static StringBuilder absUrlBase(HttpServletRequest request) {
+  public static StringBuilder absHostBase(HttpServletRequest request) {
     // scheme
     String scheme = getScheme(request);
 

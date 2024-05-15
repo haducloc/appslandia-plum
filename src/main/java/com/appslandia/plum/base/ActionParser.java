@@ -113,7 +113,7 @@ public class ActionParser {
     StringBuilder url = null;
 
     if (absoluteUrl) {
-      url = ServletUtils.absUrlBase(request);
+      url = ServletUtils.absHostBase(request);
     } else {
       url = ServletUtils.newUrlBuilder();
     }
