@@ -18,13 +18,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.defaults;
+package com.appslandia.plum.base;
 
 import java.util.Date;
 
-import com.appslandia.plum.base.ActionResult;
-import com.appslandia.plum.base.Controller;
-import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.results.ContentResult;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,10 +33,10 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 @Controller
-public class PubToolsController {
+public class ToolsController {
 
   @HttpGet
-  public ActionResult ToDT(long timeInMillis) {
+  public ActionResult ToDateTime(long timeInMillis) {
     return new ContentResult(new Date(timeInMillis).toString());
   }
 }

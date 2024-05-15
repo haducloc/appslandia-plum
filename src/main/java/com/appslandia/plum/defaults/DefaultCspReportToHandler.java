@@ -20,15 +20,13 @@
 
 package com.appslandia.plum.defaults;
 
+import java.io.BufferedReader;
+
 import com.appslandia.common.logging.AppLogger;
-import com.appslandia.plum.base.ConsumeType;
-import com.appslandia.plum.base.Controller;
-import com.appslandia.plum.base.HttpPost;
-import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.base.CspReportToHandler;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -36,18 +34,16 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @ApplicationScoped
-@Controller("CspReportTo")
-public class DefaultCspReportToController {
+public class DefaultCspReportToHandler implements CspReportToHandler {
 
   @Inject
   protected AppLogger appLogger;
 
-  @HttpPost
-  @ConsumeType("application/csp-report")
-  public void index(RequestAccessor request, HttpServletResponse response) throws Exception {
-    String reportData = request.getReader().lines().reduce("", (result, line) -> result + line);
+  @Override
+  public void handle(BufferedReader content) throws Exception {
+    StringBuilder reportData = new StringBuilder(512);
+    content.lines().forEach(line -> reportData.append(line));
 
-    this.appLogger.warn("CSP Reported");
-    this.appLogger.warn(reportData);
+    this.appLogger.warn(reportData.toString());
   }
 }
