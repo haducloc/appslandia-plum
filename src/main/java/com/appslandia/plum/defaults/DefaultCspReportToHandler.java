@@ -21,8 +21,14 @@
 package com.appslandia.plum.defaults;
 
 import java.io.BufferedReader;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
+import com.appslandia.common.crypto.DigesterImpl;
+import com.appslandia.common.crypto.TextDigester;
 import com.appslandia.common.logging.AppLogger;
+import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.CspReportToHandler;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,11 +45,46 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
   @Inject
   protected AppLogger appLogger;
 
+  @Inject
+  protected AppConfig appConfig;
+
+  final TextDigester md5Digester = new TextDigester(new DigesterImpl("MD5"));
+
+  final ConcurrentMap<String, Long> reportedLog = new ConcurrentHashMap<>();
+
+  final long dayInMillis = TimeUnit.DAYS.convert(1, TimeUnit.MILLISECONDS);
+
+  public static final String CONFIG_REPORT_INTERVAL_MS = DefaultCspReportToHandler.class.getName()
+      + ".report_interval_ms";
+
+  protected long getReportIntervalMs() {
+    return this.appConfig.getLong(CONFIG_REPORT_INTERVAL_MS, this.dayInMillis);
+  }
+
   @Override
   public void handle(BufferedReader content) throws Exception {
     StringBuilder reportData = new StringBuilder(512);
     content.lines().forEach(line -> reportData.append(line));
 
-    this.appLogger.warn(reportData.toString());
+    String json = reportData.toString();
+    String md5 = this.md5Digester.digest(json);
+    long curTime = System.currentTimeMillis();
+
+    Long time = this.reportedLog.compute(md5, (md, t) -> {
+      if (t == null) {
+        return curTime;
+      }
+
+      if (curTime - t > getReportIntervalMs()) {
+        return curTime;
+      }
+
+      return t;
+    });
+    this.appLogger.warn("CSP reported: " + md5);
+
+    if (curTime == time) {
+      this.appLogger.warn(json);
+    }
   }
 }
