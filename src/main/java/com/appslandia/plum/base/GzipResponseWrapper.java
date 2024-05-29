@@ -65,7 +65,7 @@ public class GzipResponseWrapper extends ResponseWrapper {
       this.usedWriter = Boolean.FALSE;
 
       this.setHeader("Content-Encoding", "gzip");
-      this.setHeader("Transfer-Encoding", "chunked");
+      // this.setHeader("Transfer-Encoding", "chunked");
     }
     return this.outStream;
   }
@@ -82,7 +82,7 @@ public class GzipResponseWrapper extends ResponseWrapper {
       this.usedWriter = Boolean.TRUE;
 
       this.setHeader("Content-Encoding", "gzip");
-      this.setHeader("Transfer-Encoding", "chunked");
+      // this.setHeader("Transfer-Encoding", "chunked");
     }
     return this.outWriter;
   }

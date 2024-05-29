@@ -162,6 +162,11 @@ public class InitializerHandler extends HttpFilter {
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
       this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
+
+    // Vary
+    if (requestContext.getActionDesc().getEnableGzip() != null) {
+      response.addHeader("Vary", "Accept-Encoding");
+    }
   }
 
   protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
@@ -298,10 +303,6 @@ public class InitializerHandler extends HttpFilter {
       final boolean gzipContent = (requestContext.getActionDesc().getEnableGzip() != null)
           && ServletUtils.isGzipAccepted(request);
 
-      if (requestContext.getActionDesc().getEnableGzip() != null) {
-        response.addHeader("Vary", "Accept-Encoding");
-      }
-
       // ETAG
       if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
         ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
@@ -322,7 +323,7 @@ public class InitializerHandler extends HttpFilter {
           if (gzipContent) {
             // GZIP
             response.setHeader("Content-Encoding", "gzip");
-            response.setHeader("Transfer-Encoding", "chunked");
+            // response.setHeader("Transfer-Encoding", "chunked");
 
             GZIPOutputStream out = new GZIPOutputStream(response.getOutputStream());
             wrapper.getContent().writeTo(out);
