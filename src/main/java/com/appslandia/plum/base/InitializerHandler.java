@@ -25,6 +25,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.zip.GZIPOutputStream;
 
 import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.Params;
@@ -297,30 +298,43 @@ public class InitializerHandler extends HttpFilter {
       final boolean gzipContent = (requestContext.getActionDesc().getEnableGzip() != null)
           && ServletUtils.isGzipAccepted(request);
 
-      // VARY: Accept-Encoding
       if (requestContext.getActionDesc().getEnableGzip() != null) {
         response.addHeader("Vary", "Accept-Encoding");
       }
 
       // ETAG
       if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
-        ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, gzipContent);
+        ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
         chain.doFilter(request, wrapper);
 
         if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
-
-          // if no-store, skip ETAG
-          String cacheControl = response.getHeader("Cache-Control");
-          if (cacheControl != null && cacheControl.contains("no-store")) {
-            return;
-          }
+          return;
         }
         wrapper.finishWrapper();
 
+        // Validate cacheControl
+        String cacheControl = response.getHeader("Cache-Control");
+        Asserts.isTrue((cacheControl == null) || !cacheControl.contains("no-store"));
+
         if (!ServletUtils.checkNotModified(request, response,
             ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
-          response.setContentLengthLong(wrapper.getContent().size());
-          wrapper.getContent().writeTo(response.getOutputStream());
+
+          if (gzipContent) {
+            // GZIP
+            response.setHeader("Content-Encoding", "gzip");
+            response.setHeader("Transfer-Encoding", "chunked");
+
+            GZIPOutputStream out = new GZIPOutputStream(response.getOutputStream());
+            wrapper.getContent().writeTo(out);
+
+            out.flush();
+            out.finish();
+
+          } else {
+            // Not GZIP
+            response.setContentLengthLong(wrapper.getContent().size());
+            wrapper.getContent().writeTo(response.getOutputStream());
+          }
         }
         return;
       }

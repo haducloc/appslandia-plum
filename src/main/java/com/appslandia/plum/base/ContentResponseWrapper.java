@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Locale;
-import java.util.zip.GZIPOutputStream;
 
 import com.appslandia.common.base.MemoryStream;
 
@@ -42,16 +41,14 @@ public class ContentResponseWrapper extends ResponseWrapper {
 
   final boolean allowSetHeaders;
   final MemoryStream content;
-  final boolean gzipContent;
 
   private PrintWriter outWriter;
   private ServletOutputStream outStream;
 
-  public ContentResponseWrapper(HttpServletResponse response, boolean allowSetHeaders, boolean gzipContent) {
+  public ContentResponseWrapper(HttpServletResponse response, boolean allowSetHeaders) {
     super(response);
     this.allowSetHeaders = allowSetHeaders;
     this.content = new MemoryStream();
-    this.gzipContent = gzipContent;
   }
 
   public MemoryStream getContent() {
@@ -60,10 +57,6 @@ public class ContentResponseWrapper extends ResponseWrapper {
 
   public boolean isAllowSetHeaders() {
     return this.allowSetHeaders;
-  }
-
-  public boolean isGzipContent() {
-    return this.gzipContent;
   }
 
   @Override
@@ -82,13 +75,7 @@ public class ContentResponseWrapper extends ResponseWrapper {
       throw new IllegalStateException("getWriter has been called on this response.");
     }
     if (this.outStream == null) {
-      if (this.gzipContent) {
-        this.outStream = new GZIPServletOutputStream();
-
-        this.setHeader("Content-Encoding", "gzip");
-      } else {
-        this.outStream = new ServletOutputStreamImpl();
-      }
+      this.outStream = new ServletOutputStreamImpl();
     }
     return this.outStream;
   }
@@ -99,15 +86,8 @@ public class ContentResponseWrapper extends ResponseWrapper {
       throw new IllegalStateException("getOutputStream has been called on this response.");
     }
     if (this.outWriter == null) {
-      if (this.gzipContent) {
-        this.outWriter = new PrintWriter(new BufferedWriter(
-            new OutputStreamWriter(new GZIPOutputStream(this.content), this.getCharacterEncoding())));
-
-        this.setHeader("Content-Encoding", "gzip");
-      } else {
-        this.outWriter = new PrintWriter(
-            new BufferedWriter(new OutputStreamWriter(this.content, this.getCharacterEncoding())));
-      }
+      this.outWriter = new PrintWriter(
+          new BufferedWriter(new OutputStreamWriter(this.content, this.getCharacterEncoding())));
     }
     return this.outWriter;
   }
@@ -246,50 +226,6 @@ public class ContentResponseWrapper extends ResponseWrapper {
     @Override
     public void write(byte[] b) throws IOException {
       content.write(b);
-    }
-
-    @Override
-    public boolean isReady() {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public void setWriteListener(WriteListener writeListener) {
-      throw new UnsupportedOperationException();
-    }
-  }
-
-  private class GZIPServletOutputStream extends ServletOutputStream {
-
-    final GZIPOutputStream gos;
-
-    public GZIPServletOutputStream() throws IOException {
-      this.gos = new GZIPOutputStream(content);
-    }
-
-    @Override
-    public void write(int b) throws IOException {
-      this.gos.write(b);
-    }
-
-    @Override
-    public void write(byte[] b, int off, int len) throws IOException {
-      this.gos.write(b, off, len);
-    }
-
-    @Override
-    public void write(byte[] b) throws IOException {
-      this.gos.write(b);
-    }
-
-    @Override
-    public void flush() throws IOException {
-      this.gos.flush();
-    }
-
-    @Override
-    public void close() throws IOException {
-      this.gos.close();
     }
 
     @Override

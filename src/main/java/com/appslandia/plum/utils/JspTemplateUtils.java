@@ -51,7 +51,7 @@ public class JspTemplateUtils {
     try {
       response.setCharacterEncoding(contentEncoding);
 
-      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, false, false);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, false);
       ServletUtils.include(request, wrapper, jspPath);
 
       wrapper.finishWrapper();

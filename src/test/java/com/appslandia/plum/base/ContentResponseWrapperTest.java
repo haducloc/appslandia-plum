@@ -49,7 +49,7 @@ public class ContentResponseWrapperTest {
   public void test() {
     try {
       MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
 
       wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
       wrapper.finishWrapper();
@@ -66,7 +66,7 @@ public class ContentResponseWrapperTest {
   public void test_reset() {
     try {
       MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
 
       wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
       wrapper.setHeader("testHeader", "testValue");
@@ -86,7 +86,7 @@ public class ContentResponseWrapperTest {
   public void test_resetBuffer() {
     try {
       MockHttpServletResponse response = new MockHttpServletResponse(servletContext);
-      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true, false);
+      ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
 
       wrapper.getOutputStream().write("data".getBytes(StandardCharsets.UTF_8));
       wrapper.resetBuffer();
