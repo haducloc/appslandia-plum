@@ -20,7 +20,6 @@
 
 package com.appslandia.plum.caching;
 
-import com.appslandia.common.utils.ParseUtils;
 import com.appslandia.common.utils.STR;
 
 /**
@@ -32,11 +31,6 @@ public class CacheUtils {
 
   public static String toKey(String key, Object... params) {
 
-    return STR.format(key, (pname, expr) -> {
-
-      int index = ParseUtils.parseInt(pname, -1);
-
-      return params[index];
-    });
+    return STR.format(key, params);
   }
 }

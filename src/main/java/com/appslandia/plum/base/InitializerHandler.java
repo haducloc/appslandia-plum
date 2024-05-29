@@ -26,8 +26,8 @@ import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.Params;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.STR;

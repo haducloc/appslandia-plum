@@ -31,8 +31,8 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.RateLimit;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.DateUtils;
 
 import jakarta.annotation.PreDestroy;

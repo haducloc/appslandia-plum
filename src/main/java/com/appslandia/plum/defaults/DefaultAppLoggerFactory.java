@@ -20,14 +20,12 @@
 
 package com.appslandia.plum.defaults;
 
-import com.appslandia.common.logging.AppLogger;
-import com.appslandia.common.logging.AppLoggerManager;
+import com.appslandia.common.base.AppLogger;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.InjectionPoint;
-import jakarta.inject.Inject;
 
 /**
  *
@@ -37,12 +35,10 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultAppLoggerFactory {
 
-  @Inject
-  protected AppLoggerManager appLoggerManager;
-
   @Produces
   public AppLogger produce(InjectionPoint ip) {
-    return this.appLoggerManager.getAppLogger(ip.getMember().getDeclaringClass().getName());
+    System.Logger logger = System.getLogger(ip.getMember().getDeclaringClass().getName());
+    return new AppLogger(logger);
   }
 
   public void dispose(@Disposes AppLogger impl) {

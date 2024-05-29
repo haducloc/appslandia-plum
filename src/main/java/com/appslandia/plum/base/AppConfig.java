@@ -26,8 +26,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.appslandia.common.base.BoolFormatException;
 import com.appslandia.common.base.Config;
-import com.appslandia.common.base.ConfigMap;
 import com.appslandia.common.base.InitializeObject;
+import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.common.utils.Asserts;
 
 /**
@@ -76,7 +76,7 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String HEADER_REPORTING_ENDPOINTS = "header_policies.reporting_endpoints";
   public static final String HEADER_POLICIES_CSP_REPORT_ONLY = "header_policies.csp_report_only";
 
-  protected ConfigMap config;
+  protected SimpleConfig config;
 
   private boolean enableDebug;
   private boolean enableSession;
@@ -85,7 +85,7 @@ public class AppConfig extends InitializeObject implements Config {
   public AppConfig() {
   }
 
-  public AppConfig(ConfigMap config) {
+  public AppConfig(SimpleConfig config) {
     this.config = config;
   }
 
@@ -156,9 +156,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public String getString(String key, String defaultValIfInvalid) {
+  public String getString(String key, String ifNull) {
     this.initialize();
-    return this.config.getString(key, defaultValIfInvalid);
+    return this.config.getString(key, ifNull);
   }
 
   @Override
@@ -174,9 +174,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public boolean getBool(String key, boolean defaultValIfInvalid) {
+  public boolean getBool(String key, boolean ifNullOrInvalid) {
     this.initialize();
-    return this.config.getBool(key, defaultValIfInvalid);
+    return this.config.getBool(key, ifNullOrInvalid);
   }
 
   @Override
@@ -192,9 +192,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public int getInt(String key, int defaultValIfInvalid) {
+  public int getInt(String key, int ifNullOrInvalid) {
     this.initialize();
-    return this.config.getInt(key, defaultValIfInvalid);
+    return this.config.getInt(key, ifNullOrInvalid);
   }
 
   @Override
@@ -210,9 +210,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public long getLong(String key, long defaultValIfInvalid) {
+  public long getLong(String key, long ifNullOrInvalid) {
     this.initialize();
-    return this.config.getLong(key, defaultValIfInvalid);
+    return this.config.getLong(key, ifNullOrInvalid);
   }
 
   @Override
@@ -228,9 +228,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public double getDouble(String key, double defaultValIfInvalid) {
+  public double getDouble(String key, double ifNullOrInvalid) {
     this.initialize();
-    return this.config.getDouble(key, defaultValIfInvalid);
+    return this.config.getDouble(key, ifNullOrInvalid);
   }
 
   @Override
@@ -246,21 +246,21 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public BigDecimal getDecimal(String key, double defaultValIfInvalid) {
+  public BigDecimal getDecimal(String key, double ifNullOrInvalid) {
     this.initialize();
-    return this.config.getDecimal(key, defaultValIfInvalid);
-  }
-
-  @Override
-  public BigDecimal getDecimal(String key) throws NumberFormatException {
-    this.initialize();
-    return this.config.getDecimal(key);
+    return this.config.getDecimal(key, ifNullOrInvalid);
   }
 
   @Override
   public BigDecimal getDecimalReq(String key) throws NumberFormatException {
     this.initialize();
     return this.config.getDecimalReq(key);
+  }
+
+  @Override
+  public BigDecimal getDecimalOpt(String key) throws NumberFormatException {
+    this.initialize();
+    return this.config.getDecimalOpt(key);
   }
 
   @Override

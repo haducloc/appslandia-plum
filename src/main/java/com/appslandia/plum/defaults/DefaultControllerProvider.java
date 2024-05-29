@@ -23,9 +23,9 @@ package com.appslandia.plum.defaults;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.plum.base.ControllerProvider;
 
 import jakarta.annotation.PreDestroy;

@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.base.ConfigMap;
+import com.appslandia.common.base.SimpleConfig;
 
 /**
  *
@@ -29,5 +29,5 @@ import com.appslandia.common.base.ConfigMap;
  */
 public interface AppConfigLoader {
 
-  void load(ConfigMap configMap) throws Exception;
+  void load(SimpleConfig config) throws Exception;
 }

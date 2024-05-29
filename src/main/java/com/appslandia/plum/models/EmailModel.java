@@ -33,7 +33,7 @@ import jakarta.validation.constraints.NotNull;
  */
 public class EmailModel {
 
-  @Bind(converter = Converter.STRING_LC)
+  @Bind(converter = Converter.STRING_LOWER)
   @NotNull
   @Email
   private String email;

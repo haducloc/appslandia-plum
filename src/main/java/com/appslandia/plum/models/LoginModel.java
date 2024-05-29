@@ -34,7 +34,7 @@ import jakarta.validation.constraints.NotNull;
  */
 public class LoginModel {
 
-  @Bind(converter = Converter.STRING_LC)
+  @Bind(converter = Converter.STRING_LOWER)
   @NotNull
   @Username
   private String username;

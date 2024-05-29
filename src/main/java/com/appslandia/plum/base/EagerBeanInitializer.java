@@ -22,10 +22,10 @@ package com.appslandia.plum.base;
 
 import java.lang.annotation.Annotation;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIUtils;
 import com.appslandia.common.cdi.EagerLiteral;
-import com.appslandia.common.logging.AppLogger;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Destroyed;

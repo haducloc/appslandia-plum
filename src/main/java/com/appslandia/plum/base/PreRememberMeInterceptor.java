@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-import com.appslandia.common.logging.AppLogger;
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.annotation.Priority;

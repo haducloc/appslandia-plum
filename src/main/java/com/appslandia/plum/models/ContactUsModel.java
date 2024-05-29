@@ -38,7 +38,7 @@ public class ContactUsModel {
   @MaxLength(50)
   private String yourName;
 
-  @Bind(converter = Converter.STRING_LC)
+  @Bind(converter = Converter.STRING_LOWER)
   @NotNull
   @Email
   private String yourEmail;

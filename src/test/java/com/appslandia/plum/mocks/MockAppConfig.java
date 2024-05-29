@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.mocks;
 
-import com.appslandia.common.base.PropertyConfig;
+import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.plum.base.AppConfig;
 
 /**
@@ -31,7 +31,7 @@ import com.appslandia.plum.base.AppConfig;
 public class MockAppConfig extends AppConfig {
 
   public MockAppConfig() {
-    this.config = new PropertyConfig();
+    this.config = new SimpleConfig();
   }
 
   public MockAppConfig set(String key, String value) {

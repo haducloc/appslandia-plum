@@ -24,8 +24,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;

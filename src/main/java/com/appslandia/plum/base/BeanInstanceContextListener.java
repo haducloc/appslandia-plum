@@ -23,8 +23,8 @@ package com.appslandia.plum.base;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.cdi.BeanInstance;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.ObjectUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;

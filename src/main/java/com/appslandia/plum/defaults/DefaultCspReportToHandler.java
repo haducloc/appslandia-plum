@@ -25,9 +25,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.crypto.DigesterImpl;
 import com.appslandia.common.crypto.TextDigester;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.CspReportToHandler;
 

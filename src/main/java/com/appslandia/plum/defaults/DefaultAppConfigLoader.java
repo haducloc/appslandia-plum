@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.defaults;
 
-import com.appslandia.common.base.ConfigMap;
+import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.plum.base.AppConfigLoader;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -34,6 +34,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class DefaultAppConfigLoader implements AppConfigLoader {
 
   @Override
-  public void load(ConfigMap configMap) throws Exception {
+  public void load(SimpleConfig config) throws Exception {
   }
 }

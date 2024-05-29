@@ -37,12 +37,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import com.appslandia.common.base.FormatProvider;
-import com.appslandia.common.base.PropertyConfig;
+import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.crypto.DigesterImpl;
 import com.appslandia.common.utils.Asserts;
@@ -633,20 +632,7 @@ public class ServletUtils {
     return ObjectUtils.cast(bi.get());
   }
 
-  public static boolean loadProps(ServletContext sc, String resourcePath, Properties props) throws IOException {
-    InputStream is = sc.getResourceAsStream(resourcePath);
-    if (is == null) {
-      return false;
-    }
-    try {
-      props.load(is);
-      return true;
-    } finally {
-      IOUtils.closeQuietly(is);
-    }
-  }
-
-  public static boolean loadProps(ServletContext sc, String resourcePath, PropertyConfig config) throws IOException {
+  public static boolean loadProps(ServletContext sc, String resourcePath, SimpleConfig config) throws IOException {
     InputStream is = sc.getResourceAsStream(resourcePath);
     if (is == null) {
       return false;

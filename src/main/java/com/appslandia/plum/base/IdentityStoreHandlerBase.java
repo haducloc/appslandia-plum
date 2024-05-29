@@ -24,8 +24,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.STR;
 
 import jakarta.inject.Inject;

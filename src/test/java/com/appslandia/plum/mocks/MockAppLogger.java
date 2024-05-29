@@ -20,35 +20,38 @@
 
 package com.appslandia.plum.mocks;
 
-import java.util.function.Supplier;
+import java.util.ResourceBundle;
 
-import com.appslandia.common.logging.AppLogger;
+import com.appslandia.common.base.AppLogger;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MockAppLogger implements AppLogger {
+public class MockAppLogger extends AppLogger {
 
-  @Override
-  public boolean isLoggable(Level level) {
-    return false;
+  public MockAppLogger() {
+    super(new System.Logger() {
+
+      @Override
+      public String getName() {
+        return "MockAppLogger";
+      }
+
+      @Override
+      public boolean isLoggable(Level level) {
+        return false;
+      }
+
+      @Override
+      public void log(Level level, ResourceBundle bundle, String format, Object... params) {
+      }
+
+      @Override
+      public void log(Level level, ResourceBundle bundle, String msg, Throwable thrown) {
+      }
+    });
   }
 
-  @Override
-  public void log(Level level, String message) {
-  }
-
-  @Override
-  public void log(Level level, String message, Throwable exception) {
-  }
-
-  @Override
-  public void log(Level level, Supplier<String> msgSupplier) {
-  }
-
-  @Override
-  public void log(Level level, Supplier<String> msgSupplier, Throwable exception) {
-  }
 }

@@ -22,11 +22,11 @@ package com.appslandia.plum.defaults;
 
 import java.io.IOException;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.DeployEnv;
 import com.appslandia.common.base.InitializeException;
-import com.appslandia.common.base.PropertyConfig;
+import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.common.cdi.CDIFactory;
-import com.appslandia.common.logging.AppLogger;
 import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.AppConfigLoader;
@@ -62,7 +62,7 @@ public class DefaultAppConfigFactory implements CDIFactory<AppConfig> {
   @ApplicationScoped
   @Override
   public AppConfig produce() {
-    PropertyConfig config = new PropertyConfig();
+    SimpleConfig config = new SimpleConfig();
     try {
       this.appLogger.info("Loading configs from " + DEFAULT_CONFIG_PATH);
       ServletUtils.loadProps(this.servletContext, DEFAULT_CONFIG_PATH, config);
