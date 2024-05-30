@@ -335,7 +335,7 @@ public abstract class ActionDescProvider extends InitializeObject {
     return true;
   }
 
-  private static final String PARAM_FORMAT = "\\{[a-z\\d._]+}";
+  private static final String PARAM_FORMAT = "\\{[a-z\\d_.]+}";
   private static final Pattern PARAM_PATTERN = Pattern.compile(PARAM_FORMAT, Pattern.CASE_INSENSITIVE);
   private static final Pattern PATH_PARAMS_PATTERN = Pattern
       .compile(String.format("(/%s(-%s)*)+", PARAM_FORMAT, PARAM_FORMAT), Pattern.CASE_INSENSITIVE);
