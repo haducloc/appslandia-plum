@@ -321,22 +321,24 @@ public class InitializerHandler extends HttpFilter {
         }
         wrapper.finishWrapper();
 
-        // Validate Cache-Control
-        String cacheControl = response.getHeader("Cache-Control");
-        Asserts.isTrue((cacheControl == null) || !cacheControl.contains("no-store"));
+        if (ServletUtils.isETagEligible(response)) {
 
-        if (!ServletUtils.checkNotModified(request, response,
-            ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
+          if (!ServletUtils.checkNotModified(request, response,
+              ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
 
-          if (willEncode) {
-            ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
-            responseEncoder.encode(response, wrapper.getContent());
+            if (willEncode) {
+              ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
+              responseEncoder.encode(response, wrapper.getContent());
 
-          } else {
-            // Identity
-            response.setContentLengthLong(wrapper.getContent().size());
-            wrapper.getContent().writeTo(response.getOutputStream());
+            } else {
+              response.setContentLengthLong(wrapper.getContent().size());
+              wrapper.getContent().writeTo(response.getOutputStream());
+            }
           }
+
+        } else {
+          response.setContentLengthLong(wrapper.getContent().size());
+          wrapper.getContent().writeTo(response.getOutputStream());
         }
         return;
       }
