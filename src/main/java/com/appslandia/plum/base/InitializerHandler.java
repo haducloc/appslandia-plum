@@ -345,7 +345,7 @@ public class InitializerHandler extends HttpFilter {
         return;
       }
 
-      // Compress
+      // Encoding/Compression (No ETAG)
       if (willEncode) {
         ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
         responseEncoder.encode(request, response, chain);
