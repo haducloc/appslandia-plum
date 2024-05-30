@@ -20,19 +20,20 @@
 
 package com.appslandia.plum.base;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import com.appslandia.common.base.MemoryStream;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@Target(value = { ElementType.TYPE, ElementType.METHOD })
-@Retention(value = RetentionPolicy.RUNTIME)
-@Documented
-public @interface EnableGzip {
+public interface ResponseEncoder {
+
+  void encode(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws Exception;
+
+  void encode(HttpServletResponse response, MemoryStream content) throws Exception;
 }

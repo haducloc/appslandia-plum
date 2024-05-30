@@ -25,7 +25,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.zip.GZIPOutputStream;
 
 import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.Params;
@@ -56,6 +55,12 @@ public class InitializerHandler extends HttpFilter {
 
   @Inject
   protected AppLogger appLogger;
+
+  @Inject
+  protected ResponseEncoderProvider responseEncoderProvider;
+
+  @Inject
+  protected LanguageProvider languageProvider;
 
   @Inject
   protected HeaderPolicyProvider headerPolicyProvider;
@@ -158,14 +163,17 @@ public class InitializerHandler extends HttpFilter {
       response.setHeader("Reporting-Endpoints", headerValue);
     }
 
+    // Vary
+    if (requestContext.getActionDesc().getEnableCompression() != null) {
+      response.addHeader("Vary", "Accept-Encoding");
+    }
+    if (this.languageProvider.getLanguages().size() > 1) {
+      response.addHeader("Vary", "Accept-Language");
+    }
+
     // Header Policies
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
       this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
-    }
-
-    // Vary
-    if (requestContext.getActionDesc().getEnableGzip() != null) {
-      response.addHeader("Vary", "Accept-Encoding");
     }
   }
 
@@ -185,9 +193,6 @@ public class InitializerHandler extends HttpFilter {
     try {
       // RequestContext
       RequestContext requestContext = this.requestContextParser.parse(request, response);
-
-      // Initialize
-      initialize(request, response, requestContext);
 
       // Not Found?
       if (requestContext.getActionDesc() == null) {
@@ -230,6 +235,9 @@ public class InitializerHandler extends HttpFilter {
         doOptions(request, response, requestContext);
         return;
       }
+
+      // Initialize
+      initialize(request, response, requestContext);
 
       // RequestWrapper
       request = new RequestWrapper(request, requestContext.getPathParamMap());
@@ -299,9 +307,9 @@ public class InitializerHandler extends HttpFilter {
       // Rate Limit
       this.rateLimitHandler.checkRequest(request, requestContext);
 
-      // GZIP
-      final boolean gzipContent = (requestContext.getActionDesc().getEnableGzip() != null)
-          && ServletUtils.isGzipAccepted(request);
+      // Encoding/Compression
+      String bestEncoding = this.responseEncoderProvider.getBestEncoding(request);
+      boolean willEncode = (requestContext.getActionDesc().getEnableCompression() != null) && (bestEncoding != null);
 
       // ETAG
       if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
@@ -313,26 +321,19 @@ public class InitializerHandler extends HttpFilter {
         }
         wrapper.finishWrapper();
 
-        // Validate cacheControl
+        // Validate Cache-Control
         String cacheControl = response.getHeader("Cache-Control");
         Asserts.isTrue((cacheControl == null) || !cacheControl.contains("no-store"));
 
         if (!ServletUtils.checkNotModified(request, response,
             ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
 
-          if (gzipContent) {
-            // GZIP
-            response.setHeader("Content-Encoding", "gzip");
-            // response.setHeader("Transfer-Encoding", "chunked");
-
-            GZIPOutputStream out = new GZIPOutputStream(response.getOutputStream());
-            wrapper.getContent().writeTo(out);
-
-            out.flush();
-            out.finish();
+          if (willEncode) {
+            ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
+            responseEncoder.encode(response, wrapper.getContent());
 
           } else {
-            // Not GZIP
+            // Identity
             response.setContentLengthLong(wrapper.getContent().size());
             wrapper.getContent().writeTo(response.getOutputStream());
           }
@@ -340,23 +341,10 @@ public class InitializerHandler extends HttpFilter {
         return;
       }
 
-      // GZIP
-      if (gzipContent) {
-        GzipResponseWrapper wrapper = new GzipResponseWrapper(response);
-        try {
-          chain.doFilter(request, wrapper);
-
-          if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
-            return;
-          }
-          wrapper.finishWrapper();
-
-        } catch (Exception ex) {
-          if (response.isCommitted()) {
-            wrapper.finishWrapper();
-          }
-          throw ex;
-        }
+      // Compress
+      if (willEncode) {
+        ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
+        responseEncoder.encode(request, response, chain);
         return;
       }
 

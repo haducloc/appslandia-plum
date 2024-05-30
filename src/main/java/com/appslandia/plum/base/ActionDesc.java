@@ -49,7 +49,7 @@ public class ActionDesc {
   private CacheControl cacheControl;
   private EnableCors enableCors;
 
-  private EnableGzip enableGzip;
+  private EnableCompression enableCompression;
   private EnableParts enableParts;
 
   private EnableEtag enableEtag;
@@ -182,12 +182,12 @@ public class ActionDesc {
     this.enableCors = enableCors;
   }
 
-  public EnableGzip getEnableGzip() {
-    return this.enableGzip;
+  public EnableCompression getEnableCompression() {
+    return this.enableCompression;
   }
 
-  protected void setEnableGzip(EnableGzip enableGzip) {
-    this.enableGzip = enableGzip;
+  protected void setEnableCompression(EnableCompression enableCompression) {
+    this.enableCompression = enableCompression;
   }
 
   public EnableParts getEnableParts() {

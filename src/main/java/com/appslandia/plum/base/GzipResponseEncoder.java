@@ -18,39 +18,54 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.mocks;
+package com.appslandia.plum.base;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.zip.GZIPOutputStream;
 
 import com.appslandia.common.base.MappedID;
-import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.base.ActionFilter;
-import com.appslandia.plum.base.ActionFilterProvider;
+import com.appslandia.common.base.MemoryStream;
 
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MockActionFilterProvider extends ActionFilterProvider {
-
-  @Inject
-  protected Instance<ActionFilter> instance;
+@ApplicationScoped
+@MappedID("gzip")
+public class GzipResponseEncoder implements ResponseEncoder {
 
   @Override
-  protected void init() throws Exception {
-    List<ActionFilter> impls = this.instance.stream().collect(Collectors.toList());
+  public void encode(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws Exception {
+    GzipResponseWrapper wrapper = new GzipResponseWrapper(response);
+    try {
+      chain.doFilter(request, wrapper);
 
-    for (ActionFilter impl : impls) {
-      MappedID mappedID = impl.getClass().getDeclaredAnnotation(MappedID.class);
-      Asserts.notNull(mappedID);
+      if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+        return;
+      }
+      wrapper.finishWrapper();
 
-      addActionFilter(mappedID.value(), impl);
+    } catch (Exception ex) {
+      if (response.isCommitted()) {
+        wrapper.finishWrapper();
+      }
+      throw ex;
     }
-    super.init();
+  }
+
+  @Override
+  public void encode(HttpServletResponse response, MemoryStream content) throws Exception {
+    response.setHeader("Content-Encoding", "gzip");
+
+    GZIPOutputStream out = new GZIPOutputStream(response.getOutputStream());
+    content.writeTo(out);
+
+    out.flush();
+    out.finish();
   }
 }

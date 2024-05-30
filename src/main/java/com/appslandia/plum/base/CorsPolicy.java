@@ -47,6 +47,7 @@ public class CorsPolicy extends InitializeObject {
 
   private String name;
   private boolean anyOrigin;
+  private boolean varyOrigin = true;
   private List<Pattern> allowOrigins;
 
   private Set<String> allowHeaders;
@@ -135,6 +136,15 @@ public class CorsPolicy extends InitializeObject {
     return this.anyOrigin;
   }
 
+  public CorsPolicy setAnyOrigin() {
+    return setAllowOrigins(ANY);
+  }
+
+  public List<Pattern> getAllowOrigins() {
+    this.initialize();
+    return this.allowOrigins;
+  }
+
   public CorsPolicy setAllowOrigins(String... allowOrigins) {
     this.assertNotInitialized();
     if (allowOrigins != null) {
@@ -149,13 +159,15 @@ public class CorsPolicy extends InitializeObject {
     return this;
   }
 
-  public CorsPolicy anyOrigin() {
-    return setAllowOrigins(ANY);
+  public boolean isVaryOrigin() {
+    this.initialize();
+    return this.varyOrigin;
   }
 
-  public List<Pattern> getAllowOrigins() {
-    this.initialize();
-    return this.allowOrigins;
+  public CorsPolicy setVaryOrigin(boolean varyOrigin) {
+    this.assertNotInitialized();
+    this.varyOrigin = varyOrigin;
+    return this;
   }
 
   public Set<String> getAllowHeaders() {
@@ -176,11 +188,11 @@ public class CorsPolicy extends InitializeObject {
     return this;
   }
 
-  public CorsPolicy anyHeader() {
+  public CorsPolicy setAnyHeader() {
     return setAllowHeaders(ANY);
   }
 
-  public String getAllowHeadersString() {
+  public String getAllowHeadersAsString() {
     this.initialize();
     return this.allowHeadersString;
   }

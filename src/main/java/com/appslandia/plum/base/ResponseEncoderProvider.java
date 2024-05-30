@@ -18,39 +18,47 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.mocks;
+package com.appslandia.plum.base;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Collections;
+import java.util.Map;
 
-import com.appslandia.common.base.MappedID;
+import com.appslandia.common.base.CaseInsensitiveMap;
+import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.base.ActionFilter;
-import com.appslandia.plum.base.ActionFilterProvider;
+import com.appslandia.plum.utils.ServletUtils;
 
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MockActionFilterProvider extends ActionFilterProvider {
+public class ResponseEncoderProvider extends InitializeObject {
 
-  @Inject
-  protected Instance<ActionFilter> instance;
+  private Map<String, ResponseEncoder> responseEncoderMap = new CaseInsensitiveMap<>();
 
   @Override
   protected void init() throws Exception {
-    List<ActionFilter> impls = this.instance.stream().collect(Collectors.toList());
+    this.responseEncoderMap = Collections.unmodifiableMap(this.responseEncoderMap);
+  }
 
-    for (ActionFilter impl : impls) {
-      MappedID mappedID = impl.getClass().getDeclaredAnnotation(MappedID.class);
-      Asserts.notNull(mappedID);
+  public void addResponseEncoder(String encoding, ResponseEncoder impl) {
+    this.assertNotInitialized();
+    this.responseEncoderMap.put(encoding, impl);
+  }
 
-      addActionFilter(mappedID.value(), impl);
-    }
-    super.init();
+  public ResponseEncoder getResponseEncoder(String encoding) {
+    this.initialize();
+
+    ResponseEncoder impl = this.responseEncoderMap.get(encoding);
+    return Asserts.notNull(impl);
+  }
+
+  public String getBestEncoding(HttpServletRequest request) {
+    this.initialize();
+
+    return ServletUtils.getBestEncoding(request, this.responseEncoderMap.keySet());
   }
 }

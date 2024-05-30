@@ -63,10 +63,10 @@ public class LanguageProvider extends InitializeObject {
     return this.languageMap.get(languageId.toLowerCase(Locale.ENGLISH));
   }
 
-  public Language getLanguage(HttpServletRequest request) {
+  public Language getBestLanguage(HttpServletRequest request) {
     this.initialize();
 
-    String matchedLang = ServletUtils.parseLanguage(request, languageMap.keySet());
+    String matchedLang = ServletUtils.getBestLanguage(request, languageMap.keySet());
     if (matchedLang != null) {
       return this.languageMap.get(matchedLang);
     }

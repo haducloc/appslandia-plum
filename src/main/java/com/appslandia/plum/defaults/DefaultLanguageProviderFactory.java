@@ -83,7 +83,6 @@ public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvid
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

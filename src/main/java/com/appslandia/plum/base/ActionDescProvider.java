@@ -190,11 +190,12 @@ public abstract class ActionDescProvider extends InitializeObject {
             controllerClass.getDeclaredAnnotation(EnableCors.class));
         actionDesc.setEnableCors(enableCors);
 
-        // @EnableGzip
-        if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_GZIP)) {
-          EnableGzip enableGzip = ValueUtils.valueOrAlt(actionMethod.getDeclaredAnnotation(EnableGzip.class),
-              controllerClass.getDeclaredAnnotation(EnableGzip.class));
-          actionDesc.setEnableGzip(enableGzip);
+        // @EnableCompression
+        if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_COMPRESSION)) {
+          EnableCompression enableGzip = ValueUtils.valueOrAlt(
+              actionMethod.getDeclaredAnnotation(EnableCompression.class),
+              controllerClass.getDeclaredAnnotation(EnableCompression.class));
+          actionDesc.setEnableCompression(enableGzip);
         }
 
         // @EnableParts

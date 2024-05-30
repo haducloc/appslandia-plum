@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Collection;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -87,7 +89,7 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_allowed_anyOrigin() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").anyOrigin());
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin());
 
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
       getCurrentRequest().setHeader("Access-Control-Request-Method", "POST");
@@ -150,7 +152,7 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_notAllowed_requestMethod() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").anyOrigin().setAllowHeaders("X-Header"));
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin().setAllowHeaders("X-Header"));
 
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
       getCurrentRequest().setHeader("Access-Control-Request-Method", "PUT");
@@ -168,7 +170,7 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_allowed_allowHeaders() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").anyOrigin().setAllowHeaders("X-Header"));
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin().setAllowHeaders("X-Header"));
 
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
       getCurrentRequest().setHeader("Access-Control-Request-Method", "POST");
@@ -188,7 +190,7 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_notAllowed_requestHeaders() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").anyOrigin().setAllowHeaders("X-Header"));
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin().setAllowHeaders("X-Header"));
 
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
       getCurrentRequest().setHeader("Access-Control-Request-Method", "POST");
@@ -210,8 +212,8 @@ public class EnableCorsTest extends MockTestBase {
       getCurrentRequest().setHeader("Origin", "http://localhost");
 
       executeCurrent("POST", "http://localhost/app/testController/enableCorsAction");
-
       Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
       Assertions.assertNull(getCurrentResponse().getHeader(CorsPolicyHandler.HEADER_AC_ALLOW_ORIGIN));
 
     } catch (Exception ex) {
@@ -222,13 +224,12 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_crossOrigin() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").anyOrigin().setAllowHeaders("X-Header"));
-
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin().setAllowHeaders("X-Header"));
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
 
       executeCurrent("POST", "http://localhost/app/testController/enableCorsAction");
-
       Assertions.assertEquals(200, getCurrentResponse().getStatus());
+
       Assertions.assertEquals("*", getCurrentResponse().getHeader(CorsPolicyHandler.HEADER_AC_ALLOW_ORIGIN));
 
     } catch (Exception ex) {
@@ -239,14 +240,14 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_vary() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAllowOrigins("http://myDomain\\.com"));
-
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin());
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
 
       executeCurrent("POST", "http://localhost/app/testController/enableCorsAction");
-
       Assertions.assertEquals(200, getCurrentResponse().getStatus());
-      Assertions.assertNotNull(getCurrentResponse().getHeader(CorsPolicyHandler.HEADER_VARY));
+
+      Collection<String> vary = getCurrentResponse().getHeaders(CorsPolicyHandler.HEADER_VARY);
+      Assertions.assertTrue(vary.contains("Origin"));
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());
@@ -256,13 +257,14 @@ public class EnableCorsTest extends MockTestBase {
   @Test
   public void test_enableCorsAction_notVary() {
     try {
-      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").anyOrigin());
+      corsPolicyProvider.addCorsPolicy(new CorsPolicy().setName("testCors").setAnyOrigin().setVaryOrigin(false));
       getCurrentRequest().setHeader("Origin", "http://myDomain.com");
 
       executeCurrent("POST", "http://localhost/app/testController/enableCorsAction");
-
       Assertions.assertEquals(200, getCurrentResponse().getStatus());
-      Assertions.assertNull(getCurrentResponse().getHeader(CorsPolicyHandler.HEADER_VARY));
+
+      Collection<String> vary = getCurrentResponse().getHeaders(CorsPolicyHandler.HEADER_VARY);
+      Assertions.assertFalse(vary.contains("Origin"));
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());

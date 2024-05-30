@@ -74,7 +74,6 @@ public class DefaultConstDescProviderFactory implements CDIFactory<ConstDescProv
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

@@ -87,7 +87,6 @@ public class DefaultAuthorizePolicyProviderFactory implements CDIFactory<Authori
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

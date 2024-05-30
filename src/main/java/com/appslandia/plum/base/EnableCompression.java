@@ -18,39 +18,21 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.mocks;
+package com.appslandia.plum.base;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import com.appslandia.common.base.MappedID;
-import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.base.ActionFilter;
-import com.appslandia.plum.base.ActionFilterProvider;
-
-import jakarta.enterprise.inject.Instance;
-import jakarta.inject.Inject;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MockActionFilterProvider extends ActionFilterProvider {
-
-  @Inject
-  protected Instance<ActionFilter> instance;
-
-  @Override
-  protected void init() throws Exception {
-    List<ActionFilter> impls = this.instance.stream().collect(Collectors.toList());
-
-    for (ActionFilter impl : impls) {
-      MappedID mappedID = impl.getClass().getDeclaredAnnotation(MappedID.class);
-      Asserts.notNull(mappedID);
-
-      addActionFilter(mappedID.value(), impl);
-    }
-    super.init();
-  }
+@Target(value = { ElementType.TYPE, ElementType.METHOD })
+@Retention(value = RetentionPolicy.RUNTIME)
+@Documented
+public @interface EnableCompression {
 }

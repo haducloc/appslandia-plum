@@ -63,6 +63,7 @@ import com.appslandia.plum.base.ExecutorHandler;
 import com.appslandia.plum.base.FormatProviderFactory;
 import com.appslandia.plum.base.FormatProviderManager;
 import com.appslandia.plum.base.GroupFormatProvider;
+import com.appslandia.plum.base.GzipResponseEncoder;
 import com.appslandia.plum.base.HeaderPolicyProvider;
 import com.appslandia.plum.base.HttpAuthenticationMechanismBase;
 import com.appslandia.plum.base.IdentityValidator;
@@ -76,6 +77,8 @@ import com.appslandia.plum.base.RateLimitSkipper;
 import com.appslandia.plum.base.RemoteClientVerifier;
 import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
+import com.appslandia.plum.base.ResponseEncoder;
+import com.appslandia.plum.base.ResponseEncoderProvider;
 import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
@@ -294,8 +297,10 @@ public class MockContainer extends InitializeObject {
     factory.register(AuthHandler.class, MemBasicAuthHandler.class);
     factory.register(AuthHandler.class, MemBearerAuthHandler.class);
     factory.register(AuthHandler.class, MemFormAuthHandler.class);
-
     factory.register(AuthHandlerProvider.class, MockAuthHandlerProvider.class);
+
+    factory.register(ResponseEncoder.class, GzipResponseEncoder.class);
+    factory.register(ResponseEncoderProvider.class, MockResponseEncoderProvider.class);
 
     factory.register(MemUserDatabase.class, MemUserDatabase.class);
     factory.register(AuthTokenManager.class, MemAuthTokenManager.class);

@@ -70,7 +70,6 @@ public class DefaultAuthHandlerProviderFactory implements CDIFactory<AuthHandler
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

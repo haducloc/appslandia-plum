@@ -34,9 +34,9 @@ public class CorsPolicyTest {
 
   @Test
   public void test() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin();
     Assertions.assertNull(policy.getAllowHeaders());
-    Assertions.assertNull(policy.getAllowHeadersString());
+    Assertions.assertNull(policy.getAllowHeadersAsString());
     Assertions.assertNull(policy.getExposeHeaders());
 
     Assertions.assertFalse(policy.isAllowCredentials());
@@ -45,7 +45,7 @@ public class CorsPolicyTest {
 
   @Test
   public void test_anyOrigin() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin();
 
     Assertions.assertTrue(policy.isAnyOrigin());
     Assertions.assertTrue(policy.allowOrigin("http://myDomain.com"));
@@ -54,8 +54,8 @@ public class CorsPolicyTest {
 
   @Test
   public void test_anyHeader() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin().anyHeader();
-    Assertions.assertEquals("*", policy.getAllowHeadersString());
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin().setAnyHeader();
+    Assertions.assertEquals("*", policy.getAllowHeadersAsString());
   }
 
   @Test
@@ -69,7 +69,7 @@ public class CorsPolicyTest {
 
   @Test
   public void test_allowHeaders() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin();
     policy.setAllowHeaders("X-Header", "X-Header2");
 
     Assertions.assertTrue(policy.allowHeaders("X-Header"));
@@ -79,7 +79,7 @@ public class CorsPolicyTest {
 
   @Test
   public void test_setExposeHeaders() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin();
     policy.setExposeHeaders("X-Header", "X-Header2");
 
     Assertions.assertTrue(policy.getExposeHeaders().contains("X-Header"));
@@ -88,7 +88,7 @@ public class CorsPolicyTest {
 
   @Test
   public void test_setAllowAnyOrigin() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin();
     policy.setAllowCredentials(true);
 
     Assertions.assertTrue(policy.isAllowCredentials());
@@ -96,7 +96,7 @@ public class CorsPolicyTest {
 
   @Test
   public void test_setMaxAge() {
-    CorsPolicy policy = new CorsPolicy().setName("testCors").anyOrigin();
+    CorsPolicy policy = new CorsPolicy().setName("testCors").setAnyOrigin();
     policy.setMaxAge(365, TimeUnit.DAYS);
 
     Assertions.assertEquals(TimeUnit.SECONDS.convert(365, TimeUnit.DAYS), policy.getMaxAge());

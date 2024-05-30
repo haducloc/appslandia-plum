@@ -84,7 +84,6 @@ public class DefaultConverterProviderFactory implements CDIFactory<ConverterProv
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

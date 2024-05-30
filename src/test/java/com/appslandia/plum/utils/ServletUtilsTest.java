@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.utils;
 
+import java.util.Arrays;
 import java.util.Random;
 
 import org.junit.jupiter.api.Assertions;
@@ -182,5 +183,32 @@ public class ServletUtilsTest {
     String etag = "etag1";
     boolean notModified = ServletUtils.checkPrecondition(request, response, etag);
     Assertions.assertFalse(notModified);
+  }
+
+  @Test
+  public void test_getBestEncoding() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+
+    request.setHeader("Accept-Encoding", "*");
+    String encoding = ServletUtils.getBestEncoding(request, Arrays.asList("gzip", "br"));
+    Assertions.assertNull(encoding);
+  }
+
+  @Test
+  public void test_getBestEncoding_qvalue() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+
+    request.setHeader("Accept-Encoding", "gzip;q=0.8, deflate;q=0.6, br;q=1.0");
+    String encoding = ServletUtils.getBestEncoding(request, Arrays.asList("gzip", "br"));
+    Assertions.assertEquals("br", encoding);
+  }
+
+  @Test
+  public void test_getBestEncoding_unsupported() {
+    MockHttpServletRequest request = new MockHttpServletRequest(servletContext);
+
+    request.setHeader("Accept-Encoding", "gzip, deflate;q=0.6");
+    String encoding = ServletUtils.getBestEncoding(request, Arrays.asList("br"));
+    Assertions.assertNull(encoding);
   }
 }

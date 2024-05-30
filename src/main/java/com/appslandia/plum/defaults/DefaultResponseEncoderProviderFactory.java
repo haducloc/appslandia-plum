@@ -20,17 +20,13 @@
 
 package com.appslandia.plum.defaults;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.appslandia.common.base.MappedID;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
-import com.appslandia.plum.base.ActionFilter;
-import com.appslandia.plum.base.ActionFilterProvider;
+import com.appslandia.plum.base.ResponseEncoder;
+import com.appslandia.plum.base.ResponseEncoderProvider;
 
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -45,7 +41,7 @@ import jakarta.inject.Inject;
  *
  */
 @ApplicationScoped
-public class DefaultActionFilterProviderFactory implements CDIFactory<ActionFilterProvider> {
+public class DefaultResponseEncoderProviderFactory implements CDIFactory<ResponseEncoderProvider> {
 
   @Inject
   protected BeanManager beanManager;
@@ -55,33 +51,20 @@ public class DefaultActionFilterProviderFactory implements CDIFactory<ActionFilt
   @Produces
   @ApplicationScoped
   @Override
-  public ActionFilterProvider produce() {
-    final ActionFilterProvider impl = new ActionFilterProvider();
+  public ResponseEncoderProvider produce() {
+    final ResponseEncoderProvider impl = new ResponseEncoderProvider();
 
-    CDIUtils.scanReferences(this.beanManager, ActionFilter.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
+    CDIUtils.scanReferences(this.beanManager, ResponseEncoder.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
         (mappedId, bi) -> {
 
-          impl.addActionFilter(mappedId.value(), bi.get());
-
+          impl.addResponseEncoder(mappedId.value(), bi.get());
           beanInstances.add(bi);
         });
-
-    // @Supplier(ActionFilter.class)
-    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ActionFilter.class, (bi) -> {
-
-      Map<String, ActionFilter> m = ObjectUtils.cast(bi.get().get());
-
-      for (Entry<String, ActionFilter> entry : m.entrySet()) {
-
-        impl.addActionFilter(entry.getKey(), entry.getValue());
-      }
-      beanInstances.add(bi);
-    });
     return impl;
   }
 
   @Override
-  public void dispose(@Disposes ActionFilterProvider impl) {
+  public void dispose(@Disposes ResponseEncoderProvider impl) {
   }
 
   @PreDestroy

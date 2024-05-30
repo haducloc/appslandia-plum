@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 
 import com.appslandia.common.base.MappedID;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.base.ActionFilter;
-import com.appslandia.plum.base.ActionFilterProvider;
+import com.appslandia.plum.base.ResponseEncoder;
+import com.appslandia.plum.base.ResponseEncoderProvider;
 
 import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
@@ -36,20 +36,20 @@ import jakarta.inject.Inject;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class MockActionFilterProvider extends ActionFilterProvider {
+public class MockResponseEncoderProvider extends ResponseEncoderProvider {
 
   @Inject
-  protected Instance<ActionFilter> instance;
+  protected Instance<ResponseEncoder> instance;
 
   @Override
   protected void init() throws Exception {
-    List<ActionFilter> impls = this.instance.stream().collect(Collectors.toList());
+    List<ResponseEncoder> impls = this.instance.stream().collect(Collectors.toList());
 
-    for (ActionFilter impl : impls) {
+    for (ResponseEncoder impl : impls) {
       MappedID mappedID = impl.getClass().getDeclaredAnnotation(MappedID.class);
       Asserts.notNull(mappedID);
 
-      addActionFilter(mappedID.value(), impl);
+      addResponseEncoder(mappedID.value(), impl);
     }
     super.init();
   }

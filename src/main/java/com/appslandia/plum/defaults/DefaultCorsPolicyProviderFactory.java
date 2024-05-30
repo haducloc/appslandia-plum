@@ -74,7 +74,6 @@ public class DefaultCorsPolicyProviderFactory implements CDIFactory<CorsPolicyPr
 
   @PreDestroy
   public void dispose() {
-
     this.beanInstances.destroy();
   }
 }

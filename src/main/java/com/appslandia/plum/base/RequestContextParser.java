@@ -154,23 +154,23 @@ public class RequestContextParser {
   }
 
   protected Language parseLanguage(HttpServletRequest request) {
-    // Languages > 1?
-    if (this.languageProvider.getLanguages().size() > 1) {
+    if (this.languageProvider.getLanguages().size() == 1) {
+      return this.languageProvider.getDefaultLanguage();
+    }
 
-      PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-      if (prefCookie != null) {
+    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
+    if (prefCookie != null) {
 
-        String prefLang = prefCookie.getString(PrefCookie.PARAM_LANGUAGE);
-        if (prefLang != null) {
+      String prefLang = prefCookie.getString(PrefCookie.PARAM_LANGUAGE);
+      if (prefLang != null) {
 
-          Language language = this.languageProvider.getLanguage(prefLang);
-          if (language != null) {
-            return language;
-          }
+        Language language = this.languageProvider.getLanguage(prefLang);
+        if (language != null) {
+          return language;
         }
       }
     }
-    return this.languageProvider.getLanguage(request);
+    return this.languageProvider.getBestLanguage(request);
   }
 
   protected String getModule(HttpServletRequest request, ActionDesc actionDesc) {

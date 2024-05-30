@@ -71,7 +71,7 @@ public class CorsPolicyHandler {
 
     // Allow-Origin
     response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(crossOrigin));
-    if (!corsPolicy.isAnyOrigin()) {
+    if (corsPolicy.isVaryOrigin()) {
       response.addHeader(HEADER_VARY, HEADER_ORIGIN);
     }
 
@@ -108,7 +108,7 @@ public class CorsPolicyHandler {
 
     // Allow-Origin
     response.setHeader(HEADER_AC_ALLOW_ORIGIN, corsPolicy.getAllowOrigin(origin));
-    if (!corsPolicy.isAnyOrigin()) {
+    if (corsPolicy.isVaryOrigin()) {
       response.addHeader(HEADER_VARY, HEADER_ORIGIN);
     }
 
@@ -116,8 +116,8 @@ public class CorsPolicyHandler {
     response.setHeader(HEADER_AC_ALLOW_METHODS, requestContext.getActionDesc().getAllowMethodsString());
 
     // Allow-Headers
-    if (corsPolicy.getAllowHeadersString() != null) {
-      response.setHeader(HEADER_AC_ALLOW_HEADERS, corsPolicy.getAllowHeadersString());
+    if (corsPolicy.getAllowHeadersAsString() != null) {
+      response.setHeader(HEADER_AC_ALLOW_HEADERS, corsPolicy.getAllowHeadersAsString());
     }
 
     // Allow-Credentials

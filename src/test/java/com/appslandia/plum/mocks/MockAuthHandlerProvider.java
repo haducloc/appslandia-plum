@@ -39,17 +39,17 @@ import jakarta.inject.Inject;
 public class MockAuthHandlerProvider extends AuthHandlerProvider {
 
   @Inject
-  protected Instance<AuthHandler> handlerInstance;
+  protected Instance<AuthHandler> instance;
 
   @Override
   protected void init() throws Exception {
-    List<AuthHandler> handlers = this.handlerInstance.stream().collect(Collectors.toList());
+    List<AuthHandler> impls = this.instance.stream().collect(Collectors.toList());
 
-    for (AuthHandler authHandler : handlers) {
-      MappedID mappedId = authHandler.getClass().getDeclaredAnnotation(MappedID.class);
+    for (AuthHandler impl : impls) {
+      MappedID mappedId = impl.getClass().getDeclaredAnnotation(MappedID.class);
       Asserts.notNull(mappedId);
 
-      addAuthHandler(mappedId.value(), authHandler);
+      addAuthHandler(mappedId.value(), impl);
     }
     super.init();
   }

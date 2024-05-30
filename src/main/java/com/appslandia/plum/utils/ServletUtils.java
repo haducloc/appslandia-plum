@@ -273,11 +273,6 @@ public class ServletUtils {
     return appDir;
   }
 
-  public static boolean isGzipAccepted(HttpServletRequest request) {
-    String ae = request.getHeader("Accept-Encoding");
-    return (ae != null) && (ae.toLowerCase(Locale.ENGLISH).contains("gzip"));
-  }
-
   public static boolean isAjaxRequest(HttpServletRequest request) {
     String xrw = request.getHeader("X-Requested-With");
     return "XMLHttpRequest".equalsIgnoreCase(xrw);
@@ -298,7 +293,7 @@ public class ServletUtils {
     return allowType.equalsIgnoreCase(mimeType);
   }
 
-  public static String parseLanguage(HttpServletRequest request, Collection<String> supportedLanguages) {
+  public static String getBestLanguage(HttpServletRequest request, Collection<String> supportedLanguages) {
     Enumeration<Locale> requestLocales = request.getLocales();
     while (requestLocales.hasMoreElements()) {
       Locale requestLocale = requestLocales.nextElement();
@@ -310,6 +305,51 @@ public class ServletUtils {
       }
     }
     return null;
+  }
+
+  public static String getBestEncoding(HttpServletRequest request, Collection<String> supportedEncodings) {
+    String acceptEncoding = request.getHeader("Accept-Encoding");
+    if (acceptEncoding == null || acceptEncoding.isEmpty()) {
+      return null;
+    }
+
+    String bestEncType = null;
+    double bestQValue = 0.0;
+
+    String[] encodings = acceptEncoding.split(",");
+    for (String encoding : encodings) {
+
+      String[] parts = encoding.split(";");
+      String encType = parts[0].trim();
+      double qValue = 1.0;
+
+      if (parts.length > 1 && parts[1].trim().startsWith("q=")) {
+        try {
+          qValue = Double.parseDouble(parts[1].trim().substring(2));
+        } catch (NumberFormatException ex) {
+        }
+      }
+
+      // identity & *
+      if (("identity".equalsIgnoreCase(encType) || "*".equals(encType)) && (qValue > bestQValue)) {
+        bestEncType = encType;
+        bestQValue = qValue;
+      }
+
+      // supportedEncodings
+      for (String type : supportedEncodings) {
+        if (type.equals(encType) && qValue > bestQValue) {
+
+          bestEncType = encType;
+          bestQValue = qValue;
+        }
+      }
+    }
+
+    if ("identity".equalsIgnoreCase(bestEncType) || "*".equals(bestEncType)) {
+      bestEncType = null;
+    }
+    return bestEncType;
   }
 
   public static Object getMutex(HttpSession session) {
