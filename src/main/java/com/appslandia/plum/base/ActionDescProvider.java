@@ -192,10 +192,10 @@ public abstract class ActionDescProvider extends InitializeObject {
 
         // @EnableCompression
         if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_COMPRESSION)) {
-          EnableCompression enableGzip = ValueUtils.valueOrAlt(
+          EnableCompression enableCompression = ValueUtils.valueOrAlt(
               actionMethod.getDeclaredAnnotation(EnableCompression.class),
               controllerClass.getDeclaredAnnotation(EnableCompression.class));
-          actionDesc.setEnableCompression(enableGzip);
+          actionDesc.setEnableCompression(enableCompression);
         }
 
         // @EnableParts
