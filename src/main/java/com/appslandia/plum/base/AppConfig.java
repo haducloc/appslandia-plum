@@ -73,8 +73,9 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String HEADER_POLICIES_REFERRER_POLICY = "header_policies.referrer_policy";
 
   public static final String HEADER_POLICIES_REPORT_TO = "header_policies.report_to";
-  public static final String HEADER_REPORTING_ENDPOINTS = "header_policies.reporting_endpoints";
+  public static final String HEADER_POLICIES_REPORTING_ENDPOINTS = "header_policies.reporting_endpoints";
   public static final String HEADER_POLICIES_CSP_REPORT_ONLY = "header_policies.csp_report_only";
+  public static final String HEADER_POLICIES_VARY = "header_policies.vary";
 
   protected SimpleConfig config;
 

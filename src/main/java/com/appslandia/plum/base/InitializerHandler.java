@@ -158,7 +158,7 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // Reporting-Endpoints
-    headerValue = this.appConfig.getString(AppConfig.HEADER_REPORTING_ENDPOINTS);
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORTING_ENDPOINTS);
     if (headerValue != null) {
       response.setHeader("Reporting-Endpoints", headerValue);
     }
@@ -170,6 +170,8 @@ public class InitializerHandler extends HttpFilter {
     if (this.languageProvider.getLanguages().size() > 1) {
       response.addHeader("Vary", "Accept-Language");
     }
+    String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_POLICIES_VARY);
+    Arrays.stream(varyHeaders).forEach(h -> response.addHeader("Vary", h));
 
     // Header Policies
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
