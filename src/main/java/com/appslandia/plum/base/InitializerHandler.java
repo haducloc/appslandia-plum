@@ -210,8 +210,9 @@ public class InitializerHandler extends HttpFilter {
 
       // Consume Type
       if (requestContext.getActionDesc().getConsumeType() != null) {
-        if (!ServletUtils.allowContentType(request.getContentType(),
+        if (!ServletUtils.isMediaTypeSupported(request.getContentType(),
             requestContext.getActionDesc().getConsumeType().value())) {
+
           throw new HttpException(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
               requestContext.res(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE))
               .setTitleKey(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE);

@@ -284,13 +284,13 @@ public class ServletUtils {
         dispositionType + "; filename=\"" + URLEncoding.encodePath(fileName) + "\"");
   }
 
-  public static boolean allowContentType(String contentType, String allowType) {
-    if (contentType == null) {
+  public static boolean isMediaTypeSupported(String checkingContentType, String supportedMediaType) {
+    if (checkingContentType == null) {
       return false;
     }
-    int idx = contentType.indexOf(';');
-    String mimeType = (idx < 0) ? contentType : contentType.substring(0, idx);
-    return allowType.equalsIgnoreCase(mimeType);
+    int idx = checkingContentType.indexOf(';');
+    String mimeType = (idx < 0) ? checkingContentType : checkingContentType.substring(0, idx);
+    return supportedMediaType.equalsIgnoreCase(mimeType);
   }
 
   public static String getBestLanguage(HttpServletRequest request, Collection<String> supportedLanguages) {

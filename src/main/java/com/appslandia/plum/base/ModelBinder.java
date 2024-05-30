@@ -310,7 +310,7 @@ public class ModelBinder {
     // Part
     Part part = request.getPart(partName);
     Asserts.notNull(part);
-    Asserts.isTrue(ServletUtils.allowContentType(part.getContentType(), MimeTypes.APP_JSON));
+    Asserts.isTrue(ServletUtils.isMediaTypeSupported(part.getContentType(), MimeTypes.APP_JSON));
 
     // Part JSON
     T model = null;
