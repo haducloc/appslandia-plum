@@ -89,6 +89,14 @@ public class InitializerHandler extends HttpFilter {
   @Inject
   protected RemoteClientVerifier remoteClientVerifier;
 
+  protected boolean enableEtag(HttpServletRequest request, RequestContext requestContext) {
+    return requestContext.getActionDesc().getEnableEtag() != null;
+  }
+
+  protected boolean enableCompression(HttpServletRequest request, RequestContext requestContext) {
+    return requestContext.getActionDesc().getEnableCompression() != null;
+  }
+
   private static final class HeaderValueFormatHolder {
     private static final ConcurrentMap<String, StringFormat> FORMATS = new ConcurrentHashMap<>();
   }
@@ -164,12 +172,13 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // Vary
-    if (requestContext.getActionDesc().getEnableCompression() != null) {
+    if (enableCompression(request, requestContext)) {
       response.addHeader("Vary", "Accept-Encoding");
     }
     if (this.languageProvider.getLanguages().size() > 1) {
       response.addHeader("Vary", "Accept-Language");
     }
+
     String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_POLICIES_VARY);
     Arrays.stream(varyHeaders).forEach(h -> response.addHeader("Vary", h));
 
@@ -310,12 +319,12 @@ public class InitializerHandler extends HttpFilter {
       // Rate Limit
       this.rateLimitHandler.checkRequest(request, requestContext);
 
-      // Encoding/Compression
-      String bestEncoding = this.responseEncoderProvider.getBestEncoding(request);
-      boolean willEncode = (requestContext.getActionDesc().getEnableCompression() != null) && (bestEncoding != null);
+      // Compression (Encoding)
+      String compressionType = this.responseEncoderProvider.getBestEncoding(request);
+      boolean handleCompression = (compressionType != null) && enableCompression(request, requestContext);
 
       // ETAG
-      if ((requestContext.getActionDesc().getEnableEtag() != null) && requestContext.isGetOrHead()) {
+      if (requestContext.isGetOrHead() && enableEtag(request, requestContext)) {
         ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
         chain.doFilter(request, wrapper);
 
@@ -329,8 +338,8 @@ public class InitializerHandler extends HttpFilter {
           if (!ServletUtils.checkNotModified(request, response,
               ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
 
-            if (willEncode) {
-              ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
+            if (handleCompression) {
+              ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(compressionType);
               responseEncoder.encode(response, wrapper.getContent());
 
             } else {
@@ -346,9 +355,9 @@ public class InitializerHandler extends HttpFilter {
         return;
       }
 
-      // Encoding/Compression (No ETAG)
-      if (willEncode) {
-        ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(bestEncoding);
+      // Compression (Encoding) (No ETAG)
+      if (handleCompression) {
+        ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(compressionType);
         responseEncoder.encode(request, response, chain);
         return;
       }
