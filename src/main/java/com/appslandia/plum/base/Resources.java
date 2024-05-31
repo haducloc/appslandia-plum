@@ -54,11 +54,8 @@ public class Resources implements MapAccessor<String, String> {
 
   public static final String ERROR_INTERNAL_SERVER_ERROR = "errors.internal_server_error";
   public static final String ERROR_PRECONDITION_FAILED = "errors.precondition_failed";
-
   public static final String ERROR_TOO_MANY_REQUESTS = "errors.too_many_requests";
-  public static final String ERROR_MAX_ACCESSES = "errors.max_accesses";
-  public static final String ERROR_RATE_LIMIT_1 = "errors.rate_limit_1";
-  public static final String ERROR_RATE_LIMIT_2 = "errors.rate_limit_2";
+  public static final String ERROR_TOO_MANY_REQUESTS_CLIENT = "errors.too_many_requests_client";
 
   public static final String ERROR_CSRF_FAILED = "errors.csrf_failed";
   public static final String ERROR_CAPTCHA_FAILED = "errors.captcha_failed";

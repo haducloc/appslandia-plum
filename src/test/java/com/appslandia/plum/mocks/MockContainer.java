@@ -72,8 +72,8 @@ import com.appslandia.plum.base.InstanceKey;
 import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.ModelBinder;
 import com.appslandia.plum.base.PrefCookieHandler;
-import com.appslandia.plum.base.RateLimitHandler;
-import com.appslandia.plum.base.RateLimitSkipper;
+import com.appslandia.plum.base.AccessRateHandler;
+import com.appslandia.plum.base.AccessRateSkipper;
 import com.appslandia.plum.base.RemoteClientVerifier;
 import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
@@ -88,7 +88,7 @@ import com.appslandia.plum.defaults.DefaultClientIdParser;
 import com.appslandia.plum.defaults.DefaultFormatProviderFactory;
 import com.appslandia.plum.defaults.DefaultHttpAuthenticationMechanism;
 import com.appslandia.plum.defaults.DefaultIdentityValidator;
-import com.appslandia.plum.defaults.DefaultRateLimitSkipper;
+import com.appslandia.plum.defaults.DefaultAccessRateSkipper;
 import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
 import com.appslandia.plum.defaults.DefaultServletModuleParser;
 import com.appslandia.plum.defaults.MemAppCacheManager;
@@ -268,8 +268,8 @@ public class MockContainer extends InitializeObject {
     factory.register(AppLogger.class, MockAppLogger.class);
     factory.register(ExceptionHandler.class, MockExceptionHandler.class);
 
-    factory.register(RateLimitSkipper.class, DefaultRateLimitSkipper.class);
-    factory.register(RateLimitHandler.class, MockRateLimitHandler.class);
+    factory.register(AccessRateSkipper.class, DefaultAccessRateSkipper.class);
+    factory.register(AccessRateHandler.class, MockAccessRateHandler.class);
 
     factory.register(JsonProcessor.class, GsonProcessor.class);
     factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.COMPACT });

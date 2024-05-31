@@ -84,7 +84,7 @@ public class InitializerHandler extends HttpFilter {
   protected RequestContextParser requestContextParser;
 
   @Inject
-  protected RateLimitHandler rateLimitHandler;
+  protected AccessRateHandler accessRateHandler;
 
   @Inject
   protected RemoteClientVerifier remoteClientVerifier;
@@ -317,8 +317,8 @@ public class InitializerHandler extends HttpFilter {
         }
       }
 
-      // Rate Limit
-      this.rateLimitHandler.checkRequest(request, requestContext);
+      // Check access rate
+      this.accessRateHandler.checkRequest(request, requestContext);
 
       // Compression (Encoding)
       String compressionType = this.responseEncoderProvider.getBestEncoding(request);

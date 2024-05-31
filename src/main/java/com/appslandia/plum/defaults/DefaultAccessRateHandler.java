@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.defaults;
 
-import com.appslandia.plum.base.RateLimitHandler;
+import com.appslandia.plum.base.AccessRateHandler;
 import com.appslandia.plum.base.TooManyRequestsException;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -31,7 +31,7 @@ import jakarta.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class DefaultRateLimitHandler extends RateLimitHandler {
+public class DefaultAccessRateHandler extends AccessRateHandler {
 
   @Override
   protected void checkClient(String clientId) throws TooManyRequestsException {

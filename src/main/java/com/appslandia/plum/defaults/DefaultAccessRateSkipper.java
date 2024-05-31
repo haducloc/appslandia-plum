@@ -18,8 +18,12 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.base;
+package com.appslandia.plum.defaults;
 
+import com.appslandia.plum.base.AccessRateSkipper;
+import com.appslandia.plum.base.RequestContext;
+
+import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -27,7 +31,11 @@ import jakarta.servlet.http.HttpServletRequest;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public interface RateLimitSkipper {
+@ApplicationScoped
+public class DefaultAccessRateSkipper implements AccessRateSkipper {
 
-  boolean skipRequest(HttpServletRequest request, RequestContext requestContext);
+  @Override
+  public boolean skipRequest(HttpServletRequest request, RequestContext requestContext) {
+    return false;
+  }
 }

@@ -18,34 +18,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.base;
+package com.appslandia.plum.mocks;
 
-import com.appslandia.common.base.InitializeObject;
-
-import jakarta.inject.Inject;
-import jakarta.servlet.http.HttpServletRequest;
+import com.appslandia.plum.base.AccessRateHandler;
+import com.appslandia.plum.base.TooManyRequestsException;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class RateLimitHandler extends InitializeObject {
-
-  @Inject
-  protected RateLimitSkipper rateLimitSkipper;
+public class MockAccessRateHandler extends AccessRateHandler {
 
   @Override
   protected void init() throws Exception {
   }
 
-  public void checkRequest(HttpServletRequest request, RequestContext requestContext) throws TooManyRequestsException {
-    this.initialize();
-
-    if (!this.rateLimitSkipper.skipRequest(request, requestContext)) {
-      checkClient(requestContext.getClientId());
-    }
+  @Override
+  protected void checkClient(String clientId) throws TooManyRequestsException {
   }
-
-  protected abstract void checkClient(String clientId) throws TooManyRequestsException;
 }
