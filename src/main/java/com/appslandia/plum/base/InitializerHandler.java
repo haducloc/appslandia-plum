@@ -211,6 +211,11 @@ public class InitializerHandler extends HttpFilter {
             .setTitleKey(Resources.ERROR_NOT_FOUND);
       }
 
+      // NOT OPTIONS
+      if (!HttpMethod.OPTIONS.equals(request.getMethod())) {
+        initialize(request, response, requestContext);
+      }
+
       // Allow Method?
       if (!requestContext.getActionDesc().getAllowMethods().contains(request.getMethod())) {
         throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
@@ -248,9 +253,6 @@ public class InitializerHandler extends HttpFilter {
         doOptions(request, response, requestContext);
         return;
       }
-
-      // Initialize
-      initialize(request, response, requestContext);
 
       // RequestWrapper
       request = new RequestWrapper(request, requestContext.getPathParamMap());
