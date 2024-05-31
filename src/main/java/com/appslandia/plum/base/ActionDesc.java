@@ -113,10 +113,6 @@ public class ActionDesc {
     return this.pathParamCount;
   }
 
-  protected void setPathParamCount(int pathParamCount) {
-    this.pathParamCount = pathParamCount;
-  }
-
   public String getModule() {
     return this.module;
   }
