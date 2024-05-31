@@ -110,7 +110,7 @@ public class RequestContextParser {
     List<String> pathItems = parsePathItems(request);
     String testPathLanguage = !pathItems.isEmpty() ? pathItems.get(0) : null;
 
-    // Initialize localization context
+    // Initialize Localization
     initLanguageContext(request, context, testPathLanguage);
 
     if (context.isPathLanguage()) {

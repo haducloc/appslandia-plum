@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
 
 import jakarta.servlet.DispatcherType;
@@ -37,9 +38,7 @@ import jakarta.servlet.ServletException;
  */
 public abstract class HandlerMappingsRegister implements Startup {
 
-  protected String[] getLanguageIds() {
-    return null;
-  }
+  protected abstract String[] getLanguageIds();
 
   protected DynMultipartConfig buildMultipartConfig() {
     return new DynMultipartConfig();
@@ -53,6 +52,7 @@ public abstract class HandlerMappingsRegister implements Startup {
     urlMappings.add("");
 
     String[] languages = getLanguageIds();
+    Asserts.notNull(languages);
 
     for (Class<?> controllerClass : scanner.getControllerClasses()) {
       String controller = ActionDescProvider.getController(controllerClass);
@@ -60,26 +60,24 @@ public abstract class HandlerMappingsRegister implements Startup {
       // /{controller}/*
       urlMappings.add(STR.fmt("/{}/*", controller));
 
-      // Only register language mappings if languages > 1
-      if ((languages != null) && (languages.length > 1)) {
-        for (String language : languages) {
-
-          // /{language}/{controller}/*
-          urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
-        }
+      // /{language}/{controller}/*
+      for (String language : languages) {
+        urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
       }
     }
 
+    // EnableParts
     boolean partsSupported = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
     DynMultipartConfig multipartConfig = partsSupported ? buildMultipartConfig() : null;
 
+    // ExecutorHandler
     String executorName = ExecutorHandler.class.getSimpleName();
-    String initializerName = InitializerHandler.class.getSimpleName();
-
     new DynServletRegister().servletName(executorName).servletClass(ExecutorHandler.class)
         .urlPatterns(urlMappings.toArray(new String[urlMappings.size()])).multipartConfig(multipartConfig)
         .registerTo(sc);
 
+    // InitializerHandler
+    String initializerName = InitializerHandler.class.getSimpleName();
     new DynFilterRegister().filterName(initializerName).filterClass(InitializerHandler.class).servletNames(executorName)
         .dispatcherTypes(DispatcherType.REQUEST).registerTo(sc);
   }
