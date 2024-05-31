@@ -154,10 +154,13 @@ public class ExecutorHandler extends HttpServlet {
 
   protected void onResultExecuting(HttpServletRequest request, HttpServletResponse response,
       RequestContext requestContext, Object result) throws Exception {
+
     // @CacheControl
     if ((requestContext.getActionDesc().getCacheControl() != null) && requestContext.isGetOrHead()) {
-      this.headerPolicyProvider.getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value())
-          .writePolicy(request, response, requestContext);
+
+      HeaderPolicy headerPolicy = this.headerPolicyProvider
+          .getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value());
+      headerPolicy.writePolicy(request, response, requestContext);
     }
   }
 
