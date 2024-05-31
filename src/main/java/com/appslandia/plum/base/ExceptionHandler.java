@@ -72,8 +72,8 @@ public class ExceptionHandler {
       return;
     }
 
-    // Reset originResp
-    originResp.reset();
+    // Reset buffer
+    originResp.resetBuffer();
 
     writeHeaders(originResp, exception);
     writeException(request, originResp, exception);
