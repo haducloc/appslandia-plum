@@ -36,7 +36,7 @@ import jakarta.servlet.ServletException;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class HandlerMappingsRegister implements Startup {
+public abstract class DynHandlersRegister implements Startup {
 
   protected abstract String[] getLanguageIds();
 
@@ -47,20 +47,27 @@ public abstract class HandlerMappingsRegister implements Startup {
   @Override
   public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
     ActionScanner scanner = ActionScanner.getInstance();
-
     Set<String> urlMappings = new TreeSet<>();
+
+    // Home
     urlMappings.add("");
 
     String[] languages = getLanguageIds();
     Asserts.notNull(languages);
 
+    // /language and /language/
+    for (String language : languages) {
+      urlMappings.add(STR.fmt("/{}", language));
+      urlMappings.add(STR.fmt("/{}/", language));
+    }
+
     for (Class<?> controllerClass : scanner.getControllerClasses()) {
       String controller = ActionDescProvider.getController(controllerClass);
 
-      // /{controller}/*
+      // /controller/*
       urlMappings.add(STR.fmt("/{}/*", controller));
 
-      // /{language}/{controller}/*
+      // /language/controller/*
       for (String language : languages) {
         urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
       }
