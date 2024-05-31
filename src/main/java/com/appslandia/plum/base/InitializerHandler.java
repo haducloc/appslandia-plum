@@ -229,12 +229,13 @@ public class InitializerHandler extends HttpFilter {
       }
 
       // Language
-      if (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PATH_LANG)) {
-        if (!requestContext.isGetOrHead()) {
-          throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
+      if ((requestContext.isCookieLanguage() && (this.languageProvider.getLanguages().size() > 1))
+          || (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PATH_LANG))) {
+
+        if (requestContext.isGetOrHead()) {
+          redirectLang(request, response, requestContext);
+          return;
         }
-        redirectLang(request, response, requestContext);
-        return;
       }
 
       // Allow Client

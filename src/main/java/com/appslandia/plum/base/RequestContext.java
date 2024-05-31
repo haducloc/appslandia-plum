@@ -39,6 +39,8 @@ public class RequestContext {
   public static final String REQUEST_ATTRIBUTE_ID = "ctx";
 
   private boolean pathLanguage;
+  private boolean cookieLanguage;
+
   private FormatProvider formatProvider;
   private Resources resources;
   private ConverterProvider converterProvider;
@@ -57,6 +59,8 @@ public class RequestContext {
 
     RequestContext context = new RequestContext();
     context.pathLanguage = this.pathLanguage;
+    context.cookieLanguage = this.cookieLanguage;
+
     context.formatProvider = this.formatProvider;
     context.resources = this.resources;
     context.converterProvider = this.converterProvider;
@@ -101,6 +105,14 @@ public class RequestContext {
 
   protected void setPathLanguage(boolean pathLanguage) {
     this.pathLanguage = pathLanguage;
+  }
+
+  public boolean isCookieLanguage() {
+    return this.cookieLanguage;
+  }
+
+  protected void setCookieLanguage(boolean cookieLanguage) {
+    this.cookieLanguage = cookieLanguage;
   }
 
   public FormatProvider getFormatProvider() {
