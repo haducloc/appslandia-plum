@@ -211,10 +211,8 @@ public class InitializerHandler extends HttpFilter {
             .setTitleKey(Resources.ERROR_NOT_FOUND);
       }
 
-      // NOT OPTIONS
-      if (!HttpMethod.OPTIONS.equals(request.getMethod())) {
-        initialize(request, response, requestContext);
-      }
+      // Initialize
+      initialize(request, response, requestContext);
 
       // Allow Method?
       if (!requestContext.getActionDesc().getAllowMethods().contains(request.getMethod())) {
