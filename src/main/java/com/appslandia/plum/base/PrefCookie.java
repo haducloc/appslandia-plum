@@ -20,12 +20,15 @@
 
 package com.appslandia.plum.base;
 
+import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.Config;
 import com.appslandia.common.base.MapWrapper;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -49,37 +52,56 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
   }
 
   @Override
+  public Iterator<String> getKeys() {
+    return this.map.keySet().iterator();
+  }
+
+  @Override
   public String getString(String key) {
     return this.map.get(key);
   }
 
   public PrefCookie set(String key, String value) {
-    this.map.put(key, value);
+    Asserts.notNull(key);
+    Asserts.notNull(value);
+
+    this.map.put(key, value.trim());
     return this;
   }
 
   public PrefCookie set(String key, boolean value) {
+    Asserts.notNull(key);
+
     this.map.put(key, Boolean.toString(value));
     return this;
   }
 
   public PrefCookie set(String key, int value) {
+    Asserts.notNull(key);
+
     this.map.put(key, Integer.toString(value));
     return this;
   }
 
   public PrefCookie set(String key, long value) {
+    Asserts.notNull(key);
+
     this.map.put(key, Long.toString(value));
     return this;
   }
 
-  public PrefCookie set(String key, float value) {
-    this.map.put(key, Float.toString(value));
+  public PrefCookie set(String key, double value) {
+    Asserts.notNull(key);
+
+    this.map.put(key, Double.toString(value));
     return this;
   }
 
-  public PrefCookie set(String key, double value) {
-    this.map.put(key, Double.toString(value));
+  public PrefCookie set(String key, BigDecimal value) {
+    Asserts.notNull(key);
+    Asserts.notNull(value);
+
+    this.map.put(key, value.toPlainString());
     return this;
   }
 

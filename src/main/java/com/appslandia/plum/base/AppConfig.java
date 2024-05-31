@@ -21,6 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.math.BigDecimal;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -148,6 +149,12 @@ public class AppConfig extends InitializeObject implements Config {
 
   public String getJspPath(String path) {
     return getJspBase().append(path).toString();
+  }
+
+  @Override
+  public Iterator<String> getKeys() {
+    this.initialize();
+    return this.config.getKeys();
   }
 
   @Override
