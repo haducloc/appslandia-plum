@@ -41,7 +41,7 @@ public class ActionDesc {
   private String module;
 
   private List<String> allowMethods;
-  private String allowMethodsString;
+  private String methodsAsString;
   private ConsumeType consumeType;
   private EnableFilters enableFilters;
 
@@ -131,15 +131,11 @@ public class ActionDesc {
 
   protected void setAllowMethods(List<String> allowMethods) {
     this.allowMethods = allowMethods;
-    this.allowMethodsString = String.join(", ", allowMethods);
+    this.methodsAsString = String.join(", ", allowMethods);
   }
 
-  public String getAllowMethodsString() {
-    return this.allowMethodsString;
-  }
-
-  protected void setAllowMethodsString(String allowMethodsString) {
-    this.allowMethodsString = allowMethodsString;
+  public String getMethodsAsString() {
+    return this.methodsAsString;
   }
 
   public ConsumeType getConsumeType() {

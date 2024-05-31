@@ -113,7 +113,7 @@ public class CorsPolicyHandler {
     }
 
     // Allow-Methods
-    response.setHeader(HEADER_AC_ALLOW_METHODS, requestContext.getActionDesc().getAllowMethodsString());
+    response.setHeader(HEADER_AC_ALLOW_METHODS, requestContext.getActionDesc().getMethodsAsString());
 
     // Allow-Headers
     if (corsPolicy.getAllowHeadersAsString() != null) {
