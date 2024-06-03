@@ -34,54 +34,48 @@ import com.appslandia.common.utils.Asserts;
  */
 public class SortConfig extends InitializeObject {
 
-  private Map<String, Boolean> sortBys = new HashMap<>();
-  private String sortDefault;
+  private Map<String, Boolean> fields = new HashMap<>();
+  private String defBy;
 
   @Override
   protected void init() throws Exception {
-    Asserts.notNull(this.sortDefault);
-
-    this.sortBys = Collections.unmodifiableMap(this.sortBys);
+    Asserts.notNull(this.defBy);
+    this.fields = Collections.unmodifiableMap(this.fields);
   }
 
-  public SortConfig asc(String... ascFields) {
+  public SortConfig asc(String... fieldNames) {
     assertNotInitialized();
 
-    for (String sortBy : ascFields) {
-      this.sortBys.put(sortBy, true);
+    for (String fieldName : fieldNames) {
+      this.fields.put(fieldName, true);
     }
     return this;
   }
 
-  public SortConfig desc(String... descFields) {
+  public SortConfig desc(String... fieldNames) {
     assertNotInitialized();
 
-    for (String sortBy : descFields) {
-      this.sortBys.put(sortBy, false);
+    for (String fieldName : fieldNames) {
+      this.fields.put(fieldName, false);
     }
     return this;
   }
 
-  public SortConfig sortDefault(String sortDefault) {
+  public SortConfig defBy(String fieldName) {
     assertNotInitialized();
 
-    Asserts.isTrue(this.sortBys.containsKey(sortDefault));
-    this.sortDefault = sortDefault;
+    Asserts.isTrue(this.fields.containsKey(fieldName));
+    this.defBy = fieldName;
     return this;
   }
 
-  public String sortDefault() {
+  public String getDefBy() {
     initialize();
-    return this.sortDefault;
+    return this.defBy;
   }
 
-  public Boolean sortAsc(String fieldName) {
+  public Map<String, Boolean> getFields() {
     initialize();
-    return this.sortBys.get(fieldName);
-  }
-
-  public boolean contains(String fieldName) {
-    initialize();
-    return this.sortBys.containsKey(fieldName);
+    return this.fields;
   }
 }

@@ -38,25 +38,35 @@ public class SortModel {
     this.config = config;
   }
 
-  public SortModel current(String sortBy, Boolean sortAsc) {
-    this.sortBy = this.config.contains(sortBy) ? sortBy : this.config.sortDefault();
-    this.sortAsc = (sortAsc != null) ? sortAsc : this.config.sortAsc(this.sortBy);
+  public SortModel setCurrent(String sortBy, Boolean sortAsc) {
+    if (sortBy == null || !this.config.getFields().containsKey(sortBy)) {
+      this.sortBy = this.config.getDefBy();
+    } else {
+      this.sortBy = sortBy;
+    }
+    this.sortAsc = (sortAsc != null) ? sortAsc : this.config.getFields().get(this.sortBy);
     return this;
   }
 
-  public String sortBy() {
+  public String getSortBy() {
     return Asserts.notNull(this.sortBy);
   }
 
-  public boolean sortAsc() {
+  public boolean getSortAsc() {
     return Asserts.notNull(this.sortAsc);
   }
 
-  public Boolean sortAsc(String fieldName) {
-    return this.sortBy().equals(fieldName) ? this.sortAsc() : null;
+  public Boolean nextState(String fieldName) {
+    Asserts.isTrue(this.config.getFields().containsKey(fieldName));
+    return this.getSortBy().equals(fieldName) ? !this.getSortAsc() : null;
   }
 
-  public Boolean flipAsc(String fieldName) {
-    return this.sortBy().equals(fieldName) ? !this.sortAsc() : null;
+  public String currentState(String fieldName) {
+    Asserts.isTrue(this.config.getFields().containsKey(fieldName));
+
+    if (this.getSortBy().equals(fieldName)) {
+      return getSortAsc() ? "sort-asc" : "sort-desc";
+    }
+    return "sort-unsorted";
   }
 }

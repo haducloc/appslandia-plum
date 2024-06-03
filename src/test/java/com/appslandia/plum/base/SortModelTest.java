@@ -32,37 +32,37 @@ public class SortModelTest {
 
   @Test
   public void test() {
-    SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+    SortConfig config = new SortConfig().asc("name").desc("dateCreated").defBy("name");
     SortModel model = new SortModel(config);
 
-    model.current("name", null);
+    model.setCurrent("name", null);
 
-    Assertions.assertEquals("name", model.sortBy());
-    Assertions.assertTrue(model.sortAsc());
+    Assertions.assertEquals("name", model.getSortBy());
+    Assertions.assertTrue(model.getSortAsc());
 
-    Assertions.assertTrue(model.sortAsc("name"));
-    Assertions.assertNull(model.sortAsc("dateCreated"));
+    Assertions.assertFalse(model.nextState("name"));
+    Assertions.assertNull(model.nextState("dateCreated"));
   }
 
   @Test
   public void test_sortAsc() {
-    SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+    SortConfig config = new SortConfig().asc("name").desc("dateCreated").defBy("name");
     SortModel model = new SortModel(config);
 
-    model.current("name", false);
+    model.setCurrent("name", false);
 
-    Assertions.assertEquals("name", model.sortBy());
-    Assertions.assertTrue(!model.sortAsc());
+    Assertions.assertEquals("name", model.getSortBy());
+    Assertions.assertFalse(model.getSortAsc());
   }
 
   @Test
   public void test_invalid_sortBy() {
-    SortConfig config = new SortConfig().asc("name").desc("dateCreated").sortDefault("name");
+    SortConfig config = new SortConfig().asc("name").desc("dateCreated").defBy("name");
     SortModel model = new SortModel(config);
 
-    model.current("dob", true);
+    model.setCurrent("dob", true);
 
-    Assertions.assertEquals("name", model.sortBy());
-    Assertions.assertTrue(model.sortAsc());
+    Assertions.assertEquals("name", model.getSortBy());
+    Assertions.assertTrue(model.getSortAsc());
   }
 }
