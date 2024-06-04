@@ -40,8 +40,8 @@ public class SortModelTest {
     Assertions.assertEquals("name", model.getSortBy());
     Assertions.assertTrue(model.getSortAsc());
 
-    Assertions.assertFalse(model.nextState("name"));
-    Assertions.assertNull(model.nextState("dateCreated"));
+    Assertions.assertFalse(model.getNext("name"));
+    Assertions.assertNull(model.getNext("dateCreated"));
   }
 
   @Test

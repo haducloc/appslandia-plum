@@ -56,12 +56,12 @@ public class SortModel {
     return Asserts.notNull(this.sortAsc);
   }
 
-  public Boolean nextState(String fieldName) {
+  public Boolean getNext(String fieldName) {
     Asserts.isTrue(this.config.getFields().containsKey(fieldName));
     return this.getSortBy().equals(fieldName) ? !this.getSortAsc() : null;
   }
 
-  public String currentState(String fieldName) {
+  public String getState(String fieldName) {
     Asserts.isTrue(this.config.getFields().containsKey(fieldName));
 
     if (this.getSortBy().equals(fieldName)) {
