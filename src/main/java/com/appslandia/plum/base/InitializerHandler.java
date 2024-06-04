@@ -108,7 +108,7 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // Vary
-    String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_POLICIES_VARY);
+    String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_VARY);
     Arrays.stream(varyHeaders).forEach(header -> response.addHeader("Vary", header));
 
     if (enableCompression(request, requestContext)) {

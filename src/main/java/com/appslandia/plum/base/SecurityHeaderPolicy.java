@@ -63,38 +63,38 @@ public class SecurityHeaderPolicy {
     String scheme = ServletUtils.getScheme(request);
     if ("https".equals(scheme)) {
 
-      String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_STRICT_TRANSPORT_SECURITY);
+      String headerValue = this.appConfig.getString(AppConfig.HEADER_STRICT_TRANSPORT_SECURITY);
       if (headerValue != null) {
         response.setHeader("Strict-Transport-Security", headerValue);
       }
     }
 
     // X-Content-Type-Options
-    String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_CONTENT_TYPE_OPTIONS);
+    String headerValue = this.appConfig.getString(AppConfig.HEADER_X_CONTENT_TYPE_OPTIONS);
     if (headerValue != null) {
       response.setHeader("X-Content-Type-Options", headerValue);
     }
 
     // X-Frame-Options
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_FRAME_OPTIONS);
+    headerValue = this.appConfig.getString(AppConfig.HEADER_X_FRAME_OPTIONS);
     if (headerValue != null) {
       response.setHeader("X-Frame-Options", headerValue);
     }
 
     // X-XSS-Protection
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_XSS_PROTECTION);
+    headerValue = this.appConfig.getString(AppConfig.HEADER_X_XSS_PROTECTION);
     if (headerValue != null) {
       response.setHeader("X-XSS-Protection", headerValue);
     }
 
     // Content-Security-Policy
-    String cspValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
+    String cspValue = this.appConfig.getString(AppConfig.HEADER_CONTENT_SECURITY_POLICY);
     if (cspValue != null) {
 
       // {nonce}
       String csp = this.getCspFormat(cspValue).format(new Params().set("nonce", requestContext.getNonce()));
 
-      if (this.appConfig.getBool(AppConfig.HEADER_POLICIES_CSP_REPORT_ONLY)) {
+      if (this.appConfig.getBool(AppConfig.HEADER_CSP_REPORT_ONLY)) {
         response.setHeader("Content-Security-Policy-Report-Only", csp);
       } else {
         response.setHeader("Content-Security-Policy", csp);
@@ -102,21 +102,45 @@ public class SecurityHeaderPolicy {
     }
 
     // Referrer-Policy
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REFERRER_POLICY);
+    headerValue = this.appConfig.getString(AppConfig.HEADER_REFERRER_POLICY);
     if (headerValue != null) {
       response.setHeader("Referrer-Policy", headerValue);
     }
 
     // Report-To
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORT_TO);
+    headerValue = this.appConfig.getString(AppConfig.HEADER_REPORT_TO);
     if (headerValue != null) {
       response.setHeader("Report-To", headerValue);
     }
 
     // Reporting-Endpoints
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORTING_ENDPOINTS);
+    headerValue = this.appConfig.getString(AppConfig.HEADER_REPORTING_ENDPOINTS);
     if (headerValue != null) {
       response.setHeader("Reporting-Endpoints", headerValue);
+    }
+
+    // Cross-Origin-Embedder-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_CROSS_ORIGIN_EMBEDDER_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Cross-Origin-Embedder-Policy", headerValue);
+    }
+
+    // Cross-Origin-Opener-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_CROSS_ORIGIN_OPENER_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Cross-Origin-Opener-Policy", headerValue);
+    }
+
+    // Cross-Origin-Resource-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_CROSS_ORIGIN_RESOURCE_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Cross-Origin-Resource-Policy", headerValue);
+    }
+
+    // Permissions-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_PERMISSIONS_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Permissions-Policy", headerValue);
     }
   }
 }

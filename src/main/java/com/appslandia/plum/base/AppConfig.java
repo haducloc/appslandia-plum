@@ -66,17 +66,23 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String REMEMBER_ME_COOKIE_HTTPONLY = "remember_me.cookie_httponly";
   public static final String REMEMBER_ME_COOKIE_SLIDING = "remember_me.cookie_sliding";
 
-  public static final String HEADER_POLICIES_STRICT_TRANSPORT_SECURITY = "header_policies.strict_transport_security";
-  public static final String HEADER_POLICIES_X_CONTENT_TYPE_OPTIONS = "header_policies.x_content_type_options";
-  public static final String HEADER_POLICIES_X_FRAME_OPTIONS = "header_policies.x_frame_options";
-  public static final String HEADER_POLICIES_X_XSS_PROTECTION = "header_policies.x_xss_protection";
-  public static final String HEADER_POLICIES_CONTENT_SECURITY_POLICY = "header_policies.content_security_policy";
-  public static final String HEADER_POLICIES_REFERRER_POLICY = "header_policies.referrer_policy";
+  public static final String HEADER_STRICT_TRANSPORT_SECURITY = "header.strict_transport_security";
+  public static final String HEADER_X_CONTENT_TYPE_OPTIONS = "header.x_content_type_options";
+  public static final String HEADER_X_FRAME_OPTIONS = "header.x_frame_options";
+  public static final String HEADER_X_XSS_PROTECTION = "header.x_xss_protection";
+  public static final String HEADER_CONTENT_SECURITY_POLICY = "header.content_security_policy";
+  public static final String HEADER_REFERRER_POLICY = "header.referrer_policy";
 
-  public static final String HEADER_POLICIES_REPORT_TO = "header_policies.report_to";
-  public static final String HEADER_POLICIES_REPORTING_ENDPOINTS = "header_policies.reporting_endpoints";
-  public static final String HEADER_POLICIES_CSP_REPORT_ONLY = "header_policies.csp_report_only";
-  public static final String HEADER_POLICIES_VARY = "header_policies.vary";
+  public static final String HEADER_REPORT_TO = "header.report_to";
+  public static final String HEADER_REPORTING_ENDPOINTS = "header.reporting_endpoints";
+  public static final String HEADER_CSP_REPORT_ONLY = "header.csp_report_only";
+  public static final String HEADER_VARY = "header.vary";
+
+  public static final String HEADER_CROSS_ORIGIN_EMBEDDER_POLICY = "header.cross_origin_embedder_policy";
+  public static final String HEADER_CROSS_ORIGIN_OPENER_POLICY = "header.cross_origin_opener_policy";
+  public static final String HEADER_CROSS_ORIGIN_RESOURCE_POLICY = "header.cross_origin_resource_policy";
+
+  public static final String HEADER_PERMISSIONS_POLICY = "header.permissions_policy";
 
   protected SimpleConfig config;
 
@@ -121,7 +127,7 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_HTTPONLY, String.valueOf(true));
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_SLIDING, String.valueOf(true));
 
-    this.config.putIfAbsent(HEADER_POLICIES_CSP_REPORT_ONLY, String.valueOf(true));
+    this.config.putIfAbsent(HEADER_CSP_REPORT_ONLY, String.valueOf(true));
 
     this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
     this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);
