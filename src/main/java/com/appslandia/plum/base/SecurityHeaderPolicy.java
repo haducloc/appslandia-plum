@@ -1,0 +1,122 @@
+// The MIT License (MIT)
+// Copyright © 2015 AppsLandia. All rights reserved.
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package com.appslandia.plum.base;
+
+import com.appslandia.common.base.Params;
+import com.appslandia.common.utils.STR;
+import com.appslandia.common.utils.StringFormat;
+import com.appslandia.plum.utils.ServletUtils;
+
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+/**
+ * F
+ * 
+ * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
+ *
+ */
+@ApplicationScoped
+public class SecurityHeaderPolicy {
+
+  @Inject
+  protected AppConfig appConfig;
+
+  private volatile StringFormat cspFormat = null;
+
+  private final Object MUTEX = new Object();
+
+  public StringFormat getCspFormat(String cspValue) {
+    StringFormat obj = this.cspFormat;
+    if (obj == null) {
+      synchronized (MUTEX) {
+        if ((obj = this.cspFormat) == null) {
+          this.cspFormat = obj = STR.compile(cspValue);
+        }
+      }
+    }
+    return obj;
+  }
+
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
+    // HSTS
+    String scheme = ServletUtils.getScheme(request);
+    if ("https".equals(scheme)) {
+
+      String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_STRICT_TRANSPORT_SECURITY);
+      if (headerValue != null) {
+        response.setHeader("Strict-Transport-Security", headerValue);
+      }
+    }
+
+    // X-Content-Type-Options
+    String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_CONTENT_TYPE_OPTIONS);
+    if (headerValue != null) {
+      response.setHeader("X-Content-Type-Options", headerValue);
+    }
+
+    // X-Frame-Options
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_FRAME_OPTIONS);
+    if (headerValue != null) {
+      response.setHeader("X-Frame-Options", headerValue);
+    }
+
+    // X-XSS-Protection
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_XSS_PROTECTION);
+    if (headerValue != null) {
+      response.setHeader("X-XSS-Protection", headerValue);
+    }
+
+    // Content-Security-Policy
+    String cspValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
+    if (cspValue != null) {
+
+      // {nonce}
+      String csp = this.getCspFormat(cspValue).format(new Params().set("nonce", requestContext.getNonce()));
+
+      if (this.appConfig.getBool(AppConfig.HEADER_POLICIES_CSP_REPORT_ONLY)) {
+        response.setHeader("Content-Security-Policy-Report-Only", csp);
+      } else {
+        response.setHeader("Content-Security-Policy", csp);
+      }
+    }
+
+    // Referrer-Policy
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REFERRER_POLICY);
+    if (headerValue != null) {
+      response.setHeader("Referrer-Policy", headerValue);
+    }
+
+    // Report-To
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORT_TO);
+    if (headerValue != null) {
+      response.setHeader("Report-To", headerValue);
+    }
+
+    // Reporting-Endpoints
+    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORTING_ENDPOINTS);
+    if (headerValue != null) {
+      response.setHeader("Reporting-Endpoints", headerValue);
+    }
+  }
+}

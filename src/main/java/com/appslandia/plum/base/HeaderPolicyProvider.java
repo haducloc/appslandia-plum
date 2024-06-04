@@ -23,13 +23,9 @@ package com.appslandia.plum.base;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.Asserts;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -42,21 +38,8 @@ public class HeaderPolicyProvider extends InitializeObject {
 
   @Override
   protected void init() throws Exception {
-    if (!this.headerPolicyMap.containsKey(CacheControl.NO_CACHE_POLICY)) {
-      this.headerPolicyMap.put(CacheControl.NO_CACHE_POLICY, new HeaderPolicy() {
+    this.headerPolicyMap.putIfAbsent(CacheControl.NO_CACHE_POLICY, NoCachePolicy.INSTANCE);
 
-        final String noCache = new CacheControlBuilder().maxAge(0, TimeUnit.SECONDS).noCache().noStore()
-            .mustRevalidate().toString();
-
-        @Override
-        public void writePolicy(HttpServletRequest request, HttpServletResponse response,
-            RequestContext requestContext) {
-          response.setHeader("Cache-Control", this.noCache);
-          response.setHeader("Expires", "0");
-          response.setHeader("Pragma", "no-cache");
-        }
-      });
-    }
     this.headerPolicyMap = Collections.unmodifiableMap(this.headerPolicyMap);
   }
 

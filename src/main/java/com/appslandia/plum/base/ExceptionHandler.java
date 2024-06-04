@@ -72,17 +72,19 @@ public class ExceptionHandler {
       return;
     }
 
-    // Reset buffer
+    // Reset
     originResp.resetBuffer();
 
-    writeHeaders(originResp, exception);
+    writeHeaders(request, originResp, exception);
     writeException(request, originResp, exception);
   }
 
-  protected void writeHeaders(HttpServletResponse response, Throwable exception) throws ServletException, IOException {
+  protected void writeHeaders(HttpServletRequest request, HttpServletResponse response, Throwable exception)
+      throws ServletException, IOException {
     if (exception instanceof HttpHeaderApply) {
       ((HttpHeaderApply) exception).apply(response);
     }
+    NoCachePolicy.INSTANCE.writePolicy(request, response);
   }
 
   protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception)

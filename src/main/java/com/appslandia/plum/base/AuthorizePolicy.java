@@ -25,7 +25,6 @@ package com.appslandia.plum.base;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@FunctionalInterface
 public interface AuthorizePolicy {
 
   boolean authorize(UserPrincipal principal);

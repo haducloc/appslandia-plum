@@ -20,14 +20,10 @@
 
 package com.appslandia.plum.defaults;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.appslandia.common.base.MappedID;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.plum.base.AuthorizePolicy;
 import com.appslandia.plum.base.AuthorizePolicyProvider;
@@ -66,18 +62,6 @@ public class DefaultAuthorizePolicyProviderFactory implements CDIFactory<Authori
           beanInstances.add(bi);
         });
 
-    // @Supplier(AuthorizePolicy.class)
-    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, AuthorizePolicy.class, (bi) -> {
-
-      Map<String, AuthorizePolicy> m = ObjectUtils.cast(bi.get().get());
-
-      for (Entry<String, AuthorizePolicy> entry : m.entrySet()) {
-
-        impl.addAuthorizePolicy(entry.getKey(), entry.getValue());
-
-        beanInstances.add(bi);
-      }
-    });
     return impl;
   }
 

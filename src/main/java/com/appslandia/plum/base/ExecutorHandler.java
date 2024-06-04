@@ -23,7 +23,6 @@ package com.appslandia.plum.base;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
-import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
@@ -69,13 +68,7 @@ public class ExecutorHandler extends HttpServlet {
   protected ActionFilterProvider actionFilterProvider;
 
   @Inject
-  protected AppLogger appLogger;
-
-  @Inject
   protected AppConfig appConfig;
-
-  @Inject
-  protected ExceptionHandler exceptionHandler;
 
   protected void testErrorStatus(HttpServletRequest request) {
     String statusValue = request.getParameter("__error_status");
@@ -160,7 +153,7 @@ public class ExecutorHandler extends HttpServlet {
 
       HeaderPolicy headerPolicy = this.headerPolicyProvider
           .getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value());
-      headerPolicy.writePolicy(request, response, requestContext);
+      headerPolicy.writePolicy(request, response);
     }
   }
 

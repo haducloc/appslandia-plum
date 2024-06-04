@@ -20,14 +20,10 @@
 
 package com.appslandia.plum.defaults;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.appslandia.common.base.MappedID;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.plum.base.ActionFilter;
 import com.appslandia.plum.base.ActionFilterProvider;
@@ -66,17 +62,6 @@ public class DefaultActionFilterProviderFactory implements CDIFactory<ActionFilt
           beanInstances.add(bi);
         });
 
-    // @Supplier(ActionFilter.class)
-    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ActionFilter.class, (bi) -> {
-
-      Map<String, ActionFilter> m = ObjectUtils.cast(bi.get().get());
-
-      for (Entry<String, ActionFilter> entry : m.entrySet()) {
-
-        impl.addActionFilter(entry.getKey(), entry.getValue());
-      }
-      beanInstances.add(bi);
-    });
     return impl;
   }
 

@@ -20,14 +20,10 @@
 
 package com.appslandia.plum.defaults;
 
-import java.util.Map;
-import java.util.Map.Entry;
-
 import com.appslandia.common.base.MappedID;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.ReflectionUtils;
 import com.appslandia.plum.base.HeaderPolicy;
 import com.appslandia.plum.base.HeaderPolicyProvider;
@@ -66,16 +62,6 @@ public class DefaultHeaderPolicyProviderFactory implements CDIFactory<HeaderPoli
           beanInstances.add(bi);
         });
 
-    // @Supplier(HeaderPolicy.class)
-    CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, HeaderPolicy.class, (bi) -> {
-
-      Map<String, HeaderPolicy> m = ObjectUtils.cast(bi.get().get());
-
-      for (Entry<String, HeaderPolicy> entry : m.entrySet()) {
-        impl.addHeaderPolicy(entry.getKey(), entry.getValue());
-      }
-      beanInstances.add(bi);
-    });
     return impl;
   }
 

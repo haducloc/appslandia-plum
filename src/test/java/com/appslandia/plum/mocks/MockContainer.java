@@ -79,6 +79,7 @@ import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
 import com.appslandia.plum.base.ResponseEncoder;
 import com.appslandia.plum.base.ResponseEncoderProvider;
+import com.appslandia.plum.base.SecurityHeaderPolicy;
 import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
@@ -318,12 +319,13 @@ public class MockContainer extends InitializeObject {
 
     factory.register(ResourcesProvider.class, MockResourcesProvider.class);
     factory.register(RequestContextParser.class, RequestContextParser.class);
+    factory.register(ConstDescProvider.class, ConstDescProvider.class);
+    factory.register(GroupFormatProvider.class, GroupFormatProvider.class);
 
     factory.register(CorsPolicyProvider.class, CorsPolicyProvider.class);
     factory.register(CorsPolicyHandler.class, CorsPolicyHandler.class);
     factory.register(HeaderPolicyProvider.class, HeaderPolicyProvider.class);
-    factory.register(ConstDescProvider.class, ConstDescProvider.class);
-    factory.register(GroupFormatProvider.class, GroupFormatProvider.class);
+    factory.register(SecurityHeaderPolicy.class, SecurityHeaderPolicy.class);
 
     factory.register(CaptchaManager.class, MockCaptchaManager.class);
     factory.register(CaptchaProducer.class, MockCaptchaProducer.class);

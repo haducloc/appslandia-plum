@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.concurrent.TimeUnit;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -28,8 +30,17 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public interface ActionFilter {
+public class NoCachePolicy implements HeaderPolicy {
 
-  void doFilter(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext,
-      ActionFilterChain filterChain) throws Exception;
+  public static final NoCachePolicy INSTANCE = new NoCachePolicy();
+
+  final String noCache = new CacheControlBuilder().maxAge(0, TimeUnit.SECONDS).noCache().noStore().mustRevalidate()
+      .toString();
+
+  @Override
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response) {
+    response.setHeader("Cache-Control", this.noCache);
+    response.setHeader("Expires", "0");
+    response.setHeader("Pragma", "no-cache");
+  }
 }

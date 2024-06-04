@@ -23,15 +23,9 @@ package com.appslandia.plum.base;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-import com.appslandia.common.base.AppLogger;
-import com.appslandia.common.base.Params;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
-import com.appslandia.common.utils.STR;
-import com.appslandia.common.utils.StringFormat;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -54,13 +48,13 @@ public class InitializerHandler extends HttpFilter {
   protected AppConfig appConfig;
 
   @Inject
-  protected AppLogger appLogger;
-
-  @Inject
   protected ResponseEncoderProvider responseEncoderProvider;
 
   @Inject
   protected LanguageProvider languageProvider;
+
+  @Inject
+  protected SecurityHeaderPolicy securityHeaderPolicy;
 
   @Inject
   protected HeaderPolicyProvider headerPolicyProvider;
@@ -97,10 +91,6 @@ public class InitializerHandler extends HttpFilter {
     return requestContext.getActionDesc().getEnableCompression() != null;
   }
 
-  private static final class HeaderValueFormatHolder {
-    private static final ConcurrentMap<String, StringFormat> FORMATS = new ConcurrentHashMap<>();
-  }
-
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
 
@@ -109,82 +99,24 @@ public class InitializerHandler extends HttpFilter {
       request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     }
 
-    // HSTS
-    String scheme = ServletUtils.getScheme(request);
-    if ("https".equals(scheme)) {
+    // Security Headers
+    this.securityHeaderPolicy.writePolicy(request, response, requestContext);
 
-      String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_STRICT_TRANSPORT_SECURITY);
-      if (headerValue != null) {
-        response.setHeader("Strict-Transport-Security", headerValue);
-      }
-    }
-
-    // X-Content-Type-Options
-    String headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_CONTENT_TYPE_OPTIONS);
-    if (headerValue != null) {
-      response.setHeader("X-Content-Type-Options", headerValue);
-    }
-
-    // X-Frame-Options
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_FRAME_OPTIONS);
-    if (headerValue != null) {
-      response.setHeader("X-Frame-Options", headerValue);
-    }
-
-    // X-XSS-Protection
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_X_XSS_PROTECTION);
-    if (headerValue != null) {
-      response.setHeader("X-XSS-Protection", headerValue);
-    }
-
-    // Content-Security-Policy
-    String cspValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY);
-    if (cspValue != null) {
-      // ${nonce}
-      StringFormat format = HeaderValueFormatHolder.FORMATS
-          .computeIfAbsent(AppConfig.HEADER_POLICIES_CONTENT_SECURITY_POLICY, k -> STR.compile(cspValue));
-
-      String csp = format.format(new Params().set("nonce", requestContext.getNonce()));
-
-      if (this.appConfig.getBool(AppConfig.HEADER_POLICIES_CSP_REPORT_ONLY)) {
-        response.setHeader("Content-Security-Policy-Report-Only", csp);
-      } else {
-        response.setHeader("Content-Security-Policy", csp);
-      }
-    }
-
-    // Referrer-Policy
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REFERRER_POLICY);
-    if (headerValue != null) {
-      response.setHeader("Referrer-Policy", headerValue);
-    }
-
-    // Report-To
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORT_TO);
-    if (headerValue != null) {
-      response.setHeader("Report-To", headerValue);
-    }
-
-    // Reporting-Endpoints
-    headerValue = this.appConfig.getString(AppConfig.HEADER_POLICIES_REPORTING_ENDPOINTS);
-    if (headerValue != null) {
-      response.setHeader("Reporting-Endpoints", headerValue);
+    // Named Policies
+    for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
+      this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response);
     }
 
     // Vary
+    String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_POLICIES_VARY);
+    Arrays.stream(varyHeaders).forEach(header -> response.addHeader("Vary", header));
+
     if (enableCompression(request, requestContext)) {
       response.addHeader("Vary", "Accept-Encoding");
     }
+
     if (this.languageProvider.getLanguages().size() > 1) {
       response.addHeader("Vary", "Accept-Language");
-    }
-
-    String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_POLICIES_VARY);
-    Arrays.stream(varyHeaders).forEach(h -> response.addHeader("Vary", h));
-
-    // Header Policies
-    for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
-      this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
   }
 
