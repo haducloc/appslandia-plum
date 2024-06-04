@@ -58,16 +58,13 @@ public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvid
     final Out<List<Language>> supplied = new Out<>();
 
     CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, Language.class, (bi) -> {
-
       supplied.value = ObjectUtils.cast(bi.get().get());
-
       beanInstances.add(bi);
     });
 
     final LanguageProvider impl = new LanguageProvider();
 
     if ((supplied.value != null) && !supplied.value.isEmpty()) {
-
       for (Language language : supplied.value) {
         impl.addLanguage(language);
       }
