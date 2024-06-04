@@ -54,7 +54,7 @@ public class InitializerHandler extends HttpFilter {
   protected LanguageProvider languageProvider;
 
   @Inject
-  protected SecurityHeaderPolicy securityHeaderPolicy;
+  protected DefaultHeaderPolicy defaultHeaderPolicy;
 
   @Inject
   protected HeaderPolicyProvider headerPolicyProvider;
@@ -94,15 +94,15 @@ public class InitializerHandler extends HttpFilter {
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
 
-    // CharacterEncoding
+    // Default Character Encoding
     if (request.getCharacterEncoding() == null) {
       request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     }
 
-    // Security Headers
-    this.securityHeaderPolicy.writePolicy(request, response, requestContext);
+    // Default Header Policies
+    this.defaultHeaderPolicy.writePolicy(request, response, requestContext);
 
-    // Named Policies
+    // Enabled Header Policies
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
       this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
