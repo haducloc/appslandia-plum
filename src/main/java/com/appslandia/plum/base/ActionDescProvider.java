@@ -251,7 +251,8 @@ public abstract class ActionDescProvider extends InitializeObject {
 
       // @FormLogin
       if (actionMethod.getDeclaredAnnotation(FormLogin.class) != null) {
-        Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()), "@FormLogin is duplicated.");
+        Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()),
+            () -> STR.fmt("@FormLogin is duplicated: module=", actionDesc.getModule()));
         this.formLogins.put(actionDesc.getModule(), actionDesc);
       }
       this.actionDescMap.put(actionRoute, actionDesc);
