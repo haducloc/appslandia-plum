@@ -84,7 +84,7 @@ public class ExceptionHandler {
     if (exception instanceof HttpHeaderApply) {
       ((HttpHeaderApply) exception).apply(response);
     }
-    NoCachePolicy.INSTANCE.writePolicy(request, response);
+    NoCachePolicy.INSTANCE.writePolicy(request, response, ServletUtils.getRequestContext(request));
   }
 
   protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception)

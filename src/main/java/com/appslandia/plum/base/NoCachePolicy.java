@@ -38,7 +38,7 @@ public class NoCachePolicy implements HeaderPolicy {
       .toString();
 
   @Override
-  public void writePolicy(HttpServletRequest request, HttpServletResponse response) {
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
     response.setHeader("Cache-Control", this.noCache);
     response.setHeader("Expires", "0");
     response.setHeader("Pragma", "no-cache");

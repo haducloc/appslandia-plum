@@ -43,7 +43,7 @@ public class CacheControlPolicy implements HeaderPolicy {
   }
 
   @Override
-  public void writePolicy(HttpServletRequest request, HttpServletResponse response) {
+  public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
     response.setHeader("Cache-Control", this.cacheControl);
   }
 }

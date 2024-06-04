@@ -150,10 +150,10 @@ public class ExecutorHandler extends HttpServlet {
 
     // @CacheControl
     if ((requestContext.getActionDesc().getCacheControl() != null) && requestContext.isGetOrHead()) {
-
       HeaderPolicy headerPolicy = this.headerPolicyProvider
           .getHeaderPolicy(requestContext.getActionDesc().getCacheControl().value());
-      headerPolicy.writePolicy(request, response);
+
+      headerPolicy.writePolicy(request, response, requestContext);
     }
   }
 

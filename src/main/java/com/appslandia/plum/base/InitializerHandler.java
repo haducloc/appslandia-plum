@@ -88,7 +88,7 @@ public class InitializerHandler extends HttpFilter {
   }
 
   protected boolean enableCompression(HttpServletRequest request, RequestContext requestContext) {
-    return requestContext.getActionDesc().getEnableCompression() != null;
+    return requestContext.getActionDesc() != null && requestContext.getActionDesc().getEnableCompression() != null;
   }
 
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
@@ -104,7 +104,7 @@ public class InitializerHandler extends HttpFilter {
 
     // Named Policies
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
-      this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response);
+      this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
 
     // Vary
@@ -137,14 +137,14 @@ public class InitializerHandler extends HttpFilter {
       // RequestContext
       RequestContext requestContext = this.requestContextParser.parse(request, response);
 
+      // Initialize
+      initialize(request, response, requestContext);
+
       // Not Found?
       if (requestContext.getActionDesc() == null) {
         throw new NotFoundException(requestContext.res(Resources.ERROR_NOT_FOUND))
             .setTitleKey(Resources.ERROR_NOT_FOUND);
       }
-
-      // Initialize
-      initialize(request, response, requestContext);
 
       // Allow Method?
       if (!requestContext.getActionDesc().getAllowMethods().contains(request.getMethod())) {
