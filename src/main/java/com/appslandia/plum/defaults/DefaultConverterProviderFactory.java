@@ -60,14 +60,11 @@ public class DefaultConverterProviderFactory implements CDIFactory<ConverterProv
 
     CDIUtils.scanReferences(this.beanManager, Converter.class, ReflectionUtils.EMPTY_ANNOTATIONS, MappedID.class,
         (mappedId, bi) -> {
-
           impl.addConverter(mappedId.value(), bi.get());
-
           beanInstances.add(bi);
         });
 
     CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, Converter.class, (bi) -> {
-
       Map<String, Converter<?>> m = ObjectUtils.cast(bi.get().get());
 
       for (Entry<String, Converter<?>> entry : m.entrySet()) {
