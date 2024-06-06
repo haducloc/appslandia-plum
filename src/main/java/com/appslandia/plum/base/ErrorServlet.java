@@ -156,7 +156,7 @@ public class ErrorServlet extends HttpServlet {
     out.println();
     out.append("Problem ModelState: ").append(new ToStringBuilder(3).toString(problem.getModelState()));
     out.println();
-    out.append("Problem Extensions: ").append(new ToStringBuilder().toString(problem.getExtensions()));
+    out.append("Problem Extensions: ").append(new ToStringBuilder(3).toString(problem.getExtensions()));
     out.println();
 
     if (problem.getException() != null) {
