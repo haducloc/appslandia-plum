@@ -181,12 +181,13 @@ public abstract class BasicAccessRateHandler extends AccessRateHandler {
 
       // ACCESS_RATE_2
       if (distanceMs >= accessRate2.getWindowMs()) {
-        boolean allow = (1.0 * (nextAccesses - this.lastAccesses) / distanceMs) < accessRate2.getRatePerMs();
+        boolean allowed = Double.compare((1.0d * (nextAccesses - this.lastAccesses) / distanceMs),
+            accessRate2.getRatePerMs()) < 0;
 
         this.lastAccesses = nextAccesses;
         this.lastCheckMs = curTimeMs;
 
-        if (!allow) {
+        if (!allowed) {
           return AccessRateResult.ACCESS_RATE_2;
         }
       }
