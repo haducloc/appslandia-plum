@@ -55,10 +55,10 @@ public class TooManyRequestsException extends HttpException implements HttpHeade
   @Override
   public void apply(HttpServletResponse response) {
     if (this.reason != null) {
-      response.addHeader("TMR-Reason", this.reason);
+      response.setHeader("TMR-Reason", this.reason);
     }
     if (this.retryAfter != null) {
-      response.addDateHeader("Retry-After", this.retryAfter);
+      response.setDateHeader("Retry-After", this.retryAfter);
     }
   }
 

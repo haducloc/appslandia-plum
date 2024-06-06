@@ -53,10 +53,10 @@ public class ServiceUnavailableException extends HttpException implements HttpHe
   @Override
   public void apply(HttpServletResponse response) {
     if (this.reason != null) {
-      response.addHeader("SU-Reason", this.reason);
+      response.setHeader("SU-Reason", this.reason);
     }
     if (this.retryAfter != null) {
-      response.addDateHeader("Retry-After", this.retryAfter);
+      response.setDateHeader("Retry-After", this.retryAfter);
     }
   }
 
