@@ -213,6 +213,8 @@ public class ServletUtils {
   }
 
   public static String getRequestUrl(HttpServletRequest request, String pathLang) {
+    Asserts.notNull(pathLang);
+
     StringBuilder url = newUrlBuilder();
 
     // ContextPath
