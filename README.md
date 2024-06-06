@@ -13,7 +13,7 @@
 - Standard JSTL tags implemented
 - PebbleTemplates integrated
 - i18n implemented
-- Handles CSRF, ETag, GZIP, CAPTCHA, CORS, HSTS, CSP, Cache-Control, Logger, TempData, Rate Limit, etc.
+- Handles CSRF, ETag, Compression, CAPTCHA, CORS, HSTS, CSP, Cache-Control, Logger, TempData, etc.
 - 360+ Unit tests
 
 ## Installation
