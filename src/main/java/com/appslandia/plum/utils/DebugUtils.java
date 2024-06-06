@@ -112,13 +112,15 @@ public class DebugUtils {
     out.println();
     out.append("request.getLocalName(): ").append(request.getLocalName());
     out.println();
+    out.append("request.getLocalAddr(): ").append(request.getLocalAddr());
+    out.println();
     out.append("request.getLocalPort(): ").append(String.valueOf(request.getLocalPort()));
     out.println();
     out.append("request.getRemoteHost(): ").append(request.getRemoteHost());
     out.println();
-    out.append("request.getRemotePort(): ").append(String.valueOf(request.getRemotePort()));
-    out.println();
     out.append("request.getRemoteAddr(): ").append(request.getRemoteAddr());
+    out.println();
+    out.append("request.getRemotePort(): ").append(String.valueOf(request.getRemotePort()));
     out.println();
     out.append("request.getRemoteUser(): ").append(request.getRemoteUser());
     out.println();
