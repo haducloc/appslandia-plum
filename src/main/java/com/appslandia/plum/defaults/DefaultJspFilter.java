@@ -39,7 +39,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@WebFilter(dispatcherTypes = { DispatcherType.REQUEST }, urlPatterns = "*.jsp")
+@WebFilter(dispatcherTypes = { DispatcherType.REQUEST }, urlPatterns = { "*.jsp", "*.jspx" })
 public class DefaultJspFilter extends HttpFilter {
   private static final long serialVersionUID = 1L;
 
