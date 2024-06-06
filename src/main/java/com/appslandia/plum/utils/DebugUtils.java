@@ -95,7 +95,6 @@ public class DebugUtils {
   public static void writeTcpInfo(HttpServletRequest request, HttpServletResponse response) throws Exception {
     response.setContentType(MimeTypes.TEXT_PLAIN);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-
     PrintWriter out = response.getWriter();
 
     try {
@@ -121,7 +120,20 @@ public class DebugUtils {
     out.println();
     out.append("request.getRemoteAddr(): ").append(request.getRemoteAddr());
     out.println();
-
+    out.append("request.getRemoteUser(): ").append(request.getRemoteUser());
+    out.println();
+    out.append("request.getScheme(): ").append(request.getScheme());
+    out.println();
+    out.append("request.getProtocol(): ").append(request.getProtocol());
+    out.println();
+    out.append("ServletUtils.getScheme(request): ").append(ServletUtils.getScheme(request));
+    out.println();
+    out.append("ServletUtils.getHost(request): ").append(ServletUtils.getHost(request));
+    out.println();
+    out.append("ServletUtils.getPort(request): ").append(ServletUtils.getPort(request));
+    out.println();
+    out.append("ServletUtils.getClientIp(request): ").append(ServletUtils.getClientIp(request));
+    out.println();
     out.flush();
   }
 

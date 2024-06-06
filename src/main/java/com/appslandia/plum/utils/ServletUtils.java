@@ -157,41 +157,38 @@ public class ServletUtils {
 
   static final Pattern X_FORWARDED_PORTS_PATTERN = Pattern.compile("\\s*\\d+\\s*,\\s*\\d+\\s*");
 
-  public static StringBuilder absHostBase(HttpServletRequest request) {
-    // scheme
-    String scheme = getScheme(request);
-
-    // host
-    String host = getHost(request);
-
-    // port
-    // X-Forwarded-Port, X-Forwarded-Ports, appConfig: x_forwarded_ports,
-    // request.getServerPort()
-
+  public static String getPort(HttpServletRequest request) {
+    // X-Forwarded-Port
     String port = request.getHeader("X-Forwarded-Port");
-    if (port == null) {
-
-      String httpPorts = request.getHeader("X-Forwarded-Ports");
-      if (httpPorts == null) {
-
-        AppConfig appConfig = getAppScoped(request.getServletContext(), AppConfig.class);
-        httpPorts = appConfig.getString(AppConfig.CONFIG_X_FORWARDED_PORTS);
-      }
-      if (httpPorts != null) {
-        Asserts.isTrue(X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches(),
-            STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
-
-        String[] ports = SplitUtils.splitByComma(httpPorts);
-        port = "https".equals(scheme) ? ports[1] : ports[0];
-
-      } else {
-
-        // Default request.getServerPort()
-        port = Integer.toString(request.getServerPort());
-      }
+    if (port != null) {
+      return port;
     }
 
-    // URL
+    // config.x_forwarded_ports
+    AppConfig appConfig = getAppScoped(request.getServletContext(), AppConfig.class);
+    String httpPorts = appConfig.getString(AppConfig.CONFIG_X_FORWARDED_PORTS);
+    if (httpPorts != null) {
+
+      Asserts.isTrue(X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches(),
+          STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
+
+      String[] ports = SplitUtils.splitByComma(httpPorts);
+
+      String scheme = getScheme(request);
+      return "https".equals(scheme) ? ports[1] : ports[0];
+
+    } else {
+
+      // request.getServerPort()
+      return Integer.toString(request.getServerPort());
+    }
+  }
+
+  public static StringBuilder absHostBase(HttpServletRequest request) {
+    String scheme = getScheme(request);
+    String host = getHost(request);
+    String port = getPort(request);
+
     StringBuilder url = newUrlBuilder();
     url.append(scheme).append("://").append(host);
 
@@ -242,16 +239,6 @@ public class ServletUtils {
       url.append('?').append(request.getQueryString());
     }
     return url.toString();
-  }
-
-  public static StringBuilder getClientBuilder(HttpServletRequest request, StringBuilder builder) {
-    if (builder.length() > 0) {
-      builder.append(", ");
-    }
-    builder.append("remoteAddr=").append(request.getRemoteAddr());
-    builder.append(", remoteUser=").append(request.getRemoteUser());
-    builder.append(", User-Agent=").append(request.getHeader("User-Agent"));
-    return builder;
   }
 
   public static String getClientIp(HttpServletRequest request) {
