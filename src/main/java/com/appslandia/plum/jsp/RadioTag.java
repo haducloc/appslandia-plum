@@ -36,7 +36,7 @@ public class RadioTag extends CheckInputTag {
 
   @Override
   protected boolean isChecked() {
-    String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
+    String codeVal = getRequestContext().format(this.codeValue, this.converter, false);
     return StringUtils.iequals(codeVal, (String) this._value);
   }
 }

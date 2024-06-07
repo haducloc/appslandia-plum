@@ -56,8 +56,6 @@ public class AppConfig extends InitializeObject implements Config {
 
   public static final String CONFIG_RESOURCE_NAMES = "config.resource_names";
   public static final String CONFIG_X_FORWARDED_PORTS = "config.x_forwarded_ports";
-
-  public static final String CONFIG_INPUT_TYPE_BROWSER_FEATURE = "config.input_type_browser_feature";
   public static final String CONFIG_REAUTH_TIMEOUT_MS = "config.reauth_timeout_ms";
 
   public static final String REMEMBER_ME_COOKIE_NAME = "remember_me.cookie_name";
@@ -115,8 +113,6 @@ public class AppConfig extends InitializeObject implements Config {
 
     this.config.putIfAbsent(CONFIG_JSP_DIR, "/WEB-INF/jsp");
     this.config.putIfAbsent(CONFIG_ACCESS_JSP_DIRECTLY, String.valueOf(false));
-
-    this.config.putIfAbsent(CONFIG_INPUT_TYPE_BROWSER_FEATURE, String.valueOf(false));
 
     this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS,
         String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));

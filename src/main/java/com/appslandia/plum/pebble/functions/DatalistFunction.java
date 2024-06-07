@@ -24,7 +24,6 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 
-import com.appslandia.plum.jsp.InputUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -40,22 +39,18 @@ public class DatalistFunction extends DynPebbleFunction {
 
   @Override
   public String getDescription() {
-    return "variables: items*, type, converter";
+    return "variables: items*, converter";
   }
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
     List<Object> items = context.getRequiredArgument("items");
-    String type = context.getArgument("type");
     String converter = context.getArgument("converter");
-
-    // localize
-    boolean localize = InputUtils.getLocalize(context.getRequest(), type);
 
     StringWriter out = new StringWriter(items.size() * 80);
 
     for (Object item : items) {
-      String codeValue = context.getRequestContext().format(item, converter, localize);
+      String codeValue = context.getRequestContext().format(item, converter, false);
       out.write(System.lineSeparator());
 
       out.write("<option");

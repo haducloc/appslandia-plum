@@ -60,13 +60,13 @@ public class InputTag extends ValueTagBase {
 
     HtmlUtils.escAttribute(out, "value", (String) this._value);
     if (this.min != null)
-      HtmlUtils.escAttribute(out, "min", getRequestContext().format(this.min, this.converter, this._localize));
+      HtmlUtils.escAttribute(out, "min", getRequestContext().format(this.min, this.converter, false));
 
     if (this.max != null)
-      HtmlUtils.escAttribute(out, "max", getRequestContext().format(this.max, this.converter, this._localize));
+      HtmlUtils.escAttribute(out, "max", getRequestContext().format(this.max, this.converter, false));
 
     if (this.step != null)
-      HtmlUtils.escAttribute(out, "step", getRequestContext().format(this.step, this.converter, this._localize));
+      HtmlUtils.escAttribute(out, "step", getRequestContext().format(this.step, this.converter, false));
 
     if (this.pattern != null)
       HtmlUtils.escAttribute(out, "pattern", this.pattern);

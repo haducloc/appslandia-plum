@@ -23,16 +23,9 @@ package com.appslandia.plum.jsp;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.CollectionUtils;
-import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.BrowserFeatures;
-import com.appslandia.plum.base.RequestContext;
-import com.appslandia.plum.utils.ServletUtils;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -63,33 +56,5 @@ public class InputUtils {
     Asserts.notNull(type);
 
     return DTN_INPUT_FEATURES.get(type);
-  }
-
-  static final Set<String> UNLOCALIZED_TYPES = CollectionUtils.unmodifiableSet("hidden", "select", "checkbox", "radio");
-
-  public static boolean getLocalize(HttpServletRequest request, String type) {
-    if (type == null) {
-      return true;
-    }
-
-    if (UNLOCALIZED_TYPES.contains(type)) {
-      return false;
-    }
-
-    Integer feature = getDTNInputFeature(type);
-    if (feature == null) {
-      return true;
-    }
-
-    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
-    if (!appConfig.getBool(AppConfig.CONFIG_INPUT_TYPE_BROWSER_FEATURE)) {
-      return false;
-    }
-
-    RequestContext context = ServletUtils.getRequestContext(request);
-    if (context.getBrowserFeatures() == null) {
-      return false;
-    }
-    return (context.getBrowserFeatures() & feature) != feature;
   }
 }

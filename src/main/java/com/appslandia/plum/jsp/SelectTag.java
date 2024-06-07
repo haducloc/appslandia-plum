@@ -151,7 +151,7 @@ public class SelectTag extends ValueTagBase {
     out.newLine();
 
     out.write("<option");
-    HtmlUtils.escAttribute(out, "value", getRequestContext().format(item.getValue(), this.converter, this._localize));
+    HtmlUtils.escAttribute(out, "value", getRequestContext().format(item.getValue(), this.converter, false));
 
     if (selected) {
       HtmlUtils.selected(out);
@@ -174,7 +174,7 @@ public class SelectTag extends ValueTagBase {
     if (this.readonly) {
 
       SelectItem selItem = StreamSupport.stream(items.spliterator(), false).filter(item -> {
-        String itemVal = getRequestContext().format(item.getValue(), this.converter, this._localize);
+        String itemVal = getRequestContext().format(item.getValue(), this.converter, false);
         return StringUtils.iequals(itemVal, (String) this._value);
 
       }).findFirst().orElse(null);
@@ -193,7 +193,7 @@ public class SelectTag extends ValueTagBase {
       for (SelectItem item : items) {
         this.pageContext.setAttribute(this.var, item);
 
-        String itemVal = getRequestContext().format(item.getValue(), this.converter, this._localize);
+        String itemVal = getRequestContext().format(item.getValue(), this.converter, false);
         boolean selected = StringUtils.iequals(itemVal, (String) this._value);
 
         if (selected) {

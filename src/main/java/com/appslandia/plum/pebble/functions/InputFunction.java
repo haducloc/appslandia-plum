@@ -68,11 +68,7 @@ public class InputFunction extends DynPebbleFunction {
     if (id == null) {
       id = HtmlUtils.toValueTagId(name);
     }
-
-    // localize
-    boolean localize = InputUtils.getLocalize(context.getRequest(), type);
-
-    if ((type == null) || (localize && InputUtils.getDTNInputFeature(type) != null)) {
+    if (type == null) {
       type = "text";
     }
 
@@ -94,19 +90,19 @@ public class InputFunction extends DynPebbleFunction {
     out.write("\"");
 
     HtmlUtils.escAttribute(out, "name", name);
-    HtmlUtils.escAttribute(out, "value", context.getRequestContext().format(value, converter, localize));
+    HtmlUtils.escAttribute(out, "value", context.getRequestContext().format(value, converter, false));
 
     if (type != null)
       HtmlUtils.escAttribute(out, "type", type);
 
     if (min != null)
-      HtmlUtils.escAttribute(out, "min", context.getRequestContext().format(min, converter, localize));
+      HtmlUtils.escAttribute(out, "min", context.getRequestContext().format(min, converter, false));
 
     if (max != null)
-      HtmlUtils.escAttribute(out, "max", context.getRequestContext().format(max, converter, localize));
+      HtmlUtils.escAttribute(out, "max", context.getRequestContext().format(max, converter, false));
 
     if (step != null)
-      HtmlUtils.escAttribute(out, "step", context.getRequestContext().format(step, converter, localize));
+      HtmlUtils.escAttribute(out, "step", context.getRequestContext().format(step, converter, false));
 
     if (readonly)
       HtmlUtils.readonly(out);

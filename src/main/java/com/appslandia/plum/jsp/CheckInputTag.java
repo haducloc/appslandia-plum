@@ -72,7 +72,7 @@ public abstract class CheckInputTag extends ValueTagBase {
     HtmlUtils.escAttribute(out, "id", this.id);
     HtmlUtils.escAttribute(out, "type", this.type);
     HtmlUtils.escAttribute(out, "name", this._name);
-    HtmlUtils.escAttribute(out, "value", getRequestContext().format(this.codeValue, this.converter, this._localize));
+    HtmlUtils.escAttribute(out, "value", getRequestContext().format(this.codeValue, this.converter, false));
 
     if (this.isChecked())
       HtmlUtils.checked(out);

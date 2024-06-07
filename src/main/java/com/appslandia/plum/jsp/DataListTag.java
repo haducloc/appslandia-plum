@@ -43,8 +43,6 @@ public class DataListTag extends UITagBase {
   protected String converter;
   protected String type;
 
-  protected boolean _localize;
-
   @Override
   protected String getTagName() {
     return "datalist";
@@ -55,9 +53,6 @@ public class DataListTag extends UITagBase {
     if (this.body != null) {
       this.body.invoke(null);
     }
-
-    // localize
-    this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
   }
 
   public void addItem(Object value) {
@@ -87,7 +82,7 @@ public class DataListTag extends UITagBase {
       out.newLine();
 
       out.write("<option");
-      HtmlUtils.escAttribute(out, "value", getRequestContext().format(item, this.converter, this._localize));
+      HtmlUtils.escAttribute(out, "value", getRequestContext().format(item, this.converter, false));
       out.write(" />");
     }
   }

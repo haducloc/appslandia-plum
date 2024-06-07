@@ -54,7 +54,6 @@ public abstract class ValueTagBase extends UITagBase {
   protected String _name;
   protected Object _value;
   protected boolean _isValid;
-  protected boolean _localize;
 
   protected boolean writeHiddenTag() {
     return false;
@@ -77,10 +76,13 @@ public abstract class ValueTagBase extends UITagBase {
     Asserts.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
     this._name = this.path.substring(nameIdx + 1);
 
-    // localize
-    this._localize = InputUtils.getLocalize(this.getRequest(), this.type);
+    // id
+    if (this.id == null) {
+      this.id = HtmlUtils.toValueTagId(this._name);
+    }
 
-    if ((this.type == null) || (this._localize && InputUtils.getDTNInputFeature(this.type) != null)) {
+    // type
+    if (this.type == null) {
       this.type = "text";
     }
 
@@ -90,12 +92,7 @@ public abstract class ValueTagBase extends UITagBase {
     this._value = getBindingValue();
 
     // Format value
-    this._value = getRequestContext().format(this._value, this.converter, this._localize);
-
-    // id
-    if (this.id == null) {
-      this.id = HtmlUtils.toValueTagId(this._name);
-    }
+    this._value = getRequestContext().format(this._value, this.converter, false);
 
     // class
     if (!this._isValid) {
@@ -119,7 +116,7 @@ public abstract class ValueTagBase extends UITagBase {
       Object hiddenValue = getHiddenValue();
 
       if (hiddenValue != null)
-        XmlEscaper.escapeXml(out, getRequestContext().format(hiddenValue, this.converter, this._localize));
+        XmlEscaper.escapeXml(out, getRequestContext().format(hiddenValue, this.converter, false));
 
       out.write("\" type=\"hidden\" />");
     }

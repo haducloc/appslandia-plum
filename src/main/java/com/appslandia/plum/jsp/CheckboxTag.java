@@ -40,7 +40,7 @@ public class CheckboxTag extends CheckInputTag {
 
   @Override
   protected boolean isChecked() {
-    String codeVal = getRequestContext().format(this.codeValue, this.converter, this._localize);
+    String codeVal = getRequestContext().format(this.codeValue, this.converter, false);
     if (this._value == null) {
       return false;
     }
