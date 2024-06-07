@@ -64,7 +64,7 @@ public abstract class ValueTagBase extends UITagBase {
   }
 
   protected Object getBindingValue() {
-    if (this._isValid || InputUtils.getDTNInputFeature(this.type) != null) {
+    if (this._isValid) {
       return this.evaluate(this.path);
     }
     return this.getRequest().getParameter(this._name);

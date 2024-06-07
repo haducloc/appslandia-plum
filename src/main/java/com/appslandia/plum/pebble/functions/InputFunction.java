@@ -26,7 +26,6 @@ import java.util.Objects;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.XmlEscaper;
-import com.appslandia.plum.jsp.InputUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -76,7 +75,7 @@ public class InputFunction extends DynPebbleFunction {
     Object value = null;
     boolean isValid = !Objects.equals(form, context.getModelState().getForm()) || context.getModelState().isValid(name);
 
-    if (isValid || InputUtils.getDTNInputFeature(type) != null) {
+    if (isValid) {
       value = context.evaluate(path);
     } else {
       value = context.getRequest().getParameter(name);
