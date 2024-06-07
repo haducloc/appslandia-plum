@@ -178,6 +178,9 @@ public class InitializerHandler extends HttpFilter {
         throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN));
       }
 
+      // Check access rate
+      this.accessRateHandler.checkRequest(request, requestContext);
+
       // HTTP OPTIONS
       if (HttpMethod.OPTIONS.equals(request.getMethod())) {
         doOptions(request, response, requestContext);
@@ -248,9 +251,6 @@ public class InitializerHandler extends HttpFilter {
           return;
         }
       }
-
-      // Check access rate
-      this.accessRateHandler.checkRequest(request, requestContext);
 
       // Compression (Encoding)
       String compressionType = this.responseEncoderProvider.getBestEncoding(request);
