@@ -21,7 +21,10 @@
 package com.appslandia.plum.mocks;
 
 import com.appslandia.plum.base.AccessRateHandler;
+import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.base.TooManyRequestsException;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -32,6 +35,11 @@ public class MockAccessRateHandler extends AccessRateHandler {
 
   @Override
   protected void init() throws Exception {
+  }
+
+  @Override
+  protected boolean skipRequest(HttpServletRequest request, RequestContext requestContext) {
+    return false;
   }
 
   @Override

@@ -21,9 +21,11 @@
 package com.appslandia.plum.defaults;
 
 import com.appslandia.plum.base.AccessRateHandler;
+import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.base.TooManyRequestsException;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -32,6 +34,15 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class DefaultAccessRateHandler extends AccessRateHandler {
+
+  @Override
+  protected void init() throws Exception {
+  }
+
+  @Override
+  protected boolean skipRequest(HttpServletRequest request, RequestContext requestContext) {
+    return false;
+  }
 
   @Override
   protected void checkClient(String clientId) throws TooManyRequestsException {

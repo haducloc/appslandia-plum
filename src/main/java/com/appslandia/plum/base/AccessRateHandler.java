@@ -22,7 +22,6 @@ package com.appslandia.plum.base;
 
 import com.appslandia.common.base.InitializeObject;
 
-import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -32,20 +31,15 @@ import jakarta.servlet.http.HttpServletRequest;
  */
 public abstract class AccessRateHandler extends InitializeObject {
 
-  @Inject
-  protected AccessRateSkipper accessRateSkipper;
-
-  @Override
-  protected void init() throws Exception {
-  }
-
   public void checkRequest(HttpServletRequest request, RequestContext requestContext) throws TooManyRequestsException {
     this.initialize();
 
-    if (!this.accessRateSkipper.skipRequest(request, requestContext)) {
+    if (!this.skipRequest(request, requestContext)) {
       checkClient(requestContext.getClientId());
     }
   }
+
+  protected abstract boolean skipRequest(HttpServletRequest request, RequestContext requestContext);
 
   protected abstract void checkClient(String clientId) throws TooManyRequestsException;
 }

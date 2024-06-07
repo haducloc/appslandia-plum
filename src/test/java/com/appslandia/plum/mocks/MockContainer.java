@@ -39,7 +39,6 @@ import com.appslandia.common.json.GsonProcessor;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.threading.ThreadLocalStorage;
 import com.appslandia.plum.base.AccessRateHandler;
-import com.appslandia.plum.base.AccessRateSkipper;
 import com.appslandia.plum.base.ActionDescProvider;
 import com.appslandia.plum.base.ActionFilterProvider;
 import com.appslandia.plum.base.ActionInvoker;
@@ -60,6 +59,7 @@ import com.appslandia.plum.base.CookieHandler;
 import com.appslandia.plum.base.CorsPolicyHandler;
 import com.appslandia.plum.base.CorsPolicyProvider;
 import com.appslandia.plum.base.CsrfManager;
+import com.appslandia.plum.base.DefaultHeaderPolicy;
 import com.appslandia.plum.base.ExceptionHandler;
 import com.appslandia.plum.base.ExecutorHandler;
 import com.appslandia.plum.base.FormatProviderFactory;
@@ -79,12 +79,10 @@ import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
 import com.appslandia.plum.base.ResponseEncoder;
 import com.appslandia.plum.base.ResponseEncoderProvider;
-import com.appslandia.plum.base.DefaultHeaderPolicy;
 import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.captcha.CaptchaProducer;
-import com.appslandia.plum.defaults.DefaultAccessRateSkipper;
 import com.appslandia.plum.defaults.DefaultAuthTokenHandler;
 import com.appslandia.plum.defaults.DefaultClientIdParser;
 import com.appslandia.plum.defaults.DefaultFormatProviderFactory;
@@ -268,8 +266,6 @@ public class MockContainer extends InitializeObject {
     factory.register(AppConfig.class, MockAppConfig.class);
     factory.register(AppLogger.class, MockAppLogger.class);
     factory.register(ExceptionHandler.class, MockExceptionHandler.class);
-
-    factory.register(AccessRateSkipper.class, DefaultAccessRateSkipper.class);
     factory.register(AccessRateHandler.class, MockAccessRateHandler.class);
 
     factory.register(JsonProcessor.class, GsonProcessor.class);
