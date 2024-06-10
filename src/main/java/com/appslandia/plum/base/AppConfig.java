@@ -268,9 +268,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public BigDecimal getDecimalOpt(String key) throws NumberFormatException {
+  public BigDecimal getDecimal(String key) throws NumberFormatException {
     this.initialize();
-    return this.config.getDecimalOpt(key);
+    return this.config.getDecimal(key);
   }
 
   @Override

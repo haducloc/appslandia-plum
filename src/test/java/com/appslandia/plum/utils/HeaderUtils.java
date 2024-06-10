@@ -26,7 +26,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import com.appslandia.common.base.DateFormatException;
+import com.appslandia.common.base.TemporalFormatException;
 
 /**
  *
@@ -53,7 +53,7 @@ public class HeaderUtils {
     try {
       return newDateHeaderFormat().parse(value).getTime();
     } catch (ParseException ex) {
-      throw new DateFormatException(ex);
+      throw new TemporalFormatException(ex);
     }
   }
 }
