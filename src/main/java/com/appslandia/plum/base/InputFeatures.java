@@ -25,9 +25,9 @@ package com.appslandia.plum.base;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class BrowserFeatures {
+public class InputFeatures {
 
-  public static final String COOKIE_NAME = "browserFeatures";
+  public static final String COOKIE_NAME = "inputFeatures";
 
   public static final int INPUT_NUMBER = 1;
   public static final int INPUT_RANGE = 2;

@@ -51,7 +51,7 @@ public class RequestContext {
 
   private String clientId;
   private String module;
-  private Integer browserFeatures;
+  private Integer inputFeatures;
   private String nonce;
 
   public RequestContext createRequestContext(ActionDesc actionDesc) {
@@ -70,7 +70,7 @@ public class RequestContext {
 
     context.clientId = this.clientId;
     context.module = this.module;
-    context.browserFeatures = this.browserFeatures;
+    context.inputFeatures = this.inputFeatures;
 
     context.nonce = this.nonce;
     return context;
@@ -89,6 +89,10 @@ public class RequestContext {
     }
     return this.actionDesc.getAction().equalsIgnoreCase(action)
         && this.actionDesc.getController().equalsIgnoreCase(controller);
+  }
+
+  public boolean isInputFeatures(int checkingFeatures) {
+    return (this.inputFeatures != null && (this.inputFeatures & checkingFeatures) == checkingFeatures);
   }
 
   public String getLanguageId() {
@@ -179,12 +183,12 @@ public class RequestContext {
     this.module = module;
   }
 
-  public Integer getBrowserFeatures() {
-    return this.browserFeatures;
+  public Integer getInputFeatures() {
+    return this.inputFeatures;
   }
 
-  protected void setBrowserFeatures(Integer browserFeatures) {
-    this.browserFeatures = browserFeatures;
+  protected void setInputFeatures(Integer inputFeatures) {
+    this.inputFeatures = inputFeatures;
   }
 
   public String getNonce() {

@@ -126,9 +126,12 @@ public class RequestContextParser {
     context.setClientId(this.clientIdParser.parseId(request));
     context.setModule(getModule(request, actionDesc));
 
-    // Browser Features
-    String browserFeatures = ServletUtils.getCookieValue(request, BrowserFeatures.COOKIE_NAME);
-    context.setBrowserFeatures((browserFeatures != null) ? ParseUtils.parseInt(browserFeatures, 0) : null);
+    // Input Features
+    String inputFeatures = ServletUtils.getCookieValue(request, InputFeatures.COOKIE_NAME);
+    try {
+      context.setInputFeatures(ParseUtils.parseIntOpt(inputFeatures));
+    } catch (NumberFormatException ex) {
+    }
 
     // Nonce
     context.setNonce(generateNonce());
