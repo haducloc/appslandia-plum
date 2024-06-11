@@ -20,10 +20,10 @@
 
 package com.appslandia.plum.base;
 
-import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 import com.appslandia.common.base.BoolFormatException;
 import com.appslandia.common.base.Config;
@@ -196,12 +196,6 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public Boolean getBoolOpt(String key) throws BoolFormatException {
-    this.initialize();
-    return this.config.getBoolOpt(key);
-  }
-
-  @Override
   public int getInt(String key, int ifNullOrInvalid) {
     this.initialize();
     return this.config.getInt(key, ifNullOrInvalid);
@@ -211,12 +205,6 @@ public class AppConfig extends InitializeObject implements Config {
   public int getInt(String key) throws NumberFormatException {
     this.initialize();
     return this.config.getInt(key);
-  }
-
-  @Override
-  public Integer getIntOpt(String key) throws NumberFormatException {
-    this.initialize();
-    return this.config.getIntOpt(key);
   }
 
   @Override
@@ -232,12 +220,6 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public Long getLongOpt(String key) throws NumberFormatException {
-    this.initialize();
-    return this.config.getLongOpt(key);
-  }
-
-  @Override
   public double getDouble(String key, double ifNullOrInvalid) {
     this.initialize();
     return this.config.getDouble(key, ifNullOrInvalid);
@@ -250,27 +232,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public Double getDoubleOpt(String key) throws NumberFormatException {
+  public <T> T getValue(String key, Function<String, T> converter) {
     this.initialize();
-    return this.config.getDoubleOpt(key);
-  }
-
-  @Override
-  public BigDecimal getDecimal(String key, double ifNullOrInvalid) {
-    this.initialize();
-    return this.config.getDecimal(key, ifNullOrInvalid);
-  }
-
-  @Override
-  public BigDecimal getDecimalReq(String key) throws NumberFormatException {
-    this.initialize();
-    return this.config.getDecimalReq(key);
-  }
-
-  @Override
-  public BigDecimal getDecimal(String key) throws NumberFormatException {
-    this.initialize();
-    return this.config.getDecimal(key);
+    return this.config.getValue(key, converter);
   }
 
   @Override
