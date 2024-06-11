@@ -128,13 +128,7 @@ public class RequestContextParser {
 
     // Input Features
     String inputFeatures = ServletUtils.getCookieValue(request, InputFeatures.COOKIE_NAME);
-    context.setInputFeatures(ParseUtils.parseValue(inputFeatures, value -> {
-      try {
-        return Integer.parseInt(value);
-      } catch (NumberFormatException ex) {
-        return null;
-      }
-    }));
+    context.setInputFeatures(ParseUtils.parseIntOpt(inputFeatures, false));
 
     // Nonce
     context.setNonce(generateNonce());
