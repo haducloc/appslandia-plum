@@ -81,6 +81,7 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String HEADER_CROSS_ORIGIN_RESOURCE_POLICY = "header.cross_origin_resource_policy";
 
   public static final String HEADER_PERMISSIONS_POLICY = "header.permissions_policy";
+  public static final String HEADER_DEPLOY_ENV = "header.deploy_env";
 
   protected SimpleConfig config;
 
@@ -124,6 +125,7 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_SLIDING, String.valueOf(true));
 
     this.config.putIfAbsent(HEADER_CSP_REPORT_ONLY, String.valueOf(true));
+    this.config.putIfAbsent(HEADER_DEPLOY_ENV, String.valueOf(true));
 
     this.enableDebug = this.config.getBool(CONFIG_ENABLE_DEBUG);
     this.enableSession = this.config.getBool(CONFIG_ENABLE_SESSION);

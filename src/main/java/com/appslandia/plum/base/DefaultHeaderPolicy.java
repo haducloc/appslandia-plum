@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import com.appslandia.common.base.DeployEnv;
 import com.appslandia.common.base.Params;
 import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.StringFormat;
@@ -59,6 +60,11 @@ public class DefaultHeaderPolicy {
   }
 
   public void writePolicy(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext) {
+    // Deploy-Env
+    if (this.appConfig.getBool(AppConfig.HEADER_DEPLOY_ENV)) {
+      response.setHeader("Deploy-Env", DeployEnv.getCurrent().getName());
+    }
+
     // HSTS
     String scheme = ServletUtils.getScheme(request);
     if ("https".equals(scheme)) {
