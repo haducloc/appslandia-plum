@@ -248,7 +248,7 @@ public class ActionParser {
         out.write("=\"");
 
         if (attr.getValue() != null) {
-          out.write(attr.getValue().toString());
+          out.write(XmlEscaper.escapeXml(attr.getValue().toString()));
         }
         out.write('"');
       }
