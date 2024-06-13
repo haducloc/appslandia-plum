@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.math.BigDecimal;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -186,21 +187,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public boolean getBool(String key, boolean ifNullOrInvalid) {
-    this.initialize();
-    return this.config.getBool(key, ifNullOrInvalid);
-  }
-
-  @Override
   public boolean getBool(String key) throws BoolFormatException {
     this.initialize();
     return this.config.getBool(key);
-  }
-
-  @Override
-  public int getInt(String key, int ifNullOrInvalid) {
-    this.initialize();
-    return this.config.getInt(key, ifNullOrInvalid);
   }
 
   @Override
@@ -210,15 +199,39 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public long getLong(String key, long ifNullOrInvalid) {
-    this.initialize();
-    return this.config.getLong(key, ifNullOrInvalid);
-  }
-
-  @Override
   public long getLong(String key) throws NumberFormatException {
     this.initialize();
     return this.config.getLong(key);
+  }
+
+  @Override
+  public double getDouble(String key) throws NumberFormatException {
+    this.initialize();
+    return this.config.getDouble(key);
+  }
+
+  @Override
+  public BigDecimal getDecimalReq(String key) throws NumberFormatException {
+    this.initialize();
+    return this.config.getDecimalReq(key);
+  }
+
+  @Override
+  public boolean getBool(String key, boolean ifNullOrInvalid) {
+    this.initialize();
+    return this.config.getBool(key, ifNullOrInvalid);
+  }
+
+  @Override
+  public int getInt(String key, int ifNullOrInvalid) {
+    this.initialize();
+    return this.config.getInt(key, ifNullOrInvalid);
+  }
+
+  @Override
+  public long getLong(String key, long ifNullOrInvalid) {
+    this.initialize();
+    return this.config.getLong(key, ifNullOrInvalid);
   }
 
   @Override
@@ -228,9 +241,9 @@ public class AppConfig extends InitializeObject implements Config {
   }
 
   @Override
-  public double getDouble(String key) throws NumberFormatException {
+  public BigDecimal getDecimal(String key, double ifNullOrInvalid) {
     this.initialize();
-    return this.config.getDouble(key);
+    return this.config.getDecimal(key, ifNullOrInvalid);
   }
 
   @Override
