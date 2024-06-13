@@ -123,10 +123,7 @@ public class TemplateEvaluationContext {
     if (value.getClass() == Boolean.class) {
       return ((Boolean) value).booleanValue();
     }
-    if (value.getClass() == String.class) {
-      return ParseUtils.parseBool((String) value);
-    }
-    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to boolean.", value));
+    return ParseUtils.parseBool(value.toString());
   }
 
   public boolean getBool(String name) {
@@ -144,15 +141,12 @@ public class TemplateEvaluationContext {
     return (value != null) ? toBool(value) : null;
   }
 
-  // Int
+  // Integer
   private int toInt(Object value) {
     if (value instanceof Number) {
       return ((Number) value).intValue();
     }
-    if (value.getClass() == String.class) {
-      return ParseUtils.parseInt((String) value);
-    }
-    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to int.", value));
+    return ParseUtils.parseInt(value.toString());
   }
 
   public int getInt(String name) {
@@ -175,10 +169,7 @@ public class TemplateEvaluationContext {
     if (value instanceof Number) {
       return ((Number) value).longValue();
     }
-    if (value.getClass() == String.class) {
-      return ParseUtils.parseLong((String) value);
-    }
-    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to long.", value));
+    return ParseUtils.parseLong(value.toString());
   }
 
   public long getLong(String name) {
@@ -201,10 +192,7 @@ public class TemplateEvaluationContext {
     if (value instanceof Number) {
       return ((Number) value).doubleValue();
     }
-    if (value.getClass() == String.class) {
-      return ParseUtils.parseDouble((String) value);
-    }
-    throw new IllegalArgumentException(STR.fmt("Couldn't parse {} to double.", value));
+    return ParseUtils.parseDouble(value.toString());
   }
 
   public double getDouble(String name) {
