@@ -22,7 +22,7 @@ package com.appslandia.plum.jsp;
 
 import java.util.Arrays;
 
-import com.appslandia.common.utils.SplitOptions;
+import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
 
@@ -47,7 +47,7 @@ public class CheckboxTag extends CheckInputTag {
     if (StringUtils.iequals(codeVal, (String) this._value)) {
       return true;
     }
-    String[] values = SplitUtils.split((String) this._value, ',', SplitOptions.TRIM_NULL);
+    String[] values = SplitUtils.split((String) this._value, ',', SplittingBehavior.TRIM_TO_NULL);
     return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeVal, value));
   }
 }

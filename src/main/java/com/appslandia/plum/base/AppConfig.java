@@ -31,6 +31,7 @@ import com.appslandia.common.base.Config;
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.SplittingBehavior;
 
 /**
  *
@@ -184,6 +185,13 @@ public class AppConfig extends InitializeObject implements Config {
   public String[] getStringArray(String key) {
     this.initialize();
     return this.config.getStringArray(key);
+  }
+
+  @Override
+  public String[] getStringArray(String key, SplittingBehavior behavior) {
+    this.initialize();
+    return this.config.getStringArray(key, behavior);
+
   }
 
   @Override

@@ -43,7 +43,7 @@ import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.STR;
-import com.appslandia.common.utils.SplitOptions;
+import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.ValueUtils;
@@ -347,7 +347,7 @@ public abstract class ActionDescProvider extends InitializeObject {
     Asserts.isTrue(PATH_PARAMS_PATTERN.matcher(value).matches(), () -> STR.fmt("pathParams '{}' is invalid.", value));
 
     List<PathParam> pathParams = new ArrayList<>();
-    String[] parts = SplitUtils.split(value, '/', SplitOptions.NONE);
+    String[] parts = SplitUtils.split(value, '/', SplittingBehavior.ORIGINAL);
 
     for (String pathItem : parts) {
       if (pathItem.isEmpty()) {
@@ -368,7 +368,7 @@ public abstract class ActionDescProvider extends InitializeObject {
   // value: {parameter}(-{parameter})+
   public static List<PathParam> parseSubParams(String value) {
     List<PathParam> subParams = new ArrayList<>();
-    String[] parts = SplitUtils.split(value, '-', SplitOptions.NONE);
+    String[] parts = SplitUtils.split(value, '-', SplittingBehavior.ORIGINAL);
 
     for (String subParam : parts) {
 

@@ -22,7 +22,7 @@ package com.appslandia.plum.pebble.functions;
 
 import java.util.Arrays;
 
-import com.appslandia.common.utils.SplitOptions;
+import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -41,7 +41,7 @@ public class CheckboxFunction extends CheckInputFunction {
     if (StringUtils.iequals(codeValue, modelValue)) {
       return true;
     }
-    String[] values = SplitUtils.split(modelValue, ',', SplitOptions.TRIM_NULL);
+    String[] values = SplitUtils.split(modelValue, ',', SplittingBehavior.TRIM_TO_NULL);
     return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
   }
 }
