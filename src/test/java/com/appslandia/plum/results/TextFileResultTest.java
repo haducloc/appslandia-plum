@@ -26,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -63,12 +64,12 @@ public class TextFileResultTest extends MockTestBase {
       try (BufferedReader reader = IOUtils.readerBOM(
           new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()), StandardCharsets.UTF_8.name())) {
 
-        List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader);
+        List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader, true);
 
         Assertions.assertTrue(records.size() == 1);
         String recordAsString = records.get(0).toString();
 
-        Assertions.assertEquals("item1,item2,item3", recordAsString);
+        Assertions.assertEquals("val1,val2,val3", recordAsString);
 
       }
 
@@ -89,12 +90,12 @@ public class TextFileResultTest extends MockTestBase {
           new ByteArrayInputStream(getCurrentResponse().getContent().toByteArray()),
           StandardCharsets.ISO_8859_1.name())) {
 
-        List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader);
+        List<CsvRecord> records = CsvProcessor.INSTANCE.parseRecords(reader, true);
 
         Assertions.assertTrue(records.size() == 1);
         String recordAsString = records.get(0).toString();
 
-        Assertions.assertEquals("item1,item2,item3", recordAsString);
+        Assertions.assertEquals("val1,val2,val3", recordAsString);
 
       }
 
@@ -108,23 +109,27 @@ public class TextFileResultTest extends MockTestBase {
 
     @HttpGet
     public ActionResult testCsvResult() throws Exception {
-      return new CsvFileResult("test.csv", new String[] { "item1", "item2", "item3" }, StandardCharsets.UTF_8.name());
+      return new CsvFileResult("test.csv",
+          Arrays.asList(new String[] { "item1", "item2", "item3" }, new String[] { "val1", "val2", "val3" }),
+          StandardCharsets.UTF_8.name());
     }
 
     @HttpGet
     public ActionResult testCsvResult_ISO_8859_1() throws Exception {
-      return new CsvFileResult("test.csv", new String[] { "item1", "item2", "item3" },
+      return new CsvFileResult("test.csv",
+          Arrays.asList(new String[] { "item1", "item2", "item3" }, new String[] { "val1", "val2", "val3" }),
           StandardCharsets.ISO_8859_1.name());
     }
+
   }
 
   static class CsvFileResult extends TextFileResult {
 
-    final String[] content;
+    final List<String[]> records;
 
-    public CsvFileResult(String fileName, String[] content, String encoding) {
+    public CsvFileResult(String fileName, List<String[]> records, String encoding) {
       super(fileName, MimeTypes.APP_CSV, encoding);
-      this.content = content;
+      this.records = records;
     }
 
     @Override
@@ -134,7 +139,10 @@ public class TextFileResultTest extends MockTestBase {
 
     @Override
     protected void writeContent(BufferedWriter out) throws Exception {
-      out.write(new CsvRecord(this.content).toString());
+      for (String[] record : records) {
+        out.write(new CsvRecord(record).toString());
+        out.newLine();
+      }
     }
   }
 }
