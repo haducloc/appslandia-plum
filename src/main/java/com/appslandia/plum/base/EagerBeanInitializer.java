@@ -52,14 +52,12 @@ public class EagerBeanInitializer {
   final BeanInstances beanInstances = new BeanInstances();
 
   public void contextInitialized(@Observes @Initialized(ApplicationScoped.class) ServletContext sc) {
-
     this.appLogger.info("Initializing eager beans...");
 
     CDIUtils.scanReferences(this.beanManager, Object.class, new Annotation[] { EagerLiteral.IMPL }, null,
         (ann, inst) -> {
 
-          this.appLogger.info("Initializing eager bean: {}", inst.get().toString());
-
+          this.appLogger.info("Initializing eager bean: " + inst.get());
           this.beanInstances.add(inst);
         });
 
