@@ -22,13 +22,21 @@ package com.appslandia.plum.defaults;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.Properties;
 
+import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.utils.STR;
-import com.appslandia.plum.base.PropertiesResourcesProvider;
+import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.base.Resources;
+import com.appslandia.plum.base.ResourcesProvider;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.servlet.ServletContext;
 
 /**
  *
@@ -36,14 +44,39 @@ import jakarta.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class DefaultResourcesProvider extends PropertiesResourcesProvider {
+public class DefaultResourcesProvider extends ResourcesProvider {
+
+  @Inject
+  protected AppConfig appConfig;
+
+  @Inject
+  protected ServletContext servletContext;
 
   @Override
+  protected Resources loadResources(Locale locale) throws InitializeException {
+    Properties props = new Properties();
+    String[] resourceNames = this.appConfig.getStringArray(AppConfig.CONFIG_RESOURCE_NAMES);
+
+    for (String resourceName : resourceNames) {
+      String resPath = getResourcePath(resourceName, locale);
+
+      InputStream is = this.servletContext.getResourceAsStream(resPath);
+      if (is != null) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8))) {
+          loadResources(props, br);
+
+        } catch (IOException ex) {
+          throw new InitializeException(ex);
+        }
+      }
+    }
+    return newResources(props);
+  }
+
   protected String getResourcePath(String resourceName, Locale locale) {
     return STR.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, locale.getLanguage());
   }
 
-  @Override
   protected void loadResources(Properties resources, BufferedReader br) throws IOException {
     resources.load(br);
   }
