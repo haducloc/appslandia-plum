@@ -26,6 +26,7 @@ import java.util.Arrays;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
+import com.appslandia.plum.base.CorsPolicyHandler.CorsResult;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.inject.Inject;
@@ -202,7 +203,8 @@ public class InitializerHandler extends HttpFilter {
 
         // Not @EnableCors
         if (requestContext.getActionDesc().getEnableCors() == null) {
-          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, "No @EnableCors"));
+          throw new ForbiddenException(
+              requestContext.res(Resources.ERROR_FORBIDDEN_CORS, CorsResult.NOT_ALLOWED_CORS.name()));
         }
         CorsPolicy corsPolicy = this.corsPolicyProvider
             .getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
