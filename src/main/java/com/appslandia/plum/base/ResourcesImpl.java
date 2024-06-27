@@ -18,30 +18,44 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.pebble.functions;
+package com.appslandia.plum.base;
 
-import java.util.Arrays;
+import java.text.MessageFormat;
+import java.util.Locale;
+import java.util.ResourceBundle;
 
-import com.appslandia.common.utils.SplitUtils;
-import com.appslandia.common.utils.SplittingBehavior;
-import com.appslandia.common.utils.StringUtils;
-import com.appslandia.plum.pebble.TemplateEvaluationContext;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class CheckboxFunction extends CheckInputFunction {
+public class ResourcesImpl implements Resources {
 
-  protected boolean isChecked(TemplateEvaluationContext context, String codeValue, String modelValue) {
-    if (modelValue == null) {
-      return false;
-    }
-    if (StringUtils.iequals(codeValue, modelValue)) {
-      return true;
-    }
-    String[] values = SplitUtils.split(modelValue, ',', SplittingBehavior.TRIM_TO_NULL);
-    return Arrays.stream(values).anyMatch(value -> StringUtils.iequals(codeValue, value));
+  final ResourceBundle bundle;
+
+  public ResourcesImpl(ResourceBundle bundle) {
+    this.bundle = bundle;
+  }
+
+  public Locale getLocale() {
+    return this.bundle.getLocale();
+  }
+
+  @Override
+  public String get(Object key) {
+    Asserts.notNull(key);
+
+    return this.bundle.getString((String) key);
+  }
+
+  @Override
+  public String get(String key, Object... params) {
+    Asserts.notNull(key);
+
+    String format = this.bundle.getString(key);
+    MessageFormat mf = new MessageFormat(format, this.bundle.getLocale());
+    return mf.format(params);
   }
 }

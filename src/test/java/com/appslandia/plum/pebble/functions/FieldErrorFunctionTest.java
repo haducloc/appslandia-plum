@@ -96,7 +96,7 @@ public class FieldErrorFunctionTest extends MockTestBase {
           getCurrentRequestContext().getLanguage().getLocale());
 
       String content = out.toString();
-      Assertions.assertEquals("<div class=\"l-field-error\">en:jakarta.validation.constraints.NotNull.message{}</div>",
+      Assertions.assertEquals("<div class=\"l-field-error\">en:jakarta.validation.constraints.NotNull.message[]</div>",
           content);
 
     } catch (Exception ex) {

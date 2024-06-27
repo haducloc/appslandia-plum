@@ -22,8 +22,8 @@ package com.appslandia.plum.jsp;
 
 import java.util.Arrays;
 
-import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.SplitUtils;
+import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.StringUtils;
 
 /**

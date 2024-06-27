@@ -20,26 +20,14 @@
 
 package com.appslandia.plum.base;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import com.appslandia.common.base.MapAccessor;
-import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.STR;
-import com.appslandia.common.utils.StringFormat;
-import com.appslandia.common.utils.StringUtils;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class Resources implements MapAccessor<String, String> {
-
-  // ${0}
-  public static final String PARAM_FIELD_DN = "0";
+public interface Resources extends MapAccessor<String, String> {
 
   public static final String ERROR_BAD_REQUEST = "errors.bad_request";
   public static final String ERROR_METHOD_NOT_ALLOWED = "errors.method_not_allowed";
@@ -63,73 +51,7 @@ public class Resources implements MapAccessor<String, String> {
   public static final String ERROR_FIELD_INVALID = "errors.field_invalid";
   public static final String ERROR_FIELD_REQUIRED = "errors.field_required";
 
-  final String language;
-  final Map<String, String> resources = new HashMap<>();
+  String get(Object key);
 
-  public Resources(String language) {
-    this.language = language;
-  }
-
-  public void putResources(Map<String, String> resMap) {
-    for (Map.Entry<String, String> res : resMap.entrySet()) {
-      if (!StringUtils.isNullOrEmpty(res.getKey())) {
-        this.resources.put(res.getKey(), res.getValue());
-      }
-    }
-  }
-
-  public String getLanguage() {
-    return this.language;
-  }
-
-  @Override
-  public String get(Object key) {
-    Asserts.notNull(key);
-
-    String msg = this.resources.get(key);
-    if (msg == null) {
-      return this.language + ":" + key;
-    }
-    return msg;
-  }
-
-  @Override
-  public String getOrDefault(Object key, String defaultValue) {
-    Asserts.notNull(key);
-
-    String msg = this.resources.get(key);
-    if (msg == null) {
-      return defaultValue;
-    }
-    return msg;
-  }
-
-  public String get(String key, Object... params) {
-    Asserts.notNull(key);
-
-    String msg = this.resources.get(key);
-    if (msg == null) {
-      return this.language + ":" + key + "[]";
-    }
-
-    StringFormat format = ResourceFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
-    return format.format(params);
-  }
-
-  public String get(String key, Map<String, Object> params) {
-    Asserts.notNull(key);
-    Asserts.notNull(params);
-
-    String msg = this.resources.get(key);
-    if (msg == null) {
-      return this.language + ":" + key + "{}";
-    }
-
-    StringFormat format = ResourceFormatHolder.FORMATS.computeIfAbsent(key, k -> STR.compile(msg));
-    return format.format(params);
-  }
-
-  private static final class ResourceFormatHolder {
-    private static final ConcurrentMap<String, StringFormat> FORMATS = new ConcurrentHashMap<>();
-  }
+  String get(String key, Object... params);
 }

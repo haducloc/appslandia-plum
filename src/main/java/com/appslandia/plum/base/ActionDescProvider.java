@@ -43,8 +43,8 @@ import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.STR;
-import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.SplitUtils;
+import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.ValueUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -262,6 +262,7 @@ public abstract class ActionDescProvider extends InitializeObject {
   public static List<ParamDesc> parseParamDescs(Method actionMethod, List<PathParam> pathParams) {
     List<ParamDesc> paramDescs = new ArrayList<>(actionMethod.getParameterCount());
     for (Parameter parameter : actionMethod.getParameters()) {
+
       ParamDesc paramDesc = new ParamDesc();
       paramDesc.setParameter(parameter);
       paramDescs.add(paramDesc);
@@ -294,7 +295,6 @@ public abstract class ActionDescProvider extends InitializeObject {
       // @Bind
       Bind bind = parameter.getDeclaredAnnotation(Bind.class);
       paramDesc.setBind(bind);
-
       paramDesc.setPathParam(pathParams.stream().anyMatch(p -> p.hasPathParam(paramDesc.getParamName())));
     }
     return paramDescs;

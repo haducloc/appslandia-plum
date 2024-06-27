@@ -637,8 +637,7 @@ public class ServletUtils {
     ServletUtils.getModelState(request).addError(fieldName, msg);
   }
 
-  public static void addError(HttpServletRequest request, String fieldName, String msgKey,
-      Map<String, Object> msgParams) {
+  public static void addError(HttpServletRequest request, String fieldName, String msgKey, Object[] msgParams) {
     String msg = getResources(request).get(msgKey, msgParams);
     ServletUtils.getModelState(request).addError(fieldName, msg);
   }

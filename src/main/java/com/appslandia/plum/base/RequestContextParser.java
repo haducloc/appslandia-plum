@@ -151,7 +151,7 @@ public class RequestContextParser {
       }
     }
     context.setFormatProvider(this.formatProviderManager.get(language));
-    context.setResources(this.resourcesProvider.getResources(language.getLanguageId()));
+    context.setResources(this.resourcesProvider.getResources(language.getLocale()));
   }
 
   protected Language parseLanguage(HttpServletRequest request, RequestContext context) {

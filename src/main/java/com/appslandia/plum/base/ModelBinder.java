@@ -36,7 +36,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
 import java.util.function.Function;
@@ -70,7 +69,6 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Path;
 import jakarta.validation.Validator;
 import jakarta.validation.groups.Default;
-import jakarta.validation.metadata.ConstraintDescriptor;
 
 /**
  *
@@ -172,8 +170,7 @@ public class ModelBinder {
 
             // Add Error
             if (msgKey.value != null) {
-              Map<String, Object> msgParams = getMsgParams(field, bindNode.model.getClass(),
-                  ServletUtils.getResources(request));
+              Object[] msgParams = getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request));
               String msg = ServletUtils.getResources(request).get(msgKey.value, msgParams);
 
               modelState.addError(propertyPath, msg);
@@ -204,8 +201,7 @@ public class ModelBinder {
 
           // Add Error
           if (msgKey.value != null) {
-            Map<String, Object> msgParams = getMsgParams(field, bindNode.model.getClass(),
-                ServletUtils.getResources(request));
+            Object[] msgParams = getMsgParams(field, bindNode.model.getClass(), ServletUtils.getResources(request));
             String msg = ServletUtils.getResources(request).get(msgKey.value, msgParams);
 
             modelState.addError(propertyPath, msg);
@@ -217,7 +213,7 @@ public class ModelBinder {
         if (List.class.isAssignableFrom(field.getType())) {
           Class<?> elementType = ReflectionUtils.getArgTypes1(field.getGenericType());
 
-          // List<SubModel> supported
+          // List<SubModel> supported?
           if (elementType == null) {
             continue;
           }
@@ -226,7 +222,7 @@ public class ModelBinder {
             continue;
           }
 
-          // Declare List|Concretes
+          // List<SubModel>
           List<Object> subModel = (field.getType() == List.class) ? new ArrayList<>(subIndexes)
               : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
 
@@ -255,7 +251,7 @@ public class ModelBinder {
         if (Map.class.isAssignableFrom(field.getType())) {
           Class<?>[] kvTypes = ReflectionUtils.getArgTypes2(field.getGenericType());
 
-          // Map<String, SubModel> supported
+          // Map<String, SubModel> supported?
           if ((kvTypes == null) || (kvTypes[0] != String.class)) {
             continue;
           }
@@ -264,7 +260,7 @@ public class ModelBinder {
             continue;
           }
 
-          // Declare Map|Concretes
+          // Map<String, SubModel>
           Map<String, Object> subModel = (field.getType() == Map.class) ? new HashMap<String, Object>()
               : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
 
@@ -272,7 +268,6 @@ public class ModelBinder {
             String subKeyProp = propertyPath + "[" + subKey + "]";
 
             if (hasSubProperties(request, subKeyProp)) {
-
               Object valueModel = kvTypes[1].getDeclaredConstructor().newInstance();
               subModel.put(subKey, valueModel);
 
@@ -341,7 +336,7 @@ public class ModelBinder {
 
       // Add Error
       String msgKey = getMsgKey(violation);
-      Map<String, Object> msgParams = getMsgParams(violation, fieldName, resources);
+      Object[] msgParams = getMsgParams(violation, fieldName, resources);
       String msg = resources.get(msgKey, msgParams);
 
       modelState.addError(fieldName, msg);
@@ -426,38 +421,20 @@ public class ModelBinder {
   }
 
   protected String getDisplayName(Field field, Class<?> modelType, Resources resources) {
-    String key = StringUtils.firstLowerCase(modelType.getSimpleName(), Locale.ENGLISH) + "."
-        + new FieldDesc(field).getFieldName();
+    String keyPrefix = StringUtils.firstLowerCase(modelType.getSimpleName(), Locale.ENGLISH);
+    String key = keyPrefix + "." + new FieldDesc(field).getFieldName();
     return resources.get(key);
   }
 
-  private Map<String, Object> getMsgParams(Field field, Class<?> modelType, Resources resources) {
+  private Object[] getMsgParams(Field field, Class<?> modelType, Resources resources) {
     String displayName = getDisplayName(field, modelType, resources);
-
-    Map<String, Object> params = new HashMap<>();
-    params.put(Resources.PARAM_FIELD_DN, displayName);
-    return params;
+    return new Object[] { displayName };
   }
 
-  private Map<String, Object> getMsgParams(ConstraintViolation<?> violation, String fieldName, Resources resources) {
+  private Object[] getMsgParams(ConstraintViolation<?> violation, String fieldName, Resources resources) {
     Field field = ReflectionUtils.findField(violation.getLeafBean().getClass(), fieldName);
     String displayName = getDisplayName(field, violation.getLeafBean().getClass(), resources);
-
-    Map<String, Object> params = buildMsgParams(violation.getConstraintDescriptor());
-    params.put(Resources.PARAM_FIELD_DN, displayName);
-    return params;
-  }
-
-  public static Map<String, Object> buildMsgParams(ConstraintDescriptor<?> desc) {
-    Map<String, Object> params = new HashMap<>();
-    for (Entry<String, Object> attribute : desc.getAttributes().entrySet()) {
-      if (attribute.getKey().equals("message") || attribute.getKey().equals("groups")
-          || attribute.getKey().equals("payload")) {
-        continue;
-      }
-      params.put(attribute.getKey(), attribute.getValue());
-    }
-    return params;
+    return new Object[] { displayName };
   }
 
   public static String getMsgKey(ConstraintViolation<?> violation) {

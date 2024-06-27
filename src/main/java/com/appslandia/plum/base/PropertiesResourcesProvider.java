@@ -25,10 +25,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 import java.util.Properties;
 
 import com.appslandia.common.base.InitializeException;
-import com.appslandia.common.utils.ObjectUtils;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletContext;
@@ -47,12 +47,12 @@ public abstract class PropertiesResourcesProvider extends ResourcesProvider {
   protected ServletContext servletContext;
 
   @Override
-  protected Resources loadResources(String language) throws InitializeException {
+  protected Resources loadResources(Locale locale) throws InitializeException {
     Properties props = new Properties();
     String[] resourceNames = this.appConfig.getStringArray(AppConfig.CONFIG_RESOURCE_NAMES);
 
     for (String resourceName : resourceNames) {
-      String resPath = getResourcePath(resourceName, language);
+      String resPath = getResourcePath(resourceName, locale);
 
       InputStream is = this.servletContext.getResourceAsStream(resPath);
       if (is != null) {
@@ -64,12 +64,10 @@ public abstract class PropertiesResourcesProvider extends ResourcesProvider {
         }
       }
     }
-    Resources resources = new Resources(language);
-    resources.putResources(ObjectUtils.cast(props));
-    return resources;
+    return newResources(props);
   }
 
-  protected abstract String getResourcePath(String resourceName, String language);
+  protected abstract String getResourcePath(String resourceName, Locale locale);
 
   protected abstract void loadResources(Properties resources, BufferedReader br) throws IOException;
 }

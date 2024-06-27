@@ -22,6 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.Properties;
 
 import com.appslandia.common.utils.STR;
@@ -38,8 +39,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class DefaultResourcesProvider extends PropertiesResourcesProvider {
 
   @Override
-  protected String getResourcePath(String resourceName, String language) {
-    return STR.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, language);
+  protected String getResourcePath(String resourceName, Locale locale) {
+    return STR.fmt("/WEB-INF/resources/{}.{}.properties", resourceName, locale.getLanguage());
   }
 
   @Override

@@ -22,10 +22,8 @@ package com.appslandia.plum.base;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.appslandia.common.base.Out;
 import com.appslandia.common.converters.Converter;
@@ -64,6 +62,7 @@ public class ActionInvoker {
 
   public Object invokeAction(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext,
       Object controller) throws Exception {
+    // actionArgs
     List<ParamDesc> paramDescs = requestContext.getActionDesc().getParamDescs();
     Object[] actionArgs = new Object[paramDescs.size()];
 
@@ -90,6 +89,7 @@ public class ActionInvoker {
         actionArgs[index] = ServletUtils.getModelState(request);
         continue;
       }
+
       // @Model
       if (paramDesc.getModel() != null) {
         Object model = null;
@@ -131,7 +131,7 @@ public class ActionInvoker {
           : new Out<Object>(parsedValue);
 
       if (msgKey.value != null) {
-        Map<String, Object> msgParams = getMsgParams(paramDesc, requestContext.getResources());
+        Object[] msgParams = getMsgParams(paramDesc, requestContext.getResources());
         ServletUtils.addError(request, paramDesc.getParamName(), msgKey.value, msgParams);
       }
       if (paramDesc.isPathParam()) {
@@ -141,6 +141,7 @@ public class ActionInvoker {
         }
       }
     }
+
     // Invoke Action
     try {
       return requestContext.getActionDesc().getMethod().invoke(controller, actionArgs);
@@ -163,14 +164,17 @@ public class ActionInvoker {
     for (Object error : ex.getConstraintViolations()) {
       ConstraintViolation<?> violation = (ConstraintViolation<?>) error;
 
+      // paramNode
       Path.Node paramNode = getParamNode(violation.getPropertyPath());
       Asserts.notNull(paramNode);
+
+      // paramDesc
       ParamDesc paramDesc = requestContext.getActionDesc().getParamDescs().stream()
           .filter(p -> p.getParameter().getName().equals(paramNode.getName())).findFirst().get();
 
       // Add Error
       String msgKey = ModelBinder.getMsgKey(violation);
-      Map<String, Object> msgParams = getMsgParams(violation, paramDesc, requestContext.getResources());
+      Object[] msgParams = getMsgParams(paramDesc, requestContext.getResources());
       ServletUtils.addError(request, paramDesc.getParamName(), msgKey, msgParams);
 
       if (paramDesc.isPathParam()) {
@@ -190,16 +194,9 @@ public class ActionInvoker {
     return paramDesc.getParamName();
   }
 
-  private Map<String, Object> getMsgParams(ParamDesc paramDesc, Resources resources) {
-    Map<String, Object> params = new HashMap<>();
-    params.put(Resources.PARAM_FIELD_DN, getDisplayName(paramDesc, resources));
-    return params;
-  }
-
-  private Map<String, Object> getMsgParams(ConstraintViolation<?> violation, ParamDesc paramDesc, Resources resources) {
-    Map<String, Object> params = ModelBinder.buildMsgParams(violation.getConstraintDescriptor());
-    params.put(Resources.PARAM_FIELD_DN, getDisplayName(paramDesc, resources));
-    return params;
+  private Object[] getMsgParams(ParamDesc paramDesc, Resources resources) {
+    String displayName = getDisplayName(paramDesc, resources);
+    return new Object[] { displayName };
   }
 
   private static Path.Node getParamNode(Path path) {

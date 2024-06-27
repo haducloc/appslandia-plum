@@ -20,8 +20,15 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Set;
 
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.base.Mutex;
@@ -33,19 +40,18 @@ import com.appslandia.common.base.Mutex;
  */
 public abstract class ResourcesProvider {
 
-  final Map<String, Resources> resourcesMap = new HashMap<>();
-
+  final Map<Locale, Resources> resourcesMap = new HashMap<>();
   final Mutex mutex = new Mutex();
 
-  public Resources getResources(String language) throws InitializeException {
-    Resources impl = this.resourcesMap.get(language);
+  public Resources getResources(Locale locale) throws InitializeException {
+    Resources impl = this.resourcesMap.get(locale);
     if (impl == null) {
       synchronized (this.mutex) {
-        impl = this.resourcesMap.get(language);
+        impl = this.resourcesMap.get(locale);
         if (impl == null) {
 
-          impl = loadResources(language);
-          this.resourcesMap.put(language, impl);
+          impl = loadResources(locale);
+          this.resourcesMap.put(locale, impl);
         }
       }
     }
@@ -58,5 +64,93 @@ public abstract class ResourcesProvider {
     }
   }
 
-  protected abstract Resources loadResources(String language) throws InitializeException;
+  protected abstract Resources loadResources(Locale locale) throws InitializeException;
+
+  protected Resources newResources(Properties resources) {
+    return new ResourcesImpl(new ResourceBundleImpl(resources));
+  }
+
+  protected Resources newResources(Map<String, Object> resources) {
+    return new ResourcesImpl(new ResourceBundleImpl(resources));
+  }
+
+  protected static class ResourceBundleImpl extends ResourceBundle {
+
+    final Map<String, Object> lookup;
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public ResourceBundleImpl(Properties properties) {
+      this.lookup = new HashMap(properties);
+    }
+
+    public ResourceBundleImpl(Map<String, Object> lookup) {
+      this.lookup = lookup;
+    }
+
+    @Override
+    public Object handleGetObject(String key) {
+      if (key == null) {
+        throw new NullPointerException();
+      }
+      return this.lookup.get(key);
+    }
+
+    @Override
+    public Enumeration<String> getKeys() {
+      ResourceBundle parent = this.parent;
+      return new ResourceBundleEnumeration(this.lookup.keySet(), (parent != null) ? parent.getKeys() : null);
+    }
+
+    @Override
+    protected Set<String> handleKeySet() {
+      return this.lookup.keySet();
+    }
+  }
+
+  protected static class ResourceBundleEnumeration implements Enumeration<String> {
+
+    final Set<String> keys;
+    final Iterator<String> iter;
+    final Enumeration<String> pKeys;
+
+    private String next = null;
+
+    public ResourceBundleEnumeration(Set<String> keys, Enumeration<String> pKeys) {
+      this.keys = keys;
+      this.iter = keys.iterator();
+      this.pKeys = pKeys;
+    }
+
+    @Override
+    public boolean hasMoreElements() {
+      if (this.next == null) {
+
+        if (this.iter.hasNext()) {
+          this.next = this.iter.next();
+
+        } else if (this.pKeys != null) {
+
+          while (this.next == null && this.pKeys.hasMoreElements()) {
+            this.next = this.pKeys.nextElement();
+
+            if (this.keys.contains(this.next)) {
+              this.next = null;
+            }
+          }
+        }
+      }
+      return this.next != null;
+    }
+
+    @Override
+    public String nextElement() {
+      if (this.hasMoreElements()) {
+        String result = this.next;
+        this.next = null;
+        return result;
+      } else {
+        throw new NoSuchElementException();
+      }
+    }
+  }
 }

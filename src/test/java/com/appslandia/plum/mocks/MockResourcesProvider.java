@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.mocks;
 
+import java.util.Locale;
+
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.plum.base.Resources;
 import com.appslandia.plum.base.ResourcesProvider;
@@ -31,8 +33,27 @@ import com.appslandia.plum.base.ResourcesProvider;
  */
 public class MockResourcesProvider extends ResourcesProvider {
 
+  final Locale locale;
+
+  public MockResourcesProvider() {
+    this.locale = Locale.getDefault();
+  }
+
   @Override
-  protected Resources loadResources(String language) throws InitializeException {
-    return new Resources(language);
+  protected Resources loadResources(Locale locale) throws InitializeException {
+    return new MockResources();
+  }
+
+  class MockResources implements Resources {
+
+    @Override
+    public String get(Object key) {
+      return locale.getLanguage() + ":" + key;
+    }
+
+    @Override
+    public String get(String key, Object... params) {
+      return locale.getLanguage() + ":" + key + "[]";
+    }
   }
 }
