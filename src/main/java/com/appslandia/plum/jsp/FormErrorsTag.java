@@ -110,6 +110,7 @@ public class FormErrorsTag extends TagBase {
       out.newLine();
       out.write("</ul>");
       out.write("</div>");
+      out.newLine();
     }
   }
 

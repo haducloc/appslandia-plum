@@ -89,6 +89,7 @@ public class MessagesTag extends TagBase {
     out.newLine();
     out.write("</ul>");
     out.write("</div>");
+    out.newLine();
   }
 
   @Attribute(required = true, rtexprvalue = false, description = "success|fatal|error|warn|notice|info")
