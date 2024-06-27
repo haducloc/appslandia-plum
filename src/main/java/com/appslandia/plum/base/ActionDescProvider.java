@@ -263,6 +263,7 @@ public abstract class ActionDescProvider extends InitializeObject {
     List<ParamDesc> paramDescs = new ArrayList<>(actionMethod.getParameterCount());
     for (Parameter parameter : actionMethod.getParameters()) {
 
+      // paramDesc
       ParamDesc paramDesc = new ParamDesc();
       paramDesc.setParameter(parameter);
       paramDescs.add(paramDesc);
