@@ -28,7 +28,6 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Parameter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -154,10 +153,10 @@ public class ModelBinder {
 
             // paramValues
             String[] paramValues = request.getParameterValues(propertyPath);
-
-            if ((paramValues == null) || Arrays.stream(paramValues).allMatch(v -> StringUtils.isNullOrEmpty(v))) {
+            if (paramValues == null) {
               paramValues = SplitUtils.splitByComma(fieldDesc.getDefaultValue());
             }
+
             Out<String> msgKey = new Out<>();
             Object parsedValue = parseArray(paramValues, elementType, msgKey, converter,
                 ServletUtils.getFormatProvider(request));
@@ -228,9 +227,9 @@ public class ModelBinder {
 
           int idx = 0;
           int count = 0;
+
           while (true) {
             String subIndexProp = propertyPath + "[" + idx + "]";
-
             if (hasSubProperties(request, subIndexProp)) {
 
               Object elementModel = elementType.getDeclaredConstructor().newInstance();
