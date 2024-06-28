@@ -420,20 +420,6 @@
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
-			<name>enterBtn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
-			<name>enterFn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
 			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -908,20 +894,6 @@
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
-			<name>enterBtn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
-			<name>enterFn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
 			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -989,13 +961,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=boolean</description>
-			<name>triggerSubmit</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>boolean</type>
 		</attribute>
 		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
@@ -1049,20 +1014,6 @@
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
-			<name>enterBtn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
-			<name>enterFn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
 			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -1130,13 +1081,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=boolean</description>
-			<name>triggerSubmit</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>boolean</type>
 		</attribute>
 		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
@@ -1530,20 +1474,6 @@
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>
-			<name>enterBtn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
-			<name>enterFn</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=java.lang.String</description>
 			<name>errorClass</name>
 			<required>false</required>
 			<rtexprvalue>false</rtexprvalue>
@@ -1632,13 +1562,6 @@
 			<required>false</required>
 			<rtexprvalue>true</rtexprvalue>
 			<type>java.lang.String</type>
-		</attribute>
-		<attribute>
-			<description>description=;type=boolean</description>
-			<name>triggerSubmit</name>
-			<required>false</required>
-			<rtexprvalue>false</rtexprvalue>
-			<type>boolean</type>
 		</attribute>
 		<attribute>
 			<description>description=;type=java.lang.String</description>

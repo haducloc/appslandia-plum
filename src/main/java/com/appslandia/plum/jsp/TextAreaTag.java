@@ -131,14 +131,4 @@ public class TextAreaTag extends ValueTagBase {
   public void setHardWrap(boolean hardWrap) {
     this.hardWrap = hardWrap;
   }
-
-  @Override
-  public void setEnterFn(String enterFn) {
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
-  public void setEnterBtn(String enterBtn) {
-    throw new UnsupportedOperationException();
-  }
 }

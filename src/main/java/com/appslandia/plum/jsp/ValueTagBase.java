@@ -48,9 +48,6 @@ public abstract class ValueTagBase extends UITagBase {
   protected String autocomplete;
   protected String errorClass;
 
-  protected String enterFn;
-  protected String enterBtn;
-
   protected String _name;
   protected Object _value;
   protected boolean _isValid;
@@ -165,15 +162,5 @@ public abstract class ValueTagBase extends UITagBase {
   @Attribute(required = false, rtexprvalue = false)
   public void setErrorClass(String errorClass) {
     this.errorClass = errorClass;
-  }
-
-  @Attribute(required = false, rtexprvalue = false)
-  public void setEnterFn(String enterFn) {
-    this.enterFn = enterFn;
-  }
-
-  @Attribute(required = false, rtexprvalue = false)
-  public void setEnterBtn(String enterBtn) {
-    this.enterBtn = enterBtn;
   }
 }

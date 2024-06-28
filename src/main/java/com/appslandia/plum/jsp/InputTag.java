@@ -105,14 +105,6 @@ public class InputTag extends ValueTagBase {
 
     if (this.alt != null)
       HtmlUtils.escAttribute(out, "alt", this.alt);
-
-    // OnEnter
-    if (this.enterFn != null) {
-      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
-
-    } else if (this.enterBtn != null) {
-      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
-    }
   }
 
   @Attribute(required = false, rtexprvalue = false)

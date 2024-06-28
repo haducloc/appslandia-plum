@@ -46,9 +46,7 @@ public class SelectTag extends ValueTagBase {
   protected String var = "item";
   protected String size;
   protected boolean multiple;
-
   protected String disabledExpr;
-  protected boolean triggerSubmit = false;
 
   protected List<SelectItem> _items;
   protected SelectItem _selItem;
@@ -120,9 +118,6 @@ public class SelectTag extends ValueTagBase {
     if (this.form != null)
       HtmlUtils.escAttribute(out, "form", this.form);
 
-    if (this.triggerSubmit)
-      HtmlUtils.escAttribute(out, "onchange", "this.form.submit();");
-
     if (this.datatag != null)
       HtmlUtils.escAttribute(out, "data-tag", this.datatag);
     if (this.clazz != null)
@@ -131,14 +126,6 @@ public class SelectTag extends ValueTagBase {
       HtmlUtils.escAttribute(out, "style", this.style);
     if (this.title != null)
       HtmlUtils.escAttribute(out, "title", this.title);
-
-    // OnEnter
-    if (this.enterFn != null) {
-      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __on_enter(event, %s);", this.enterFn));
-
-    } else if (this.enterBtn != null) {
-      HtmlUtils.escAttribute(out, "onkeyup", String.format("return __click_btn_on_enter(event, '%s');", this.enterBtn));
-    }
   }
 
   @Override
@@ -254,10 +241,5 @@ public class SelectTag extends ValueTagBase {
   @Attribute(required = false, rtexprvalue = false)
   public void setDisabledExpr(String disabledExpr) {
     this.disabledExpr = disabledExpr;
-  }
-
-  @Attribute(required = false, rtexprvalue = false)
-  public void setTriggerSubmit(boolean triggerSubmit) {
-    this.triggerSubmit = triggerSubmit;
   }
 }
