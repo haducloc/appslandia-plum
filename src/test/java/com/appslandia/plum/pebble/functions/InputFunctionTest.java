@@ -60,7 +60,7 @@ public class InputFunctionTest extends MockTestBase {
     String templateContent = """
         {{ input(path='model.dob') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("dob", "2000-01-01");
@@ -85,7 +85,7 @@ public class InputFunctionTest extends MockTestBase {
     String templateContent = """
         {{ input(path='model.dob') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -108,7 +108,7 @@ public class InputFunctionTest extends MockTestBase {
     String templateContent = """
         {{ input(path='model.dob', type='hidden') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("dob", "2000-01-01");
@@ -133,7 +133,7 @@ public class InputFunctionTest extends MockTestBase {
     String templateContent = """
         {{ input(path='model.dob', type='date') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("dob", "2000-01-01");

@@ -60,7 +60,7 @@ public class RadioFunctionTest extends MockTestBase {
         	{{ radio(path='model.userType', codeValue=1) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "1");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -85,7 +85,7 @@ public class RadioFunctionTest extends MockTestBase {
         	{{ radio(path='model.userType', codeValue=1) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "2");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -110,7 +110,7 @@ public class RadioFunctionTest extends MockTestBase {
         	{{ radio(path='model.userType', codeValue=1, readonly=true) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "1");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -136,7 +136,7 @@ public class RadioFunctionTest extends MockTestBase {
         	{{ radio(path='model.userType', codeValue=1, readonly=true) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "2");
       executeCurrent("GET", "http://localhost/app/testController/index");

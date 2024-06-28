@@ -228,14 +228,14 @@ public abstract class Pipe {
     List<PipeNode> list = new ArrayList<>(5);
 
     while ((endIdx = pipes.indexOf('|', startIdx)) != -1) {
-      String pipe = pipes.substring(startIdx, endIdx).trim();
+      String pipe = pipes.substring(startIdx, endIdx).strip();
       if (!pipe.isEmpty()) {
         list.add(parsePipe(pipe));
       }
       startIdx = endIdx + 1;
     }
     if (startIdx < pipes.length()) {
-      String pipe = pipes.substring(startIdx).trim();
+      String pipe = pipes.substring(startIdx).strip();
       if (!pipe.isEmpty()) {
         list.add(parsePipe(pipe));
       }

@@ -65,7 +65,7 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
     Asserts.notNull(key);
     Asserts.notNull(value);
 
-    this.map.put(key, value.trim());
+    this.map.put(key, value.strip());
     return this;
   }
 

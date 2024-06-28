@@ -50,7 +50,7 @@ public abstract class BasicAuthHandler extends HttpAuthHandler {
     if (idx < 0) {
       return null;
     }
-    String username = usernamePwd.substring(0, idx).trim();
+    String username = usernamePwd.substring(0, idx).strip();
     String password = usernamePwd.substring(idx + 1);
 
     if (username.isEmpty() || password.isEmpty()) {

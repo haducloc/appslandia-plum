@@ -60,7 +60,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ hiddenSel(path='model.userType', items=items, readonly=false) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "1");
@@ -87,7 +87,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "1");
@@ -114,7 +114,7 @@ public class HiddenSelectFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ hiddenSel(path='model.userType', items=items, readonly=true) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

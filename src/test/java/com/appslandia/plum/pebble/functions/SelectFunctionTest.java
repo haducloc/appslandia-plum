@@ -59,7 +59,7 @@ public class SelectFunctionTest extends MockTestBase {
     String templateContent = """
         {{ select(path='model.userType') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "1");
@@ -84,7 +84,7 @@ public class SelectFunctionTest extends MockTestBase {
     String templateContent = """
         {{ select(path='model.userType', readonly=true) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "1");

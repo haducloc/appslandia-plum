@@ -52,7 +52,7 @@ public class ActionUrlFunctionTest extends MockTestBase {
     String templateContent = """
         {{ actionUrl(action='index', __par1='value1', __par2='value 2') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -74,7 +74,7 @@ public class ActionUrlFunctionTest extends MockTestBase {
     String templateContent = """
         {{ actionUrl(action='index', __par1='value1', __par2='value 2', escXml=false) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -96,7 +96,7 @@ public class ActionUrlFunctionTest extends MockTestBase {
     String templateContent = """
         {{ actionUrl(action='index', __par1='value1', __par2='value 2', absUrl=true) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

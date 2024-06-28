@@ -60,7 +60,7 @@ public class FieldClassFunctionTest extends MockTestBase {
     String templateContent = """
         {{ fieldClass(fieldName='username') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("username", "user1");
@@ -85,7 +85,7 @@ public class FieldClassFunctionTest extends MockTestBase {
     String templateContent = """
         {{ fieldClass(fieldName='username') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

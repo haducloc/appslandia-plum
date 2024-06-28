@@ -56,7 +56,7 @@ public class DatalistFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ datalist(items=items) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

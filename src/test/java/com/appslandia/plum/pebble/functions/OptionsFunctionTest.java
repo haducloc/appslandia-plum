@@ -61,7 +61,7 @@ public class OptionsFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ options(selectedValue=model.userType, items=items) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "1");
@@ -90,7 +90,7 @@ public class OptionsFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ options(selectedValue=model.userType, items=items) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "4");
@@ -118,7 +118,7 @@ public class OptionsFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ options(selectedValue=model.userType, items=items, readonly=true) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       getCurrentRequest().addParameter("userType", "1");
@@ -146,7 +146,7 @@ public class OptionsFunctionTest extends MockTestBase {
     String templateContent = """
         	{{ options(selectedValue=model.userType, items=items, readonly=true) }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

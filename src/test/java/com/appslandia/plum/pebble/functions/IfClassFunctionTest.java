@@ -53,7 +53,7 @@ public class IfClassFunctionTest extends MockTestBase {
     String templateContent = """
         {{ ifClass(test=false, value='active') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -75,7 +75,7 @@ public class IfClassFunctionTest extends MockTestBase {
     String templateContent = """
         {{ ifClass(test=true, value='active') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

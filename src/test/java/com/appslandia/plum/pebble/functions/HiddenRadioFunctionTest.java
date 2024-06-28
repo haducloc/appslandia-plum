@@ -60,7 +60,7 @@ public class HiddenRadioFunctionTest extends MockTestBase {
         	{{ hiddenRdo(path='model.userType', codeValue=1, readonly=false) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "1");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -85,7 +85,7 @@ public class HiddenRadioFunctionTest extends MockTestBase {
         	{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "1");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -110,7 +110,7 @@ public class HiddenRadioFunctionTest extends MockTestBase {
         	{{ hiddenRdo(path='model.userType', codeValue=1, readonly=true) }}
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("userType", "2");
       executeCurrent("GET", "http://localhost/app/testController/index");

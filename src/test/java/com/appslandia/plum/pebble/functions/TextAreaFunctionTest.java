@@ -59,7 +59,7 @@ public class TextAreaFunctionTest extends MockTestBase {
     String templateContent = """
         {{ textarea(path='model.notes') }}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");

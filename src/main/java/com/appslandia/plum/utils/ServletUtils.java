@@ -252,7 +252,7 @@ public class ServletUtils {
     if (idx < 0) {
       return request.getRemoteAddr();
     }
-    value = value.substring(0, idx).trim();
+    value = value.substring(0, idx).strip();
     return !value.isEmpty() ? value : request.getRemoteAddr();
   }
 
@@ -309,12 +309,12 @@ public class ServletUtils {
     for (String encoding : encodings) {
 
       String[] parts = encoding.split(";");
-      String encType = parts[0].trim();
+      String encType = parts[0].strip();
       double qValue = 1.0;
 
-      if (parts.length > 1 && parts[1].trim().startsWith("q=")) {
+      if (parts.length > 1 && parts[1].strip().startsWith("q=")) {
         try {
-          qValue = Double.parseDouble(parts[1].trim().substring(2));
+          qValue = Double.parseDouble(parts[1].strip().substring(2));
         } catch (NumberFormatException ex) {
         }
       }

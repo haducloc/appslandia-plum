@@ -60,7 +60,7 @@ public class CheckFunctionTest extends MockTestBase {
         	<input type=\"checkbox\" {{ checkbox(path='model.roles', codeValue='admin') }} />
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("roles", "admin,operator");
 
@@ -87,7 +87,7 @@ public class CheckFunctionTest extends MockTestBase {
         	<input type=\"checkbox\" {{ checkbox(path='model.roles', codeValue='admin') }} />
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("roles", "operator");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -112,7 +112,7 @@ public class CheckFunctionTest extends MockTestBase {
         	<input type=\"checkbox\" {{ checkbox(path='model.roles', codeValue='admin', readonly=true) }} />
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
       getCurrentRequest().addParameter("roles", "admin,operator");
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -139,7 +139,7 @@ public class CheckFunctionTest extends MockTestBase {
         	<input type=\"checkbox\" {{ checkbox(path='model.roles', codeValue='admin', readonly=true) }} />
         """;
 
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
     try {
 
       getCurrentRequest().addParameter("roles", "operator");

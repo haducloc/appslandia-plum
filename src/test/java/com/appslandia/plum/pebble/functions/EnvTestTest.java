@@ -57,7 +57,7 @@ public class EnvTestTest extends MockTestBase {
         		Development Environment
         	{% endif %}
         """;
-    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.trim());
+    pebbleTemplateProvider.addTemplate("/WEB-INF/pebble/index.peb", templateContent.strip());
 
     try {
       executeCurrent("GET", "http://localhost/app/testController/index");
@@ -68,7 +68,7 @@ public class EnvTestTest extends MockTestBase {
       PebbleUtils.executePebble(getCurrentRequest(), getCurrentResponse(), out, "/WEB-INF/pebble/index.peb", model,
           getCurrentRequestContext().getLanguage().getLocale());
 
-      String content = out.toString().trim();
+      String content = out.toString().strip();
       Assertions.assertEquals("Development Environment", content);
 
     } catch (Exception ex) {
