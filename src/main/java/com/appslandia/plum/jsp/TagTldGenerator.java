@@ -58,9 +58,6 @@ public class TagTldGenerator {
     generateTag(FieldGroupTag.class, sb);
 
     generateTag(ButtonTag.class, sb);
-    generateTag(SubmitButtonTag.class, sb);
-    generateTag(ButtonLinkTag.class, sb);
-
     generateTag(SelectTag.class, sb);
     generateTag(OptionTag.class, sb);
 
