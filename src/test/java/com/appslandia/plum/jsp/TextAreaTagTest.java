@@ -67,7 +67,7 @@ public class TextAreaTagTest extends MockTestBase {
       model.setNotes("testNotes");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<textarea id=\"notes\" name=\"notes\">testNotes</textarea>",
           NormalizeUtils.toSingleLine(html));

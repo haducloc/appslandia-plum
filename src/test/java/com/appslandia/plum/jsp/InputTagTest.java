@@ -72,7 +72,7 @@ public class InputTagTest extends MockTestBase {
       tag.setPath("model.dob");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"2000-01-01\" />",
           NormalizeUtils.toSingleLine(html));
@@ -89,7 +89,7 @@ public class InputTagTest extends MockTestBase {
       tag.setPath("model.dob");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<input id=\"dob\" type=\"text\" name=\"dob\" value=\"\" class=\"l-error-field\" />",
           NormalizeUtils.toSingleLine(html));
@@ -107,7 +107,7 @@ public class InputTagTest extends MockTestBase {
       tag.setType("hidden");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<input id=\"dob\" type=\"hidden\" name=\"dob\" value=\"2000-01-01\" />",
           NormalizeUtils.toSingleLine(html));
@@ -125,7 +125,7 @@ public class InputTagTest extends MockTestBase {
       tag.setType("date");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<input id=\"dob\" type=\"date\" name=\"dob\" value=\"2000-01-01\" />",
           NormalizeUtils.toSingleLine(html));

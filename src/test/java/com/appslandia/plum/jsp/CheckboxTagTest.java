@@ -72,7 +72,7 @@ public class CheckboxTagTest extends MockTestBase {
       tag.setCodeValue("admin");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" />",
@@ -92,7 +92,7 @@ public class CheckboxTagTest extends MockTestBase {
       tag.setCodeValue("admin");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" />",
           NormalizeUtils.toSingleLine(html));
@@ -112,7 +112,7 @@ public class CheckboxTagTest extends MockTestBase {
       tag.setReadonly(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"roles\" value=\"admin\" type=\"hidden\" />",
@@ -133,7 +133,7 @@ public class CheckboxTagTest extends MockTestBase {
       tag.setReadonly(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<input id=\"roles\" type=\"checkbox\" name=\"roles\" value=\"admin\" disabled=\"disabled\" />",

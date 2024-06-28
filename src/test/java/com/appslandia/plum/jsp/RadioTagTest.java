@@ -72,7 +72,7 @@ public class RadioTagTest extends MockTestBase {
       tag.setCodeValue(1);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" />",
@@ -92,7 +92,7 @@ public class RadioTagTest extends MockTestBase {
       tag.setCodeValue("1");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" />",
           NormalizeUtils.toSingleLine(html));
@@ -112,7 +112,7 @@ public class RadioTagTest extends MockTestBase {
       tag.setReadonly(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" checked=\"checked\" disabled=\"disabled\" /> <input name=\"userType\" value=\"1\" type=\"hidden\" />",
@@ -133,7 +133,7 @@ public class RadioTagTest extends MockTestBase {
       tag.setReadonly(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<input id=\"userType\" type=\"radio\" name=\"userType\" value=\"1\" disabled=\"disabled\" />",

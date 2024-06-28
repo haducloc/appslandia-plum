@@ -65,8 +65,9 @@ public class DataListTag extends UITagBase {
   @Override
   protected void writeAttributes(JspWriter out) throws JspException, IOException {
     HtmlUtils.escAttribute(out, "id", this.id);
-    if (this.datatag != null)
+    if (this.datatag != null) {
       HtmlUtils.escAttribute(out, "data-tag", this.datatag);
+    }
   }
 
   @Override
@@ -79,23 +80,25 @@ public class DataListTag extends UITagBase {
       if (item == null) {
         continue;
       }
-      out.newLine();
-
       out.write("<option");
       HtmlUtils.escAttribute(out, "value", getRequestContext().format(item, this.converter, false));
       out.write(" />");
+      out.newLine();
     }
   }
 
   @Override
   protected void writeBody(JspWriter out) throws JspException, IOException {
+    boolean hasItems = (this._items != null) || (this.items != null);
+    if (hasItems) {
+      out.newLine();
+    }
     if (this._items != null) {
       writeItems(out, this._items);
     }
     if (this.items != null) {
       writeItems(out, this.items);
     }
-    out.newLine();
   }
 
   @Attribute(required = true, rtexprvalue = false)

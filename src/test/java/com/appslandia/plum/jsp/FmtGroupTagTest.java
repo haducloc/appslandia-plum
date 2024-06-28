@@ -69,7 +69,7 @@ public class FmtGroupTagTest extends MockTestBase {
       tag.setName("phoneFormat");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("(402) 413-0224", html);
 
@@ -85,7 +85,7 @@ public class FmtGroupTagTest extends MockTestBase {
       tag.setName("phoneFormat");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("+14024130224", html);
 

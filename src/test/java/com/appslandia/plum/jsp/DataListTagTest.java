@@ -65,7 +65,7 @@ public class DataListTagTest extends MockTestBase {
       tag.setItems(CollectionUtils.toList("admin", "manager"));
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>",
@@ -84,7 +84,7 @@ public class DataListTagTest extends MockTestBase {
       tag.addItem("manager");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<datalist id=\"testDataList\"> <option value=\"admin\" /> <option value=\"manager\" /> </datalist>",

@@ -70,7 +70,7 @@ public class ConstTagTest extends MockTestBase {
       tag.setValue(Actives.ACTIVE);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("en:actives.active", html);
 
@@ -86,7 +86,7 @@ public class ConstTagTest extends MockTestBase {
       tag.setValue(Actives.INACTIVE);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(Integer.toString(Actives.INACTIVE), html);
 

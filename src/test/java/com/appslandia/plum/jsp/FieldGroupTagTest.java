@@ -65,7 +65,7 @@ public class FieldGroupTagTest extends MockTestBase {
       tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<div>fields</div>", NormalizeUtils.toSingleLine(html));
 
@@ -83,7 +83,7 @@ public class FieldGroupTagTest extends MockTestBase {
       tag.setJspBody(new MockJspFragment(tag.getPageContext(), "fields"));
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<div class=\"l-error-field\">fields</div>", NormalizeUtils.toSingleLine(html));
 

@@ -91,8 +91,8 @@ public abstract class UITagBase extends TagBase implements DynamicAttributes {
 
     if (this.hasBody()) {
       out.write('>');
-
       this.writeBody(out);
+
       out.write("</");
       out.write(this.getTagName());
       out.write('>');
@@ -100,6 +100,7 @@ public abstract class UITagBase extends TagBase implements DynamicAttributes {
     } else {
       out.write(" />");
     }
+    out.newLine();
   }
 
   @Attribute(required = false, rtexprvalue = true)

@@ -79,6 +79,7 @@ public class FormErrorsTag extends TagBase {
         HtmlUtils.escAttribute(out, "class", this.listClass);
       }
       out.write(">");
+      out.newLine();
 
       // Write field errors
       if (this.includeFields) {
@@ -107,7 +108,6 @@ public class FormErrorsTag extends TagBase {
         this.writeMessages(out, errors);
       }
 
-      out.newLine();
       out.write("</ul>");
       out.write("</div>");
       out.newLine();
@@ -116,8 +116,6 @@ public class FormErrorsTag extends TagBase {
 
   protected void writeMessages(JspWriter out, List<Message> messages) throws IOException {
     for (Message message : messages) {
-      out.newLine();
-
       out.write("<li");
       if (this.itemClass != null) {
         HtmlUtils.escAttribute(out, "class", this.itemClass);
@@ -130,6 +128,7 @@ public class FormErrorsTag extends TagBase {
         out.write(message.getText());
       }
       out.write("</li>");
+      out.newLine();
     }
   }
 

@@ -63,7 +63,7 @@ public class FieldErrorTest extends MockTestBase {
       tag.setFieldName("userName");
       tag.doTag();
 
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("", html);
 
@@ -80,7 +80,7 @@ public class FieldErrorTest extends MockTestBase {
       tag.setFieldName("userName");
       tag.doTag();
 
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<div class=\"l-field-error\">The userName field is required.</div>",
           NormalizeUtils.toSingleLine(html));

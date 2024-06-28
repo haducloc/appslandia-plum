@@ -64,7 +64,7 @@ public class ActionImageTagTest extends MockTestBase {
       tag.setController("testController");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<img src=\"/app/testController/?encodeURL=true\" alt=\"\" />", html);
 
@@ -83,7 +83,7 @@ public class ActionImageTagTest extends MockTestBase {
       tag.setDynamicAttribute(null, "__p2", "param2");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<img src=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\" alt=\"\" />", html);

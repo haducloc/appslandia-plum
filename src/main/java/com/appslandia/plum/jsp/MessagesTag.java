@@ -68,10 +68,9 @@ public class MessagesTag extends TagBase {
       HtmlUtils.escAttribute(out, "class", this.listClass);
     }
     out.write(">");
+    out.newLine();
 
     for (Message msg : msgs) {
-      out.newLine();
-
       out.write("<li");
       if (this.itemClass != null) {
         HtmlUtils.escAttribute(out, "class", this.itemClass);
@@ -84,9 +83,9 @@ public class MessagesTag extends TagBase {
         out.write(msg.getText());
       }
       out.write("</li>");
+      out.newLine();
     }
 
-    out.newLine();
     out.write("</ul>");
     out.write("</div>");
     out.newLine();

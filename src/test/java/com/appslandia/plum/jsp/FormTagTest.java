@@ -67,7 +67,7 @@ public class FormTagTest extends MockTestBase {
       tag.setController("testController");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<form action=\"/app/testController/?encodeURL=true\"></form>",
           NormalizeUtils.toSingleLine(html));
@@ -87,7 +87,7 @@ public class FormTagTest extends MockTestBase {
       tag.setDynamicAttribute(null, "__p2", "param2");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<form action=\"/app/testController/actionPathParams/param1/?p2=param2&amp;encodeURL=true\"></form>",

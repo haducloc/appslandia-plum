@@ -148,8 +148,6 @@ public class SelectTag extends ValueTagBase {
 
   protected void writeOption(JspWriter out, SelectItem item, boolean selected, boolean disabled)
       throws JspException, IOException {
-    out.newLine();
-
     out.write("<option");
     HtmlUtils.escAttribute(out, "value", getRequestContext().format(item.getValue(), this.converter, false));
 
@@ -165,6 +163,7 @@ public class SelectTag extends ValueTagBase {
       XmlEscaper.escapeXml(out, item.getDisplayName());
     }
     out.write("</option>");
+    out.newLine();
   }
 
   protected SelectItem writeItems(JspWriter out, Iterable<SelectItem> items) throws JspException, IOException {
@@ -215,6 +214,11 @@ public class SelectTag extends ValueTagBase {
 
   @Override
   protected void writeBody(JspWriter out) throws JspException, IOException {
+    boolean hasItems = (this._items != null) || (this.items != null);
+    if (hasItems) {
+      out.newLine();
+    }
+
     SelectItem selItem1 = null;
     if (this._items != null) {
       selItem1 = writeItems(out, this._items);
@@ -224,9 +228,7 @@ public class SelectTag extends ValueTagBase {
     if (this.items != null) {
       selItem2 = writeItems(out, this.items);
     }
-
     this._selItem = (selItem1 != null) ? selItem1 : selItem2;
-    out.newLine();
   }
 
   @Attribute(required = false, rtexprvalue = true)

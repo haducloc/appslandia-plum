@@ -64,7 +64,7 @@ public class FieldLabelTagTest extends MockTestBase {
       tag.setLabelKey("testLabel");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<label for=\"userName\">en:testLabel</label>", NormalizeUtils.toSingleLine(html));
 
@@ -83,7 +83,7 @@ public class FieldLabelTagTest extends MockTestBase {
       tag.setLabelKey("testLabel");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<label for=\"userName\" class=\"l-error-label\">en:testLabel</label>",
           NormalizeUtils.toSingleLine(html));
@@ -104,7 +104,7 @@ public class FieldLabelTagTest extends MockTestBase {
       tag.setRequired(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("<label for=\"userName\" class=\"l-required-label l-error-label\">en:testLabel</label>",
           NormalizeUtils.toSingleLine(html));

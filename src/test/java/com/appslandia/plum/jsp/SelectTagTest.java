@@ -71,7 +71,7 @@ public class SelectTagTest extends MockTestBase {
       tag.setItems(CollectionUtils.toList(new SelectItemImpl(1, "type1"), new SelectItemImpl(2, "type2")));
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
@@ -92,7 +92,7 @@ public class SelectTagTest extends MockTestBase {
       tag.addOption("type2", 2);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\" selected=\"selected\">type2</option> </select>",
@@ -112,7 +112,7 @@ public class SelectTagTest extends MockTestBase {
       tag.addOption("type2", 2);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals(
           "<select id=\"userType\" name=\"userType\"> <option value=\"1\">type1</option> <option value=\"2\">type2</option> </select>",
@@ -135,7 +135,7 @@ public class SelectTagTest extends MockTestBase {
       tag.setReadonly(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       // type1 is removed from the options
       // plus hidden
@@ -160,7 +160,7 @@ public class SelectTagTest extends MockTestBase {
       tag.setReadonly(true);
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       // Empty dropdown in this case
       // No hidden

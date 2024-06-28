@@ -64,7 +64,7 @@ public class ActionUrlTagTest extends MockTestBase {
       tag.setController("testController");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("/app/testController/?encodeURL=true", html);
 
@@ -83,7 +83,7 @@ public class ActionUrlTagTest extends MockTestBase {
       tag.setDynamicAttribute(null, "__p2", "param2");
 
       tag.doTag();
-      String html = tag.getPageContext().getOut().toString();
+      String html = tag.getPageContext().getOut().toString().stripTrailing();
 
       Assertions.assertEquals("/app/testController/actionPathParams/param1/?p2=param2&encodeURL=true", html);
 
