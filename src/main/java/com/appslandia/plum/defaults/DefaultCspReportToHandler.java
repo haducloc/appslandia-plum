@@ -42,6 +42,8 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultCspReportToHandler implements CspReportToHandler {
 
+  static final long DEFAULT_REPORT_INTERVAL_MS = TimeUnit.MINUTES.convert(5, TimeUnit.MILLISECONDS);
+
   @Inject
   protected AppLogger appLogger;
 
@@ -52,13 +54,11 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
 
   final ConcurrentMap<String, Long> reportedLog = new ConcurrentHashMap<>();
 
-  final long dayInMillis = TimeUnit.DAYS.convert(1, TimeUnit.MILLISECONDS);
-
   public static final String CONFIG_REPORT_INTERVAL_MS = DefaultCspReportToHandler.class.getName()
       + ".report_interval_ms";
 
   protected long getReportIntervalMs() {
-    return this.appConfig.getLong(CONFIG_REPORT_INTERVAL_MS, this.dayInMillis);
+    return this.appConfig.getLong(CONFIG_REPORT_INTERVAL_MS, DEFAULT_REPORT_INTERVAL_MS);
   }
 
   @Override
