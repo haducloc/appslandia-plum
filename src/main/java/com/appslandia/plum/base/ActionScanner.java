@@ -43,6 +43,9 @@ public class ActionScanner {
 
   final List<Class<?>> controllerClasses = new ArrayList<>();
 
+  private ActionScanner() {
+  }
+
   public List<Class<?>> getControllerClasses() {
     return Collections.unmodifiableList(this.controllerClasses);
   }
