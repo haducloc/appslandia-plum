@@ -66,6 +66,8 @@ public class ErrorServlet extends HttpServlet {
 
   private void doRequest(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+
+    // If DispatcherType=REQUEST
     if (request.getDispatcherType() == DispatcherType.REQUEST) {
       this.exceptionHandler.writeSimpleHtml(request, response, HttpServletResponse.SC_NOT_FOUND, "404: Not Found");
       return;
@@ -81,9 +83,12 @@ public class ErrorServlet extends HttpServlet {
 
   protected void writeErrorProd(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
-    RequestContext requestContext = this.requestContextParser.parse(request, response);
-    Problem problem = (Problem) request.getAttribute(Problem.class.getName());
 
+    // RequestContext
+    RequestContext requestContext = this.requestContextParser.parse(request, response);
+
+    // Problem
+    Problem problem = (Problem) request.getAttribute(Problem.class.getName());
     if (problem == null) {
       Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
       problem = this.exceptionHandler.getProblem(request, requestContext, exception);
