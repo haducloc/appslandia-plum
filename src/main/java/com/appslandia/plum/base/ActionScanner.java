@@ -64,7 +64,11 @@ public class ActionScanner {
         if ((matcher != null) && !Boolean.TRUE.equals(matcher.apply(actionMethod))) {
           continue;
         }
-        if (Boolean.TRUE.equals(consumer.apply(controllerClass, actionMethod))) {
+
+        // Consume the action method
+        Boolean stopped = consumer.apply(controllerClass, actionMethod);
+
+        if (Boolean.TRUE.equals(stopped)) {
           return;
         }
       }
