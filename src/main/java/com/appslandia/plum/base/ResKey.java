@@ -74,7 +74,7 @@ public class ResKey implements Serializable {
     if (!(obj instanceof ResKey)) {
       return false;
     }
-    ResKey other = (ResKey) obj;
-    return Objects.equals(this.key, other.key);
+    ResKey that = (ResKey) obj;
+    return Objects.equals(this.key, that.key);
   }
 }

@@ -53,8 +53,8 @@ public class ActionRoute {
     if (!(obj instanceof ActionRoute)) {
       return false;
     }
-    ActionRoute other = (ActionRoute) obj;
-    return this.controller.equalsIgnoreCase(other.controller) && this.action.equalsIgnoreCase(other.action);
+    ActionRoute that = (ActionRoute) obj;
+    return this.controller.equalsIgnoreCase(that.controller) && this.action.equalsIgnoreCase(that.action);
   }
 
   @Override

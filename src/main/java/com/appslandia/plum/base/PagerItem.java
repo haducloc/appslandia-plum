@@ -80,7 +80,7 @@ public class PagerItem {
     if (!(obj instanceof PagerItem)) {
       return false;
     }
-    PagerItem other = (PagerItem) obj;
-    return (this.type == other.type) && (this.index == other.index);
+    PagerItem that = (PagerItem) obj;
+    return (this.type == that.type) && (this.index == that.index);
   }
 }
