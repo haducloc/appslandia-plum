@@ -38,7 +38,7 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @ApplicationScoped
-public class DefaultHeaderPolicy {
+public class AppHeaderPolicy {
 
   @Inject
   protected AppConfig appConfig;

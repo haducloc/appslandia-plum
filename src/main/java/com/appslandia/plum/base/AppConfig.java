@@ -76,7 +76,6 @@ public class AppConfig extends InitializeObject implements Config {
   public static final String HEADER_REPORT_TO = "header.report_to";
   public static final String HEADER_REPORTING_ENDPOINTS = "header.reporting_endpoints";
   public static final String HEADER_CSP_REPORT_ONLY = "header.csp_report_only";
-  public static final String HEADER_VARY = "header.vary";
 
   public static final String HEADER_CROSS_ORIGIN_EMBEDDER_POLICY = "header.cross_origin_embedder_policy";
   public static final String HEADER_CROSS_ORIGIN_OPENER_POLICY = "header.cross_origin_opener_policy";

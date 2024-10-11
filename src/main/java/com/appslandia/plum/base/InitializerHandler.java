@@ -55,7 +55,7 @@ public class InitializerHandler extends HttpFilter {
   protected LanguageProvider languageProvider;
 
   @Inject
-  protected DefaultHeaderPolicy defaultHeaderPolicy;
+  protected AppHeaderPolicy appHeaderPolicy;
 
   @Inject
   protected HeaderPolicyProvider headerPolicyProvider;
@@ -100,8 +100,8 @@ public class InitializerHandler extends HttpFilter {
       request.setCharacterEncoding(StandardCharsets.UTF_8.name());
     }
 
-    // Default Header Policies
-    this.defaultHeaderPolicy.writePolicy(request, response, requestContext);
+    // Header Policies
+    this.appHeaderPolicy.writePolicy(request, response, requestContext);
 
     // Enabled Header Policies
     for (String policy : this.appConfig.getStringArray(AppConfig.CONFIG_ENABLE_HEADER_POLICIES)) {
@@ -109,13 +109,9 @@ public class InitializerHandler extends HttpFilter {
     }
 
     // Vary
-    String[] varyHeaders = this.appConfig.getStringArray(AppConfig.HEADER_VARY);
-    Arrays.stream(varyHeaders).forEach(header -> response.addHeader("Vary", header));
-
     if (enableCompression(request, requestContext)) {
       response.addHeader("Vary", "Accept-Encoding");
     }
-
     if (this.languageProvider.getLanguages().size() > 1) {
       response.addHeader("Vary", "Accept-Language");
     }

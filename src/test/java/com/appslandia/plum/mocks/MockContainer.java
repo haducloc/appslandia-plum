@@ -59,7 +59,7 @@ import com.appslandia.plum.base.CookieHandler;
 import com.appslandia.plum.base.CorsPolicyHandler;
 import com.appslandia.plum.base.CorsPolicyProvider;
 import com.appslandia.plum.base.CsrfManager;
-import com.appslandia.plum.base.DefaultHeaderPolicy;
+import com.appslandia.plum.base.AppHeaderPolicy;
 import com.appslandia.plum.base.ExceptionHandler;
 import com.appslandia.plum.base.ExecutorHandler;
 import com.appslandia.plum.base.FormatProviderFactory;
@@ -321,7 +321,7 @@ public class MockContainer extends InitializeObject {
     factory.register(CorsPolicyProvider.class, CorsPolicyProvider.class);
     factory.register(CorsPolicyHandler.class, CorsPolicyHandler.class);
     factory.register(HeaderPolicyProvider.class, HeaderPolicyProvider.class);
-    factory.register(DefaultHeaderPolicy.class, DefaultHeaderPolicy.class);
+    factory.register(AppHeaderPolicy.class, AppHeaderPolicy.class);
 
     factory.register(CaptchaManager.class, MockCaptchaManager.class);
     factory.register(CaptchaProducer.class, MockCaptchaProducer.class);
