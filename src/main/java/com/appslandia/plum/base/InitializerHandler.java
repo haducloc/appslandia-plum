@@ -110,11 +110,11 @@ public class InitializerHandler extends HttpFilter {
     }
   }
 
-  protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+  protected void redirectLang(HttpServletRequest request, HttpServletResponse response, String pathLang)
       throws Exception {
     int status = HttpServletResponse.SC_MOVED_TEMPORARILY;
 
-    String url = ServletUtils.getRequestUrl(request, requestContext.getLanguageId());
+    String url = ServletUtils.getRequestUrl(request, pathLang);
     ServletUtils.sendRedirect(response, this.appConfig.isEnableSession() ? response.encodeRedirectURL(url) : url,
         status);
   }
@@ -154,11 +154,20 @@ public class InitializerHandler extends HttpFilter {
       }
 
       // Language
-      if (!requestContext.isPathLanguage() && this.languageProvider.isMultiLanguages()) {
-        if (HttpMethod.GET.equals(request.getMethod())) {
-          redirectLang(request, response, requestContext);
-          return;
-        } else {
+      if (this.languageProvider.isMultiLanguages()) {
+        if (!requestContext.isPathLanguage()) {
+          if (HttpMethod.GET.equals(request.getMethod())) {
+            redirectLang(request, response, requestContext.getLanguageId());
+            return;
+          }
+          throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
+        }
+      } else {
+        if (requestContext.isPathLanguage()) {
+          if (HttpMethod.GET.equals(request.getMethod())) {
+            redirectLang(request, response, null);
+            return;
+          }
           throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
         }
       }

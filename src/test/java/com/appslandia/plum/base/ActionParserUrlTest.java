@@ -95,24 +95,6 @@ public class ActionParserUrlTest extends MockTestBase {
   }
 
   @Test
-  public void test_actionPathParams_lang() {
-    try {
-      getCurrentRequest().setRequestURL("http://localhost/app/en/testController/actionPathParams/param1/param2");
-      requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-      Map<String, Object> params = new HashMap<>();
-      params.put("param1", "param1");
-      params.put("param2", "param2");
-
-      String url = actionParser.toActionUrl(getCurrentRequest(), "testController", "actionPathParams", params, false);
-      Assertions.assertEquals("/app/en/testController/actionPathParams/param1/param2/", url);
-
-    } catch (Exception ex) {
-      Assertions.fail(ex.getMessage());
-    }
-  }
-
-  @Test
   public void test_actionPathParams_pathParamsMissed() {
     try {
       getCurrentRequest().setRequestURL("http://localhost/app/testController/actionPathParams/param1/param2");

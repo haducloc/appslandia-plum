@@ -126,9 +126,10 @@ public class ServletUtils {
     url.append(request.getServletContext().getContextPath());
 
     // Language
-    if (requestContext.isPathLanguage() || languageProvider.isMultiLanguages()) {
+    if (languageProvider.isMultiLanguages()) {
       url.append('/').append(requestContext.getLanguageId());
     }
+
     ActionDescProvider actionDescProvider = getAppScoped(request.getServletContext(), ActionDescProvider.class);
     ActionDesc formLogin = actionDescProvider.getFormLogin(requestContext.getModule());
 
@@ -213,16 +214,21 @@ public class ServletUtils {
     return url.toString();
   }
 
+  /**
+   * Returns the request URL with the embedded path language removed if it exists
+   * and pathLang is null.
+   * 
+   */
   public static String getRequestUrl(HttpServletRequest request, String pathLang) {
-    Asserts.notNull(pathLang);
-
     StringBuilder url = newUrlBuilder();
 
     // ContextPath
     url.append(request.getServletContext().getContextPath());
 
     // Language
-    url.append('/').append(pathLang);
+    if (pathLang != null) {
+      url.append('/').append(pathLang);
+    }
 
     // ServletPath
     RequestContext requestContext = ServletUtils.getRequestContext(request);

@@ -27,6 +27,7 @@ import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.ActionParser;
 import com.appslandia.plum.base.ActionResult;
 import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.utils.ServletUtils;
@@ -114,13 +115,15 @@ public class RedirectResult implements ActionResult {
         throws Exception {
       AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
       TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
+      LanguageProvider languageProvider = ServletUtils.getAppScoped(request.getServletContext(),
+          LanguageProvider.class);
 
       // URL
       StringBuilder url = new StringBuilder();
       url.append(request.getServletContext().getContextPath());
 
       // Language
-      if (requestContext.isPathLanguage()) {
+      if (languageProvider.isMultiLanguages()) {
         url.append('/').append(requestContext.getLanguageId());
       }
 
@@ -144,13 +147,15 @@ public class RedirectResult implements ActionResult {
         throws Exception {
       AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
       TempDataManager tempDataManager = ServletUtils.getAppScoped(request.getServletContext(), TempDataManager.class);
+      LanguageProvider languageProvider = ServletUtils.getAppScoped(request.getServletContext(),
+          LanguageProvider.class);
 
       // URL
       StringBuilder url = new StringBuilder();
       url.append(request.getServletContext().getContextPath());
 
       // Language
-      if (requestContext.isPathLanguage()) {
+      if (languageProvider.isMultiLanguages()) {
         url.append('/').append(requestContext.getLanguageId());
       }
       url.append('/');
