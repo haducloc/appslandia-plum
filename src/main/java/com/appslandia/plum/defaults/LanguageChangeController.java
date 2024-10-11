@@ -60,7 +60,8 @@ public class LanguageChangeController {
     final String redirectUrl = request.getParameter("redirectUrl");
 
     if (redirectUrl != null) {
-      ServletUtils.sendRedirect(response, redirectUrl);
+      ServletUtils.sendRedirect(response,
+          this.appConfig.isEnableSession() ? response.encodeRedirectURL(redirectUrl) : redirectUrl);
       return ActionResult.EMPTY;
 
     } else {
@@ -69,7 +70,6 @@ public class LanguageChangeController {
         @Override
         public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
             throws Exception {
-          AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
 
           // URL
           StringBuilder url = new StringBuilder();
@@ -79,8 +79,9 @@ public class LanguageChangeController {
           url.append('/').append(languageId);
           url.append('/');
 
-          response
-              .sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
+          response.sendRedirect(
+              LanguageChangeController.this.appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString())
+                  : url.toString());
         }
       };
     }
