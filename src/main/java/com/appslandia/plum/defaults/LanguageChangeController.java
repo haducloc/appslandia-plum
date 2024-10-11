@@ -27,11 +27,12 @@ import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.RequestAccessor;
-import com.appslandia.plum.results.RedirectResult;
+import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -63,7 +64,25 @@ public class LanguageChangeController {
       return ActionResult.EMPTY;
 
     } else {
-      return RedirectResult.ROOT;
+      return new ActionResult() {
+
+        @Override
+        public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
+            throws Exception {
+          AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+
+          // URL
+          StringBuilder url = new StringBuilder();
+          url.append(request.getServletContext().getContextPath());
+
+          // Language
+          url.append('/').append(languageId);
+          url.append('/');
+
+          response
+              .sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
+        }
+      };
     }
   }
 }

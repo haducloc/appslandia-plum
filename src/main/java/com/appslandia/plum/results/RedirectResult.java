@@ -107,7 +107,7 @@ public class RedirectResult implements ActionResult {
     }
   }
 
-  public static final RedirectResult INDEX = new RedirectResult() {
+  public static final ActionResult INDEX = new ActionResult() {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
@@ -135,19 +135,9 @@ public class RedirectResult implements ActionResult {
       }
       response.sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
     }
-
-    @Override
-    public RedirectResult status(int status) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RedirectResult query(String name, Object value) {
-      throw new UnsupportedOperationException();
-    }
   };
 
-  public static final RedirectResult ROOT = new RedirectResult() {
+  public static final ActionResult ROOT = new ActionResult() {
 
     @Override
     public void execute(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
@@ -171,16 +161,6 @@ public class RedirectResult implements ActionResult {
         url.append('?').append(TempDataManager.PARAM_TEMP_DATA_ID).append('=').append(tempDataId);
       }
       response.sendRedirect(appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
-    }
-
-    @Override
-    public RedirectResult status(int status) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public RedirectResult query(String name, Object value) {
-      throw new UnsupportedOperationException();
     }
   };
 }
