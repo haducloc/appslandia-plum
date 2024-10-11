@@ -32,12 +32,12 @@ import com.appslandia.plum.utils.TestUtils;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class EnableCompressionTest extends MockTestBase {
+public class EnableEncodingTest extends MockTestBase {
 
   @Override
   protected void initialize() {
     container.register(TestController.class, TestController.class);
-    container.getAppConfig().set(AppConfig.CONFIG_DISABLE_COMPRESSION, false);
+    container.getAppConfig().set(AppConfig.CONFIG_DISABLE_ENCODING, false);
   }
 
   @Test
@@ -97,7 +97,7 @@ public class EnableCompressionTest extends MockTestBase {
   public static class TestController {
 
     @HttpGetPost
-    @EnableCompression
+    @EnableEncoding
     public ActionResult testGzip() throws Exception {
       return new ContentResult("data", MimeTypes.TEXT_PLAIN);
     }

@@ -49,7 +49,7 @@ public class ActionDesc {
   private CacheControl cacheControl;
   private EnableCors enableCors;
 
-  private EnableCompression enableCompression;
+  private EnableEncoding enableEncoding;
   private EnableParts enableParts;
 
   private EnableEtag enableEtag;
@@ -174,12 +174,12 @@ public class ActionDesc {
     this.enableCors = enableCors;
   }
 
-  public EnableCompression getEnableCompression() {
-    return this.enableCompression;
+  public EnableEncoding getEnableEncoding() {
+    return this.enableEncoding;
   }
 
-  protected void setEnableCompression(EnableCompression enableCompression) {
-    this.enableCompression = enableCompression;
+  protected void setEnableEncoding(EnableEncoding enableEncoding) {
+    this.enableEncoding = enableEncoding;
   }
 
   public EnableParts getEnableParts() {

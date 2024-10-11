@@ -190,12 +190,12 @@ public abstract class ActionDescProvider extends InitializeObject {
             controllerClass.getDeclaredAnnotation(EnableCors.class));
         actionDesc.setEnableCors(enableCors);
 
-        // @EnableCompression
-        if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_COMPRESSION)) {
-          EnableCompression enableCompression = ValueUtils.valueOrAlt(
-              actionMethod.getDeclaredAnnotation(EnableCompression.class),
-              controllerClass.getDeclaredAnnotation(EnableCompression.class));
-          actionDesc.setEnableCompression(enableCompression);
+        // @EnableEncoding
+        if (!this.appConfig.getBool(AppConfig.CONFIG_DISABLE_ENCODING)) {
+          EnableEncoding enableEncoding = ValueUtils.valueOrAlt(
+              actionMethod.getDeclaredAnnotation(EnableEncoding.class),
+              controllerClass.getDeclaredAnnotation(EnableEncoding.class));
+          actionDesc.setEnableEncoding(enableEncoding);
         }
 
         // @EnableParts

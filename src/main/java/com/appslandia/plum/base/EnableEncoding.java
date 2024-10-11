@@ -34,5 +34,5 @@ import java.lang.annotation.Target;
 @Target(value = { ElementType.TYPE, ElementType.METHOD })
 @Retention(value = RetentionPolicy.RUNTIME)
 @Documented
-public @interface EnableCompression {
+public @interface EnableEncoding {
 }

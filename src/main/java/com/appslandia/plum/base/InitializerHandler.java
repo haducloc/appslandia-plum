@@ -49,10 +49,13 @@ public class InitializerHandler extends HttpFilter {
   protected AppConfig appConfig;
 
   @Inject
-  protected ResponseEncoderProvider responseEncoderProvider;
+  protected ResponseEncodingStrategy responseEncodingStrategy;
 
   @Inject
   protected LanguageProvider languageProvider;
+
+  @Inject
+  protected AcceptLangVaryPolicy acceptLangVaryPolicy;
 
   @Inject
   protected AppHeaderPolicy appHeaderPolicy;
@@ -88,10 +91,6 @@ public class InitializerHandler extends HttpFilter {
     return requestContext.getActionDesc().getEnableEtag() != null;
   }
 
-  protected boolean enableCompression(HttpServletRequest request, RequestContext requestContext) {
-    return requestContext.getActionDesc() != null && requestContext.getActionDesc().getEnableCompression() != null;
-  }
-
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
 
@@ -108,13 +107,13 @@ public class InitializerHandler extends HttpFilter {
       this.headerPolicyProvider.getHeaderPolicy(policy).writePolicy(request, response, requestContext);
     }
 
-    // Vary
-    if (enableCompression(request, requestContext)) {
+    // Vary: Accept-Encoding
+    if (this.responseEncodingStrategy.enableEncoding(requestContext)) {
       response.addHeader("Vary", "Accept-Encoding");
     }
-    if (this.languageProvider.getLanguages().size() > 1) {
-      response.addHeader("Vary", "Accept-Language");
-    }
+
+    // Vary: Accept-Language
+    this.acceptLangVaryPolicy.apply(response, requestContext);
   }
 
   protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
@@ -250,9 +249,8 @@ public class InitializerHandler extends HttpFilter {
         }
       }
 
-      // Compression (Encoding)
-      String compressionType = this.responseEncoderProvider.getBestEncoding(request);
-      boolean handleCompression = (compressionType != null) && enableCompression(request, requestContext);
+      // ResponseEncoder
+      ResponseEncoder responseEncoder = this.responseEncodingStrategy.getResponseEncoder(request, requestContext);
 
       // ETAG
       if (requestContext.isGetOrHead() && enableEtag(request, requestContext)) {
@@ -269,8 +267,8 @@ public class InitializerHandler extends HttpFilter {
           if (!ServletUtils.checkNotModified(request, response,
               ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
 
-            if (handleCompression) {
-              ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(compressionType);
+            // Encoding/ETAG
+            if (responseEncoder != null) {
               responseEncoder.encode(response, wrapper.getContent());
 
             } else {
@@ -286,9 +284,8 @@ public class InitializerHandler extends HttpFilter {
         return;
       }
 
-      // Compression (Encoding) (No ETAG)
-      if (handleCompression) {
-        ResponseEncoder responseEncoder = this.responseEncoderProvider.getResponseEncoder(compressionType);
+      // Encoding/NO ETAG
+      if (responseEncoder != null) {
         responseEncoder.encode(request, response, chain);
         return;
       }

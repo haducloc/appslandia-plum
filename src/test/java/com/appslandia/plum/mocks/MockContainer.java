@@ -38,6 +38,7 @@ import com.appslandia.common.jose.JwtSigner;
 import com.appslandia.common.json.GsonProcessor;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.threading.ThreadLocalStorage;
+import com.appslandia.plum.base.AcceptLangVaryPolicy;
 import com.appslandia.plum.base.AccessRateHandler;
 import com.appslandia.plum.base.ActionDescProvider;
 import com.appslandia.plum.base.ActionFilterProvider;
@@ -78,6 +79,7 @@ import com.appslandia.plum.base.RemoteClientVerifier;
 import com.appslandia.plum.base.RequestContextParser;
 import com.appslandia.plum.base.ResourcesProvider;
 import com.appslandia.plum.base.ResponseEncoder;
+import com.appslandia.plum.base.ResponseEncodingStrategy;
 import com.appslandia.plum.base.ResponseEncoderProvider;
 import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
@@ -297,6 +299,7 @@ public class MockContainer extends InitializeObject {
     factory.register(AuthHandlerProvider.class, MockAuthHandlerProvider.class);
 
     factory.register(ResponseEncoder.class, GzipResponseEncoder.class);
+    factory.register(ResponseEncodingStrategy.class, ResponseEncodingStrategy.class);
     factory.register(ResponseEncoderProvider.class, MockResponseEncoderProvider.class);
 
     factory.register(MemUserDatabase.class, MemUserDatabase.class);
@@ -310,6 +313,7 @@ public class MockContainer extends InitializeObject {
 
     factory.register(ConverterProvider.class, ConverterProvider.class);
     factory.register(LanguageProvider.class, MockLanguageProvider.class);
+    factory.register(AcceptLangVaryPolicy.class, AcceptLangVaryPolicy.class);
     factory.register(FormatProviderManager.class, FormatProviderManager.class);
     factory.register(FormatProviderFactory.class, DefaultFormatProviderFactory.class);
 

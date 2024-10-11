@@ -20,14 +20,8 @@
 
 package com.appslandia.plum.base;
 
-import java.util.Collections;
-import java.util.Map;
-
-import com.appslandia.common.base.CaseInsensitiveMap;
-import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.utils.ServletUtils;
-
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -35,34 +29,20 @@ import jakarta.servlet.http.HttpServletRequest;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ResponseEncoderProvider extends InitializeObject {
+@ApplicationScoped
+public class ResponseEncodingStrategy {
 
-  private Map<String, ResponseEncoder> responseEncoderMap = new CaseInsensitiveMap<>();
+  @Inject
+  protected ResponseEncoderProvider responseEncoderProvider;
 
-  @Override
-  protected void init() throws Exception {
-    this.responseEncoderMap = Collections.unmodifiableMap(this.responseEncoderMap);
+  public boolean enableEncoding(RequestContext requestContext) {
+    return requestContext.getActionDesc() != null && requestContext.getActionDesc().getEnableEncoding() != null;
   }
 
-  public void addResponseEncoder(String encoding, ResponseEncoder impl) {
-    this.assertNotInitialized();
-    this.responseEncoderMap.put(encoding, impl);
-  }
-
-  public ResponseEncoder getResponseEncoder(String encoding) {
-    this.initialize();
-
-    ResponseEncoder impl = this.responseEncoderMap.get(encoding);
-    return Asserts.notNull(impl);
-  }
-
-  public ResponseEncoder getResponseEncoder(HttpServletRequest request) {
-    this.initialize();
-
-    String bestEncoding = ServletUtils.getBestEncoding(request, this.responseEncoderMap.keySet());
-    if (bestEncoding == null) {
+  public ResponseEncoder getResponseEncoder(HttpServletRequest request, RequestContext requestContext) {
+    if (!this.enableEncoding(requestContext)) {
       return null;
     }
-    return this.responseEncoderMap.get(bestEncoding);
+    return this.responseEncoderProvider.getResponseEncoder(request);
   }
 }
