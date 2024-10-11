@@ -32,7 +32,7 @@ public class MockLanguageProvider extends LanguageProvider {
 
   @Override
   protected void init() throws Exception {
-    addDefault(Language.EN_US).addLanguage(Language.VI_VN);
+    addDefault(Language.EN_US);
     super.init();
   }
 }

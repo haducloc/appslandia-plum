@@ -39,7 +39,6 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
   private static final long serialVersionUID = 1L;
 
   public static final String REQUEST_ATTRIBUTE_ID = "prefCookie";
-  public static final String PARAM_LANGUAGE = "language";
 
   public static final PrefCookie EMPTY = new PrefCookie(Collections.emptyMap());
 

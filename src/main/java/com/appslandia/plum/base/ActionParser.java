@@ -45,9 +45,6 @@ import jakarta.servlet.http.HttpServletRequest;
 public class ActionParser {
 
   @Inject
-  protected AppConfig appConfig;
-
-  @Inject
   protected ActionDescProvider actionDescProvider;
 
   @Inject
@@ -122,7 +119,7 @@ public class ActionParser {
     url.append(request.getServletContext().getContextPath());
 
     // Language
-    if (requestContext.isPathLanguage() || this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PATH_LANG)) {
+    if (requestContext.isPathLanguage() || this.languageProvider.isMultiLanguages()) {
       url.append('/').append(requestContext.getLanguageId());
     }
 

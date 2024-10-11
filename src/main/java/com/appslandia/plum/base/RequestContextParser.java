@@ -140,12 +140,12 @@ public class RequestContextParser {
   protected void initLanguageContext(HttpServletRequest request, RequestContext context, String testPathLanguage) {
     Language language = null;
     if (testPathLanguage == null) {
-      language = parseLanguage(request, context);
+      language = parseLanguage(request);
 
     } else {
       language = this.languageProvider.getLanguage(testPathLanguage);
       if (language == null) {
-        language = parseLanguage(request, context);
+        language = parseLanguage(request);
       } else {
         context.setPathLanguage(true);
       }
@@ -154,24 +154,9 @@ public class RequestContextParser {
     context.setResources(this.resourcesProvider.getResources(language.getLocale()));
   }
 
-  protected Language parseLanguage(HttpServletRequest request, RequestContext context) {
-    if (this.languageProvider.getLanguages().size() == 1) {
+  protected Language parseLanguage(HttpServletRequest request) {
+    if (!this.languageProvider.isMultiLanguages()) {
       return this.languageProvider.getDefaultLanguage();
-    }
-
-    // PrefCookie
-    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-    if (prefCookie != null) {
-
-      String prefLang = prefCookie.getString(PrefCookie.PARAM_LANGUAGE);
-      if (prefLang != null) {
-
-        Language language = this.languageProvider.getLanguage(prefLang);
-        if (language != null) {
-          context.setCookieLanguage(true);
-          return language;
-        }
-      }
     }
     return this.languageProvider.getBestLanguage(request);
   }

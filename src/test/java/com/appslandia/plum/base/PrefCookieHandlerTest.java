@@ -46,15 +46,14 @@ public class PrefCookieHandlerTest extends MockTestBase {
     MockHttpServletRequest request = container.createRequest();
     MockHttpServletResponse response = container.createResponse();
 
-    prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+    prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set("state", "NE"));
     return response.getCookie(prefCookieHandler.getCookieName());
   }
 
   @Test
   public void test_savePrefCookie() {
     try {
-      prefCookieHandler.savePrefCookie(getCurrentRequest(), getCurrentResponse(),
-          new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, "en"));
+      prefCookieHandler.savePrefCookie(getCurrentRequest(), getCurrentResponse(), new PrefCookie().set("state", "NE"));
 
       Cookie savedCookie = getCurrentResponse().getCookie(prefCookieHandler.getCookieName());
       Assertions.assertNotNull(savedCookie);
@@ -73,7 +72,7 @@ public class PrefCookieHandlerTest extends MockTestBase {
       Assertions.assertNotNull(prefCookie);
 
       Assertions.assertNotNull(getCurrentRequest().getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID));
-      Assertions.assertEquals("en", prefCookie.get(PrefCookie.PARAM_LANGUAGE));
+      Assertions.assertEquals("NE", prefCookie.get("state"));
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());

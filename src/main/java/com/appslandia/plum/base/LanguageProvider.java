@@ -73,6 +73,11 @@ public class LanguageProvider extends InitializeObject {
     return this.defaultLanguage;
   }
 
+  public boolean isMultiLanguages() {
+    this.initialize();
+    return this.languageMap.size() > 1;
+  }
+
   public Collection<Language> getLanguages() {
     this.initialize();
     return this.languageMap.values();

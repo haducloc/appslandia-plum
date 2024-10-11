@@ -50,7 +50,6 @@ public class AppConfig extends InitializeObject implements Config {
 
   public static final String CONFIG_ENABLE_PREF_COOKIE = "config.enable_pref_cookie";
   public static final String CONFIG_ENABLE_JSON_PRETTY = "config.enable_json_pretty";
-  public static final String CONFIG_ENABLE_PATH_LANG = "config.enable_path_lang";
   public static final String CONFIG_ENABLE_HEADER_POLICIES = "config.enable_header_policies";
 
   public static final String CONFIG_JSP_DIR = "config.jsp_dir";
@@ -111,7 +110,6 @@ public class AppConfig extends InitializeObject implements Config {
 
     this.config.putIfAbsent(CONFIG_ENABLE_PREF_COOKIE, String.valueOf(true));
     this.config.putIfAbsent(CONFIG_ENABLE_JSON_PRETTY, String.valueOf(true));
-    this.config.putIfAbsent(CONFIG_ENABLE_PATH_LANG, String.valueOf(false));
 
     this.config.putIfAbsent(CONFIG_JSP_DIR, "/WEB-INF/jsp");
     this.config.putIfAbsent(CONFIG_ACCESS_JSP_DIRECTLY, String.valueOf(false));

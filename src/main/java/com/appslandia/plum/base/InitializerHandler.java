@@ -55,9 +55,6 @@ public class InitializerHandler extends HttpFilter {
   protected LanguageProvider languageProvider;
 
   @Inject
-  protected AcceptLangVaryPolicy acceptLangVaryPolicy;
-
-  @Inject
   protected AppHeaderPolicy appHeaderPolicy;
 
   @Inject
@@ -111,9 +108,6 @@ public class InitializerHandler extends HttpFilter {
     if (this.responseEncodingStrategy.enableEncoding(requestContext)) {
       response.addHeader("Vary", "Accept-Encoding");
     }
-
-    // Vary: Accept-Language
-    this.acceptLangVaryPolicy.apply(response, requestContext);
   }
 
   protected void redirectLang(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
@@ -160,12 +154,12 @@ public class InitializerHandler extends HttpFilter {
       }
 
       // Language
-      if ((requestContext.isCookieLanguage() && (this.languageProvider.getLanguages().size() > 1))
-          || (!requestContext.isPathLanguage() && this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PATH_LANG))) {
-
-        if (requestContext.isGetOrHead()) {
+      if (!requestContext.isPathLanguage() && this.languageProvider.isMultiLanguages()) {
+        if (HttpMethod.GET.equals(request.getMethod())) {
           redirectLang(request, response, requestContext);
           return;
+        } else {
+          throw new BadRequestException(requestContext.res(Resources.ERROR_BAD_REQUEST));
         }
       }
 

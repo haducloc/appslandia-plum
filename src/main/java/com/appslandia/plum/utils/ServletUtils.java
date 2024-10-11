@@ -60,6 +60,7 @@ import com.appslandia.plum.base.AuthHandler;
 import com.appslandia.plum.base.AuthHandlerProvider;
 import com.appslandia.plum.base.BeanInstanceContextListener;
 import com.appslandia.plum.base.InstanceKey;
+import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.Messages;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.MutexContextListener;
@@ -117,7 +118,7 @@ public class ServletUtils {
   }
 
   public static StringBuilder getLoginUrl(HttpServletRequest request) {
-    AppConfig appConfig = ServletUtils.getAppScoped(request.getServletContext(), AppConfig.class);
+    LanguageProvider languageProvider = ServletUtils.getAppScoped(request.getServletContext(), LanguageProvider.class);
     RequestContext requestContext = getRequestContext(request);
 
     // URL
@@ -125,7 +126,7 @@ public class ServletUtils {
     url.append(request.getServletContext().getContextPath());
 
     // Language
-    if (requestContext.isPathLanguage() || appConfig.getBool(AppConfig.CONFIG_ENABLE_PATH_LANG)) {
+    if (requestContext.isPathLanguage() || languageProvider.isMultiLanguages()) {
       url.append('/').append(requestContext.getLanguageId());
     }
     ActionDescProvider actionDescProvider = getAppScoped(request.getServletContext(), ActionDescProvider.class);

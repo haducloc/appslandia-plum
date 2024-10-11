@@ -18,7 +18,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.base;
+package com.appslandia.plum.defaults;
+
+import com.appslandia.common.utils.Asserts;
+import com.appslandia.plum.base.ActionResult;
+import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.base.Controller;
+import com.appslandia.plum.base.HttpGet;
+import com.appslandia.plum.base.LanguageProvider;
+import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.results.RedirectResult;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -30,18 +40,30 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @ApplicationScoped
-public class AcceptLangVaryPolicy {
+@Controller("changeto")
+public class LanguageChangeController {
+
+  @Inject
+  protected AppConfig appConfig;
 
   @Inject
   protected LanguageProvider languageProvider;
 
-  protected boolean shouldApply(RequestContext requestContext) {
-    return this.languageProvider.getLanguages().size() > 1;
-  }
+  @HttpGet
+  public ActionResult index(String languageId, RequestAccessor request, HttpServletResponse response) throws Exception {
+    Asserts.isTrue(this.languageProvider.isMultiLanguages());
 
-  public void apply(HttpServletResponse response, RequestContext requestContext) {
-    if (this.shouldApply(requestContext)) {
-      response.addHeader("Vary", "Accept-Language");
+    request.assertNotNull(languageId);
+    request.assertNotNull(this.languageProvider.getLanguage(languageId));
+
+    final String redirectUrl = request.getParameter("redirectUrl");
+
+    if (redirectUrl != null) {
+      ServletUtils.sendRedirect(response, redirectUrl);
+      return ActionResult.EMPTY;
+
+    } else {
+      return RedirectResult.ROOT;
     }
   }
 }

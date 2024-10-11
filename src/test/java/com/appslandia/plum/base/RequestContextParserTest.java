@@ -23,11 +23,6 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.plum.mocks.MockHttpServletRequest;
-import com.appslandia.plum.mocks.MockHttpServletResponse;
-
-import jakarta.servlet.http.Cookie;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -43,28 +38,6 @@ public class RequestContextParserTest extends MockTestBase {
     requestContextParser = container.getObject(RequestContextParser.class);
   }
 
-  private Cookie createPrefCookie(String language) {
-    MockHttpServletRequest request = container.createRequest();
-    MockHttpServletResponse response = container.createResponse();
-    PrefCookieHandler prefCookieHandler = container.getObject(PrefCookieHandler.class);
-
-    prefCookieHandler.savePrefCookie(request, response, new PrefCookie().set(PrefCookie.PARAM_LANGUAGE, language));
-    return response.getCookie(prefCookieHandler.getCookieName());
-  }
-
-  @Test
-  public void test_pathLanguage() {
-    getCurrentRequest().setRequestURL("http://localhost/app/vi/testController/index");
-    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-    RequestContext requestContext = (RequestContext) getCurrentRequest()
-        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-    Assertions.assertNotNull(requestContext.getActionDesc());
-
-    Assertions.assertTrue(requestContext.isPathLanguage());
-    Assertions.assertEquals("vi", requestContext.getLanguage().getLanguageId());
-  }
-
   @Test
   public void test_defaultLanguage() {
     getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
@@ -76,20 +49,6 @@ public class RequestContextParserTest extends MockTestBase {
 
     Assertions.assertFalse(requestContext.isPathLanguage());
     Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
-  }
-
-  @Test
-  public void test_prefLanguage() {
-    getCurrentRequest().setRequestURL("http://localhost/app/testController/index");
-    getCurrentRequest().addCookie(createPrefCookie("vi"));
-    requestContextParser.parse(getCurrentRequest(), getCurrentResponse());
-
-    RequestContext requestContext = (RequestContext) getCurrentRequest()
-        .getAttribute(RequestContext.REQUEST_ATTRIBUTE_ID);
-    Assertions.assertNotNull(requestContext.getActionDesc());
-
-    Assertions.assertFalse(requestContext.isPathLanguage());
-    Assertions.assertEquals("vi", requestContext.getLanguage().getLanguageId());
   }
 
   @Test
