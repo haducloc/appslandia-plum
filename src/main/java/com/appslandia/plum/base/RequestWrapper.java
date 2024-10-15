@@ -36,6 +36,9 @@ import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
+import jakarta.servlet.AsyncContext;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpSession;
@@ -57,9 +60,21 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   @Override
   public HttpSession getSession(boolean create) {
     AppConfig config = ServletUtils.getAppScoped(this.getServletContext(), AppConfig.class);
-
-    Asserts.isTrue(config.isEnableSession(), "Http session is disabled.");
+    Asserts.isTrue(config.isEnableSession());
     return super.getSession(create);
+  }
+
+  @Override
+  public AsyncContext startAsync() throws IllegalStateException {
+    Asserts.notNull(getRequestContext().getActionDesc().getEnableAsync());
+    return super.startAsync();
+  }
+
+  @Override
+  public AsyncContext startAsync(ServletRequest servletRequest, ServletResponse servletResponse)
+      throws IllegalStateException {
+    Asserts.notNull(getRequestContext().getActionDesc().getEnableAsync());
+    return super.startAsync(servletRequest, servletResponse);
   }
 
   @Override
