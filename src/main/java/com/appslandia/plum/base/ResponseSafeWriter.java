@@ -26,13 +26,14 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ResponseSafeWriter extends ResponseWrapper {
+public class ResponseSafeWriter extends HttpServletResponseWrapper {
 
   private PrintWriter outWriter;
   private Boolean usedWriter;

@@ -29,13 +29,14 @@ import java.util.zip.GZIPOutputStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class GzipResponseWrapper extends ResponseWrapper {
+public class GzipResponseWrapper extends HttpServletResponseWrapper {
 
   private GZIPServletOutputStream outStream;
   private PrintWriter outWriter;
@@ -45,7 +46,6 @@ public class GzipResponseWrapper extends ResponseWrapper {
     super(response);
   }
 
-  @Override
   public void finishWrapper() throws IOException {
     if (this.outWriter != null) {
       this.outWriter.flush();

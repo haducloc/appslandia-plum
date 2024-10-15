@@ -31,13 +31,14 @@ import com.appslandia.common.base.MemoryStream;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.WriteListener;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponseWrapper;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ContentResponseWrapper extends ResponseWrapper {
+public class ContentResponseWrapper extends HttpServletResponseWrapper {
 
   final boolean allowSetHeaders;
   final MemoryStream content;
@@ -59,7 +60,6 @@ public class ContentResponseWrapper extends ResponseWrapper {
     return this.allowSetHeaders;
   }
 
-  @Override
   public void finishWrapper() throws IOException {
     if (this.outWriter != null) {
       this.outWriter.close();

@@ -29,6 +29,8 @@ import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;
+import com.appslandia.common.utils.ObjectUtils;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -63,24 +65,22 @@ public class ExceptionHandler {
     if (exception.getClass().getDeclaredAnnotation(NotLog.class) == null) {
       this.appLogger.error(exception);
     }
-    ResponseWrapper respWrapper = ServletUtils.unwrapResponse(response, ResponseWrapper.class);
-    if (respWrapper != null) {
-      this.appLogger.debug(
-          "ServletUtils.unwrapResponse(response, ResponseWrapper.class) returns a non-null value in ExceptionHandler.handleException(request, response, exception).");
+
+    if (this.appConfig.isEnableDebug()) {
+      this.appLogger.debug(STR.fmt("ExceptionHandler.handleException: response={}", ObjectUtils.toIdHash(response)));
     }
-    HttpServletResponse originResp = (respWrapper != null) ? (HttpServletResponse) respWrapper.getResponse() : response;
 
     // Already committed?
-    if (originResp.isCommitted()) {
-      originResp.flushBuffer();
+    if (response.isCommitted()) {
+      response.flushBuffer();
       return;
     }
 
-    // Reset
-    originResp.reset();
+    // Reset response
+    response.reset();
 
-    writeHeaders(request, originResp, exception);
-    writeException(request, originResp, exception);
+    writeHeaders(request, response, exception);
+    writeException(request, response, exception);
   }
 
   protected void writeHeaders(HttpServletRequest request, HttpServletResponse response, Throwable exception)

@@ -54,7 +54,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
   public RequestWrapper(HttpServletRequest request, Map<String, String> pathParamMap) {
     super(request);
-    this.mergedParams = !pathParamMap.isEmpty() ? this.mergeParameters(pathParamMap) : null;
+    this.mergedParams = !pathParamMap.isEmpty() ? mergeParameters(request.getParameterMap(), pathParamMap) : null;
   }
 
   @Override
@@ -111,13 +111,14 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     return Collections.enumeration(this.mergedParams.keySet());
   }
 
-  protected Map<String, String[]> mergeParameters(Map<String, String> pathParamMap) {
+  static Map<String, String[]> mergeParameters(Map<String, String[]> params, Map<String, String> pathParamMap) {
     final Map<String, String[]> merged = new HashMap<>();
 
     for (Entry<String, String> param : pathParamMap.entrySet()) {
       merged.put(param.getKey(), new String[] { param.getValue() });
     }
-    for (Entry<String, String[]> param : this.getRequest().getParameterMap().entrySet()) {
+
+    for (Entry<String, String[]> param : params.entrySet()) {
       String[] values = merged.get(param.getKey());
       if (values == null) {
         merged.put(param.getKey(), param.getValue());
