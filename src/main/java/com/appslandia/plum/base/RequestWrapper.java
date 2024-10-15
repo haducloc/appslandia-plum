@@ -111,24 +111,6 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     return Collections.enumeration(this.mergedParams.keySet());
   }
 
-  static Map<String, String[]> mergeParameters(Map<String, String[]> params, Map<String, String> pathParamMap) {
-    final Map<String, String[]> merged = new HashMap<>();
-
-    for (Entry<String, String> param : pathParamMap.entrySet()) {
-      merged.put(param.getKey(), new String[] { param.getValue() });
-    }
-
-    for (Entry<String, String[]> param : params.entrySet()) {
-      String[] values = merged.get(param.getKey());
-      if (values == null) {
-        merged.put(param.getKey(), param.getValue());
-      } else {
-        merged.put(param.getKey(), ArrayUtils.append(values, param.getValue()));
-      }
-    }
-    return Collections.unmodifiableMap(merged);
-  }
-
   public <T> T getParamOrNull(String name, Class<T> targetType) {
     String value = getParamOrNull(name);
     Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
@@ -308,5 +290,23 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   @Override
   public String toString() {
     return ObjectUtils.toIdHash(this);
+  }
+
+  static Map<String, String[]> mergeParameters(Map<String, String[]> params, Map<String, String> pathParamMap) {
+    final Map<String, String[]> merged = new HashMap<>();
+
+    for (Entry<String, String> param : pathParamMap.entrySet()) {
+      merged.put(param.getKey(), new String[] { param.getValue() });
+    }
+
+    for (Entry<String, String[]> param : params.entrySet()) {
+      String[] values = merged.get(param.getKey());
+      if (values == null) {
+        merged.put(param.getKey(), param.getValue());
+      } else {
+        merged.put(param.getKey(), ArrayUtils.append(values, param.getValue()));
+      }
+    }
+    return Collections.unmodifiableMap(merged);
   }
 }
