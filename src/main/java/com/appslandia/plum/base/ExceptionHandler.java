@@ -64,6 +64,10 @@ public class ExceptionHandler {
       this.appLogger.error(exception);
     }
     ResponseWrapper respWrapper = ServletUtils.unwrapResponse(response, ResponseWrapper.class);
+    if (respWrapper != null) {
+      this.appLogger.debug(
+          "ServletUtils.unwrapResponse(response, ResponseWrapper.class) returns a non-null value in ExceptionHandler.handleException(request, response, exception).");
+    }
     HttpServletResponse originResp = (respWrapper != null) ? (HttpServletResponse) respWrapper.getResponse() : response;
 
     // Already committed?
