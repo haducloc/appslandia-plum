@@ -32,7 +32,7 @@ import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.base.Model;
-import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.base.RequestWrapper;
 import com.appslandia.plum.mocks.MemPebbleTemplateProvider;
 import com.appslandia.plum.pebble.PebbleUtils;
 
@@ -159,7 +159,7 @@ public class CheckboxFunctionTest extends MockTestBase {
   public static class TestController {
 
     @HttpGet
-    public ActionResult index(RequestAccessor request, @Model UserModel model) throws Exception {
+    public ActionResult index(RequestWrapper request, @Model UserModel model) throws Exception {
       request.storeModel(model);
 
       return ActionResult.EMPTY;

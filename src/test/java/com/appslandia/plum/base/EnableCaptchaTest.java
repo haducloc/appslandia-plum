@@ -105,7 +105,7 @@ public class EnableCaptchaTest extends MockTestBase {
 
     @HttpGetPost
     @EnableCaptcha
-    public ActionResult testCaptcha(RequestAccessor request) throws Exception {
+    public ActionResult testCaptcha(RequestWrapper request) throws Exception {
       if (request.isGetOrHead()) {
         return ActionResult.EMPTY;
       }

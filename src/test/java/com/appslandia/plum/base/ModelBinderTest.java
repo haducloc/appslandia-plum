@@ -262,22 +262,22 @@ public class ModelBinderTest extends MockTestBase {
   public static class TestController {
 
     @HttpPost
-    public void testUserModel(@Model UserModel model, RequestAccessor request) throws Exception {
+    public void testUserModel(@Model UserModel model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
 
     @HttpPost
-    public void testUserList(@Model UserList model, RequestAccessor request) throws Exception {
+    public void testUserList(@Model UserList model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
 
     @HttpPost
-    public void testUserMap(@Model UserMap model, RequestAccessor request) throws Exception {
+    public void testUserMap(@Model UserMap model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
 
     @HttpPost
-    public void testExcludesName(@Model(excludes = "name") UserModel model, RequestAccessor request) throws Exception {
+    public void testExcludesName(@Model(excludes = "name") UserModel model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
   }

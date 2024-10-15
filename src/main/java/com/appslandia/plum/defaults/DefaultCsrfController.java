@@ -23,7 +23,7 @@ package com.appslandia.plum.defaults;
 import com.appslandia.plum.base.CacheControl;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGetPost;
-import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.base.RequestWrapper;
 import com.appslandia.plum.base.Result;
 import com.appslandia.plum.base.SimpleCsrfManager;
 
@@ -45,7 +45,7 @@ public class DefaultCsrfController {
   protected SimpleCsrfManager csrfManager;
 
   @HttpGetPost
-  public Result index(RequestAccessor request, HttpServletResponse response) throws Exception {
+  public Result index(RequestWrapper request, HttpServletResponse response) throws Exception {
     this.csrfManager.initCsrf(request);
     String csrfId = (String) request.getAttribute(SimpleCsrfManager.REQUEST_ATTRIBUTE_CSRF_DATA);
 

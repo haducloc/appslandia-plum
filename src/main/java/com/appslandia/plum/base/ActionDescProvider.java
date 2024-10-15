@@ -277,8 +277,8 @@ public abstract class ActionDescProvider extends InitializeObject {
         continue;
       }
 
-      // RequestAccessor | RequestContext
-      if ((parameter.getType() == RequestAccessor.class) || (parameter.getType() == RequestContext.class)) {
+      // RequestWrapper | RequestContext
+      if ((parameter.getType() == RequestWrapper.class) || (parameter.getType() == RequestContext.class)) {
         continue;
       }
 

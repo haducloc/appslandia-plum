@@ -67,7 +67,7 @@ public class AuthContext {
     }
   }
 
-  public boolean authenticate(RequestAccessor request, HttpServletResponse response, Credential credential,
+  public boolean authenticate(RequestWrapper request, HttpServletResponse response, Credential credential,
       boolean rememberMe, Out<String> invalidCode) throws ServletException {
 
     final UserPrincipal principal = request.getUserPrincipal();

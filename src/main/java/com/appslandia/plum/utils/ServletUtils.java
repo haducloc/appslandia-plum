@@ -397,7 +397,7 @@ public class ServletUtils {
       throws IllegalStateException {
     assertNotCommitted(response);
 
-    response.resetBuffer();
+    response.reset();
     response.setHeader("Location", location);
     response.setStatus(status);
   }

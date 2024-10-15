@@ -63,8 +63,8 @@ public class ExceptionHandler {
     if (exception.getClass().getDeclaredAnnotation(NotLog.class) == null) {
       this.appLogger.error(exception);
     }
-    ResponseWrapperImpl respImpl = ServletUtils.unwrapResponse(response, ResponseWrapperImpl.class);
-    HttpServletResponse originResp = (respImpl != null) ? (HttpServletResponse) respImpl.getResponse() : response;
+    ResponseWrapper respWrapper = ServletUtils.unwrapResponse(response, ResponseWrapper.class);
+    HttpServletResponse originResp = (respWrapper != null) ? (HttpServletResponse) respWrapper.getResponse() : response;
 
     // Already committed?
     if (originResp.isCommitted()) {
@@ -73,7 +73,7 @@ public class ExceptionHandler {
     }
 
     // Reset
-    originResp.resetBuffer();
+    originResp.reset();
 
     writeHeaders(request, originResp, exception);
     writeException(request, originResp, exception);
@@ -85,7 +85,7 @@ public class ExceptionHandler {
       ((HttpHeaderApply) exception).apply(response);
     }
 
-    // Error Status: Disable Cache
+    // Error Status: NoCachePolicy
     NoCachePolicy.INSTANCE.writePolicy(request, response, ServletUtils.getRequestContext(request));
   }
 
@@ -221,7 +221,7 @@ public class ExceptionHandler {
   public void writeSimpleHtml(HttpServletRequest request, HttpServletResponse response, int status, String message)
       throws ServletException, IOException {
     Asserts.isTrue(!response.isCommitted());
-    response.resetBuffer();
+    response.reset();
 
     response.setContentType(MimeTypes.TEXT_HTML);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());

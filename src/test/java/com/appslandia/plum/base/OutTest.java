@@ -111,12 +111,12 @@ public class OutTest extends MockTestBase {
   public static class TestController {
 
     @HttpPost
-    public void testParam(Out<Integer> totalVocabs, RequestAccessor request) throws Exception {
+    public void testParam(Out<Integer> totalVocabs, RequestWrapper request) throws Exception {
       request.store("totalVocabs", totalVocabs);
     }
 
     @HttpPost
-    public void testModel(@Model FlashcardModel model, RequestAccessor request) throws Exception {
+    public void testModel(@Model FlashcardModel model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
   }

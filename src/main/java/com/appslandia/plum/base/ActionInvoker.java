@@ -77,8 +77,8 @@ public class ActionInvoker {
         actionArgs[index] = response;
         continue;
       }
-      if (paramDesc.getParameter().getType() == RequestAccessor.class) {
-        actionArgs[index] = new RequestAccessor(request);
+      if (paramDesc.getParameter().getType() == RequestWrapper.class) {
+        actionArgs[index] = (RequestWrapper) request;
         continue;
       }
       if (paramDesc.getParameter().getType() == RequestContext.class) {

@@ -88,7 +88,7 @@ public class HttpStatus401LoginTest extends MockTestBase {
 
     @HttpGetPost
     @FormLogin
-    public void loginAction(RequestAccessor request, HttpServletResponse response) throws Exception {
+    public void loginAction(RequestWrapper request, HttpServletResponse response) throws Exception {
       if (request.isGetOrHead()) {
         return;
       }

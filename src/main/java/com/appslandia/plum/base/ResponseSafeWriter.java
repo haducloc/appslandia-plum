@@ -64,10 +64,6 @@ public class ResponseSafeWriter extends ResponseWrapper {
   }
 
   @Override
-  public void finishWrapper() throws IOException {
-  }
-
-  @Override
   public void flushBuffer() throws IOException {
     if (this.outWriter != null) {
       this.outWriter.flush();

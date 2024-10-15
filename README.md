@@ -80,7 +80,7 @@ public class UserController {
 
 	// GET|POST /user/edit
 	@HttpGetPost
-	public ActionResult edit(RequestAccessor request, HttpServletResponse response) throws Exception {
+	public ActionResult edit(RequestWrapper request, HttpServletResponse response) throws Exception {
 		// GET
 		if (request.isGetOrHead()) {
 			// /user/edit.jsp

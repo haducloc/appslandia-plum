@@ -36,7 +36,8 @@ public abstract class ResponseWrapper extends HttpServletResponseWrapper {
     super(response);
   }
 
-  public abstract void finishWrapper() throws IOException;
+  public void finishWrapper() throws IOException {
+  }
 
   @Override
   public String toString() {

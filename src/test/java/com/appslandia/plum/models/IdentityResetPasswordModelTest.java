@@ -27,7 +27,7 @@ import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpPost;
 import com.appslandia.plum.base.MockTestBase;
 import com.appslandia.plum.base.Model;
-import com.appslandia.plum.base.RequestAccessor;
+import com.appslandia.plum.base.RequestWrapper;
 import com.appslandia.plum.utils.ServletUtils;
 
 /**
@@ -64,7 +64,7 @@ public class IdentityResetPasswordModelTest extends MockTestBase {
   public static class TestController {
 
     @HttpPost
-    public void resetpwd(@Model IdentityResetPasswordModel model, RequestAccessor request) throws Exception {
+    public void resetpwd(@Model IdentityResetPasswordModel model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
   }

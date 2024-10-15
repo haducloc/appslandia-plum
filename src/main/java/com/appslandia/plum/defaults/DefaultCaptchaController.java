@@ -34,8 +34,8 @@ import com.appslandia.plum.base.CacheControl;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGet;
 import com.appslandia.plum.base.HttpGetPost;
-import com.appslandia.plum.base.RequestAccessor;
 import com.appslandia.plum.base.RequestContext;
+import com.appslandia.plum.base.RequestWrapper;
 import com.appslandia.plum.base.Resources;
 import com.appslandia.plum.base.Result;
 import com.appslandia.plum.base.SimpleCaptchaManager;
@@ -66,7 +66,7 @@ public class DefaultCaptchaController {
   protected ActionParser actionParser;
 
   @HttpGetPost
-  public Result index(RequestAccessor request, HttpServletResponse response) throws Exception {
+  public Result index(RequestWrapper request, HttpServletResponse response) throws Exception {
     this.captchaManager.initCaptcha(request);
 
     String captchaId = (String) request.getAttribute(SimpleCaptchaManager.REQUEST_ATTRIBUTE_CAPTCHA_DATA);
@@ -77,7 +77,7 @@ public class DefaultCaptchaController {
   }
 
   @HttpGet
-  public ActionResult words(RequestAccessor request) throws Exception {
+  public ActionResult words(RequestWrapper request) throws Exception {
     String captchaWords = this.captchaManager.getCaptchaWords(request);
     if (captchaWords == null) {
       throw new BadRequestException(request.res(Resources.ERROR_BAD_REQUEST)).setTitleKey(Resources.ERROR_BAD_REQUEST);

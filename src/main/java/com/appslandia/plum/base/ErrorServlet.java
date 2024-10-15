@@ -108,6 +108,8 @@ public class ErrorServlet extends HttpServlet {
     } catch (Exception ex) {
       if (!response.isCommitted()) {
         this.exceptionHandler.writeSimpleHtml(request, response, problem.getStatus(), problem.getTitle());
+      } else {
+        response.flushBuffer();
       }
     }
   }

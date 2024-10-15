@@ -26,8 +26,8 @@ import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGetPost;
 import com.appslandia.plum.base.LanguageProvider;
-import com.appslandia.plum.base.RequestAccessor;
 import com.appslandia.plum.base.RequestContext;
+import com.appslandia.plum.base.RequestWrapper;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -51,7 +51,7 @@ public class LanguageChangeController {
   protected LanguageProvider languageProvider;
 
   @HttpGetPost
-  public ActionResult index(String languageId, RequestAccessor request, HttpServletResponse response) throws Exception {
+  public ActionResult index(String languageId, RequestWrapper request, HttpServletResponse response) throws Exception {
     Asserts.isTrue(this.languageProvider.isMultiLanguages());
 
     request.assertNotNull(languageId);

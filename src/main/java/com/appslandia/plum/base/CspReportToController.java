@@ -38,7 +38,7 @@ public class CspReportToController {
 
   @HttpPost
   @ConsumeType("application/csp-report")
-  public void index(RequestAccessor request, HttpServletResponse response) throws Exception {
+  public void index(RequestWrapper request, HttpServletResponse response) throws Exception {
     this.cspReportToHandler.handle(request.getReader());
   }
 }

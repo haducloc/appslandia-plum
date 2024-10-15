@@ -98,12 +98,12 @@ public class DefaultValueBindingTest extends MockTestBase {
   public static class TestController {
 
     @HttpGet
-    public void testAction(@Bind(defaultValue = "en") String language, RequestAccessor request) throws Exception {
+    public void testAction(@Bind(defaultValue = "en") String language, RequestWrapper request) throws Exception {
       request.store("language", language);
     }
 
     @HttpPost
-    public void testUserModel(@Model UserModel model, RequestAccessor request) throws Exception {
+    public void testUserModel(@Model UserModel model, RequestWrapper request) throws Exception {
       request.storeModel(model);
     }
   }
