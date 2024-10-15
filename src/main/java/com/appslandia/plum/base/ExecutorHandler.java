@@ -87,6 +87,7 @@ public class ExecutorHandler extends HttpServlet {
   protected void doRequest(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws ServletException, IOException {
     try {
+      // DEBUG
       if (this.appConfig.isEnableDebug()) {
         testErrorStatus(request);
       }
@@ -145,8 +146,23 @@ public class ExecutorHandler extends HttpServlet {
     }
   }
 
+  protected void testOutputCall(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    String testOutCall = request.getParameter("__test_out_call");
+    if ("writer".equals(testOutCall)) {
+      response.getWriter();
+
+    } else if ("stream".equals(testOutCall)) {
+      response.getOutputStream();
+    }
+  }
+
   protected void onResultExecuting(HttpServletRequest request, HttpServletResponse response,
       RequestContext requestContext, Object result) throws Exception {
+
+    // DEBUG
+    if (this.appConfig.isEnableDebug()) {
+      testOutputCall(request, response);
+    }
 
     // @CacheControl
     if ((requestContext.getActionDesc().getCacheControl() != null) && requestContext.isGetOrHead()) {

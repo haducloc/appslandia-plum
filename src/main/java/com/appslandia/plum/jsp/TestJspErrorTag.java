@@ -22,6 +22,9 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
+import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.utils.ServletUtils;
+
 import jakarta.servlet.jsp.JspException;
 import jakarta.servlet.jsp.JspWriter;
 
@@ -35,8 +38,12 @@ public class TestJspErrorTag extends TagBase {
 
   @Override
   public void doTag() throws JspException, IOException {
-    String jspError = getRequest().getParameter("__test_jsp_error");
+    AppConfig appConfig = ServletUtils.getAppScoped(this.pageContext.getServletContext(), AppConfig.class);
+    if (!appConfig.isEnableDebug()) {
+      return;
+    }
 
+    String jspError = getRequest().getParameter("__test_jsp_error");
     JspWriter out = this.pageContext.getOut();
     out.println("<ul>");
 
@@ -44,11 +51,11 @@ public class TestJspErrorTag extends TagBase {
       out.println("<li>This is a test line " + i + "</li>");
 
       if (i == 50) {
-        if ("error".equalsIgnoreCase(jspError)) {
+        if ("error".equals(jspError)) {
           throw new JspException("This is a test JSP error: __test_jsp_error=" + jspError);
         }
 
-        if ("flush_error".equalsIgnoreCase(jspError)) {
+        if ("flush_error".equals(jspError)) {
           out.flush();
           throw new JspException("This is a test JSP error: __test_jsp_error=" + jspError);
         }
