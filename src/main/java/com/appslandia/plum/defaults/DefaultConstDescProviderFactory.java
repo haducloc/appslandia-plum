@@ -57,7 +57,6 @@ public class DefaultConstDescProviderFactory implements CDIFactory<ConstDescProv
     final ConstDescProvider impl = new ConstDescProvider();
 
     CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, ConstDesc.class, (bi) -> {
-
       Collection<Class<?>> constClasses = ObjectUtils.cast(bi.get().get());
 
       for (Class<?> constClass : constClasses) {

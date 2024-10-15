@@ -59,7 +59,6 @@ public class DefaultGroupFormatProviderFactory implements CDIFactory<GroupFormat
 
     // @Supplier(GroupFormat.class)
     CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, GroupFormat.class, (bi) -> {
-
       Map<String, GroupFormat> m = ObjectUtils.cast(bi.get().get());
 
       for (Entry<String, GroupFormat> entry : m.entrySet()) {

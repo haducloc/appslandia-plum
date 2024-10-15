@@ -57,7 +57,6 @@ public class DefaultCorsPolicyProviderFactory implements CDIFactory<CorsPolicyPr
     final CorsPolicyProvider impl = new CorsPolicyProvider();
 
     CDIUtils.scanSuppliers(this.beanManager, ReflectionUtils.EMPTY_ANNOTATIONS, CorsPolicy.class, (bi) -> {
-
       Collection<CorsPolicy> policies = ObjectUtils.cast(bi.get().get());
 
       for (CorsPolicy corsPolicy : policies) {
