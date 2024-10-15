@@ -125,27 +125,28 @@ public class InitializerHandler extends HttpFilter {
     Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
     try {
       // RequestContext
-      RequestContext requestContext = this.requestContextParser.parse(request, response);
+      final RequestContext requestContext = this.requestContextParser.parse(request, response);
 
       // Initialize
       initialize(request, response, requestContext);
 
+      final ActionDesc actionDesc = requestContext.getActionDesc();
+
       // Not Found?
-      if (requestContext.getActionDesc() == null) {
+      if (actionDesc == null) {
         throw new NotFoundException(requestContext.res(Resources.ERROR_NOT_FOUND))
             .setTitleKey(Resources.ERROR_NOT_FOUND);
       }
 
       // Allow Method?
-      if (!requestContext.getActionDesc().getAllowMethods().contains(request.getMethod())) {
+      if (!actionDesc.getAllowMethods().contains(request.getMethod())) {
         throw new HttpException(HttpServletResponse.SC_METHOD_NOT_ALLOWED,
             requestContext.res(Resources.ERROR_METHOD_NOT_ALLOWED)).setTitleKey(Resources.ERROR_METHOD_NOT_ALLOWED);
       }
 
       // Consume Type
-      if (requestContext.getActionDesc().getConsumeType() != null) {
-        if (!ServletUtils.isContentSupported(request.getContentType(),
-            requestContext.getActionDesc().getConsumeType().value())) {
+      if (actionDesc.getConsumeType() != null) {
+        if (!ServletUtils.isContentSupported(request.getContentType(), actionDesc.getConsumeType().value())) {
 
           throw new HttpException(HttpServletResponse.SC_UNSUPPORTED_MEDIA_TYPE,
               requestContext.res(Resources.ERROR_UNSUPPORTED_MEDIA_TYPE))
@@ -192,20 +193,16 @@ public class InitializerHandler extends HttpFilter {
         request.setAttribute(RequestWrapper.class.getName(), request);
       }
 
-      // ResponseWrapperImpl
-      response = new ResponseWrapperImpl(response);
-
       // Authorize Origin
       String origin = this.corsPolicyHandler.getCrossOrigin(request);
       if (origin != null) {
 
         // Not @EnableCors
-        if (requestContext.getActionDesc().getEnableCors() == null) {
+        if (actionDesc.getEnableCors() == null) {
           throw new ForbiddenException(
               requestContext.res(Resources.ERROR_FORBIDDEN_CORS, CorsResult.NOT_ALLOWED_CORS.name()));
         }
-        CorsPolicy corsPolicy = this.corsPolicyProvider
-            .getCorsPolicy(requestContext.getActionDesc().getEnableCors().value());
+        CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(actionDesc.getEnableCors().value());
         CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, origin,
             corsPolicy);
 
@@ -215,7 +212,7 @@ public class InitializerHandler extends HttpFilter {
       }
 
       // Authorize
-      Authorize authorize = requestContext.getActionDesc().getAuthorize();
+      Authorize authorize = actionDesc.getAuthorize();
       if (authorize != null) {
         UserPrincipal principal = ServletUtils.getUserPrincipal(request);
 
@@ -227,7 +224,7 @@ public class InitializerHandler extends HttpFilter {
         }
 
         // No @BypassAuthorization
-        if (requestContext.getActionDesc().getBypassAuthorization() == null) {
+        if (actionDesc.getBypassAuthorization() == null) {
 
           // Check Module
           if (!principal.isForModule(requestContext.getModule())) {
@@ -252,45 +249,49 @@ public class InitializerHandler extends HttpFilter {
         }
       }
 
-      // ResponseEncoder
-      ResponseEncoder responseEncoder = this.responseEncodingStrategy.getResponseEncoder(request, requestContext);
+      // NOT EnableAsync?
+      if (actionDesc.getEnableAsync() == null) {
 
-      // ETAG
-      if (requestContext.isGetOrHead() && enableEtag(request, requestContext)) {
-        ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
-        chain.doFilter(request, wrapper);
+        // ResponseEncoder
+        ResponseEncoder responseEncoder = this.responseEncodingStrategy.getResponseEncoder(request, requestContext);
 
-        if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+        // ETAG
+        if (requestContext.isGetOrHead() && enableEtag(request, requestContext)) {
+
+          ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
+          chain.doFilter(request, wrapper);
+
+          if ((300 <= response.getStatus()) && (response.getStatus() < 400)) {
+            return;
+          }
+          wrapper.finishWrapper();
+
+          if (ServletUtils.isETagEligible(response)) {
+            if (!ServletUtils.checkNotModified(request, response,
+                ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
+
+              // Encoding/ETAG
+              if (responseEncoder != null) {
+                responseEncoder.encode(response, wrapper.getContent());
+
+              } else {
+                response.setContentLengthLong(wrapper.getContent().size());
+                wrapper.getContent().writeTo(response.getOutputStream());
+              }
+            }
+
+          } else {
+            response.setContentLengthLong(wrapper.getContent().size());
+            wrapper.getContent().writeTo(response.getOutputStream());
+          }
           return;
         }
-        wrapper.finishWrapper();
 
-        if (ServletUtils.isETagEligible(response)) {
-
-          if (!ServletUtils.checkNotModified(request, response,
-              ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
-
-            // Encoding/ETAG
-            if (responseEncoder != null) {
-              responseEncoder.encode(response, wrapper.getContent());
-
-            } else {
-              response.setContentLengthLong(wrapper.getContent().size());
-              wrapper.getContent().writeTo(response.getOutputStream());
-            }
-          }
-
-        } else {
-          response.setContentLengthLong(wrapper.getContent().size());
-          wrapper.getContent().writeTo(response.getOutputStream());
+        // Encoding/NO ETAG
+        if (responseEncoder != null) {
+          responseEncoder.encode(request, response, chain);
+          return;
         }
-        return;
-      }
-
-      // Encoding/NO ETAG
-      if (responseEncoder != null) {
-        responseEncoder.encode(request, response, chain);
-        return;
       }
 
       // Next filter?

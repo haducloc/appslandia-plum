@@ -202,6 +202,10 @@ public abstract class ActionDescProvider extends InitializeObject {
         EnableParts enableParts = actionMethod.getDeclaredAnnotation(EnableParts.class);
         actionDesc.setEnableParts(enableParts);
 
+        // @EnableAsync
+        EnableAsync enableAsync = actionMethod.getDeclaredAnnotation(EnableAsync.class);
+        actionDesc.setEnableAsync(enableAsync);
+
         // @EnableEtag
         EnableEtag enableEtag = actionMethod.getDeclaredAnnotation(EnableEtag.class);
         actionDesc.setEnableEtag(enableEtag);

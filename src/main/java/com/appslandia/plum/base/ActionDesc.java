@@ -51,6 +51,7 @@ public class ActionDesc {
 
   private EnableEncoding enableEncoding;
   private EnableParts enableParts;
+  private EnableAsync enableAsync;
 
   private EnableEtag enableEtag;
   private EnableCsrf enableCsrf;
@@ -188,6 +189,14 @@ public class ActionDesc {
 
   protected void setEnableParts(EnableParts enableParts) {
     this.enableParts = enableParts;
+  }
+
+  public EnableAsync getEnableAsync() {
+    return this.enableAsync;
+  }
+
+  protected void setEnableAsync(EnableAsync enableAsync) {
+    this.enableAsync = enableAsync;
   }
 
   public EnableEtag getEnableEtag() {
