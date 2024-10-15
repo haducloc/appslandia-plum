@@ -258,6 +258,7 @@ public class InitializerHandler extends HttpFilter {
         // ETAG
         if (requestContext.isGetOrHead() && enableEtag(request, requestContext)) {
 
+          // ContentResponseWrapper
           ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
           chain.doFilter(request, wrapper);
 
@@ -266,28 +267,25 @@ public class InitializerHandler extends HttpFilter {
           }
           wrapper.finishWrapper();
 
-          if (ServletUtils.isETagEligible(response)) {
-            if (!ServletUtils.checkNotModified(request, response,
-                ServletUtils.toEtag(wrapper.getContent().digest("MD5")))) {
+          // Computed ETAG
+          String computedEtag = ServletUtils.toEtag(wrapper.getContent().digest("MD5"));
 
-              // Encoding/ETAG
-              if (responseEncoder != null) {
-                responseEncoder.encode(response, wrapper.getContent());
+          // If Modified?
+          if (!ServletUtils.checkNotModified(request, response, computedEtag)) {
 
-              } else {
-                response.setContentLengthLong(wrapper.getContent().size());
-                wrapper.getContent().writeTo(response.getOutputStream());
-              }
+            // Encoding/ETAG
+            if (responseEncoder != null) {
+              responseEncoder.encode(response, wrapper.getContent());
+
+            } else {
+              response.setContentLengthLong(wrapper.getContent().size());
+              wrapper.getContent().writeTo(response.getOutputStream());
             }
-
-          } else {
-            response.setContentLengthLong(wrapper.getContent().size());
-            wrapper.getContent().writeTo(response.getOutputStream());
           }
           return;
         }
 
-        // Encoding/NO ETAG
+        // > NO ETAG
         if (responseEncoder != null) {
           responseEncoder.encode(request, response, chain);
           return;

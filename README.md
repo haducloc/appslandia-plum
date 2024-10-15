@@ -119,7 +119,7 @@ public class UserController {
 	}
 		
 	// Other Annotations:
-	// @EnableCsrf, @EnableEtag, @EnableCompression, @EnableParts, etc.
+	// @EnableCsrf, @EnableEtag, @EnableCompression, @EnableParts, @EnableAsync, etc.
 	
 	// @ConsumeType
 	

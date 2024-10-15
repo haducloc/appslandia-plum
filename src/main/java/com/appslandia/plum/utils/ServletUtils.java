@@ -546,11 +546,6 @@ public class ServletUtils {
     return etag.equals(ifMatch);
   }
 
-  public static boolean isETagEligible(HttpServletResponse response) {
-    String cacheControl = response.getHeader("Cache-Control");
-    return (cacheControl == null || !cacheControl.contains("no-store"));
-  }
-
   public static UserPrincipal getUserPrincipal(HttpServletRequest request) {
     Principal principal = request.getUserPrincipal();
     if (principal == null) {
