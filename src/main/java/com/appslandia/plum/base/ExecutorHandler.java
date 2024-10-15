@@ -71,16 +71,16 @@ public class ExecutorHandler extends HttpServlet {
   protected AppConfig appConfig;
 
   protected void testErrorStatus(HttpServletRequest request) {
-    String statusValue = request.getParameter("__error_status");
+    String statusValue = request.getParameter("__test_error_status");
     if (StringUtils.isNullOrEmpty(statusValue)) {
       return;
     }
     int status = Integer.parseInt(statusValue);
     if (status >= 400 && status < 600) {
 
-      throw new HttpException(status, "__error_status=" + status);
+      throw new HttpException(status, "__test_error_status=" + status);
     } else {
-      throw new BadRequestException("__error_status is invalid.");
+      throw new BadRequestException("__test_error_status is invalid.");
     }
   }
 

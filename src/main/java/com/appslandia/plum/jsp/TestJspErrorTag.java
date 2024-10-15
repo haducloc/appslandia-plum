@@ -35,7 +35,7 @@ public class TestJspErrorTag extends TagBase {
 
   @Override
   public void doTag() throws JspException, IOException {
-    String jspError = getRequest().getParameter("__jsp_error");
+    String jspError = getRequest().getParameter("__test_jsp_error");
 
     JspWriter out = this.pageContext.getOut();
     out.println("<ul>");
@@ -43,14 +43,14 @@ public class TestJspErrorTag extends TagBase {
     for (int i = 1; i <= 1000; i++) {
       out.println("<li>This is a test line " + i + "</li>");
 
-      if (i == 500) {
+      if (i == 50) {
         if ("error".equalsIgnoreCase(jspError)) {
-          throw new JspException("This is a test JSP error: __jsp_error=" + jspError);
+          throw new JspException("This is a test JSP error: __test_jsp_error=" + jspError);
         }
 
         if ("flush_error".equalsIgnoreCase(jspError)) {
           out.flush();
-          throw new JspException("This is a test JSP error: __jsp_error=" + jspError);
+          throw new JspException("This is a test JSP error: __test_jsp_error=" + jspError);
         }
       }
     }
