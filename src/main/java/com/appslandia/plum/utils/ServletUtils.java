@@ -434,32 +434,6 @@ public class ServletUtils {
     }
   }
 
-  public static <T> T unwrapRequest(HttpServletRequest request, Class<T> toImpl) {
-    HttpServletRequest req = request;
-    while (true) {
-      if (req.getClass() == toImpl) {
-        return ObjectUtils.cast(req);
-      }
-      if (!(req instanceof HttpServletRequestWrapper)) {
-        return null;
-      }
-      req = (HttpServletRequest) ((HttpServletRequestWrapper) req).getRequest();
-    }
-  }
-
-  public static <T> T unwrapResponse(HttpServletResponse response, Class<T> toImpl) {
-    HttpServletResponse resp = response;
-    while (true) {
-      if (resp.getClass() == toImpl) {
-        return ObjectUtils.cast(resp);
-      }
-      if (!(resp instanceof HttpServletResponseWrapper)) {
-        return null;
-      }
-      resp = (HttpServletResponse) ((HttpServletResponseWrapper) resp).getResponse();
-    }
-  }
-
   public static String getCookieValue(HttpServletRequest request, String name) {
     Cookie[] cookies = request.getCookies();
     if (cookies == null) {

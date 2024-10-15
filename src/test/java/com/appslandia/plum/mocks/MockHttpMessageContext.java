@@ -27,7 +27,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.utils.ServletUtils;
+import com.appslandia.common.utils.ObjectUtils;
 
 import jakarta.security.auth.message.MessageInfo;
 import jakarta.security.enterprise.AuthenticationStatus;
@@ -35,6 +35,7 @@ import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationP
 import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequestWrapper;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -177,7 +178,7 @@ public class MockHttpMessageContext implements HttpMessageContext {
       this.callerPrincipal = Asserts.notNull(result.getCallerPrincipal());
       this.groups = result.getCallerGroups();
 
-      MockHttpServletRequest req = ServletUtils.unwrapRequest(this.request, MockHttpServletRequest.class);
+      MockHttpServletRequest req = unwrapToMockImpl(this.request);
       req.setUserPrincipal(this.callerPrincipal);
       return AuthenticationStatus.SUCCESS;
     }
@@ -204,5 +205,18 @@ public class MockHttpMessageContext implements HttpMessageContext {
   @Override
   public Set<String> getGroups() {
     return this.groups;
+  }
+
+  static <T> T unwrapToMockImpl(HttpServletRequest request) {
+    HttpServletRequest req = request;
+    while (true) {
+      if (req.getClass() == MockHttpServletRequest.class) {
+        return ObjectUtils.cast(req);
+      }
+      if (!(req instanceof HttpServletRequestWrapper)) {
+        return null;
+      }
+      req = (HttpServletRequest) ((HttpServletRequestWrapper) req).getRequest();
+    }
   }
 }
