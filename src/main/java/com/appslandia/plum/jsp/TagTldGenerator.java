@@ -82,6 +82,8 @@ public class TagTldGenerator {
     generateTag(IfEnvTag.class, sb);
     generateTag(OutTag.class, sb);
 
+    generateTag(TestJspErrorTag.class, sb);
+
     System.out.println(sb);
   }
 

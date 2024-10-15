@@ -2014,4 +2014,12 @@
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 
+	<tag>
+		<description>description=;type=com.appslandia.plum.jsp.TestJspErrorTag;body=empty</description>
+		<name>testJspError</name>
+		<tag-class>com.appslandia.plum.jsp.TestJspErrorTag</tag-class>
+		<body-content>empty</body-content>
+		<dynamic-attributes>false</dynamic-attributes>
+	</tag>
+
 </taglib>
