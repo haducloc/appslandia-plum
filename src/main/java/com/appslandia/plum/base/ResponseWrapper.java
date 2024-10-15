@@ -22,6 +22,8 @@ package com.appslandia.plum.base;
 
 import java.io.IOException;
 
+import com.appslandia.common.utils.ObjectUtils;
+
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpServletResponseWrapper;
 
@@ -41,6 +43,6 @@ public abstract class ResponseWrapper extends HttpServletResponseWrapper {
 
   @Override
   public String toString() {
-    return "[" + getClass().getSimpleName() + "] " + getResponse();
+    return ObjectUtils.toIdHash(this);
   }
 }

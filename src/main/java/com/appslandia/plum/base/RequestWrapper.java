@@ -32,6 +32,7 @@ import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterException;
 import com.appslandia.common.utils.ArrayUtils;
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -290,6 +291,6 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
   @Override
   public String toString() {
-    return "[" + getClass().getSimpleName() + "] " + getRequest();
+    return ObjectUtils.toIdHash(this);
   }
 }
