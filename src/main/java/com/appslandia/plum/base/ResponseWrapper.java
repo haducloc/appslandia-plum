@@ -32,7 +32,7 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class ResponseWrapper extends HttpServletResponseWrapper {
+public class ResponseWrapper extends HttpServletResponseWrapper {
 
   public ResponseWrapper(HttpServletResponse response) {
     super(response);
