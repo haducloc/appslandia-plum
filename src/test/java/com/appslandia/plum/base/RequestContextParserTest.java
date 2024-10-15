@@ -48,7 +48,7 @@ public class RequestContextParserTest extends MockTestBase {
     Assertions.assertNotNull(requestContext.getActionDesc());
 
     Assertions.assertFalse(requestContext.isPathLanguage());
-    Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
+    Assertions.assertEquals("en", requestContext.getLanguage().getId());
   }
 
   @Test
@@ -61,7 +61,7 @@ public class RequestContextParserTest extends MockTestBase {
     Assertions.assertNull(requestContext.getActionDesc());
 
     Assertions.assertFalse(requestContext.isPathLanguage());
-    Assertions.assertEquals("en", requestContext.getLanguage().getLanguageId());
+    Assertions.assertEquals("en", requestContext.getLanguage().getId());
   }
 
   @Controller("testController")

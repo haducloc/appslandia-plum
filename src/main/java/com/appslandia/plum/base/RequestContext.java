@@ -94,7 +94,7 @@ public class RequestContext {
   }
 
   public String getLanguageId() {
-    return this.formatProvider.getLanguage().getLanguageId();
+    return this.formatProvider.getLanguage().getId();
   }
 
   public Language getLanguage() {

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.appslandia.common.base.Language;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
@@ -56,7 +57,7 @@ public abstract class DynHandlersRegister implements Startup {
     return "InitializerHandlerAsync";
   }
 
-  protected abstract String[] getLanguageIds();
+  protected abstract List<Language> getLanguages();
 
   protected DynMultipartConfig buildMultipartConfig() {
     return new DynMultipartConfig();
@@ -70,13 +71,13 @@ public abstract class DynHandlersRegister implements Startup {
     // Home
     urlMappings.add("");
 
-    String[] languages = getLanguageIds();
+    List<Language> languages = getLanguages();
     Asserts.notNull(languages);
 
     // /{language}
-    for (String language : languages) {
-      urlMappings.add(STR.fmt("/{}", language));
-      urlMappings.add(STR.fmt("/{}/", language));
+    for (Language lang : languages) {
+      urlMappings.add(STR.fmt("/{}", lang.getId()));
+      urlMappings.add(STR.fmt("/{}/", lang.getId()));
     }
 
     for (Class<?> controllerClass : scanner.getControllerClasses()) {
@@ -86,8 +87,8 @@ public abstract class DynHandlersRegister implements Startup {
       urlMappings.add(STR.fmt("/{}/*", controller));
 
       // /{language}/{controller}/*
-      for (String language : languages) {
-        urlMappings.add(STR.fmt("/{}/{}/*", language, controller));
+      for (Language lang : languages) {
+        urlMappings.add(STR.fmt("/{}/{}/*", lang.getId(), controller));
       }
     }
 
@@ -126,13 +127,13 @@ public abstract class DynHandlersRegister implements Startup {
         mappingsAsync.add(STR.fmt("/{}/{}/", controller, action));
 
         // /{language}/{controller}/{action}
-        for (String language : languages) {
+        for (Language lang : languages) {
           if (ServletUtils.ACTION_INDEX.equals(action)) {
-            mappingsAsync.add(STR.fmt("/{}/{}", language, controller));
-            mappingsAsync.add(STR.fmt("/{}/{}/", language, controller));
+            mappingsAsync.add(STR.fmt("/{}/{}", lang.getId(), controller));
+            mappingsAsync.add(STR.fmt("/{}/{}/", lang.getId(), controller));
           }
-          mappingsAsync.add(STR.fmt("/{}/{}/{}", language, controller, action));
-          mappingsAsync.add(STR.fmt("/{}/{}/{}/", language, controller, action));
+          mappingsAsync.add(STR.fmt("/{}/{}/{}", lang.getId(), controller, action));
+          mappingsAsync.add(STR.fmt("/{}/{}/{}/", lang.getId(), controller, action));
         }
 
         // EnableParts

@@ -85,7 +85,7 @@ public class LanguageProvider extends InitializeObject {
 
   public LanguageProvider addLanguage(Language impl) {
     this.assertNotInitialized();
-    this.languageMap.put(impl.getLanguageId(), impl);
+    this.languageMap.put(impl.getId(), impl);
     return this;
   }
 
