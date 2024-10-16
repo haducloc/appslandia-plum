@@ -64,7 +64,7 @@ public class ErrorServlet extends HttpServlet {
     // DispatcherType.REQUEST?
     if (request.getDispatcherType() == DispatcherType.REQUEST) {
       response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-      response.getWriter().print("404: Not Found");
+      response.getWriter().print("404 Not Found");
       return;
     }
 

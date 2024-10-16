@@ -32,6 +32,7 @@ import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.STR;
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -175,7 +176,7 @@ public class ExceptionHandler {
     out.println();
     out.println("</head>");
     out.println("<body>");
-    out.format(" <h3>HTTP Status %d - %s</h3>", status, message);
+    out.format(" <h3 role=\"alert\">HTTP Status %d - %s</h3>", status, XmlEscaper.escapeXml(message));
     out.println();
     out.println("</body>");
     out.print("</html>");
