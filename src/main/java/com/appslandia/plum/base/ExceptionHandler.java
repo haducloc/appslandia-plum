@@ -25,8 +25,9 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.appslandia.common.base.AppLogger;
+import com.appslandia.common.cdi.Json;
+import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.common.utils.ObjectUtils;
@@ -55,10 +56,8 @@ public class ExceptionHandler {
   protected AppConfig appConfig;
 
   @Inject
+  @Json(Profile.PRETTY)
   protected JsonProcessor jsonProcessor;
-
-  @Inject
-  protected RequestContextParser requestContextParser;
 
   public void handleException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
       throws ServletException, IOException {
@@ -72,38 +71,22 @@ public class ExceptionHandler {
 
     // Already committed?
     if (response.isCommitted()) {
-      response.flushBuffer();
       return;
     }
-
-    // Reset response
-    response.reset();
-
-    writeHeaders(request, response, exception);
     writeException(request, response, exception);
-  }
-
-  protected void writeHeaders(HttpServletRequest request, HttpServletResponse response, Throwable exception)
-      throws ServletException, IOException {
-    if (exception instanceof HttpHeaderApply) {
-      ((HttpHeaderApply) exception).apply(response);
-    }
-
-    // Error Status: NoCachePolicy
-    NoCachePolicy.INSTANCE.writePolicy(request, response, ServletUtils.getRequestContext(request));
   }
 
   protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
       throws ServletException, IOException {
+
     RequestContext requestContext = ServletUtils.getRequestContext(request);
-    Problem problem = getProblem(request, requestContext, exception);
+    Problem problem = getProblem(request, exception);
 
-    boolean jsonError = (requestContext.getActionDesc() != null)
-        ? (requestContext.getActionDesc().getEnableJsonError() != null)
-        : false;
+    if (ActionDescUtils.isJsonError(requestContext.getActionDesc())) {
 
-    if (jsonError) {
-      writeJsonError(request, response, problem.getStatus(), problem);
+      response.reset();
+      this.writeJsonError(request, response, problem.getStatus(), problem);
+
     } else {
       request.setAttribute(Problem.class.getName(), problem);
       response.sendError(problem.getStatus(), problem.getTitle());
@@ -111,10 +94,7 @@ public class ExceptionHandler {
   }
 
   public Problem getProblem(HttpServletRequest request, Throwable exception) {
-    return getProblem(request, ServletUtils.getRequestContext(request), exception);
-  }
-
-  public Problem getProblem(HttpServletRequest request, RequestContext requestContext, Throwable exception) {
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
     Problem problem = new Problem().setException(exception);
 
     // ProblemSupport
@@ -163,15 +143,42 @@ public class ExceptionHandler {
     return problem;
   }
 
-  protected void writeJsonError(HttpServletRequest request, HttpServletResponse response, int status, Problem problem)
+  public void writeJsonError(HttpServletRequest request, HttpServletResponse response, int status, Problem problem)
       throws ServletException, IOException {
+
     response.setContentType(MimeTypes.APP_JSON_PROBLEM);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
     response.setStatus(status);
 
-    PrintWriter out = ServletUtils.getPrintWriter(response);
+    PrintWriter out = response.getWriter();
     this.jsonProcessor.write(out, problem);
     out.flush();
+  }
+
+  public void writeSimpleHtml(HttpServletRequest request, HttpServletResponse response, int status, String message)
+      throws ServletException, IOException {
+
+    response.setContentType(MimeTypes.TEXT_HTML);
+    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
+    response.setStatus(status);
+
+    PrintWriter out = response.getWriter();
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
+
+    out.println("<!DOCTYPE html>");
+    out.format("<html lang=\"%s\">", requestContext.getLanguageId());
+    out.println();
+    out.println("<head>");
+    out.println(" <meta charset=\"utf-8\">");
+    out.println(" <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">");
+    out.format(" <title>HTTP Status %d</title>", status);
+    out.println();
+    out.println("</head>");
+    out.println("<body>");
+    out.format(" <h3>HTTP Status %d - %s</h3>", status, message);
+    out.println();
+    out.println("</body>");
+    out.print("</html>");
   }
 
   protected String getErrorMessage(int status, Throwable exception, Resources resources) {
@@ -220,33 +227,5 @@ public class ExceptionHandler {
     default:
       return Resources.ERROR_INTERNAL_SERVER_ERROR;
     }
-  }
-
-  public void writeSimpleHtml(HttpServletRequest request, HttpServletResponse response, int status, String message)
-      throws ServletException, IOException {
-    Asserts.isTrue(!response.isCommitted());
-    response.reset();
-
-    response.setContentType(MimeTypes.TEXT_HTML);
-    response.setCharacterEncoding(StandardCharsets.UTF_8.name());
-    response.setStatus(status);
-
-    PrintWriter out = ServletUtils.getPrintWriter(response);
-    RequestContext requestContext = this.requestContextParser.parse(request, response);
-
-    out.println("<!DOCTYPE html>");
-    out.format("<html lang=\"%s\">", requestContext.getLanguageId());
-    out.println();
-    out.println("<head>");
-    out.println(" <meta charset=\"utf-8\">");
-    out.println(" <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">");
-    out.format(" <title>HTTP Status %d</title>", status);
-    out.println();
-    out.println("</head>");
-    out.println("<body>");
-    out.format(" <h3>HTTP Status %d - %s</h3>", status, message);
-    out.println();
-    out.println("</body>");
-    out.print("</html>");
   }
 }

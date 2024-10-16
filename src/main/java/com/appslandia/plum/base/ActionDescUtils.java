@@ -38,6 +38,10 @@ public class ActionDescUtils {
         || (actionMethod.getReturnType() == void.class);
   }
 
+  public static boolean isJsonError(ActionDesc actionDesc) {
+    return (actionDesc != null) ? (actionDesc.getEnableJsonError() != null) : false;
+  }
+
   public static boolean isActionMethod(Method method) {
     if (method.getDeclaringClass() == Object.class) {
       return false;

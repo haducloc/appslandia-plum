@@ -103,7 +103,7 @@ public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticat
   @Override
   public AuthenticationStatus secureResponse(HttpServletRequest request, HttpServletResponse response,
       HttpMessageContext httpMessageContext) throws AuthenticationException {
-    RequestContext requestContext = this.requestContextParser.parse(request, response);
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
     AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
     return authHandler.secureResponse(request, response, httpMessageContext);
   }

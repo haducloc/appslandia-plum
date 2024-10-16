@@ -63,9 +63,6 @@ public class PreRememberMeInterceptor implements Serializable {
   @Inject
   protected PostRememberMe postRememberMe;
 
-  @Inject
-  protected RequestContextParser requestContextParser;
-
   @AroundInvoke
   public Object intercept(InvocationContext context) throws Exception {
 

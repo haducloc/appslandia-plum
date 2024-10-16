@@ -76,9 +76,6 @@ public class InitializerHandler extends HttpFilter {
   protected ExceptionHandler exceptionHandler;
 
   @Inject
-  protected RequestContextParser requestContextParser;
-
-  @Inject
   protected AccessRateHandler accessRateHandler;
 
   @Inject
@@ -125,7 +122,7 @@ public class InitializerHandler extends HttpFilter {
     Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
     try {
       // RequestContext
-      final RequestContext requestContext = this.requestContextParser.parse(request, response);
+      final RequestContext requestContext = ServletUtils.getRequestContext(request);
 
       // Initialize
       initialize(request, response, requestContext);

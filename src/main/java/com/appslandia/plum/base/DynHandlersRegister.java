@@ -25,10 +25,8 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.appslandia.common.base.Language;
-import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
-import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContext;
@@ -41,30 +39,23 @@ import jakarta.servlet.ServletException;
  */
 public abstract class DynHandlersRegister implements Startup {
 
-  protected String getExecutorHandlerName() {
-    return "ExecutorHandler";
-  }
-
-  protected String getExecutorHandlerNameAsync() {
-    return "ExecutorHandlerAsync";
-  }
-
-  protected String getInitializerHandlerName() {
+  protected String getInitializerHandler() {
     return "InitializerHandler";
   }
 
-  protected String getInitializerHandlerNameAsync() {
-    return "InitializerHandlerAsync";
+  protected String getExecutorHandler() {
+    return "ExecutorHandler";
   }
 
   protected abstract List<Language> getLanguages();
 
-  protected DynMultipartConfig buildMultipartConfig() {
+  protected DynMultipartConfig getMultipartConfig() {
     return new DynMultipartConfig();
   }
 
   @Override
   public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
+    // ActionScanner
     ActionScanner scanner = ActionScanner.getInstance();
     Set<String> urlMappings = new TreeSet<>();
 
@@ -92,69 +83,20 @@ public abstract class DynHandlersRegister implements Startup {
       }
     }
 
-    // EnableParts
-    boolean hasEnableParts = scanner.hasAction(
-        m -> m.getDeclaredAnnotation(EnableParts.class) != null && m.getDeclaredAnnotation(EnableAsync.class) == null);
+    boolean hasEnableParts = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
+    boolean hasEnableAsync = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableAsync.class) != null);
 
     // DynMultipartConfig
-    DynMultipartConfig multipartConfig = hasEnableParts ? buildMultipartConfig() : null;
+    DynMultipartConfig multipartConfig = hasEnableParts ? getMultipartConfig() : null;
 
     // ExecutorHandler
-    new DynServletRegister().servletName(getExecutorHandlerName()).servletClass(ExecutorHandler.class)
+    new DynServletRegister().servletName(getExecutorHandler()).servletClass(ExecutorHandler.class)
         .urlPatterns(urlMappings.toArray(new String[urlMappings.size()])).multipartConfig(multipartConfig)
-        .registerTo(sc);
+        .asyncSupported(hasEnableAsync).registerTo(sc);
 
     // InitializerHandler
-    new DynFilterRegister().filterName(getInitializerHandlerName()).filterClass(InitializerHandler.class)
-        .servletNames(getExecutorHandlerName()).dispatcherTypes(DispatcherType.REQUEST).registerTo(sc);
-
-    // EnableAsync
-    if (scanner.hasAction(m -> m.getDeclaredAnnotation(EnableAsync.class) != null)) {
-
-      final Set<String> mappingsAsync = new TreeSet<>();
-      final Out<Boolean> hasPartsAsync = new Out<Boolean>(false);
-
-      scanner.scanActions(m -> m.getDeclaredAnnotation(EnableAsync.class) != null, (c, m) -> {
-        String controller = ActionDescProvider.getController(c);
-        String action = ActionDescProvider.getAction(m);
-
-        // /{controller}/{action}
-        if (ServletUtils.ACTION_INDEX.equals(action)) {
-          mappingsAsync.add(STR.fmt("/{}", controller));
-          mappingsAsync.add(STR.fmt("/{}/", controller));
-        }
-        mappingsAsync.add(STR.fmt("/{}/{}", controller, action));
-        mappingsAsync.add(STR.fmt("/{}/{}/", controller, action));
-
-        // /{language}/{controller}/{action}
-        for (Language lang : languages) {
-          if (ServletUtils.ACTION_INDEX.equals(action)) {
-            mappingsAsync.add(STR.fmt("/{}/{}", lang.getId(), controller));
-            mappingsAsync.add(STR.fmt("/{}/{}/", lang.getId(), controller));
-          }
-          mappingsAsync.add(STR.fmt("/{}/{}/{}", lang.getId(), controller, action));
-          mappingsAsync.add(STR.fmt("/{}/{}/{}/", lang.getId(), controller, action));
-        }
-
-        // EnableParts
-        if (!hasPartsAsync.value) {
-          hasPartsAsync.value = m.getDeclaredAnnotation(EnableParts.class) != null;
-        }
-        return false;
-      });
-
-      // DynMultipartConfig
-      DynMultipartConfig multipartConfigAsync = hasPartsAsync.value ? buildMultipartConfig() : null;
-
-      // ExecutorHandler ASYNC
-      new DynServletRegister().servletName(getExecutorHandlerNameAsync()).servletClass(ExecutorHandler.class)
-          .urlPatterns(mappingsAsync.toArray(new String[mappingsAsync.size()])).multipartConfig(multipartConfigAsync)
-          .asyncSupported(true).registerTo(sc);
-
-      // InitializerHandler ASYNC
-      new DynFilterRegister().filterName(getInitializerHandlerNameAsync()).filterClass(InitializerHandler.class)
-          .servletNames(getExecutorHandlerNameAsync()).asyncSupported(true).dispatcherTypes(DispatcherType.REQUEST)
-          .registerTo(sc);
-    }
+    new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)
+        .servletNames(getExecutorHandler()).dispatcherTypes(DispatcherType.REQUEST).asyncSupported(hasEnableAsync)
+        .registerTo(sc);
   }
 }

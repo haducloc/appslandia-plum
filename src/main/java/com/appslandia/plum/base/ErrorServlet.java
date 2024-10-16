@@ -25,10 +25,6 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.appslandia.common.base.ToStringBuilder;
-import com.appslandia.common.cdi.Json;
-import com.appslandia.common.cdi.Json.Profile;
-import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.WebBeanTSPolicy;
@@ -57,59 +53,48 @@ public class ErrorServlet extends HttpServlet {
   @Inject
   protected ExceptionHandler exceptionHandler;
 
-  @Inject
-  protected RequestContextParser requestContextParser;
-
-  @Inject
-  @Json(Profile.PRETTY)
-  protected JsonProcessor jsonProcessor;
-
   private void doRequest(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
 
-    // If DispatcherType=REQUEST
-    if (request.getDispatcherType() == DispatcherType.REQUEST) {
-      this.exceptionHandler.writeSimpleHtml(request, response, HttpServletResponse.SC_NOT_FOUND, "404: Not Found");
+    // Already Committed?
+    if (response.isCommitted()) {
       return;
     }
-    Asserts.isTrue(request.getDispatcherType() == DispatcherType.ERROR);
 
-    if (this.appConfig.getBool(CONFIG_ERROR_DEV, false)) {
-      writeErrorDev(request, response);
-    } else {
-      writeErrorProd(request, response);
+    // DispatcherType.REQUEST?
+    if (request.getDispatcherType() == DispatcherType.REQUEST) {
+      response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      response.getWriter().print("404: Not Found");
+      return;
     }
-  }
-
-  protected void writeErrorProd(HttpServletRequest request, HttpServletResponse response)
-      throws ServletException, IOException {
-
-    // RequestContext
-    RequestContext requestContext = this.requestContextParser.parse(request, response);
 
     // Problem
     Problem problem = (Problem) request.getAttribute(Problem.class.getName());
     if (problem == null) {
       Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-      problem = this.exceptionHandler.getProblem(request, requestContext, exception);
+      problem = this.exceptionHandler.getProblem(request, exception);
     }
-    Asserts.notNull(problem.getStatus());
-    Asserts.notNull(problem.getTitle());
 
     request.setAttribute(Problem.class.getName(), problem);
-    final ResponseSafeWriter responseWrapper = new ResponseSafeWriter(response);
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
 
-    try {
-      String errorJspPath = this.appConfig.getJspPath(getErrorJsp(request, requestContext));
-      ServletUtils.forward(request, responseWrapper, errorJspPath);
+    if (ActionDescUtils.isJsonError(requestContext.getActionDesc())) {
+      this.exceptionHandler.writeJsonError(request, response, problem.getStatus(), problem);
+    } else {
 
-      responseWrapper.flushBuffer();
-
-    } catch (Exception ex) {
-      if (!response.isCommitted()) {
-        this.exceptionHandler.writeSimpleHtml(request, response, problem.getStatus(), problem.getTitle());
+      if (this.appConfig.getBool(CONFIG_ERROR_DEV, false)) {
+        writeErrorDev(request, response);
       } else {
-        response.flushBuffer();
+        try {
+          writeErrorProd(request, response);
+
+        } catch (Exception ex) {
+          if (!response.isCommitted()) {
+            response.reset();
+
+            this.exceptionHandler.writeSimpleHtml(request, response, problem.getStatus(), problem.getTitle());
+          }
+        }
       }
     }
   }
@@ -118,12 +103,23 @@ public class ErrorServlet extends HttpServlet {
     return "/error.jsp";
   }
 
+  protected void writeErrorProd(HttpServletRequest request, HttpServletResponse response)
+      throws ServletException, IOException {
+
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
+    String errorJspEnv = getErrorJsp(request, requestContext);
+    String errorJspPath = this.appConfig.getJspPath(errorJspEnv);
+
+    ServletUtils.forward(request, response, errorJspPath);
+  }
+
   protected void writeErrorDev(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     response.setContentType(MimeTypes.TEXT_PLAIN);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-    PrintWriter out = ServletUtils.getPrintWriter(response);
+    Problem problem = (Problem) request.getAttribute(Problem.class.getName());
+    PrintWriter out = response.getWriter();
 
     out.append("Error Exception: ").append(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_EXCEPTION)));
     out.println();
@@ -139,16 +135,6 @@ public class ErrorServlet extends HttpServlet {
     out.println();
     out.append("Error Status Code: ").append(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE)));
     out.println();
-
-    RequestContext requestContext = this.requestContextParser.parse(request, response);
-    Problem problem = (Problem) request.getAttribute(Problem.class.getName());
-
-    if (problem == null) {
-      Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
-      problem = this.exceptionHandler.getProblem(request, requestContext, exception);
-    }
-    Asserts.notNull(problem.getStatus());
-    Asserts.notNull(problem.getTitle());
 
     out.println();
     out.append("Problem Status: ").append(String.valueOf(problem.getStatus()));
@@ -167,15 +153,16 @@ public class ErrorServlet extends HttpServlet {
     out.println();
 
     if (problem.getException() != null) {
-      out.println();
-
       out.append("Problem Exception: ");
       problem.getException().printStackTrace(out);
       out.println();
     }
+
     out.println();
     out.append("Request Info: ")
         .append(new ToStringBuilder(4).setTSPolicy(new WebBeanTSPolicy(true, true, true, false)).toString(request));
+    out.println();
+
     out.flush();
   }
 

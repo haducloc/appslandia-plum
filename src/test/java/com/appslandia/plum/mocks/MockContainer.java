@@ -271,6 +271,7 @@ public class MockContainer extends InitializeObject {
 
     factory.register(JsonProcessor.class, GsonProcessor.class);
     factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.COMPACT });
+    factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.PRETTY });
 
     factory.register(AppCacheManager.class, MemAppCacheManager.class);
 
