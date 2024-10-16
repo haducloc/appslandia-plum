@@ -20,11 +20,8 @@
 
 package com.appslandia.plum.utils;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
@@ -356,15 +353,6 @@ public class ServletUtils {
   public static Object getMutex(ServletContext context) {
     Object mutex = context.getAttribute(MutexContextListener.ATTRIBUTE_MUTEX);
     return (mutex != null) ? mutex : context;
-  }
-
-  public static PrintWriter getPrintWriter(HttpServletResponse response) throws IOException {
-    try {
-      return response.getWriter();
-    } catch (IllegalStateException ex) {
-      return new PrintWriter(
-          new BufferedWriter(new OutputStreamWriter(response.getOutputStream(), response.getCharacterEncoding())));
-    }
   }
 
   public static HttpServletResponse assertNotCommitted(HttpServletResponse response) throws IllegalStateException {
