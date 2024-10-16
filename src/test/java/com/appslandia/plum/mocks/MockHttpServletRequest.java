@@ -310,7 +310,7 @@ public class MockHttpServletRequest implements HttpServletRequest {
 
   @Override
   public String getContextPath() {
-    throw new UnsupportedOperationException();
+    return this.servletContext.getContextPath();
   }
 
   @Override
