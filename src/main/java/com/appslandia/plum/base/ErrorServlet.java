@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.ToStringBuilder;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
@@ -49,6 +50,9 @@ public class ErrorServlet extends HttpServlet {
   public static final String CONFIG_ERROR_DEV = ErrorServlet.class.getName() + ".error_dev";
 
   @Inject
+  protected AppLogger appLogger;
+
+  @Inject
   protected AppConfig appConfig;
 
   @Inject
@@ -56,6 +60,12 @@ public class ErrorServlet extends HttpServlet {
 
   private void doRequest(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
+
+    // Throwable
+    Throwable exception = getException(request);
+    if ((exception != null) && (exception.getClass().getDeclaredAnnotation(NotLog.class) == null)) {
+      this.appLogger.error(exception);
+    }
 
     // Already Committed?
     if (response.isCommitted()) {
@@ -72,16 +82,13 @@ public class ErrorServlet extends HttpServlet {
     // Problem
     Problem problem = (Problem) request.getAttribute(Problem.class.getName());
     if (problem == null) {
-      Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
       problem = this.exceptionHandler.getProblem(request, exception);
       request.setAttribute(Problem.class.getName(), problem);
     }
 
-    // ExceptionHandler exception
-    Throwable exceptionHandlerThrowable = (Throwable) request
-        .getAttribute(ExceptionHandler.REQUEST_ATTRIBUTE_EXCEPTION);
-    if (exceptionHandlerThrowable instanceof HttpHeaderApply) {
-      ((HttpHeaderApply) exceptionHandlerThrowable).apply(response);
+    // HttpHeaderApply
+    if (exception instanceof HttpHeaderApply) {
+      ((HttpHeaderApply) exception).apply(response);
     }
 
     // NO Cache
@@ -110,6 +117,14 @@ public class ErrorServlet extends HttpServlet {
     }
   }
 
+  protected Throwable getException(HttpServletRequest request) {
+    Throwable ex = (Throwable) request.getAttribute(ExceptionHandler.REQUEST_ATTRIBUTE_EXCEPTION);
+    if (ex != null) {
+      return ex;
+    }
+    return (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
+  }
+
   protected String getErrorJsp(HttpServletRequest request, RequestContext requestContext) {
     return "/error.jsp";
   }
@@ -133,7 +148,7 @@ public class ErrorServlet extends HttpServlet {
 
     PrintWriter out = response.getWriter();
 
-    out.append("Error Exception: ").append(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_EXCEPTION)));
+    out.append("Error Exception: ").append(String.valueOf(getException(request)));
     out.println();
     out.append("Error Exception Type: ")
         .append(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_EXCEPTION_TYPE)));

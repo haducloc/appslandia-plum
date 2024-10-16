@@ -24,14 +24,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
-import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;
-import com.appslandia.common.utils.ObjectUtils;
-import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -53,9 +50,6 @@ public class ExceptionHandler {
   public static final String REQUEST_ATTRIBUTE_EXCEPTION = ExceptionHandler.class.getName() + ".exception";
 
   @Inject
-  protected AppLogger appLogger;
-
-  @Inject
   protected AppConfig appConfig;
 
   @Inject
@@ -64,13 +58,6 @@ public class ExceptionHandler {
 
   public void handleException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
       throws ServletException, IOException {
-    if (exception.getClass().getDeclaredAnnotation(NotLog.class) == null) {
-      this.appLogger.error(exception);
-    }
-
-    if (this.appConfig.isEnableDebug()) {
-      this.appLogger.debug(STR.fmt("ExceptionHandler.handleException: response={}", ObjectUtils.toIdHash(response)));
-    }
 
     // Already committed?
     if (response.isCommitted()) {
