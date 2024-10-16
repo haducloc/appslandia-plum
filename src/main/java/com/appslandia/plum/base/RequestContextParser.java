@@ -101,8 +101,8 @@ public class RequestContextParser {
     List<String> pathItems = parsePathItems(request);
     String testPathLanguage = !pathItems.isEmpty() ? pathItems.get(0) : null;
 
-    // Initialize Localization
-    initLanguageContext(request, context, testPathLanguage);
+    // Language
+    initLangContext(request, context, testPathLanguage);
 
     if (context.isPathLanguage()) {
       pathItems.remove(0);
@@ -124,11 +124,10 @@ public class RequestContextParser {
     // Nonce
     context.setNonce(generateNonce());
     request.setAttribute(RequestContext.REQUEST_ATTRIBUTE_ID, context);
-
     return context;
   }
 
-  protected void initLanguageContext(HttpServletRequest request, RequestContext context, String testPathLanguage) {
+  protected void initLangContext(HttpServletRequest request, RequestContext context, String testPathLanguage) {
     Language language = null;
     if (testPathLanguage == null) {
       language = parseLanguage(request);
