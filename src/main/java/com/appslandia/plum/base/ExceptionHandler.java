@@ -153,6 +153,7 @@ public class ExceptionHandler {
 
     PrintWriter out = response.getWriter();
     this.jsonProcessor.write(out, problem);
+
     out.flush();
   }
 
@@ -180,6 +181,8 @@ public class ExceptionHandler {
     out.println();
     out.println("</body>");
     out.print("</html>");
+
+    out.flush();
   }
 
   protected String getErrorMessage(int status, Throwable exception, Resources resources) {
