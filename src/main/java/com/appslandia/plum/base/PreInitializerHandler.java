@@ -22,8 +22,6 @@ package com.appslandia.plum.base;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.Asserts;
-
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.servlet.DispatcherType;
@@ -39,9 +37,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-
 @Priority(Integer.MIN_VALUE)
-@WebFilter(urlPatterns = "/*", asyncSupported = true)
+@WebFilter(urlPatterns = "/*", dispatcherTypes = { DispatcherType.REQUEST }, asyncSupported = true)
 public class PreInitializerHandler extends HttpFilter {
   private static final long serialVersionUID = 1L;
 
@@ -51,7 +48,6 @@ public class PreInitializerHandler extends HttpFilter {
   @Override
   protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
-    Asserts.isTrue(request.getDispatcherType().equals(DispatcherType.REQUEST));
 
     this.requestContextParser.parse(request, response);
 
