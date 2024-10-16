@@ -45,6 +45,7 @@ import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.HexUtils;
 import com.appslandia.common.utils.IOUtils;
 import com.appslandia.common.utils.ObjectUtils;
+import com.appslandia.common.utils.ParseUtils;
 import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.StringUtils;
@@ -55,7 +56,9 @@ import com.appslandia.plum.base.ActionDescProvider;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.AuthHandler;
 import com.appslandia.plum.base.AuthHandlerProvider;
+import com.appslandia.plum.base.BadRequestException;
 import com.appslandia.plum.base.BeanInstanceContextListener;
+import com.appslandia.plum.base.HttpException;
 import com.appslandia.plum.base.InstanceKey;
 import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.Messages;
@@ -388,6 +391,36 @@ public class ServletUtils {
     response.resetBuffer();
     response.setHeader("Location", location);
     response.setStatus(status);
+  }
+
+  public static void testErrorStatus(HttpServletRequest request, String parameterName) {
+    String statusValue = request.getParameter(parameterName);
+    if (statusValue == null) {
+      return;
+    }
+
+    // 4XX, 5XX
+    int status = ParseUtils.parseInt(statusValue, 0);
+    if (status >= 400 && status < 600) {
+
+      throw new HttpException(status, parameterName + "=" + status);
+    } else {
+      throw new BadRequestException(parameterName + " is invalid.");
+    }
+  }
+
+  public static void testOutStream(HttpServletRequest request, HttpServletResponse response, String parameterName)
+      throws IOException {
+    String streamType = request.getParameter(parameterName);
+    if (streamType == null) {
+      return;
+    }
+    if ("writer".equals(streamType)) {
+      response.getWriter();
+
+    } else if ("stream".equals(streamType)) {
+      response.getOutputStream();
+    }
   }
 
   public static String toWrapperPath(HttpServletRequest request) {

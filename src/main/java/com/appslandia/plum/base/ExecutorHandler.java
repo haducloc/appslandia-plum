@@ -70,27 +70,15 @@ public class ExecutorHandler extends HttpServlet {
   @Inject
   protected AppConfig appConfig;
 
-  protected void testErrorStatus(HttpServletRequest request) {
-    String statusValue = request.getParameter("__test_error_status");
-    if (StringUtils.isNullOrEmpty(statusValue)) {
-      return;
-    }
-    int status = Integer.parseInt(statusValue);
-    if (status >= 400 && status < 600) {
-
-      throw new HttpException(status, "__test_error_status=" + status);
-    } else {
-      throw new BadRequestException("__test_error_status is invalid.");
-    }
-  }
-
   protected void doRequest(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws ServletException, IOException {
     try {
       // DEBUG
       if (this.appConfig.isEnableDebug()) {
-        testErrorStatus(request);
+        ServletUtils.testErrorStatus(request, "__test_error_status3");
+        ServletUtils.testOutStream(request, response, "__test_out_stream3");
       }
+
       getFilterChain(requestContext).doFilter(request, response, requestContext);
 
     } catch (RuntimeException | ServletException | IOException ex) {
@@ -113,8 +101,9 @@ public class ExecutorHandler extends HttpServlet {
         onActionInvoking(request, response, requestContext);
 
         // Invoke Action
-        Object controller = controllerProvider.getController(requestContext.getActionDesc().getControllerClass());
-        Object result = actionInvoker.invokeAction(request, response, requestContext, controller);
+        Object controller = ExecutorHandler.this.controllerProvider
+            .getController(requestContext.getActionDesc().getControllerClass());
+        Object result = ExecutorHandler.this.actionInvoker.invokeAction(request, response, requestContext, controller);
 
         onResultExecuting(request, response, requestContext, result);
 
@@ -126,27 +115,18 @@ public class ExecutorHandler extends HttpServlet {
         } else if (requestContext.getActionDesc().getMethod().getReturnType() != void.class) {
           writeJsonResult(response, result);
         }
+
+        // DEBUG
+        if (ExecutorHandler.this.appConfig.isEnableDebug()) {
+          ServletUtils.testErrorStatus(request, "__test_error_status4");
+          ServletUtils.testOutStream(request, response, "__test_out_stream4");
+        }
       }
     };
   }
 
-  protected void testOutputCall(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    String testOutCall = request.getParameter("__test_out_call");
-    if ("writer".equals(testOutCall)) {
-      response.getWriter();
-
-    } else if ("stream".equals(testOutCall)) {
-      response.getOutputStream();
-    }
-  }
-
   protected void onActionInvoking(HttpServletRequest request, HttpServletResponse response,
       RequestContext requestContext) throws Exception {
-
-    // DEBUG
-    if (this.appConfig.isEnableDebug()) {
-      testOutputCall(request, response);
-    }
 
     // TempData
     if (requestContext.isGetOrHead()) {

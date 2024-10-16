@@ -22,6 +22,8 @@ package com.appslandia.plum.base;
 
 import java.io.IOException;
 
+import com.appslandia.plum.utils.ServletUtils;
+
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.servlet.DispatcherType;
@@ -45,11 +47,20 @@ public class PreInitializerHandler extends HttpFilter {
   @Inject
   protected RequestContextParser requestContextParser;
 
+  @Inject
+  protected AppConfig appConfig;
+
   @Override
   protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
       throws IOException, ServletException {
 
     this.requestContextParser.parse(request, response);
+
+    // DEBUG
+    if (this.appConfig.isEnableDebug()) {
+      ServletUtils.testErrorStatus(request, "__test_error_status1");
+      ServletUtils.testOutStream(request, response, "__test_out_stream1");
+    }
 
     chain.doFilter(request, response);
   }
