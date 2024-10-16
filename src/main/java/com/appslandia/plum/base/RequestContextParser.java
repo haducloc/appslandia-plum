@@ -52,9 +52,6 @@ import jakarta.servlet.http.HttpServletResponse;
 public class RequestContextParser {
 
   @Inject
-  protected PrefCookieHandler prefCookieHandler;
-
-  @Inject
   protected LanguageProvider languageProvider;
 
   @Inject
@@ -93,13 +90,7 @@ public class RequestContextParser {
     if (context != null) {
       return context;
     }
-
     Asserts.isTrue(request.getDispatcherType() == DispatcherType.REQUEST);
-
-    // PrefCookie
-    if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PREF_COOKIE)) {
-      this.prefCookieHandler.loadPrefCookie(request, response);
-    }
 
     // Initialize RequestContext
     context = new RequestContext();
