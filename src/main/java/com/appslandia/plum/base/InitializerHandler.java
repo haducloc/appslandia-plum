@@ -132,8 +132,8 @@ public class InitializerHandler extends HttpFilter {
 
       // DEBUG
       if (this.appConfig.isEnableDebug()) {
-        ServletUtils.testErrorStatus(request, "__test_error_status2");
-        ServletUtils.testOutStream(request, response, "__test_out_stream2");
+        ServletUtils.testErrorStatus(request, "__test_error_status1");
+        ServletUtils.testOutStream(request, response, "__test_out_stream1");
       }
 
       // RequestContext

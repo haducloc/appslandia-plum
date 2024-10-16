@@ -75,8 +75,8 @@ public class ExecutorHandler extends HttpServlet {
     try {
       // DEBUG
       if (this.appConfig.isEnableDebug()) {
-        ServletUtils.testErrorStatus(request, "__test_error_status3");
-        ServletUtils.testOutStream(request, response, "__test_out_stream3");
+        ServletUtils.testErrorStatus(request, "__test_error_status2");
+        ServletUtils.testOutStream(request, response, "__test_out_stream2");
       }
 
       getFilterChain(requestContext).doFilter(request, response, requestContext);
@@ -118,8 +118,8 @@ public class ExecutorHandler extends HttpServlet {
 
         // DEBUG
         if (ExecutorHandler.this.appConfig.isEnableDebug()) {
-          ServletUtils.testErrorStatus(request, "__test_error_status4");
-          ServletUtils.testOutStream(request, response, "__test_out_stream4");
+          ServletUtils.testErrorStatus(request, "__test_error_status3");
+          ServletUtils.testOutStream(request, response, "__test_out_stream3");
         }
       }
     };
