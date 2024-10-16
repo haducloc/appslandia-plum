@@ -170,7 +170,7 @@ public class RequestContextParser {
 
   public static List<String> parsePathItems(HttpServletRequest request) {
     String requestURI = request.getRequestURI();
-    String contextPath = request.getServletContext().getContextPath();
+    String contextPath = request.getContextPath();
 
     int startIdx = 0;
     int endIdx;

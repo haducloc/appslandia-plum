@@ -120,7 +120,7 @@ public class RedirectResult implements ActionResult {
 
       // URL
       StringBuilder url = new StringBuilder();
-      url.append(request.getServletContext().getContextPath());
+      url.append(request.getContextPath());
 
       // Language
       if (languageProvider.isMultiLanguages()) {
@@ -152,7 +152,7 @@ public class RedirectResult implements ActionResult {
 
       // URL
       StringBuilder url = new StringBuilder();
-      url.append(request.getServletContext().getContextPath());
+      url.append(request.getContextPath());
 
       // Language
       if (languageProvider.isMultiLanguages()) {

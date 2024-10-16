@@ -116,7 +116,7 @@ public class ActionParser {
     }
 
     // Context path
-    url.append(request.getServletContext().getContextPath());
+    url.append(request.getContextPath());
 
     // Language
     if (this.languageProvider.isMultiLanguages()) {

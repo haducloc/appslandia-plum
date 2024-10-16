@@ -120,7 +120,7 @@ public class ServletUtils {
 
     // URL
     StringBuilder url = newUrlBuilder();
-    url.append(request.getServletContext().getContextPath());
+    url.append(request.getContextPath());
 
     // Language
     if (languageProvider.isMultiLanguages()) {
@@ -220,7 +220,7 @@ public class ServletUtils {
     StringBuilder url = newUrlBuilder();
 
     // ContextPath
-    url.append(request.getServletContext().getContextPath());
+    url.append(request.getContextPath());
 
     // Language
     if (pathLang != null) {

@@ -73,7 +73,7 @@ public class LanguageChangeController {
 
           // URL
           StringBuilder url = new StringBuilder();
-          url.append(request.getServletContext().getContextPath());
+          url.append(request.getContextPath());
 
           // Language
           url.append('/').append(languageId);
