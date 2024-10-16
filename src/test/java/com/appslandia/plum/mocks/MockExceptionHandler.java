@@ -37,10 +37,10 @@ import jakarta.servlet.http.HttpServletResponse;
 public class MockExceptionHandler extends ExceptionHandler {
 
   @Override
-  protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
+  public void handleException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
       throws ServletException, IOException {
-    request.setAttribute(RequestDispatcher.ERROR_EXCEPTION, exception);
 
-    super.writeException(request, response, exception);
+    request.setAttribute(RequestDispatcher.ERROR_EXCEPTION, exception);
+    super.handleException(request, response, exception);
   }
 }

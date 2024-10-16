@@ -25,6 +25,7 @@ import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
 import com.appslandia.common.base.ToStringBuilder;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.WebBeanTSPolicy;
@@ -73,24 +74,34 @@ public class ErrorServlet extends HttpServlet {
     if (problem == null) {
       Throwable exception = (Throwable) request.getAttribute(RequestDispatcher.ERROR_EXCEPTION);
       problem = this.exceptionHandler.getProblem(request, exception);
+      request.setAttribute(Problem.class.getName(), problem);
     }
 
-    request.setAttribute(Problem.class.getName(), problem);
-    RequestContext requestContext = ServletUtils.getRequestContext(request);
+    // ExceptionHandler exception
+    Throwable exceptionHandlerThrowable = (Throwable) request
+        .getAttribute(ExceptionHandler.REQUEST_ATTRIBUTE_EXCEPTION);
+    if (exceptionHandlerThrowable instanceof HttpHeaderApply) {
+      ((HttpHeaderApply) exceptionHandlerThrowable).apply(response);
+    }
 
+    // NO Cache
+    RequestContext requestContext = ServletUtils.getRequestContext(request);
+    NoCachePolicy.INSTANCE.writePolicy(request, response, requestContext);
+
+    // Write Error
     if (ActionDescUtils.isJsonError(requestContext.getActionDesc())) {
       this.exceptionHandler.writeJsonError(request, response, problem.getStatus(), problem);
-    } else {
 
+    } else {
       if (this.appConfig.getBool(CONFIG_ERROR_DEV, false)) {
-        writeErrorDev(request, response);
+        writeErrorDev(request, response, requestContext);
       } else {
         try {
-          writeErrorProd(request, response);
+          writeErrorProd(request, response, requestContext);
 
         } catch (Exception ex) {
           if (!response.isCommitted()) {
-            response.reset();
+            response.resetBuffer();
 
             this.exceptionHandler.writeSimpleHtml(request, response, problem.getStatus(), problem.getTitle());
           }
@@ -103,22 +114,23 @@ public class ErrorServlet extends HttpServlet {
     return "/error.jsp";
   }
 
-  protected void writeErrorProd(HttpServletRequest request, HttpServletResponse response)
+  protected void writeErrorProd(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws ServletException, IOException {
 
-    RequestContext requestContext = ServletUtils.getRequestContext(request);
     String errorJspEnv = getErrorJsp(request, requestContext);
     String errorJspPath = this.appConfig.getJspPath(errorJspEnv);
 
     ServletUtils.forward(request, response, errorJspPath);
   }
 
-  protected void writeErrorDev(HttpServletRequest request, HttpServletResponse response)
+  protected void writeErrorDev(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws ServletException, IOException {
     response.setContentType(MimeTypes.TEXT_PLAIN);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
     Problem problem = (Problem) request.getAttribute(Problem.class.getName());
+    Asserts.notNull(problem);
+
     PrintWriter out = response.getWriter();
 
     out.append("Error Exception: ").append(String.valueOf(request.getAttribute(RequestDispatcher.ERROR_EXCEPTION)));

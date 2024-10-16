@@ -50,6 +50,8 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class ExceptionHandler {
 
+  public static final String REQUEST_ATTRIBUTE_EXCEPTION = ExceptionHandler.class.getName() + ".exception";
+
   @Inject
   protected AppLogger appLogger;
 
@@ -74,24 +76,14 @@ public class ExceptionHandler {
     if (response.isCommitted()) {
       return;
     }
-    writeException(request, response, exception);
-  }
 
-  protected void writeException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
-      throws ServletException, IOException {
-
-    RequestContext requestContext = ServletUtils.getRequestContext(request);
+    // Problem
     Problem problem = getProblem(request, exception);
+    request.setAttribute(Problem.class.getName(), problem);
+    request.setAttribute(REQUEST_ATTRIBUTE_EXCEPTION, exception);
 
-    if (ActionDescUtils.isJsonError(requestContext.getActionDesc())) {
-
-      response.reset();
-      this.writeJsonError(request, response, problem.getStatus(), problem);
-
-    } else {
-      request.setAttribute(Problem.class.getName(), problem);
-      response.sendError(problem.getStatus(), problem.getTitle());
-    }
+    // Send Error
+    response.sendError(problem.getStatus(), problem.getTitle());
   }
 
   public Problem getProblem(HttpServletRequest request, Throwable exception) {
