@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
 
-import com.appslandia.common.cdi.Json;
-import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.ExceptionUtils;
 import com.appslandia.common.utils.MimeTypes;
@@ -53,7 +51,6 @@ public class ExceptionHandler {
   protected AppConfig appConfig;
 
   @Inject
-  @Json(Profile.PRETTY)
   protected JsonProcessor jsonProcessor;
 
   public void handleException(HttpServletRequest request, HttpServletResponse response, Throwable exception)
