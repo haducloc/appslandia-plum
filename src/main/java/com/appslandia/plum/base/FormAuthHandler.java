@@ -65,7 +65,7 @@ public abstract class FormAuthHandler implements AuthHandler {
   @Override
   public void askAuthenticate(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
-    String returnUrl = getUriAndQuery(request);
+    String returnUrl = getReturnUrl(request);
 
     StringBuilder url = ServletUtils.getLoginUrl(request);
     url.append('?').append(ServletUtils.PARAM_RETURN_URL).append('=').append(URLEncoding.encodeParam(returnUrl));
@@ -79,12 +79,12 @@ public abstract class FormAuthHandler implements AuthHandler {
         .sendRedirect(this.appConfig.isEnableSession() ? response.encodeRedirectURL(url.toString()) : url.toString());
   }
 
-  static String getUriAndQuery(HttpServletRequest request) {
+  static String getReturnUrl(HttpServletRequest request) {
     if (request.getParameter(TempDataManager.PARAM_TEMP_DATA_ID) == null) {
-      return ServletUtils.appendUriQuery(request, ServletUtils.newUrlBuilder()).toString();
+      return ServletUtils.getUriQuery(request).toString();
     }
 
-    // Remove tempDataId
+    // Exclude tempDataId
     Map<String, String[]> copyParams = new HashMap<>(request.getParameterMap());
     copyParams.remove(TempDataManager.PARAM_TEMP_DATA_ID);
 
