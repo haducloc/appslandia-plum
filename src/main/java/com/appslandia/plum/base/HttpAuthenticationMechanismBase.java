@@ -118,8 +118,8 @@ public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticat
     if (request.getAttribute(REQUEST_ATTRIBUTE_CLEAN_SUBJECT) == null) {
       request.setAttribute(REQUEST_ATTRIBUTE_CLEAN_SUBJECT, true);
 
-      String module = ServletUtils.getRequestContext(request).getModule();
-      AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(module);
+      RequestContext requestContext = ServletUtils.getRequestContext(request);
+      AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
       authHandler.cleanSubject(request, response, httpMessageContext);
     }
   }
