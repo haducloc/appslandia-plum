@@ -22,10 +22,12 @@ package com.appslandia.plum.results;
 
 import java.util.Map;
 
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.utils.ServletUtils;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -72,11 +74,13 @@ public class JspResult extends ViewResult {
         request.setAttribute(variable.getKey(), variable.getValue());
       }
     }
-    if (requestContext.getActionDesc().getChildAction() == null) {
-      request.getRequestDispatcher(this.resolvedPath).forward(request, response);
+    RequestDispatcher requestDispatcher = request.getRequestDispatcher(this.resolvedPath);
+    Asserts.notNull(requestDispatcher);
 
+    if (requestContext.getActionDesc().getChildAction() == null) {
+      requestDispatcher.forward(request, response);
     } else {
-      request.getRequestDispatcher(this.resolvedPath).include(request, response);
+      requestDispatcher.include(request, response);
     }
   }
 
