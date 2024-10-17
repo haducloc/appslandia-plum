@@ -49,6 +49,7 @@ public class DynFilterRegister extends InitializeObject {
   private String[] servletNames;
   private String[] urlPatterns;
   private DispatcherType[] dispatcherTypes;
+  private boolean isMatchAfter = true;
 
   final Map<String, String> initParameters = new HashMap<>();
   private boolean asyncSupported;
@@ -66,18 +67,18 @@ public class DynFilterRegister extends InitializeObject {
     FilterRegistration.Dynamic reg = (this.filterClass != null) ? sc.addFilter(this.filterName, this.filterClass)
         : sc.addFilter(this.filterName, this.filterClassName);
 
+    EnumSet<DispatcherType> types = ArrayUtils.hasElements(this.dispatcherTypes)
+        ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes))
+        : null;
+
     if (ArrayUtils.hasElements(this.servletNames)) {
-      reg.addMappingForServletNames(
-          ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes))
-              : null,
-          false, this.servletNames);
+      reg.addMappingForServletNames(types, this.isMatchAfter, this.servletNames);
     }
+
     if (ArrayUtils.hasElements(this.urlPatterns)) {
-      reg.addMappingForUrlPatterns(
-          ArrayUtils.hasElements(this.dispatcherTypes) ? EnumSet.copyOf(CollectionUtils.toList(this.dispatcherTypes))
-              : null,
-          false, this.urlPatterns);
+      reg.addMappingForUrlPatterns(types, this.isMatchAfter, this.urlPatterns);
     }
+
     reg.setInitParameters(this.initParameters);
     reg.setAsyncSupported(this.asyncSupported);
     return this;
@@ -125,6 +126,12 @@ public class DynFilterRegister extends InitializeObject {
   public DynFilterRegister initParameter(String name, String value) {
     assertNotInitialized();
     this.initParameters.put(name, value);
+    return this;
+  }
+
+  public DynFilterRegister isMatchAfter(boolean isMatchAfter) {
+    assertNotInitialized();
+    this.isMatchAfter = isMatchAfter;
     return this;
   }
 
