@@ -47,10 +47,10 @@ public class TestJspErrorTag extends TagBase {
     JspWriter out = this.pageContext.getOut();
     out.println("<ul>");
 
-    for (int i = 1; i <= 1000; i++) {
+    for (int i = 1; i <= 10; i++) {
       out.println("<li>This is a test line " + i + "</li>");
 
-      if (i == 50) {
+      if (i == 5) {
         if ("error".equals(jspError)) {
           throw new JspException("This is a test JSP error: __test_jsp_error=" + jspError);
         }
