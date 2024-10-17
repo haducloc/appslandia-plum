@@ -103,7 +103,6 @@ public abstract class DynHandlersRegister implements Startup {
         .asyncSupported(hasEnableAsync).registerTo(sc);
 
     // InitializerHandler
-
     this.beforeInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
 
     new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)
