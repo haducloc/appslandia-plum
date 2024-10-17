@@ -87,6 +87,7 @@ public class UserController {
 			return JspResult.DEFAULT;
 		}
 		// POST
+		// Create Or Update User
 		return new RedirectResult("index");
 	}
 
