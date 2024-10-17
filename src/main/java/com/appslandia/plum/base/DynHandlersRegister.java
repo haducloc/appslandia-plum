@@ -53,6 +53,14 @@ public abstract class DynHandlersRegister implements Startup {
     return new DynMultipartConfig();
   }
 
+  protected void beforeInitializerHandler(ServletContext sc, String initializerHandlerServletName,
+      boolean initializerHandlerAsyncSupported) {
+  }
+
+  protected void afterInitializerHandler(ServletContext sc, String initializerHandlerServletName,
+      boolean initializerHandlerAsyncSupported) {
+  }
+
   @Override
   public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
     // ActionScanner
@@ -83,8 +91,8 @@ public abstract class DynHandlersRegister implements Startup {
       }
     }
 
-    boolean hasEnableParts = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
-    boolean hasEnableAsync = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableAsync.class) != null);
+    final boolean hasEnableParts = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableParts.class) != null);
+    final boolean hasEnableAsync = scanner.hasAction(m -> m.getDeclaredAnnotation(EnableAsync.class) != null);
 
     // DynMultipartConfig
     DynMultipartConfig multipartConfig = hasEnableParts ? getMultipartConfig() : null;
@@ -95,8 +103,13 @@ public abstract class DynHandlersRegister implements Startup {
         .asyncSupported(hasEnableAsync).registerTo(sc);
 
     // InitializerHandler
+
+    this.beforeInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
+
     new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)
         .servletNames(getExecutorHandler()).dispatcherTypes(DispatcherType.REQUEST).asyncSupported(hasEnableAsync)
-        .registerTo(sc);
+        .isMatchAfter(true).registerTo(sc);
+
+    this.afterInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
   }
 }
