@@ -156,6 +156,24 @@ public class InitializerHandler extends HttpFilter {
             requestContext.res(Resources.ERROR_METHOD_NOT_ALLOWED)).setTitleKey(Resources.ERROR_METHOD_NOT_ALLOWED);
       }
 
+      // Authorize Origin
+      String origin = this.corsPolicyHandler.getCrossOrigin(request);
+      if (origin != null) {
+
+        // Not @EnableCors
+        if (actionDesc.getEnableCors() == null) {
+          throw new ForbiddenException(
+              requestContext.res(Resources.ERROR_FORBIDDEN_CORS, CorsResult.NOT_ALLOWED_CORS.name()));
+        }
+        CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(actionDesc.getEnableCors().value());
+        CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, origin,
+            corsPolicy);
+
+        if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
+          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
+        }
+      }
+
       // Consume Type
       if (actionDesc.getConsumeType() != null) {
         if (!ServletUtils.isContentSupported(request.getContentType(), actionDesc.getConsumeType().value())) {
@@ -190,7 +208,7 @@ public class InitializerHandler extends HttpFilter {
         throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN));
       }
 
-      // Check access rate
+      // Access Rate
       this.accessRateHandler.checkRequest(request, requestContext);
 
       // HTTP OPTIONS
@@ -203,24 +221,6 @@ public class InitializerHandler extends HttpFilter {
       request = new RequestWrapper(request, requestContext.getPathParamMap());
       if (isMockContext()) {
         request.setAttribute(RequestWrapper.class.getName(), request);
-      }
-
-      // Authorize Origin
-      String origin = this.corsPolicyHandler.getCrossOrigin(request);
-      if (origin != null) {
-
-        // Not @EnableCors
-        if (actionDesc.getEnableCors() == null) {
-          throw new ForbiddenException(
-              requestContext.res(Resources.ERROR_FORBIDDEN_CORS, CorsResult.NOT_ALLOWED_CORS.name()));
-        }
-        CorsPolicy corsPolicy = this.corsPolicyProvider.getCorsPolicy(actionDesc.getEnableCors().value());
-        CorsPolicyHandler.CorsResult corsResult = this.corsPolicyHandler.handleCors(request, response, origin,
-            corsPolicy);
-
-        if (corsResult != CorsPolicyHandler.CorsResult.ALLOWED) {
-          throw new ForbiddenException(requestContext.res(Resources.ERROR_FORBIDDEN_CORS, corsResult.name()));
-        }
       }
 
       // Authorize
