@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.ObjectUtils;
+import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.base.ActionDesc;
 import com.appslandia.plum.base.ActionDescProvider;
 import com.appslandia.plum.base.ActionDescUtils;
@@ -56,13 +56,10 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
   protected String action;
   protected String errorKey;
 
-  protected Map<String, Object> _params;
+  final Map<String, Object> _params = new LinkedHashMap<>();
 
   @Override
   public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
-    if (this._params == null) {
-      this._params = new LinkedHashMap<>();
-    }
     this._params.put(name, value);
   }
 
@@ -70,7 +67,7 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
     return new RequestAttributes(request);
   }
 
-  protected String buildContent(RequestContext childContext) throws Exception {
+  protected Object buildContent(RequestContext childContext) throws Exception {
     HttpServletRequest request = getRequest();
     HttpServletResponse response = getResponse();
 
@@ -101,7 +98,7 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
         wrapper.finishWrapper();
         return wrapper.getContent().toString(response.getCharacterEncoding());
       }
-      return ObjectUtils.toStringOrEmpty(result);
+      return result;
 
     } finally {
       backupAttributes.restore(request);
@@ -113,8 +110,15 @@ public class IncludeTag extends TagBase implements DynamicAttributes {
     final RequestContext childContext = createChildRequestContext();
 
     try {
-      String content = buildContent(childContext);
-      this.pageContext.getOut().write(content);
+      Object content = buildContent(childContext);
+      if (content != null) {
+
+        if (childContext.getActionDesc().getChildAction().escXml()) {
+          XmlEscaper.escapeXml(this.pageContext.getOut(), content.toString());
+        } else {
+          this.pageContext.getOut().write(content.toString());
+        }
+      }
 
     } catch (Exception ex) {
       handleException(ex);
