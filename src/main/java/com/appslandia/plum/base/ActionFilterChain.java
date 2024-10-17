@@ -49,7 +49,9 @@ public abstract class ActionFilterChain {
 
     } else {
       String filterName = this.filters[this.index];
-      this.actionFilterProvider.getActionFilter(filterName).doFilter(request, response, requestContext, this);
+      ActionFilter actionFilter = this.actionFilterProvider.getActionFilter(filterName);
+
+      actionFilter.doFilter(request, response, requestContext, this);
     }
   }
 
