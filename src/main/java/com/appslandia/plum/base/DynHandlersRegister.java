@@ -25,9 +25,11 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.appslandia.common.base.Language;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.cdi.BeanInstance;
+import com.appslandia.common.cdi.CDIUtils;
 import com.appslandia.common.utils.STR;
 
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -47,8 +49,6 @@ public abstract class DynHandlersRegister implements Startup {
     return "ExecutorHandler";
   }
 
-  protected abstract List<Language> getLanguages();
-
   protected DynMultipartConfig getMultipartConfig() {
     return new DynMultipartConfig();
   }
@@ -65,13 +65,17 @@ public abstract class DynHandlersRegister implements Startup {
   public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
     // ActionScanner
     ActionScanner scanner = ActionScanner.getInstance();
+
+    // LanguageSupplier
+    BeanInstance<LanguageSupplier> bi = CDIUtils.getReference(CDI.current().getBeanManager(), LanguageSupplier.class);
+    Language[] languages = bi.get().get();
+    bi.destroy();
+
+    // urlMappings
     Set<String> urlMappings = new TreeSet<>();
 
     // Home
     urlMappings.add("");
-
-    List<Language> languages = getLanguages();
-    Asserts.notNull(languages);
 
     // /{language}
     for (Language lang : languages) {

@@ -18,51 +18,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.defaults;
+package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Language;
-import com.appslandia.common.cdi.BeanInstance;
-import com.appslandia.common.cdi.CDIFactory;
-import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.plum.base.LanguageProvider;
-import com.appslandia.plum.base.LanguageSupplier;
-
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Disposes;
-import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
+import com.appslandia.common.utils.Asserts;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvider> {
+public abstract class LanguageSupplier {
 
-  @Inject
-  protected BeanManager beanManager;
-
-  @Produces
-  @ApplicationScoped
-  @Override
-  public LanguageProvider produce() {
-    // LanguageSupplier
-    BeanInstance<LanguageSupplier> bi = CDIUtils.getReference(this.beanManager, LanguageSupplier.class);
-    Language[] languages = bi.get().get();
-    bi.destroy();
-
-    // LanguageProvider
-    final LanguageProvider impl = new LanguageProvider();
-
-    for (Language language : languages) {
-      impl.addLanguage(language);
-    }
-    return impl;
+  public Language[] get() {
+    Language[] languages = doGet();
+    Asserts.hasElements(languages, "No languages provided.");
+    return languages;
   }
 
-  @Override
-  public void dispose(@Disposes LanguageProvider impl) {
-  }
+  protected abstract Language[] doGet();
 }

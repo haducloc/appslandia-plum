@@ -21,17 +21,9 @@
 package com.appslandia.plum.defaults;
 
 import com.appslandia.common.base.Language;
-import com.appslandia.common.cdi.BeanInstance;
-import com.appslandia.common.cdi.CDIFactory;
-import com.appslandia.common.cdi.CDIUtils;
-import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.LanguageSupplier;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.enterprise.inject.Disposes;
-import jakarta.enterprise.inject.Produces;
-import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.inject.Inject;
 
 /**
  *
@@ -39,30 +31,10 @@ import jakarta.inject.Inject;
  *
  */
 @ApplicationScoped
-public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvider> {
-
-  @Inject
-  protected BeanManager beanManager;
-
-  @Produces
-  @ApplicationScoped
-  @Override
-  public LanguageProvider produce() {
-    // LanguageSupplier
-    BeanInstance<LanguageSupplier> bi = CDIUtils.getReference(this.beanManager, LanguageSupplier.class);
-    Language[] languages = bi.get().get();
-    bi.destroy();
-
-    // LanguageProvider
-    final LanguageProvider impl = new LanguageProvider();
-
-    for (Language language : languages) {
-      impl.addLanguage(language);
-    }
-    return impl;
-  }
+public class DefaultLanguageSupplier extends LanguageSupplier {
 
   @Override
-  public void dispose(@Disposes LanguageProvider impl) {
+  protected Language[] doGet() {
+    return new Language[] { Language.EN_US };
   }
 }
