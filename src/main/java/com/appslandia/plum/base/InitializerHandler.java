@@ -335,8 +335,8 @@ public class InitializerHandler extends HttpFilter {
     if (principal.getReauthAt() == 0) {
       return false;
     }
-    return DateUtils.isFutureTime(principal.getReauthAt() + this.appConfig.getLong(AppConfig.CONFIG_REAUTH_TIMEOUT_MS),
-        0);
+    long reauthTimeoutMs = this.appConfig.getLong(AppConfig.CONFIG_REAUTH_TIMEOUT_MS);
+    return DateUtils.isFutureTime(principal.getReauthAt() + reauthTimeoutMs, 0);
   }
 
   protected void doOptions(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
