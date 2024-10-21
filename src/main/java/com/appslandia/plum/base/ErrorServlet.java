@@ -107,6 +107,8 @@ public class ErrorServlet extends HttpServlet {
           writeErrorProd(request, response, requestContext);
 
         } catch (Exception ex) {
+          this.appLogger.error(exception);
+
           if (!response.isCommitted()) {
             response.resetBuffer();
 
