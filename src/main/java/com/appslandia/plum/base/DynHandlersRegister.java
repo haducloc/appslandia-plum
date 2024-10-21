@@ -66,7 +66,7 @@ public abstract class DynHandlersRegister implements Startup {
   @Override
   public void onStartup(ServletContext sc, List<Class<? extends Startup>> startupClasses) throws ServletException {
     // ActionScanner
-    ActionScanner scanner = ActionScanner.getInstance();
+    ActionScanner scanner = new ActionScanner();
 
     // Languages
     Out<Language[]> languages = new Out<>();
@@ -90,7 +90,7 @@ public abstract class DynHandlersRegister implements Startup {
       urlMappings.add(STR.fmt("/{}/", lang.getId()));
     }
 
-    for (Class<?> controllerClass : scanner.getControllerClasses()) {
+    for (Class<?> controllerClass : scanner.getControllers()) {
       String controller = ActionDescProvider.getController(controllerClass);
 
       // /{controller}/*

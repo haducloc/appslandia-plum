@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.cdi.CDIUtils;
 import com.appslandia.common.utils.ReflectionUtils;
@@ -39,19 +40,31 @@ import jakarta.enterprise.inject.spi.CDI;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class ActionScanner {
+public class ActionScanner extends InitializeObject {
 
-  final List<Class<?>> controllerClasses = new ArrayList<>();
+  private List<Class<?>> controllers;
 
-  private ActionScanner() {
+  @Override
+  protected void init() throws Exception {
+    final List<Class<?>> controllers = new ArrayList<>();
+
+    CDIUtils.scanBeanClasses(CDI.current().getBeanManager(), Object.class, ReflectionUtils.EMPTY_ANNOTATIONS,
+        Controller.class, (c, implClass) -> {
+          controllers.add(implClass);
+        });
+
+    this.controllers = Collections.unmodifiableList(controllers);
   }
 
-  public List<Class<?>> getControllerClasses() {
-    return Collections.unmodifiableList(this.controllerClasses);
+  public List<Class<?>> getControllers() {
+    this.initialize();
+    return this.controllers;
   }
 
   public void scanActions(Function<Method, Boolean> matcher, BiFunction<Class<?>, Method, Boolean> consumer) {
-    for (Class<?> controllerClass : this.controllerClasses) {
+    this.initialize();
+
+    for (Class<?> controllerClass : this.controllers) {
 
       // @Removed
       if (controllerClass.getDeclaredAnnotation(Removed.class) != null) {
@@ -65,9 +78,7 @@ public class ActionScanner {
           continue;
         }
 
-        // Consume the action method
         Boolean stopped = consumer.apply(controllerClass, actionMethod);
-
         if (Boolean.TRUE.equals(stopped)) {
           return;
         }
@@ -86,15 +97,5 @@ public class ActionScanner {
 
   public boolean hasAnnotation(Class<? extends Annotation> annotation) {
     return hasAction(m -> m.getDeclaredAnnotation(annotation) != null);
-  }
-
-  public static ActionScanner getInstance() {
-    final ActionScanner scanner = new ActionScanner();
-
-    CDIUtils.scanBeanClasses(CDI.current().getBeanManager(), Object.class, ReflectionUtils.EMPTY_ANNOTATIONS,
-        Controller.class, (c, implClass) -> {
-          scanner.controllerClasses.add(implClass);
-        });
-    return scanner;
   }
 }
