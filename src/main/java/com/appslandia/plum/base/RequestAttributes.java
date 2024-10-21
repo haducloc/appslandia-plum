@@ -22,8 +22,10 @@ package com.appslandia.plum.base;
 
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.function.Function;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -53,17 +55,26 @@ public class RequestAttributes {
   }
 
   public void restore(HttpServletRequest request) {
-    // Remove new attributes added
     Enumeration<String> attributes = request.getAttributeNames();
+    Set<String> needToRemove = null;
+
     while (attributes.hasMoreElements()) {
       String attribute = attributes.nextElement();
 
       if (!this.storedAttributes.containsKey(attribute)) {
+        if (needToRemove == null) {
+          needToRemove = new HashSet<>();
+        }
+        needToRemove.add(attribute);
+      }
+    }
+
+    if (needToRemove != null) {
+      for (String attribute : needToRemove) {
         request.removeAttribute(attribute);
       }
     }
 
-    // Restore attribute values
     for (Entry<String, Object> attribute : this.storedAttributes.entrySet()) {
       request.setAttribute(attribute.getKey(), attribute.getValue());
     }
