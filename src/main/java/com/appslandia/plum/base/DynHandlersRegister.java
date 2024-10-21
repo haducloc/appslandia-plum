@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -74,6 +75,9 @@ public abstract class DynHandlersRegister implements Startup {
     });
     Asserts.notNull(languages.value, "No LanguageSupplier implemented.");
 
+    sc.log(STR.fmt("Supplied languages: {}",
+        String.join(", ", Arrays.stream(languages.value).map(l -> l.getId()).toList())));
+
     // urlMappings
     Set<String> urlMappings = new TreeSet<>();
 
@@ -105,12 +109,17 @@ public abstract class DynHandlersRegister implements Startup {
     DynMultipartConfig multipartConfig = hasEnableParts ? getMultipartConfig() : null;
 
     // ExecutorHandler
+    sc.log(STR.fmt("Register servlet '{}' under name '{}'.", ExecutorHandler.class.getName(), getExecutorHandler()));
+
     new DynServletRegister().servletName(getExecutorHandler()).servletClass(ExecutorHandler.class)
         .urlPatterns(urlMappings.toArray(new String[urlMappings.size()])).multipartConfig(multipartConfig)
         .asyncSupported(hasEnableAsync).registerTo(sc);
 
     // InitializerHandler
     this.beforeInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
+
+    sc.log(STR.fmt("Register filter '{}' under name '{}' for the servlet '{}'.", InitializerHandler.class.getName(),
+        getInitializerHandler(), getExecutorHandler()));
 
     new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)
         .servletNames(getExecutorHandler()).dispatcherTypes(DispatcherType.REQUEST).asyncSupported(hasEnableAsync)
