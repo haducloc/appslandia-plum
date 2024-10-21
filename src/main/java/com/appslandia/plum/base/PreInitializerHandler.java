@@ -22,12 +22,15 @@ package com.appslandia.plum.base;
 
 import java.io.IOException;
 
+import com.appslandia.common.base.AppLogger;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.annotation.Priority;
 import jakarta.inject.Inject;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.FilterChain;
+import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpFilter;
@@ -49,6 +52,17 @@ public class PreInitializerHandler extends HttpFilter {
 
   @Inject
   protected AppConfig appConfig;
+
+  @Inject
+  protected AppLogger appLogger;
+
+  @Override
+  public void init(FilterConfig config) throws ServletException {
+    super.init(config);
+    this.appLogger.info(STR.fmt(
+        "Initializing '{}', filterName='{}', urlPatterns='/*', dispatcherTypes=DispatcherType.REQUEST, asyncSupported=true.",
+        getClass().getName(), config.getFilterName()));
+  }
 
   @Override
   protected void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)

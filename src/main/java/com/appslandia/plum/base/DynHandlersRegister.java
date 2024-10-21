@@ -109,7 +109,8 @@ public abstract class DynHandlersRegister implements Startup {
     DynMultipartConfig multipartConfig = hasEnableParts ? getMultipartConfig() : null;
 
     // ExecutorHandler
-    sc.log(STR.fmt("Registering servlet '{}' under name '{}'.", ExecutorHandler.class.getName(), getExecutorHandler()));
+    sc.log(STR.fmt("Registering servlet '{}', servletName='{}', multipartConfig={}, asyncSupported={}.",
+        ExecutorHandler.class.getName(), getExecutorHandler(), hasEnableParts, hasEnableAsync));
 
     new DynServletRegister().servletName(getExecutorHandler()).servletClass(ExecutorHandler.class)
         .urlPatterns(urlMappings.toArray(new String[urlMappings.size()])).multipartConfig(multipartConfig)
@@ -118,8 +119,9 @@ public abstract class DynHandlersRegister implements Startup {
     // InitializerHandler
     this.beforeInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
 
-    sc.log(STR.fmt("Registering filter '{}' under name '{}' for the servlet '{}'.", InitializerHandler.class.getName(),
-        getInitializerHandler(), getExecutorHandler()));
+    sc.log(STR.fmt(
+        "Registering filter '{}', filterName='{}', servletName='{}', dispatcherType=DispatcherType.REQUEST, asyncSupported={}, isMatchAfter=true.",
+        InitializerHandler.class.getName(), getInitializerHandler(), getExecutorHandler(), hasEnableAsync));
 
     new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)
         .servletNames(getExecutorHandler()).dispatcherTypes(DispatcherType.REQUEST).asyncSupported(hasEnableAsync)

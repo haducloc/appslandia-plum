@@ -28,12 +28,14 @@ import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.ToStringBuilder;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.MimeTypes;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.ServletUtils;
 import com.appslandia.plum.utils.WebBeanTSPolicy;
 
 import jakarta.inject.Inject;
 import jakarta.servlet.DispatcherType;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,6 +59,13 @@ public class ErrorServlet extends HttpServlet {
 
   @Inject
   protected ExceptionHandler exceptionHandler;
+
+  @Override
+  public void init(ServletConfig config) throws ServletException {
+    super.init(config);
+
+    this.appLogger.info(STR.fmt("Initializing '{}', servletName='{}'.", getClass().getName(), config.getServletName()));
+  }
 
   private void doRequest(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
