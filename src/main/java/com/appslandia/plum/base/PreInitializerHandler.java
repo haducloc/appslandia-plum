@@ -43,7 +43,8 @@ import jakarta.servlet.http.HttpServletResponse;
  *
  */
 @Priority(Integer.MIN_VALUE)
-@WebFilter(urlPatterns = "/*", dispatcherTypes = { DispatcherType.REQUEST }, asyncSupported = true)
+@WebFilter(filterName = "PreInitializerHandler", urlPatterns = "/*", dispatcherTypes = {
+    DispatcherType.REQUEST }, asyncSupported = true)
 public class PreInitializerHandler extends HttpFilter {
   private static final long serialVersionUID = 1L;
 
