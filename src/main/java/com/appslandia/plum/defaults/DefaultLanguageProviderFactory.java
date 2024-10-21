@@ -31,7 +31,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.BeanManager;
-import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 
 /**
@@ -53,7 +52,7 @@ public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvid
     final LanguageProvider impl = new LanguageProvider();
 
     // Languages
-    CDIUtils.consumeReference(CDI.current().getBeanManager(), LanguageSupplier.class, (supplier) -> {
+    CDIUtils.consumeReference(this.beanManager, LanguageSupplier.class, (supplier) -> {
 
       for (Language language : supplier.get()) {
         impl.addLanguage(language);
