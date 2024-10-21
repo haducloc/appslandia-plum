@@ -42,7 +42,7 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultCspReportToHandler implements CspReportToHandler {
 
-  static final long DEFAULT_REPORT_INTERVAL_MS = TimeUnit.MINUTES.convert(5, TimeUnit.MILLISECONDS);
+  static final long DEFAULT_REPORT_INTERVAL_MS = TimeUnit.DAYS.convert(1, TimeUnit.MILLISECONDS);
 
   @Inject
   protected AppLogger appLogger;
@@ -81,7 +81,7 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
       return prevTime;
     });
 
-    this.appLogger.warn("CSP reported: " + md5);
+    this.appLogger.warn("CSP reported md5: " + md5);
 
     if (curTime == time) {
       this.appLogger.warn(json);
