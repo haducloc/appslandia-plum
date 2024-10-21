@@ -21,9 +21,9 @@
 package com.appslandia.plum.defaults;
 
 import com.appslandia.common.base.Language;
-import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.LanguageProvider;
 import com.appslandia.plum.base.LanguageSupplier;
 
@@ -31,6 +31,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Disposes;
 import jakarta.enterprise.inject.Produces;
 import jakarta.enterprise.inject.spi.BeanManager;
+import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
 
 /**
@@ -48,17 +49,18 @@ public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvid
   @ApplicationScoped
   @Override
   public LanguageProvider produce() {
-    // LanguageSupplier
-    BeanInstance<LanguageSupplier> bi = CDIUtils.getReference(this.beanManager, LanguageSupplier.class);
-    Language[] languages = bi.get().get();
-    bi.destroy();
-
     // LanguageProvider
     final LanguageProvider impl = new LanguageProvider();
 
-    for (Language language : languages) {
-      impl.addLanguage(language);
-    }
+    // Languages
+    CDIUtils.consumeReference(CDI.current().getBeanManager(), LanguageSupplier.class, (supplier) -> {
+
+      for (Language language : supplier.get()) {
+        impl.addLanguage(language);
+      }
+    });
+
+    Asserts.isTrue(!impl.getLanguages().isEmpty(), "No LanguageSupplier implemented.");
     return impl;
   }
 

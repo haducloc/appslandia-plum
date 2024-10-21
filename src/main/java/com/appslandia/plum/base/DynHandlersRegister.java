@@ -25,8 +25,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import com.appslandia.common.base.Language;
-import com.appslandia.common.cdi.BeanInstance;
+import com.appslandia.common.base.Out;
 import com.appslandia.common.cdi.CDIUtils;
+import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
 
 import jakarta.enterprise.inject.spi.CDI;
@@ -66,10 +67,12 @@ public abstract class DynHandlersRegister implements Startup {
     // ActionScanner
     ActionScanner scanner = ActionScanner.getInstance();
 
-    // LanguageSupplier
-    BeanInstance<LanguageSupplier> bi = CDIUtils.getReference(CDI.current().getBeanManager(), LanguageSupplier.class);
-    Language[] languages = bi.get().get();
-    bi.destroy();
+    // Languages
+    Out<Language[]> languages = new Out<>();
+    CDIUtils.consumeReference(CDI.current().getBeanManager(), LanguageSupplier.class, (supplier) -> {
+      languages.value = supplier.get();
+    });
+    Asserts.notNull(languages.value, "No LanguageSupplier implemented.");
 
     // urlMappings
     Set<String> urlMappings = new TreeSet<>();
@@ -78,7 +81,7 @@ public abstract class DynHandlersRegister implements Startup {
     urlMappings.add("");
 
     // /{language}
-    for (Language lang : languages) {
+    for (Language lang : languages.value) {
       urlMappings.add(STR.fmt("/{}", lang.getId()));
       urlMappings.add(STR.fmt("/{}/", lang.getId()));
     }
@@ -90,7 +93,7 @@ public abstract class DynHandlersRegister implements Startup {
       urlMappings.add(STR.fmt("/{}/*", controller));
 
       // /{language}/{controller}/*
-      for (Language lang : languages) {
+      for (Language lang : languages.value) {
         urlMappings.add(STR.fmt("/{}/{}/*", lang.getId(), controller));
       }
     }
