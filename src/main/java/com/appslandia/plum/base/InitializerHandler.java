@@ -81,9 +81,6 @@ public class InitializerHandler extends HttpFilter {
   @Inject
   protected RemoteClientVerifier remoteClientVerifier;
 
-  @Inject
-  protected PrefCookieHandler prefCookieHandler;
-
   protected boolean enableEtag(HttpServletRequest request, RequestContext requestContext) {
     return requestContext.getActionDesc().getEnableEtag() != null;
   }
@@ -107,11 +104,6 @@ public class InitializerHandler extends HttpFilter {
     // Vary: Accept-Encoding
     if (this.responseEncodingStrategy.enableEncoding(requestContext)) {
       response.addHeader("Vary", "Accept-Encoding");
-    }
-
-    // PrefCookie
-    if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PREF_COOKIE)) {
-      this.prefCookieHandler.loadPrefCookie(request, response);
     }
   }
 
