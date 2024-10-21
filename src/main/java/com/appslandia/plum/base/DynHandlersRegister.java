@@ -75,7 +75,7 @@ public abstract class DynHandlersRegister implements Startup {
     });
     Asserts.notNull(languages.value, "No LanguageSupplier implemented.");
 
-    sc.log(STR.fmt("Supplied languages: {}",
+    sc.log(STR.fmt("Supported languages: {}",
         String.join(", ", Arrays.stream(languages.value).map(l -> l.getId()).toList())));
 
     // urlMappings
@@ -109,7 +109,7 @@ public abstract class DynHandlersRegister implements Startup {
     DynMultipartConfig multipartConfig = hasEnableParts ? getMultipartConfig() : null;
 
     // ExecutorHandler
-    sc.log(STR.fmt("Register servlet '{}' under name '{}'.", ExecutorHandler.class.getName(), getExecutorHandler()));
+    sc.log(STR.fmt("Registering servlet '{}' under name '{}'.", ExecutorHandler.class.getName(), getExecutorHandler()));
 
     new DynServletRegister().servletName(getExecutorHandler()).servletClass(ExecutorHandler.class)
         .urlPatterns(urlMappings.toArray(new String[urlMappings.size()])).multipartConfig(multipartConfig)
@@ -118,7 +118,7 @@ public abstract class DynHandlersRegister implements Startup {
     // InitializerHandler
     this.beforeInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
 
-    sc.log(STR.fmt("Register filter '{}' under name '{}' for the servlet '{}'.", InitializerHandler.class.getName(),
+    sc.log(STR.fmt("Registering filter '{}' under name '{}' for the servlet '{}'.", InitializerHandler.class.getName(),
         getInitializerHandler(), getExecutorHandler()));
 
     new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)
