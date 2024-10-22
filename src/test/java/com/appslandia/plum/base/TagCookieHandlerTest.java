@@ -20,6 +20,9 @@
 
 package com.appslandia.plum.base;
 
+import java.util.List;
+import java.util.stream.StreamSupport;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -38,23 +41,29 @@ import jakarta.servlet.http.Cookie;
 public class TagCookieHandlerTest extends MockTestBase {
 
   protected TagCookieHandler tagCookieHandler;
+  protected String cookieName;
 
   @Override
   protected void initialize() {
     container.register(TestController.class, TestController.class);
     tagCookieHandler = container.getObject(TagCookieHandler.class);
+    cookieName = tagCookieHandler.getCookieName();
   }
 
   @Test
   public void test_getTagList() {
     try {
       getCurrentRequest().addCookie(
-          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags", "#tag1,#tag2", 1000));
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), cookieName, "#tag1,#tag2", 1000));
 
       executeCurrent("GET", "http://localhost/app/testController/testAction");
 
       TagList tagList = tagCookieHandler.getTagList(getCurrentRequest(), null);
       Assertions.assertNotNull(tagList);
+
+      List<String> tags = StreamSupport.stream(tagList.spliterator(), false).toList();
+      Assertions.assertEquals("#tag1", tags.get(0));
+      Assertions.assertEquals("#tag2", tags.get(1));
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());
@@ -65,12 +74,12 @@ public class TagCookieHandlerTest extends MockTestBase {
   public void test_saveTags() {
     try {
       getCurrentRequest().addCookie(
-          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), "tags", "#tag1,#tag2", 1000));
+          MockServletUtils.createCookie(getCurrentRequest().getServletContext(), cookieName, "#tag1,#tag2", 1000));
 
       executeCurrent("GET", "http://localhost/app/testController/testAction");
 
       tagCookieHandler.saveTags(getCurrentRequest(), getCurrentResponse(), "tag3,tag4", null);
-      Cookie tagsCookie = getCurrentResponse().getCookie(tagCookieHandler.getCookieName());
+      Cookie tagsCookie = getCurrentResponse().getCookie(cookieName);
 
       Assertions.assertNotNull(tagsCookie);
 
