@@ -74,7 +74,7 @@ public class UserController {
 	// GET /user/test
 	@HttpGet
 	@Action("test")
-	public void testAction(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public void testAction(RequestWrapper request, HttpServletResponse response) throws Exception {
 		response.getWriter().print("test");
 	}
 
@@ -120,7 +120,7 @@ public class UserController {
 	}
 		
 	// Other Annotations:
-	// @EnableCsrf, @EnableEtag, @EnableCompression, @EnableParts, @EnableAsync, etc.
+	// @EnableCsrf, @EnableEtag, @EnableEncoding, @EnableParts, @EnableAsync, etc.
 	
 	// @ConsumeType
 	
