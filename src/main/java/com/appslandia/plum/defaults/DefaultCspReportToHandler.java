@@ -42,7 +42,7 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class DefaultCspReportToHandler implements CspReportToHandler {
 
-  static final long DEFAULT_REPORT_INTERVAL_MS = TimeUnit.DAYS.convert(1, TimeUnit.MILLISECONDS);
+  static final long DEFAULT_REPORT_INTERVAL_MS = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS);
 
   @Inject
   protected AppLogger appLogger;
