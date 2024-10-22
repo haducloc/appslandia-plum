@@ -81,10 +81,6 @@ public class InitializerHandler extends HttpFilter {
   @Inject
   protected RemoteClientVerifier remoteClientVerifier;
 
-  protected boolean enableEtag(HttpServletRequest request, RequestContext requestContext) {
-    return requestContext.getActionDesc().getEnableEtag() != null;
-  }
-
   protected void initialize(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)
       throws Exception {
 
@@ -260,7 +256,7 @@ public class InitializerHandler extends HttpFilter {
         ResponseEncoder responseEncoder = this.responseEncodingStrategy.getResponseEncoder(request, requestContext);
 
         // ETAG
-        if (requestContext.isGetOrHead() && enableEtag(request, requestContext)) {
+        if (requestContext.isGetOrHead() && requestContext.getActionDesc().getEnableEtag() != null) {
 
           // ContentResponseWrapper
           ContentResponseWrapper wrapper = new ContentResponseWrapper(response, true);
