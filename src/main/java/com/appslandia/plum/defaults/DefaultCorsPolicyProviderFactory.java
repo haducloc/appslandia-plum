@@ -22,6 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.util.Collection;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
 import com.appslandia.common.cdi.CDIUtils;
@@ -44,6 +45,9 @@ import jakarta.inject.Inject;
  */
 @ApplicationScoped
 public class DefaultCorsPolicyProviderFactory implements CDIFactory<CorsPolicyProvider> {
+
+  @Inject
+  protected AppLogger appLogger;
 
   @Inject
   protected BeanManager beanManager;
@@ -72,7 +76,7 @@ public class DefaultCorsPolicyProviderFactory implements CDIFactory<CorsPolicyPr
   }
 
   @PreDestroy
-  public void dispose() {
-    this.beanInstances.destroy();
+  public void destroy() {
+    this.beanInstances.destroy((ex) -> this.appLogger.error(ex));
   }
 }

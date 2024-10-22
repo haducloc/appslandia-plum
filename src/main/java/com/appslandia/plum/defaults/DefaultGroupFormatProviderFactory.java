@@ -23,6 +23,7 @@ package com.appslandia.plum.defaults;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
@@ -45,6 +46,9 @@ import jakarta.inject.Inject;
  */
 @ApplicationScoped
 public class DefaultGroupFormatProviderFactory implements CDIFactory<GroupFormatProvider> {
+
+  @Inject
+  protected AppLogger appLogger;
 
   @Inject
   protected BeanManager beanManager;
@@ -74,7 +78,7 @@ public class DefaultGroupFormatProviderFactory implements CDIFactory<GroupFormat
   }
 
   @PreDestroy
-  public void dispose() {
-    this.beanInstances.destroy();
+  public void destroy() {
+    this.beanInstances.destroy((ex) -> this.appLogger.error(ex));
   }
 }

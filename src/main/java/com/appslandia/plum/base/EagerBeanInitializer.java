@@ -65,13 +65,6 @@ public class EagerBeanInitializer {
   }
 
   public void contextDestroyed(@Observes @Destroyed(ApplicationScoped.class) ServletContext sc) {
-    this.beanInstances.forEach(bi -> {
-      try {
-        bi.destroy();
-
-      } catch (RuntimeException ex) {
-        this.appLogger.error(ex);
-      }
-    });
+    this.beanInstances.destroy((ex) -> this.appLogger.error(ex));
   }
 }

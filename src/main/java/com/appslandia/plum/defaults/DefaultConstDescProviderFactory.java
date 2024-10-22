@@ -22,6 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.util.Collection;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.ConstDesc;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
@@ -44,6 +45,9 @@ import jakarta.inject.Inject;
  */
 @ApplicationScoped
 public class DefaultConstDescProviderFactory implements CDIFactory<ConstDescProvider> {
+
+  @Inject
+  protected AppLogger appLogger;
 
   @Inject
   protected BeanManager beanManager;
@@ -72,7 +76,7 @@ public class DefaultConstDescProviderFactory implements CDIFactory<ConstDescProv
   }
 
   @PreDestroy
-  public void dispose() {
-    this.beanInstances.destroy();
+  public void destroy() {
+    this.beanInstances.destroy((ex) -> this.appLogger.error(ex));
   }
 }

@@ -73,7 +73,7 @@ public class DefaultIdentityStoreHandler extends IdentityStoreHandlerBase {
   }
 
   @PreDestroy
-  public void dispose() {
-    this.beanInstances.destroy();
+  public void destroy() {
+    this.beanInstances.destroy((ex) -> this.appLogger.error(ex));
   }
 }

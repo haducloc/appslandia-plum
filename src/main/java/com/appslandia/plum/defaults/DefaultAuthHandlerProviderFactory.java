@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.defaults;
 
+import com.appslandia.common.base.AppLogger;
 import com.appslandia.common.base.MappedID;
 import com.appslandia.common.cdi.BeanInstances;
 import com.appslandia.common.cdi.CDIFactory;
@@ -42,6 +43,9 @@ import jakarta.inject.Inject;
  */
 @ApplicationScoped
 public class DefaultAuthHandlerProviderFactory implements CDIFactory<AuthHandlerProvider> {
+
+  @Inject
+  protected AppLogger appLogger;
 
   @Inject
   protected BeanManager beanManager;
@@ -69,7 +73,7 @@ public class DefaultAuthHandlerProviderFactory implements CDIFactory<AuthHandler
   }
 
   @PreDestroy
-  public void dispose() {
-    this.beanInstances.destroy();
+  public void destroy() {
+    this.beanInstances.destroy((ex) -> this.appLogger.error(ex));
   }
 }
