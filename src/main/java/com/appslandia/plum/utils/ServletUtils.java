@@ -65,7 +65,6 @@ import com.appslandia.plum.base.Messages;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.MutexContextListener;
 import com.appslandia.plum.base.MutexSessionListener;
-import com.appslandia.plum.base.PrefCookie;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.base.Resources;
 import com.appslandia.plum.base.TempData;
@@ -614,11 +613,6 @@ public class ServletUtils {
       request.setAttribute(TempData.REQUEST_ATTRIBUTE_ID, obj);
     }
     return obj;
-  }
-
-  public static PrefCookie getPrefCookie(HttpServletRequest request) {
-    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-    return Asserts.notNull(prefCookie);
   }
 
   public static Resources getResources(HttpServletRequest request) {

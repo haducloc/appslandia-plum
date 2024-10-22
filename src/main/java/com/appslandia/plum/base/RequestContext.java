@@ -52,6 +52,7 @@ public class RequestContext {
   private String module;
   private Integer inputFeatures;
   private String nonce;
+  private PrefCookie prefCookie;
 
   public RequestContext createRequestContext(ActionDesc actionDesc) {
     Asserts.isTrue(this.module.equalsIgnoreCase(actionDesc.getModule()));
@@ -71,6 +72,7 @@ public class RequestContext {
     context.inputFeatures = this.inputFeatures;
 
     context.nonce = this.nonce;
+    context.prefCookie = this.prefCookie;
     return context;
   }
 
@@ -187,6 +189,14 @@ public class RequestContext {
 
   protected void setNonce(String nonce) {
     this.nonce = nonce;
+  }
+
+  public PrefCookie getPrefCookie() {
+    return this.prefCookie;
+  }
+
+  protected void setPrefCookie(PrefCookie prefCookie) {
+    this.prefCookie = prefCookie;
   }
 
   public String res(String key) {

@@ -26,9 +26,10 @@ import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.Controller;
 import com.appslandia.plum.base.HttpGetPost;
 import com.appslandia.plum.base.LanguageProvider;
+import com.appslandia.plum.base.PrefCookie;
+import com.appslandia.plum.base.PrefCookieHandler;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.base.RequestWrapper;
-import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -50,6 +51,9 @@ public class LanguageChangeController {
   @Inject
   protected LanguageProvider languageProvider;
 
+  @Inject
+  protected PrefCookieHandler prefCookieHandler;
+
   @HttpGetPost
   public ActionResult index(String languageId, RequestWrapper request, HttpServletResponse response) throws Exception {
     Asserts.isTrue(this.languageProvider.isMultiLanguages());
@@ -57,11 +61,20 @@ public class LanguageChangeController {
     request.assertNotNull(languageId);
     request.assertNotNull(this.languageProvider.getLanguage(languageId));
 
+    // PrefCookie
+    String prefLanguage = request.getPrefCookie().getString(PrefCookie.PREF_LANGUAGE);
+    if (!languageId.equals(prefLanguage)) {
+
+      PrefCookie newPref = request.getPrefCookie().clone();
+      newPref.put(PrefCookie.PREF_LANGUAGE, languageId);
+
+      this.prefCookieHandler.savePrefCookie(request, response, newPref);
+    }
+
     final String redirectUrl = request.getParameter("redirectUrl");
 
     if (redirectUrl != null) {
-      ServletUtils.sendRedirect(response,
-          this.appConfig.isEnableSession() ? response.encodeRedirectURL(redirectUrl) : redirectUrl);
+      response.sendRedirect(this.appConfig.isEnableSession() ? response.encodeRedirectURL(redirectUrl) : redirectUrl);
       return ActionResult.EMPTY;
 
     } else {

@@ -70,8 +70,6 @@ public class PrefCookieHandlerTest extends MockTestBase {
 
       PrefCookie prefCookie = prefCookieHandler.loadPrefCookie(getCurrentRequest(), getCurrentResponse());
       Assertions.assertNotNull(prefCookie);
-
-      Assertions.assertNotNull(getCurrentRequest().getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID));
       Assertions.assertEquals("NE", prefCookie.get("state"));
 
     } catch (Exception ex) {

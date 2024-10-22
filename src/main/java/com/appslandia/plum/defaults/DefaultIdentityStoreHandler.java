@@ -60,7 +60,6 @@ public class DefaultIdentityStoreHandler extends IdentityStoreHandlerBase {
     CDIUtils.scanReferences(this.beanManager, IdentityStore.class, ReflectionUtils.EMPTY_ANNOTATIONS, null,
         (nil, bi) -> {
           stores.add(bi.get());
-
           beanInstances.add(bi);
         });
 

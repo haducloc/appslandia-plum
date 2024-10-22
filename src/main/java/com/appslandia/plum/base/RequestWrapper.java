@@ -221,7 +221,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   }
 
   public PrefCookie getPrefCookie() {
-    return ServletUtils.getPrefCookie(this);
+    return getRequestContext().getPrefCookie();
   }
 
   public String res(String key) {

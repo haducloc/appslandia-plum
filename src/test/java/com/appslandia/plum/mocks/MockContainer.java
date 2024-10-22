@@ -333,7 +333,7 @@ public class MockContainer extends InitializeObject {
 
     factory.register(CookieHandler.class, CookieHandler.class);
     factory.register(PrefCookieHandler.class, PrefCookieHandler.class);
-    factory.register(TagCookieHandler.class, TagCookieHandler.class);
+    factory.register(TagCookieHandler.class, MockTagCookieHandler.class);
 
     // PebbleTemplateProvider
     factory.register(PebbleTemplateProvider.class, MemPebbleTemplateProvider.class);

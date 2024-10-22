@@ -120,7 +120,7 @@ public abstract class DynHandlersRegister implements Startup {
     this.beforeInitializerHandler(sc, getExecutorHandler(), hasEnableAsync);
 
     sc.log(STR.fmt(
-        "Registering filter '{}', filterName='{}', servletName='{}', dispatcherType=DispatcherType.REQUEST, asyncSupported={}, isMatchAfter=true.",
+        "Registering filter '{}', filterName='{}', servletName='{}', dispatcherTypes=DispatcherType.REQUEST, asyncSupported={}, isMatchAfter=true.",
         InitializerHandler.class.getName(), getInitializerHandler(), getExecutorHandler(), hasEnableAsync));
 
     new DynFilterRegister().filterName(getInitializerHandler()).filterClass(InitializerHandler.class)

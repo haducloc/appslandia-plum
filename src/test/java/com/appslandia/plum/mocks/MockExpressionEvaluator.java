@@ -23,7 +23,6 @@ package com.appslandia.plum.mocks;
 import com.appslandia.plum.base.Messages;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.PagerModel;
-import com.appslandia.plum.base.PrefCookie;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.base.SortModel;
 import com.appslandia.plum.base.TempData;
@@ -48,8 +47,6 @@ public class MockExpressionEvaluator extends ExpressionEvaluator {
 
       defineBean(RequestContext.REQUEST_ATTRIBUTE_ID, pc, processor);
       defineBean(Messages.REQUEST_ATTRIBUTE_ID, pc, processor);
-
-      defineBean(PrefCookie.REQUEST_ATTRIBUTE_ID, pc, processor);
       defineBean(TempData.REQUEST_ATTRIBUTE_ID, pc, processor);
 
       defineBean(SortModel.REQUEST_ATTRIBUTE_ID, pc, processor);

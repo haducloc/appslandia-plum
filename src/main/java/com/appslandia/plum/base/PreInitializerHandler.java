@@ -55,9 +55,6 @@ public class PreInitializerHandler extends HttpFilter {
   protected AppLogger appLogger;
 
   @Inject
-  protected PrefCookieHandler prefCookieHandler;
-
-  @Inject
   protected RequestContextParser requestContextParser;
 
   @Override
@@ -74,11 +71,6 @@ public class PreInitializerHandler extends HttpFilter {
 
     // Parse Request Context
     this.requestContextParser.parse(request, response);
-
-    // PrefCookie
-    if (this.appConfig.getBool(AppConfig.CONFIG_ENABLE_PREF_COOKIE)) {
-      this.prefCookieHandler.loadPrefCookie(request, response);
-    }
 
     // DEBUG
     if (this.appConfig.isEnableDebug()) {

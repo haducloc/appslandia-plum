@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
@@ -44,7 +43,7 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class PrefCookieHandler {
 
-  public static final String DEFAULT_COOKIE_NAME = "pref";
+  public static final String DEFAULT_COOKIE_NAME = "prefCookie";
   public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
 
   public static final String CONFIG_COOKIE_NAME = PrefCookieHandler.class.getName() + ".cookie_name";
@@ -104,15 +103,6 @@ public class PrefCookieHandler {
         this.cookieHandler.removeCookie(response, getCookieName());
       }
     }
-    request.setAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID, prefCookie);
     return prefCookie;
-  }
-
-  public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, Consumer<PrefCookie> consumer) {
-    PrefCookie prefCookie = (PrefCookie) request.getAttribute(PrefCookie.REQUEST_ATTRIBUTE_ID);
-    PrefCookie newPrefCookie = (prefCookie != null) ? prefCookie.clone() : new PrefCookie();
-    consumer.accept(newPrefCookie);
-
-    savePrefCookie(request, response, newPrefCookie);
   }
 }

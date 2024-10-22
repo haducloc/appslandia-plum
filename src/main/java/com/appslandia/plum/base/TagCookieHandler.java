@@ -20,7 +20,6 @@
 
 package com.appslandia.plum.base;
 
-import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import com.appslandia.common.base.Out;
@@ -29,7 +28,6 @@ import com.appslandia.common.utils.TagList;
 import com.appslandia.common.utils.TagUtils;
 import com.appslandia.common.utils.URLEncoding;
 
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,40 +37,34 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class TagCookieHandler {
-
-  public static final String CONFIG_COOKIE_AGE = TagCookieHandler.class.getName() + ".cookie_age";
-  public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
-
-  @Inject
-  protected AppConfig appConfig;
+public abstract class TagCookieHandler {
 
   @Inject
   protected CookieHandler cookieHandler;
 
-  protected int getCookieAge() {
-    return this.appConfig.getInt(CONFIG_COOKIE_AGE, DEFAULT_COOKIE_AGE);
-  }
+  protected abstract String getCookieName();
 
-  public void saveTags(HttpServletResponse response, String cookieName, TagList tagList) {
+  protected abstract int getCookieAge();
+
+  public void saveTags(HttpServletResponse response, TagList tagList) {
     String tags = URLEncoding.encodeParam(String.join(",", tagList));
-    this.cookieHandler.saveCookie(response, cookieName, tags, getCookieAge(), null);
+    this.cookieHandler.saveCookie(response, getCookieName(), tags, getCookieAge(), null);
   }
 
-  public TagList getTagList(HttpServletRequest request, String cookieName, Supplier<TagList> tagListNewer) {
-    TagList tagList = (TagList) request.getAttribute(cookieName);
+  public TagList getTagList(HttpServletRequest request, Supplier<TagList> supplier) {
+    // TagList
+    TagList tagList = (TagList) request.getAttribute(getCookieName());
     if (tagList != null) {
       return tagList;
     }
-    tagList = (tagListNewer != null) ? tagListNewer.get() : new TagList();
-    request.setAttribute(cookieName, tagList);
+    tagList = (supplier != null) ? supplier.get() : new TagList();
+    request.setAttribute(getCookieName(), tagList);
 
-    String tagsCookie = this.cookieHandler.getCookieValue(request, cookieName);
+    // tagsCookie
+    String tagsCookie = this.cookieHandler.getCookieValue(request, getCookieName());
     if (tagsCookie == null) {
       return tagList;
     }
-    // Parse Tags
     try {
       String decodedTags = URLEncoding.decodeParam(tagsCookie);
       Out<Boolean> tagValid = new Out<>();
@@ -92,56 +84,30 @@ public class TagCookieHandler {
     return tagList;
   }
 
-  public void replaceTag(HttpServletRequest request, HttpServletResponse response, String tag, String byTag,
-      String cookieName, Supplier<TagList> tagListNewer) {
-    TagList tagList = getTagList(request, cookieName, tagListNewer);
-
-    if (tagList.remove(tag) && tagList.add(byTag)) {
-      saveTags(response, cookieName, tagList);
-    }
-  }
-
-  public void saveTag(HttpServletRequest request, HttpServletResponse response, String tag, String cookieName,
-      Supplier<TagList> tagListNewer) {
-    if (tag == null) {
-      return;
-    }
-    doSaveTags(request, response, new String[] { tag }, cookieName, tagListNewer);
-  }
-
-  public void saveTags(HttpServletRequest request, HttpServletResponse response, String tags, String cookieName,
-      Supplier<TagList> tagListNewer) {
+  public void saveTags(HttpServletRequest request, HttpServletResponse response, String tags,
+      Supplier<TagList> supplier) {
     if (tags == null) {
       return;
     }
     String[] parsedTags = TagUtils.toTags(tags, new Out<>()).stream().toArray(String[]::new);
-    doSaveTags(request, response, parsedTags, cookieName, tagListNewer);
+    doSaveTags(request, response, parsedTags, supplier);
   }
 
-  public void saveDbTags(HttpServletRequest request, HttpServletResponse response, String dbTags, String cookieName,
-      Supplier<TagList> tagListNewer) {
-    if (dbTags == null) {
-      return;
-    }
-    doSaveTags(request, response, TagUtils.toTags(dbTags), cookieName, tagListNewer);
-  }
-
-  void doSaveTags(HttpServletRequest request, HttpServletResponse response, String[] tags, String cookieName,
-      Supplier<TagList> tagListNewer) {
+  private void doSaveTags(HttpServletRequest request, HttpServletResponse response, String[] tags,
+      Supplier<TagList> supplier) {
     if (tags == null || tags.length == 0) {
       return;
     }
-    TagList tagList = getTagList(request, cookieName, tagListNewer);
+    TagList tagList = getTagList(request, supplier);
+    boolean updated = false;
 
-    boolean update = false;
     for (String tag : tags) {
-
       if (tagList.add(tag)) {
-        update = true;
+        updated = true;
       }
     }
-    if (update) {
-      saveTags(response, cookieName, tagList);
+    if (updated) {
+      saveTags(response, tagList);
     }
   }
 }

@@ -75,6 +75,9 @@ public class RequestContextParser {
   @Inject
   protected ServletModuleParser servletModuleParser;
 
+  @Inject
+  protected PrefCookieHandler prefCookieHandler;
+
   private static final class RandomHolder {
     static final Random instance = new SecureRandom();
   }
@@ -96,6 +99,10 @@ public class RequestContextParser {
     context = new RequestContext();
     context.setGetOrHead(HttpMethod.GET.equals(request.getMethod()) || HttpMethod.HEAD.equals(request.getMethod()));
     context.setConverterProvider(this.converterProvider);
+
+    // PrefCookie
+    PrefCookie prefCookie = this.prefCookieHandler.loadPrefCookie(request, response);
+    context.setPrefCookie(prefCookie);
 
     // Path Items
     List<String> pathItems = parsePathItems(request);
@@ -130,12 +137,12 @@ public class RequestContextParser {
   protected void initLangContext(HttpServletRequest request, RequestContext context, String testPathLanguage) {
     Language language = null;
     if (testPathLanguage == null) {
-      language = parseLanguage(request);
+      language = parseLanguage(request, context.getPrefCookie());
 
     } else {
       language = this.languageProvider.getLanguage(testPathLanguage);
       if (language == null) {
-        language = parseLanguage(request);
+        language = parseLanguage(request, context.getPrefCookie());
       } else {
         context.setPathLanguage(true);
       }
@@ -144,11 +151,21 @@ public class RequestContextParser {
     context.setResources(this.resourcesProvider.getResources(language.getLocale()));
   }
 
-  protected Language parseLanguage(HttpServletRequest request) {
-    if (!this.languageProvider.isMultiLanguages()) {
-      return this.languageProvider.getDefaultLanguage();
+  protected Language parseLanguage(HttpServletRequest request, PrefCookie prefCookie) {
+    if (this.languageProvider.isMultiLanguages()) {
+
+      // PREF_LANGUAGE
+      String prefLang = prefCookie.getString(PrefCookie.PREF_LANGUAGE);
+      if (prefLang != null) {
+
+        Language language = this.languageProvider.getLanguage(prefLang);
+        if (language != null) {
+          return language;
+        }
+      }
+      return this.languageProvider.getBestLanguage(request);
     }
-    return this.languageProvider.getBestLanguage(request);
+    return this.languageProvider.getDefaultLanguage();
   }
 
   protected String getModule(HttpServletRequest request, ActionDesc actionDesc) {
