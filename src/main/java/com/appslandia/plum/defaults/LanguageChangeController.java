@@ -62,11 +62,11 @@ public class LanguageChangeController {
     request.assertNotNull(this.languageProvider.getLanguage(languageId));
 
     // PrefCookie
-    String prefLanguage = request.getPrefCookie().getString(PrefCookie.PREF_LANGUAGE);
+    String prefLanguage = request.getPrefCookie().getString(PrefCookie.PREF_LANGUAGE_ID);
     if (!languageId.equals(prefLanguage)) {
 
       PrefCookie newPref = request.getPrefCookie().clone();
-      newPref.put(PrefCookie.PREF_LANGUAGE, languageId);
+      newPref.put(PrefCookie.PREF_LANGUAGE_ID, languageId);
 
       this.prefCookieHandler.savePrefCookie(request, response, newPref);
     }

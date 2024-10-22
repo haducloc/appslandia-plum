@@ -155,7 +155,7 @@ public class RequestContextParser {
     if (this.languageProvider.isMultiLanguages()) {
 
       // PREF_LANGUAGE
-      String prefLang = prefCookie.getString(PrefCookie.PREF_LANGUAGE);
+      String prefLang = prefCookie.getString(PrefCookie.PREF_LANGUAGE_ID);
       if (prefLang != null) {
 
         Language language = this.languageProvider.getLanguage(prefLang);

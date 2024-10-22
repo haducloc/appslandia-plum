@@ -38,7 +38,7 @@ import com.appslandia.common.utils.Asserts;
 public class PrefCookie extends MapWrapper<String, String> implements Config, Cloneable {
   private static final long serialVersionUID = 1L;
 
-  public static final String PREF_LANGUAGE = "language";
+  public static final String PREF_LANGUAGE_ID = "languageId";
 
   public static final PrefCookie EMPTY = new PrefCookie(Collections.emptyMap());
 
