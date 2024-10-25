@@ -20,42 +20,20 @@
 
 package com.appslandia.plum.base;
 
-import jakarta.security.enterprise.credential.Credential;
-
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public class AuthByCodeCredential implements Credential {
+public interface RemMeTokenManager {
 
-  final String series;
-  final String token;
+  void save(RemMeToken remMeToken);
 
-  final String identity;
-  final String code;
+  RemMeToken load(String series);
 
-  public AuthByCodeCredential(String series, String token, String identity, String code) {
-    this.series = series;
-    this.token = token;
+  void reissue(String series, String hashToken, long expiresInMs, long issuedAt);
 
-    this.identity = identity;
-    this.code = code;
-  }
+  void remove(String series);
 
-  public String getSeries() {
-    return this.series;
-  }
-
-  public String getToken() {
-    return this.token;
-  }
-
-  public String getIdentity() {
-    return this.identity;
-  }
-
-  public String getCode() {
-    return this.code;
-  }
+  void removeAll(String identity);
 }

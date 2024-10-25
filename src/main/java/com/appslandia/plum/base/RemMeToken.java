@@ -35,7 +35,7 @@ import jakarta.validation.constraints.NotNull;
  *
  */
 @Entity
-public class AuthToken extends EntityBase {
+public class RemMeToken extends EntityBase {
   private static final long serialVersionUID = 1L;
 
   @Id
@@ -46,7 +46,11 @@ public class AuthToken extends EntityBase {
 
   @NotNull
   @Column(updatable = false)
-  private String hashIdentity;
+  private String identity;
+
+  @NotNull
+  @Column(updatable = false)
+  private String module;
 
   @NotNull
   private Long expiresAt;
@@ -75,12 +79,20 @@ public class AuthToken extends EntityBase {
     this.hashToken = hashToken;
   }
 
-  public String getHashIdentity() {
-    return this.hashIdentity;
+  public String getIdentity() {
+    return this.identity;
   }
 
-  public void setHashIdentity(String hashIdentity) {
-    this.hashIdentity = hashIdentity;
+  public void setIdentity(String identity) {
+    this.identity = identity;
+  }
+
+  public String getModule() {
+    return this.module;
+  }
+
+  public void setModule(String module) {
+    this.module = module;
   }
 
   public Long getExpiresAt() {

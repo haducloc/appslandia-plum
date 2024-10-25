@@ -35,6 +35,7 @@ import jakarta.servlet.http.HttpServletResponse;
 public class DefaultPostRememberMe implements PostRememberMe {
 
   @Override
-  public void apply(HttpServletRequest request, HttpServletResponse response, String tokenIdentity) throws Exception {
+  public void apply(HttpServletRequest request, HttpServletResponse response, String identity, String module)
+      throws Exception {
   }
 }

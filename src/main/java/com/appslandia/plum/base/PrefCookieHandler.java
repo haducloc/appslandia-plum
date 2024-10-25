@@ -43,9 +43,6 @@ import jakarta.servlet.http.HttpServletResponse;
 @ApplicationScoped
 public class PrefCookieHandler {
 
-  public static final String DEFAULT_COOKIE_NAME = "prefCookie";
-  public static final int DEFAULT_COOKIE_AGE = (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS);
-
   public static final String CONFIG_COOKIE_NAME = PrefCookieHandler.class.getName() + ".cookie_name";
   public static final String CONFIG_COOKIE_AGE = PrefCookieHandler.class.getName() + ".cookie_age";
 
@@ -56,11 +53,11 @@ public class PrefCookieHandler {
   protected CookieHandler cookieHandler;
 
   protected String getCookieName() {
-    return this.appConfig.getString(CONFIG_COOKIE_NAME, DEFAULT_COOKIE_NAME);
+    return this.appConfig.getString(CONFIG_COOKIE_NAME, "prefCookie");
   }
 
   protected int getCookieAge() {
-    return this.appConfig.getInt(CONFIG_COOKIE_AGE, DEFAULT_COOKIE_AGE);
+    return this.appConfig.getInt(CONFIG_COOKIE_AGE, (int) TimeUnit.SECONDS.convert(360, TimeUnit.DAYS));
   }
 
   protected String encode(PrefCookie prefCookie) {
@@ -99,7 +96,7 @@ public class PrefCookieHandler {
     } else {
       prefCookie = decode(cookieValue);
 
-      if (prefCookie == PrefCookie.EMPTY) {
+      if (PrefCookie.EMPTY.equals(prefCookie) && response != null) {
         this.cookieHandler.removeCookie(response, getCookieName());
       }
     }

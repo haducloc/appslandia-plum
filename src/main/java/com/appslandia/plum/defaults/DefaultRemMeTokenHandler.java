@@ -23,10 +23,9 @@ package com.appslandia.plum.defaults;
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.base.TokenGenerator;
 import com.appslandia.common.base.UUIDGenerator;
-import com.appslandia.common.crypto.DigesterImpl;
 import com.appslandia.common.crypto.PasswordDigester;
 import com.appslandia.common.crypto.TextDigester;
-import com.appslandia.plum.base.AuthTokenHandler;
+import com.appslandia.plum.base.RemMeTokenHandler;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -36,13 +35,11 @@ import jakarta.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class DefaultAuthTokenHandler extends AuthTokenHandler {
+public class DefaultRemMeTokenHandler extends RemMeTokenHandler {
 
-  final TextGenerator tokenGenerator = new TokenGenerator(64);
+  final TextGenerator tokenGenerator = new TokenGenerator(32);
 
   final PasswordDigester tokenDigester = new PasswordDigester();
-
-  final TextDigester identityDigester = new TextDigester(new DigesterImpl("SHA-256"));
 
   @Override
   protected TextGenerator getSeriesGenerator() {
@@ -57,10 +54,5 @@ public class DefaultAuthTokenHandler extends AuthTokenHandler {
   @Override
   protected TextDigester getTokenDigester() {
     return this.tokenDigester;
-  }
-
-  @Override
-  protected TextDigester getIdentityDigester() {
-    return this.identityDigester;
   }
 }

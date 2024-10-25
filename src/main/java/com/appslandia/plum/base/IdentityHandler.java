@@ -18,29 +18,22 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.defaults;
+package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.plum.base.IdentityValidator;
-import com.appslandia.plum.base.PrincipalRoles;
-
-import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class DefaultIdentityValidator implements IdentityValidator {
+public interface IdentityHandler {
 
-  @Override
-  public PrincipalRoles validate(String module, String identity, Out<String> invalidCode) {
-    throw new UnsupportedOperationException("Not implemented.");
-  }
+  PrincipalRoles validateCredentials(String module, String username, String password, Out<String> invalidCode);
 
-  @Override
-  public PrincipalRoles validate(String module, String username, String password, Out<String> invalidCode) {
-    throw new UnsupportedOperationException("Not implemented.");
+  PrincipalRoles validateIdentity(String module, String identity, Out<String> invalidCode);
+
+  default String getIdentity(UserPrincipal userPrincipal) {
+    return userPrincipal.getName();
   }
 }

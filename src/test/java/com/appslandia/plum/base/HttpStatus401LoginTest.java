@@ -97,7 +97,7 @@ public class HttpStatus401LoginTest extends MockTestBase {
       boolean isValid = this.authContext.authenticate(request, response, credential, false, invalidCode);
 
       if (!isValid) {
-        throw new AuthException(invalidCode.val());
+        throw new AuthException(invalidCode.get());
       }
     }
   }

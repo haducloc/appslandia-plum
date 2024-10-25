@@ -112,7 +112,7 @@ public class AppConfig extends InitializeObject implements Config {
     this.config.putIfAbsent(CONFIG_ACCESS_JSP_DIRECTLY, String.valueOf(false));
 
     this.config.putIfAbsent(CONFIG_REAUTH_TIMEOUT_MS,
-        String.valueOf(TimeUnit.MILLISECONDS.convert(10, TimeUnit.MINUTES)));
+        String.valueOf(TimeUnit.MILLISECONDS.convert(15, TimeUnit.MINUTES)));
 
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_NAME, "JREMEMBERMEID");
     this.config.putIfAbsent(REMEMBER_ME_COOKIE_AGE, String.valueOf(TimeUnit.SECONDS.convert(30, TimeUnit.DAYS)));

@@ -37,14 +37,13 @@ public abstract class SessionCsrfManager extends SimpleCsrfManager {
 
   public static final String SESSION_ATTRIBUTE_CSRF_CACHE = "csrfCache";
 
-  public static final int DEFAULT_CACHE_SIZE = 3;
   public static final String CONFIG_CACHE_SIZE = SessionCsrfManager.class.getName() + ".cache_size";
 
   @Inject
   protected AppConfig appConfig;
 
   protected int getCacheSize() {
-    return this.appConfig.getInt(CONFIG_CACHE_SIZE, DEFAULT_CACHE_SIZE);
+    return this.appConfig.getInt(CONFIG_CACHE_SIZE, 5);
   }
 
   @Override

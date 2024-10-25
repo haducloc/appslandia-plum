@@ -89,18 +89,22 @@ public class PreRememberMeInterceptor implements Serializable {
 
     // > AuthenticationStatus.SUCCESS
 
-    // From RemMeIdentityStore?
-    RemMeIdentityStore.RemMeToken remMeToken = (RemMeIdentityStore.RemMeToken) ServletUtils.removeAttribute(request,
-        RemMeIdentityStore.RemMeToken.class.getName());
-    if (remMeToken != null) {
+    // RemMeTokenIdentityStore.LoginToken?
+    RemMeTokenIdentityStore.LoginToken loginToken = (RemMeTokenIdentityStore.LoginToken) ServletUtils
+        .removeAttribute(request, RemMeTokenIdentityStore.LoginToken.class.getName());
 
-      this.cookieHandler.saveCookie(response, this.appConfig.getStringReq(AppConfig.REMEMBER_ME_COOKIE_NAME),
-          remMeToken.getLoginToken(), remMeToken.getMaxAge(), (c) -> {
-            c.setSecure(this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_SECURE));
-            c.setHttpOnly(this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_HTTPONLY));
+    if (loginToken != null) {
+      String remMeCookieName = this.appConfig.getStringReq(AppConfig.REMEMBER_ME_COOKIE_NAME);
+      boolean remMeCookieSecure = this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_SECURE);
+      boolean remMeCookieHttpOnly = this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_HTTPONLY);
+
+      this.cookieHandler.saveCookie(response, remMeCookieName, loginToken.getLoginToken(), loginToken.getMaxAge(),
+          (c) -> {
+            c.setSecure(remMeCookieSecure);
+            c.setHttpOnly(remMeCookieHttpOnly);
           });
 
-      this.postRememberMe.apply(request, response, remMeToken.getIdentity());
+      this.postRememberMe.apply(request, response, loginToken.getIdentity(), loginToken.getModule());
     }
     return AuthenticationStatus.SUCCESS;
   }

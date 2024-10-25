@@ -75,7 +75,7 @@ public abstract class TagCookieHandler {
         }
         tag = TagUtils.toTag(tag, tagValid);
 
-        if (tagValid.val()) {
+        if (tagValid.get()) {
           tagList.add(tag);
         }
       }

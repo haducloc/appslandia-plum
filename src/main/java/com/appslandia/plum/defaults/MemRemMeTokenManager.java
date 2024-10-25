@@ -25,8 +25,8 @@ import java.util.Map;
 
 import com.appslandia.common.base.LruMap;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.plum.base.AuthToken;
-import com.appslandia.plum.base.AuthTokenManager;
+import com.appslandia.plum.base.RemMeToken;
+import com.appslandia.plum.base.RemMeTokenManager;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -36,31 +36,31 @@ import jakarta.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class MemAuthTokenManager implements AuthTokenManager {
+public class MemRemMeTokenManager implements RemMeTokenManager {
 
-  final Map<String, AuthToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
+  final Map<String, RemMeToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
 
   @Override
-  public void save(AuthToken authToken) {
-    this.tokenMap.put(authToken.getSeries(), copy(authToken));
+  public void save(RemMeToken remMeToken) {
+    this.tokenMap.put(remMeToken.getSeries(), copy(remMeToken));
   }
 
   @Override
-  public AuthToken load(String series) {
-    AuthToken authToken = this.tokenMap.get(series);
-    if (authToken == null) {
+  public RemMeToken load(String series) {
+    RemMeToken remMeToken = this.tokenMap.get(series);
+    if (remMeToken == null) {
       return null;
     }
-    return copy(authToken);
+    return copy(remMeToken);
   }
 
   @Override
-  public void reissue(String series, String hashToken, long expiresAt, long issuedAt) {
-    AuthToken obj = this.tokenMap.get(series);
+  public void reissue(String series, String hashToken, long expiresInMs, long issuedAt) {
+    RemMeToken obj = this.tokenMap.get(series);
     Asserts.notNull(obj);
 
     obj.setHashToken(hashToken);
-    obj.setExpiresAt(expiresAt);
+    obj.setExpiresAt(issuedAt + expiresInMs);
     obj.setIssuedAt(issuedAt);
   }
 
@@ -70,15 +70,16 @@ public class MemAuthTokenManager implements AuthTokenManager {
   }
 
   @Override
-  public void removeAll(String hashIdentity) {
-    this.tokenMap.entrySet().removeIf(e -> e.getValue().getHashIdentity().equals(hashIdentity));
+  public void removeAll(String identity) {
+    this.tokenMap.entrySet().removeIf(e -> e.getValue().getIdentity().equals(identity));
   }
 
-  static AuthToken copy(AuthToken obj) {
-    AuthToken copy = new AuthToken();
+  static RemMeToken copy(RemMeToken obj) {
+    RemMeToken copy = new RemMeToken();
     copy.setSeries(obj.getSeries());
     copy.setHashToken(obj.getHashToken());
-    copy.setHashIdentity(obj.getHashIdentity());
+    copy.setIdentity(obj.getIdentity());
+    copy.setModule(obj.getModule());
 
     copy.setExpiresAt(obj.getExpiresAt());
     copy.setIssuedAt(obj.getIssuedAt());

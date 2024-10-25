@@ -88,11 +88,11 @@ public class InvalidAuthResult extends CredentialValidationResult {
   public static final InvalidAuthResult CREDENTIAL_SUSPENDED = new InvalidAuthResult("credential_suspended");
   public static final InvalidAuthResult CREDENTIAL_NOT_ACTIVATED = new InvalidAuthResult("credential_not_activated");
   public static final InvalidAuthResult CREDENTIAL_NOT_APPROVED = new InvalidAuthResult("credential_not_approved");
-  public static final InvalidAuthResult CREDENTIAL_INVALID_STATE = new InvalidAuthResult("credential_invalid_state");
+  public static final InvalidAuthResult CREDENTIAL_COMPROMISED = new InvalidAuthResult("credential_compromised");
 
   public static final InvalidAuthResult TOKEN_INVALID = new InvalidAuthResult("token_invalid");
-  public static final InvalidAuthResult TOKEN_THEFTED = new InvalidAuthResult("token_thefted");
-  public static final InvalidAuthResult TOKEN_EXPIRED = new InvalidAuthResult("token_expired");
+  public static final InvalidAuthResult TOKEN_COMPROMISED = new InvalidAuthResult("token_compromised");
+  public static final InvalidAuthResult TOKEN_NOT_AUTHORIZED = new InvalidAuthResult("token_not_authorized");
 
   public static final InvalidAuthResult ID_STORE_EXCEPTION = new InvalidAuthResult("id_store_exception");
 
@@ -111,17 +111,17 @@ public class InvalidAuthResult extends CredentialValidationResult {
     if (CREDENTIAL_NOT_APPROVED.getCode().equalsIgnoreCase(code)) {
       return CREDENTIAL_NOT_APPROVED;
     }
-    if (CREDENTIAL_INVALID_STATE.getCode().equalsIgnoreCase(code)) {
-      return CREDENTIAL_INVALID_STATE;
+    if (CREDENTIAL_COMPROMISED.getCode().equalsIgnoreCase(code)) {
+      return CREDENTIAL_COMPROMISED;
     }
     if (TOKEN_INVALID.getCode().equalsIgnoreCase(code)) {
       return TOKEN_INVALID;
     }
-    if (TOKEN_THEFTED.getCode().equalsIgnoreCase(code)) {
-      return TOKEN_THEFTED;
+    if (TOKEN_COMPROMISED.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_COMPROMISED;
     }
-    if (TOKEN_EXPIRED.getCode().equalsIgnoreCase(code)) {
-      return TOKEN_EXPIRED;
+    if (TOKEN_NOT_AUTHORIZED.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_NOT_AUTHORIZED;
     }
     if (ID_STORE_EXCEPTION.getCode().equalsIgnoreCase(code)) {
       return ID_STORE_EXCEPTION;

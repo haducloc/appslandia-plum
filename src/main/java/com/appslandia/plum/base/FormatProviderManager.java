@@ -27,7 +27,6 @@ import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.base.SimplePool;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -38,8 +37,6 @@ import jakarta.inject.Inject;
  */
 @ApplicationScoped
 public class FormatProviderManager {
-
-  public static final int DEFAULT_POOL_SIZE = 50;
 
   public static final String CONFIG_POOL_SIZE = FormatProviderManager.class.getName() + ".pool_size";
   public static final String CONFIG_POOL_DISABLED = FormatProviderManager.class.getName() + ".pool_disabled";
@@ -53,19 +50,16 @@ public class FormatProviderManager {
   @Inject
   protected FormatProviderFactory formatProviderFactory;
 
-  private boolean poolDisabled;
-
-  @PostConstruct
-  protected void initialize() {
-    this.poolDisabled = this.appConfig.getBool(CONFIG_POOL_DISABLED, false);
+  protected boolean getPoolDisabled() {
+    return this.appConfig.getBool(CONFIG_POOL_DISABLED, false);
   }
 
   protected int getPoolSize() {
-    return this.appConfig.getInt(CONFIG_POOL_SIZE, DEFAULT_POOL_SIZE);
+    return this.appConfig.getInt(CONFIG_POOL_SIZE, 50);
   }
 
   public FormatProvider get(Language language) {
-    if (this.poolDisabled) {
+    if (this.getPoolDisabled()) {
       this.formatProviderFactory.produce(language);
     }
     FormatProvider formatProvider = getPool(language).get();
@@ -73,7 +67,7 @@ public class FormatProviderManager {
   }
 
   public void put(Language language, FormatProvider formatProvider) {
-    if (this.poolDisabled) {
+    if (this.getPoolDisabled()) {
       return;
     }
     getPool(language).put(formatProvider);

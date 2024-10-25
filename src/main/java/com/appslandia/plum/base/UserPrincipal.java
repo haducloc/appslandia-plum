@@ -78,7 +78,7 @@ public abstract class UserPrincipal extends CallerPrincipal {
   }
 
   public boolean isForModule(String module) {
-    return getModule().equalsIgnoreCase(module);
+    return getModule().equals(module);
   }
 
   // Internal override only

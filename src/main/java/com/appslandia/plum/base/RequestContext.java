@@ -55,7 +55,7 @@ public class RequestContext {
   private PrefCookie prefCookie;
 
   public RequestContext createRequestContext(ActionDesc actionDesc) {
-    Asserts.isTrue(this.module.equalsIgnoreCase(actionDesc.getModule()));
+    Asserts.isTrue(this.module.equals(actionDesc.getModule()));
 
     RequestContext context = new RequestContext();
     context.pathLanguage = this.pathLanguage;

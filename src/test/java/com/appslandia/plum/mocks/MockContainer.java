@@ -48,8 +48,8 @@ import com.appslandia.plum.base.AppHeaderPolicy;
 import com.appslandia.plum.base.AuthContext;
 import com.appslandia.plum.base.AuthHandler;
 import com.appslandia.plum.base.AuthHandlerProvider;
-import com.appslandia.plum.base.AuthTokenHandler;
-import com.appslandia.plum.base.AuthTokenManager;
+import com.appslandia.plum.base.RemMeTokenHandler;
+import com.appslandia.plum.base.RemMeTokenManager;
 import com.appslandia.plum.base.AuthorizePolicyProvider;
 import com.appslandia.plum.base.BeanInstanceContextListener;
 import com.appslandia.plum.base.CaptchaManager;
@@ -68,7 +68,7 @@ import com.appslandia.plum.base.GroupFormatProvider;
 import com.appslandia.plum.base.GzipResponseEncoder;
 import com.appslandia.plum.base.HeaderPolicyProvider;
 import com.appslandia.plum.base.HttpAuthenticationMechanismBase;
-import com.appslandia.plum.base.IdentityValidator;
+import com.appslandia.plum.base.IdentityHandler;
 import com.appslandia.plum.base.InitializerHandler;
 import com.appslandia.plum.base.InstanceKey;
 import com.appslandia.plum.base.LanguageProvider;
@@ -84,15 +84,15 @@ import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.captcha.CaptchaProducer;
-import com.appslandia.plum.defaults.DefaultAuthTokenHandler;
+import com.appslandia.plum.defaults.DefaultRemMeTokenHandler;
 import com.appslandia.plum.defaults.DefaultClientIdParser;
 import com.appslandia.plum.defaults.DefaultFormatProviderFactory;
 import com.appslandia.plum.defaults.DefaultHttpAuthenticationMechanism;
-import com.appslandia.plum.defaults.DefaultIdentityValidator;
+import com.appslandia.plum.defaults.DefaultIdentityHandler;
 import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
 import com.appslandia.plum.defaults.DefaultServletModuleParser;
 import com.appslandia.plum.defaults.MemAppCacheManager;
-import com.appslandia.plum.defaults.MemAuthTokenManager;
+import com.appslandia.plum.defaults.MemRemMeTokenManager;
 import com.appslandia.plum.pebble.PebbleExtensionProvider;
 import com.appslandia.plum.pebble.PebbleTemplateProvider;
 import com.appslandia.plum.pebble.functions.DefaultPebbleExtensionProvider;
@@ -286,7 +286,7 @@ public class MockContainer extends InitializeObject {
     factory.register(new Class<?>[] { HttpAuthenticationMechanism.class, HttpAuthenticationMechanismBase.class },
         DefaultHttpAuthenticationMechanism.class);
     factory.register(SecurityContext.class, MockSecurityContext.class);
-    factory.register(IdentityValidator.class, DefaultIdentityValidator.class);
+    factory.register(IdentityHandler.class, DefaultIdentityHandler.class);
     factory.register(AuthContext.class, AuthContext.class);
     factory.register(IdentityStoreHandler.class, MockIdentityStoreHandler.class);
 
@@ -303,8 +303,8 @@ public class MockContainer extends InitializeObject {
     factory.register(ResponseEncoderProvider.class, MockResponseEncoderProvider.class);
 
     factory.register(MemUserDatabase.class, MemUserDatabase.class);
-    factory.register(AuthTokenManager.class, MemAuthTokenManager.class);
-    factory.register(AuthTokenHandler.class, DefaultAuthTokenHandler.class);
+    factory.register(RemMeTokenManager.class, MemRemMeTokenManager.class);
+    factory.register(RemMeTokenHandler.class, DefaultRemMeTokenHandler.class);
 
     factory.register(ClientIdParser.class, DefaultClientIdParser.class);
     factory.register(ServletModuleParser.class, DefaultServletModuleParser.class);
