@@ -30,7 +30,9 @@ import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.SecurityUtils;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -49,10 +51,10 @@ import jakarta.servlet.http.HttpServletRequest;
 public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
 
   public static final String CONFIG_EXPIRY_LEEWAY_MS = RemMeTokenIdentityStore.class.getName() + ".expiry_leeway_ms";
+  public static final String CONFIG_TOKEN_BOUND_CLIENT_IP = RemMeTokenIdentityStore.class.getName()
+      + ".token_bound_client_ip";
   public static final String CONFIG_TOKEN_BOUND_USER_AGENT = RemMeTokenIdentityStore.class.getName()
       + ".token_bound_user_agent";
-  public static final String CONFIG_TOKEN_BOUND_CLIENT_ID = RemMeTokenIdentityStore.class.getName()
-      + ".token_bound_client_id";
 
   @Inject
   protected AppConfig appConfig;
@@ -73,15 +75,12 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   @Inject
   protected RequestContextParser requestContextParser;
 
-  @Inject
-  protected ClientIdParser clientIdParser;
-
   protected int getExpiryLeewayMs() {
     return this.appConfig.getInt(CONFIG_EXPIRY_LEEWAY_MS, 0);
   }
 
-  protected boolean getTokenBoundClientId() {
-    return this.appConfig.getBool(CONFIG_TOKEN_BOUND_CLIENT_ID, false);
+  protected boolean getTokenBoundClientIp() {
+    return this.appConfig.getBool(CONFIG_TOKEN_BOUND_CLIENT_IP, false);
   }
 
   protected boolean getTokenBoundUserAgent() {
@@ -89,15 +88,9 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   }
 
   protected String getTokenBoundData() {
-    String userAgent = null;
-    if (getTokenBoundUserAgent()) {
-      userAgent = this.currentRequest.getHeader("User-Agent");
-    }
-    String clientId = null;
-    if (getTokenBoundClientId()) {
-      clientId = this.clientIdParser.parseId(this.currentRequest);
-    }
-    return String.join("|", userAgent, clientId);
+    String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "IP";
+    String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "UA";
+    return STR.fmt("ClientId={}|User-Agent={}", clientIp, userAgent);
   }
 
   @Override
