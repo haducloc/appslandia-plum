@@ -51,7 +51,7 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
 
   final TextDigester md5Digester = new TextDigester(new DigesterImpl("MD5"));
 
-  final Map<String, Long> reportedLog = Collections.synchronizedMap(new LruMap<>(50));
+  final Map<String, Long> reportedLog = Collections.synchronizedMap(new LruMap<>(100));
 
   public static final String CONFIG_REPORT_INTERVAL_MS = DefaultCspReportToHandler.class.getName()
       + ".report_interval_ms";
