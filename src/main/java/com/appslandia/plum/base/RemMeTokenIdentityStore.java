@@ -88,8 +88,8 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   }
 
   protected String getTokenBoundData() {
-    String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "IP";
-    String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "UA";
+    String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
+    String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "false";
     return STR.fmt("ClientId={}|User-Agent={}", clientIp, userAgent);
   }
 
