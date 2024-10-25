@@ -21,11 +21,12 @@
 package com.appslandia.plum.defaults;
 
 import java.io.BufferedReader;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
+import java.util.Collections;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.appslandia.common.base.AppLogger;
+import com.appslandia.common.base.LruMap;
 import com.appslandia.common.crypto.DigesterImpl;
 import com.appslandia.common.crypto.TextDigester;
 import com.appslandia.plum.base.AppConfig;
@@ -50,7 +51,7 @@ public class DefaultCspReportToHandler implements CspReportToHandler {
 
   final TextDigester md5Digester = new TextDigester(new DigesterImpl("MD5"));
 
-  final ConcurrentMap<String, Long> reportedLog = new ConcurrentHashMap<>();
+  final Map<String, Long> reportedLog = Collections.synchronizedMap(new LruMap<>(50));
 
   public static final String CONFIG_REPORT_INTERVAL_MS = DefaultCspReportToHandler.class.getName()
       + ".report_interval_ms";
