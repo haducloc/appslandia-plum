@@ -92,7 +92,8 @@ public class InvalidAuthResult extends CredentialValidationResult {
 
   public static final InvalidAuthResult TOKEN_INVALID = new InvalidAuthResult("token_invalid");
   public static final InvalidAuthResult TOKEN_COMPROMISED = new InvalidAuthResult("token_compromised");
-  public static final InvalidAuthResult TOKEN_NOT_AUTHORIZED = new InvalidAuthResult("token_not_authorized");
+  public static final InvalidAuthResult TOKEN_EXPIRED = new InvalidAuthResult("token_expired");
+  public static final InvalidAuthResult TOKEN_MODULE_MISMATCH = new InvalidAuthResult("token_module_mismatch");
 
   public static final InvalidAuthResult ID_STORE_EXCEPTION = new InvalidAuthResult("id_store_exception");
 
@@ -120,8 +121,11 @@ public class InvalidAuthResult extends CredentialValidationResult {
     if (TOKEN_COMPROMISED.getCode().equalsIgnoreCase(code)) {
       return TOKEN_COMPROMISED;
     }
-    if (TOKEN_NOT_AUTHORIZED.getCode().equalsIgnoreCase(code)) {
-      return TOKEN_NOT_AUTHORIZED;
+    if (TOKEN_EXPIRED.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_EXPIRED;
+    }
+    if (TOKEN_MODULE_MISMATCH.getCode().equalsIgnoreCase(code)) {
+      return TOKEN_MODULE_MISMATCH;
     }
     if (ID_STORE_EXCEPTION.getCode().equalsIgnoreCase(code)) {
       return ID_STORE_EXCEPTION;

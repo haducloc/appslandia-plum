@@ -69,7 +69,7 @@ public class RemMeTokenHandlerTest extends MockTestBase {
           null, 0, invalidCode);
 
       Assertions.assertNull(remMeToken);
-      Assertions.assertEquals(InvalidAuthResult.TOKEN_INVALID.getCode(), invalidCode.value);
+      Assertions.assertEquals(InvalidAuthResult.TOKEN_EXPIRED.getCode(), invalidCode.value);
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());

@@ -90,7 +90,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   protected String getTokenBoundData() {
     String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
     String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "false";
-    return STR.fmt("ClientIp={}|User-Agent={}", clientIp, userAgent);
+    return STR.fmt("{}|{}", clientIp, userAgent);
   }
 
   @Override
@@ -128,8 +128,8 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     Out<String> invalidCode = new Out<>();
     RemMeToken remMeToken = this.remMeTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(),
         requestContext.getModule(), tokenBoundData, getExpiryLeewayMs(), invalidCode);
-    if (remMeToken == null) {
 
+    if (remMeToken == null) {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.get())) {
         this.onTokenCompromised(remMeToken);
         return InvalidAuthResult.TOKEN_COMPROMISED;

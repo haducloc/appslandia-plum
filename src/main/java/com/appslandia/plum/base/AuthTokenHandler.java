@@ -35,10 +35,10 @@ import jakarta.inject.Inject;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public abstract class RemMeTokenHandler {
+public abstract class AuthTokenHandler {
 
   @Inject
-  protected RemMeTokenManager remMeTokenManager;
+  protected AuthTokenManager authTokenManager;
 
   protected abstract TextGenerator getSeriesGenerator();
 
@@ -47,66 +47,67 @@ public abstract class RemMeTokenHandler {
   protected abstract TextDigester getTokenDigester();
 
   public SeriesToken saveToken(String identity, String module, String tokenBoundData, long expiresInMs, long issuedAt) {
-    Asserts.notNull(identity);
     Asserts.notNull(module);
-    identity = identity.toLowerCase(Locale.ENGLISH);
+    if (identity != null) {
+      identity = identity.toLowerCase(Locale.ENGLISH);
+    }
 
-    // RemMeToken
-    RemMeToken remMeToken = new RemMeToken();
-    remMeToken.setSeries(getSeriesGenerator().generate());
+    // AuthToken
+    AuthToken authToken = new AuthToken();
+    authToken.setSeries(getSeriesGenerator().generate());
 
     String clearToken = getTokenGenerator().generate();
     long expiresAt = issuedAt + expiresInMs;
 
-    String tokenData = getTokenData(remMeToken.getSeries(), clearToken, identity, module, tokenBoundData, expiresAt,
+    String tokenData = getTokenData(authToken.getSeries(), clearToken, identity, module, tokenBoundData, expiresAt,
         issuedAt);
-    remMeToken.setHashToken(getTokenDigester().digest(tokenData));
+    authToken.setHashToken(getTokenDigester().digest(tokenData));
 
-    remMeToken.setIdentity(identity);
-    remMeToken.setModule(module);
+    authToken.setIdentity(identity);
+    authToken.setModule(module);
 
-    remMeToken.setExpiresAt(expiresAt);
-    remMeToken.setIssuedAt(issuedAt);
+    authToken.setExpiresAt(expiresAt);
+    authToken.setIssuedAt(issuedAt);
 
     // Save Token
-    this.remMeTokenManager.save(remMeToken);
-    return new SeriesToken().setSeries(remMeToken.getSeries()).setToken(clearToken);
+    this.authTokenManager.save(authToken);
+    return new SeriesToken().setSeries(authToken.getSeries()).setToken(clearToken);
   }
 
-  public RemMeToken verifyToken(String series, String token, String module, String tokenBoundData, int expiryLeewayMs,
+  public AuthToken verifyToken(String series, String token, String module, String tokenBoundData, int expiryLeewayMs,
       Out<String> invalidCode) {
     Asserts.notNull(series);
     Asserts.notNull(token);
     Asserts.notNull(module);
 
-    // RemMeToken
-    RemMeToken remMeToken = this.remMeTokenManager.load(series);
-    if (remMeToken == null) {
+    // AuthToken
+    AuthToken authToken = this.authTokenManager.load(series);
+    if (authToken == null) {
       invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
       return null;
     }
 
     // Verify Token
-    String tokenData = getTokenData(remMeToken.getSeries(), token, remMeToken.getIdentity(), remMeToken.getModule(),
-        tokenBoundData, remMeToken.getExpiresAt(), remMeToken.getIssuedAt());
+    String tokenData = getTokenData(authToken.getSeries(), token, authToken.getIdentity(), authToken.getModule(),
+        tokenBoundData, authToken.getExpiresAt(), authToken.getIssuedAt());
 
-    if (!getTokenDigester().verify(tokenData, remMeToken.getHashToken())) {
-      invalidCode.value = InvalidAuthResult.TOKEN_COMPROMISED.getCode();
+    if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
+      invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
       return null;
     }
 
     // ExpiresAt
-    if (!DateUtils.isFutureTime(remMeToken.getExpiresAt(), expiryLeewayMs)) {
+    if (!DateUtils.isFutureTime(authToken.getExpiresAt(), expiryLeewayMs)) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
       return null;
     }
 
     // Module
-    if (!remMeToken.getModule().equals(module)) {
+    if (!authToken.getModule().equals(module)) {
       invalidCode.value = InvalidAuthResult.TOKEN_MODULE_MISMATCH.getCode();
       return null;
     }
-    return remMeToken;
+    return authToken;
   }
 
   protected String getTokenData(String series, String token, String identity, String module, String tokenBoundData,
@@ -115,22 +116,7 @@ public abstract class RemMeTokenHandler {
         Long.toString(issuedAt));
   }
 
-  public String reissue(String series, String identity, String module, String tokenBoundData, long expiresInMs,
-      long issuedAt) {
-    String newToken = this.getTokenGenerator().generate();
-    long expiresAt = issuedAt + expiresInMs;
-    String newTokenData = this.getTokenData(series, newToken, identity, module, tokenBoundData, expiresAt, issuedAt);
-
-    String newHashToken = this.getTokenDigester().digest(newTokenData);
-    this.remMeTokenManager.reissue(series, newHashToken, expiresInMs, issuedAt);
-    return newToken;
-  }
-
   public void remove(String series) {
-    this.remMeTokenManager.remove(series);
-  }
-
-  public void removeAll(String identity) {
-    this.remMeTokenManager.removeAll(identity);
+    this.authTokenManager.remove(series);
   }
 }
