@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  */
 @ApplicationScoped
-public class AuthByCodeIdentityStore extends IdentityStoreBase {
+public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthByCodeIdentityStoreFacade {
 
   public static final String CONFIG_EXPIRY_LEEWAY_MS = AuthByCodeIdentityStore.class.getName() + ".expiry_leeway_ms";
 
@@ -88,5 +88,12 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase {
     Asserts.isNull(invalidCode.value);
 
     return this.identityHandler.validateIdentity(module, authToken.getIdentity(), invalidCode);
+  }
+
+  @Override
+  public SeriesToken saveToken(String identity, String module, String code, long expiresInMs, long issuedAt) {
+    String tokenBoundData = getTokenBoundData(code);
+    var seriesToken = authTokenHandler.saveToken(identity, module, tokenBoundData, expiresInMs, issuedAt);
+    return seriesToken;
   }
 }
