@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.appslandia</groupId>
 	<artifactId>appslandia-plum</artifactId>
-	<version>19.13.0</version>
+	<version>19.14.0</version>
 	<name>appslandia-plum</name>
 	<packaging>jar</packaging>
 	<description>AppsLandia Plum - Java Web Framework</description>
@@ -22,7 +22,7 @@
 		<version.gson>2.10.1</version.gson>
 		<version.owasp-encoder>1.2.3</version.owasp-encoder>
 		<version.pebble-templates>1.0</version.pebble-templates>
-		<version.appslandia-common>19.33.0</version.appslandia-common>
+		<version.appslandia-common>19.34.0</version.appslandia-common>
 		<version.jakarta.platform>10.0.0</version.jakarta.platform>
 		<version.glassfish-jakarta-el>5.0.0-M1</version.glassfish-jakarta-el>
 		<version.hibernate-validator>8.0.1.Final</version.hibernate-validator>
