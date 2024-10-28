@@ -42,6 +42,9 @@ import jakarta.servlet.http.HttpServletResponse;
 public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticationMechanism {
 
   @Inject
+  protected AppConfig appConfig;
+
+  @Inject
   protected IdentityStoreHandler identityStoreHandler;
 
   @Inject
@@ -132,12 +135,9 @@ public abstract class HttpAuthenticationMechanismBase implements HttpAuthenticat
   // cookieHttpOnlyExpression="#{self.rememberMeCookieHttpOnly()}"
   // )
 
-  @Inject
-  protected AppConfig appConfig;
-
   public boolean rememberMe(HttpMessageContext httpMessageContext) {
-    String module = ServletUtils.getRequestContext(httpMessageContext.getRequest()).getModule();
-    AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(module);
+    RequestContext requestContext = ServletUtils.getRequestContext(httpMessageContext.getRequest());
+    AuthHandler authHandler = this.authHandlerProvider.getAuthHandler(requestContext.getModule());
     return authHandler.isRememberMe(httpMessageContext);
   }
 
