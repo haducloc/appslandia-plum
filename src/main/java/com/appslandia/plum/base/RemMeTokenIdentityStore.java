@@ -29,7 +29,6 @@ import com.appslandia.common.base.Out;
 import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.SecurityUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -105,10 +104,6 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     return encodeSeriesToken(seriesToken);
   }
 
-  protected void onTokenCompromised(RemMeToken remMeToken) {
-    this.remMeTokenHandler.removeAll(remMeToken.getIdentity());
-  }
-
   @Override
   public CredentialValidationResult validate(RememberMeCredential credential) {
     // SeriesToken
@@ -126,14 +121,12 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     RemMeToken remMeToken = this.remMeTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(),
         requestContext.getModule(), tokenBoundData, getExpiryLeewayMs(), invalidCode);
 
-    if (remMeToken == null) {
-      if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.get())) {
-        this.onTokenCompromised(remMeToken);
-        return InvalidAuthResult.TOKEN_COMPROMISED;
+    if (invalidCode.value != null) {
+      if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
+        this.remMeTokenHandler.handleTokenCompromised(remMeToken);
       }
-      return InvalidAuthResult.valueOf(invalidCode.get());
+      return InvalidAuthResult.valueOf(invalidCode.value);
     }
-    Asserts.isNull(invalidCode.value);
 
     // Validate Identity
     PrincipalRoles principalRoles = this.identityHandler.validateIdentity(remMeToken.getModule(),

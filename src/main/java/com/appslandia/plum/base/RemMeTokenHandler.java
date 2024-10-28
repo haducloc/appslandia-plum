@@ -92,19 +92,19 @@ public abstract class RemMeTokenHandler {
 
     if (!getTokenDigester().verify(tokenData, remMeToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_COMPROMISED.getCode();
-      return null;
+      return remMeToken;
     }
 
     // ExpiresAt
     if (!DateUtils.isFutureTime(remMeToken.getExpiresAt(), expiryLeewayMs)) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
-      return null;
+      return remMeToken;
     }
 
     // Module
     if (!remMeToken.getModule().equals(module)) {
       invalidCode.value = InvalidAuthResult.TOKEN_MODULE_MISMATCH.getCode();
-      return null;
+      return remMeToken;
     }
     return remMeToken;
   }
@@ -130,7 +130,7 @@ public abstract class RemMeTokenHandler {
     this.remMeTokenManager.remove(series);
   }
 
-  public void removeAll(String identity) {
-    this.remMeTokenManager.removeAll(identity);
+  public void handleTokenCompromised(RemMeToken remMeToken) {
+    this.remMeTokenManager.removeAll(remMeToken.getIdentity());
   }
 }

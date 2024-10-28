@@ -93,19 +93,19 @@ public abstract class AuthTokenHandler {
 
     if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
-      return null;
+      return authToken;
     }
 
     // ExpiresAt
     if (!DateUtils.isFutureTime(authToken.getExpiresAt(), expiryLeewayMs)) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
-      return null;
+      return authToken;
     }
 
     // Module
     if (!authToken.getModule().equals(module)) {
       invalidCode.value = InvalidAuthResult.TOKEN_MODULE_MISMATCH.getCode();
-      return null;
+      return authToken;
     }
     return authToken;
   }

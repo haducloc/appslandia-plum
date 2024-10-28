@@ -21,7 +21,6 @@
 package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -81,12 +80,9 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
     AuthToken authToken = this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(),
         authByCodeCredential.getToken(), module, tokenBoundData, getExpiryLeewayMs(), invalidCode);
 
-    if (authToken == null) {
-      Asserts.notNull(invalidCode.value);
+    if (invalidCode.value != null) {
       return null;
     }
-    Asserts.isNull(invalidCode.value);
-
     return this.identityHandler.validateIdentity(module, authToken.getIdentity(), invalidCode);
   }
 
