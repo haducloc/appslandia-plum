@@ -72,9 +72,6 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   @Inject
   protected HttpServletRequest currentRequest;
 
-  @Inject
-  protected RequestContextParser requestContextParser;
-
   protected int getExpiryLeewayMs() {
     return this.appConfig.getInt(CONFIG_EXPIRY_LEEWAY_MS, 0);
   }
@@ -121,7 +118,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     }
 
     // RequestContext
-    RequestContext requestContext = this.requestContextParser.parse(this.currentRequest, null);
+    RequestContext requestContext = ServletUtils.getRequestContext(this.currentRequest);
     String tokenBoundData = getTokenBoundData();
 
     // RemMeToken

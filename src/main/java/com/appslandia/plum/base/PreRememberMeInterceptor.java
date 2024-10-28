@@ -63,6 +63,9 @@ public class PreRememberMeInterceptor implements Serializable {
   @Inject
   protected PostRememberMe postRememberMe;
 
+  @Inject
+  protected RequestContextParser requestContextParser;
+
   @AroundInvoke
   public Object intercept(InvocationContext context) throws Exception {
 
@@ -79,6 +82,9 @@ public class PreRememberMeInterceptor implements Serializable {
           "PreRememberMeInterceptor must be executed between AutoApplySessionInterceptor() and RememberMeInterceptor().");
       return context.proceed();
     }
+
+    // Early parsing of request context
+    this.requestContextParser.parse(request, response);
 
     // Try to authenticate with the next interceptor or actual authentication
     // mechanism
