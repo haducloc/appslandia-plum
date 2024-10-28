@@ -130,7 +130,7 @@ public abstract class RemMeTokenHandler {
     this.remMeTokenManager.remove(series);
   }
 
-  public void handleTokenCompromised(RemMeToken remMeToken) {
+  public void onTokenCompromised(RemMeToken remMeToken) {
     this.remMeTokenManager.removeAll(remMeToken.getIdentity());
   }
 }

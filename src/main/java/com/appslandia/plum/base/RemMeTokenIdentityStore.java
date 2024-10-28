@@ -123,7 +123,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
 
     if (invalidCode.value != null) {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
-        this.remMeTokenHandler.handleTokenCompromised(remMeToken);
+        this.remMeTokenHandler.onTokenCompromised(remMeToken);
       }
       return InvalidAuthResult.valueOf(invalidCode.value);
     }
