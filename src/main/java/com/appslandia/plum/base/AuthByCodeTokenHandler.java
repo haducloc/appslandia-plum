@@ -25,7 +25,7 @@ package com.appslandia.plum.base;
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-public interface AuthByCodeIdentityStoreFacade {
+public interface AuthByCodeTokenHandler {
 
   SeriesToken saveToken(String identity, String module, String code, long expiresInMs, long issuedAt);
 }

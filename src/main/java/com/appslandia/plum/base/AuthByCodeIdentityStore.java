@@ -35,7 +35,7 @@ import jakarta.servlet.http.HttpServletRequest;
  *
  */
 @ApplicationScoped
-public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthByCodeIdentityStoreFacade {
+public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthByCodeTokenHandler {
 
   public static final String CONFIG_EXPIRY_LEEWAY_MS = AuthByCodeIdentityStore.class.getName() + ".expiry_leeway_ms";
 
