@@ -40,6 +40,8 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  */
 public class ContentResponseWrapper extends HttpServletResponseWrapper {
 
+  static final int MEMORY_BLOCK_SIZE = 4096;
+
   final boolean allowSetHeaders;
   final MemoryStream content;
 
@@ -49,7 +51,7 @@ public class ContentResponseWrapper extends HttpServletResponseWrapper {
   public ContentResponseWrapper(HttpServletResponse response, boolean allowSetHeaders) {
     super(response);
     this.allowSetHeaders = allowSetHeaders;
-    this.content = new MemoryStream();
+    this.content = new MemoryStream(MEMORY_BLOCK_SIZE);
   }
 
   public MemoryStream getContent() {
