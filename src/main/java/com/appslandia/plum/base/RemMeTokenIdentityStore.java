@@ -81,7 +81,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   }
 
   protected boolean getTokenBoundUserAgent() {
-    return this.appConfig.getBool(CONFIG_TOKEN_BOUND_USER_AGENT, false);
+    return this.appConfig.getBool(CONFIG_TOKEN_BOUND_USER_AGENT, true);
   }
 
   protected String getTokenBoundData() {
