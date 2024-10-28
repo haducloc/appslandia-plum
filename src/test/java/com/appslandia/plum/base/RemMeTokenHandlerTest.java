@@ -65,10 +65,9 @@ public class RemMeTokenHandlerTest extends MockTestBase {
       ThreadUtils.sleepInMs(3500);
       Out<String> invalidCode = new Out<>();
 
-      RemMeToken remMeToken = remMeTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(), "module1",
-          null, 0, invalidCode);
+      remMeTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(), "module1", null, 0, invalidCode);
 
-      Assertions.assertNull(remMeToken);
+      Assertions.assertNotNull(invalidCode.value);
       Assertions.assertEquals(InvalidAuthResult.TOKEN_EXPIRED.getCode(), invalidCode.value);
 
     } catch (Exception ex) {
@@ -84,10 +83,9 @@ public class RemMeTokenHandlerTest extends MockTestBase {
       Out<String> invalidCode = new Out<>();
 
       String compromisedToken = "compromised_token";
-      RemMeToken remMeToken = remMeTokenHandler.verifyToken(seriesToken.getSeries(), compromisedToken, "module1", null,
-          0, invalidCode);
+      remMeTokenHandler.verifyToken(seriesToken.getSeries(), compromisedToken, "module1", null, 0, invalidCode);
 
-      Assertions.assertNull(remMeToken);
+      Assertions.assertNotNull(invalidCode.value);
       Assertions.assertEquals(InvalidAuthResult.TOKEN_COMPROMISED.getCode(), invalidCode.value);
 
     } catch (Exception ex) {
