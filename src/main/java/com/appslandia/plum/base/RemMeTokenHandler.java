@@ -46,7 +46,7 @@ public abstract class RemMeTokenHandler {
 
   protected abstract TextDigester getTokenDigester();
 
-  public SeriesToken saveToken(String identity, String module, String tokenBoundData, long expiresInMs, long issuedAt) {
+  public SeriesToken saveToken(String identity, String module, String clientData, long expiresInMs, long issuedAt) {
     Asserts.notNull(identity);
     Asserts.notNull(module);
     identity = identity.toLowerCase(Locale.ENGLISH);
@@ -58,7 +58,7 @@ public abstract class RemMeTokenHandler {
     String clearToken = getTokenGenerator().generate();
     long expiresAt = issuedAt + expiresInMs;
 
-    String tokenData = getTokenData(remMeToken.getSeries(), clearToken, identity, module, tokenBoundData, expiresAt,
+    String tokenData = getTokenData(remMeToken.getSeries(), clearToken, identity, module, clientData, expiresAt,
         issuedAt);
     remMeToken.setHashToken(getTokenDigester().digest(tokenData));
 
@@ -73,7 +73,7 @@ public abstract class RemMeTokenHandler {
     return new SeriesToken().setSeries(remMeToken.getSeries()).setToken(clearToken);
   }
 
-  public RemMeToken verifyToken(String series, String token, String module, String tokenBoundData, int expiryLeewayMs,
+  public RemMeToken verifyToken(String series, String token, String module, String clientData, int expiryLeewayMs,
       Out<String> invalidCode) {
     Asserts.notNull(series);
     Asserts.notNull(token);
@@ -88,7 +88,7 @@ public abstract class RemMeTokenHandler {
 
     // Verify Token
     String tokenData = getTokenData(remMeToken.getSeries(), token, remMeToken.getIdentity(), remMeToken.getModule(),
-        tokenBoundData, remMeToken.getExpiresAt(), remMeToken.getIssuedAt());
+        clientData, remMeToken.getExpiresAt(), remMeToken.getIssuedAt());
 
     if (!getTokenDigester().verify(tokenData, remMeToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_COMPROMISED.getCode();
@@ -109,17 +109,17 @@ public abstract class RemMeTokenHandler {
     return remMeToken;
   }
 
-  protected String getTokenData(String series, String token, String identity, String module, String tokenBoundData,
+  protected String getTokenData(String series, String token, String identity, String module, String clientData,
       long expiresAt, long issuedAt) {
-    return String.join("|", series, token, identity, module, tokenBoundData, Long.toString(expiresAt),
+    return String.join("|", series, token, identity, module, clientData, Long.toString(expiresAt),
         Long.toString(issuedAt));
   }
 
-  public String reissue(String series, String identity, String module, String tokenBoundData, long expiresInMs,
+  public String reissue(String series, String identity, String module, String clientData, long expiresInMs,
       long issuedAt) {
     String newToken = this.getTokenGenerator().generate();
     long expiresAt = issuedAt + expiresInMs;
-    String newTokenData = this.getTokenData(series, newToken, identity, module, tokenBoundData, expiresAt, issuedAt);
+    String newTokenData = this.getTokenData(series, newToken, identity, module, clientData, expiresAt, issuedAt);
 
     String newHashToken = this.getTokenDigester().digest(newTokenData);
     this.remMeTokenManager.reissue(series, newHashToken, expiresInMs, issuedAt);
@@ -130,7 +130,10 @@ public abstract class RemMeTokenHandler {
     this.remMeTokenManager.remove(series);
   }
 
-  public void onTokenCompromised(RemMeToken remMeToken) {
+  public void handleTokenCompromise(RemMeToken remMeToken) {
     this.remMeTokenManager.removeAll(remMeToken.getIdentity());
+  }
+
+  public void handleLoginSuccess(String identity, String module, long loginAt, String clientData) {
   }
 }

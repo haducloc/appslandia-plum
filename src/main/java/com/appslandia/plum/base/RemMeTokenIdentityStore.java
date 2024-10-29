@@ -83,10 +83,10 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     return this.appConfig.getBool(CONFIG_TOKEN_BOUND_USER_AGENT, true);
   }
 
-  protected String getTokenBoundData() {
+  protected String getClientData() {
     String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
     String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "false";
-    return STR.fmt("{}|{}", clientIp, userAgent);
+    return STR.fmt("IP={}|UA={}", clientIp, userAgent);
   }
 
   @Override
@@ -99,7 +99,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     long issuedAt = System.currentTimeMillis();
 
     // Save Token
-    SeriesToken seriesToken = this.remMeTokenHandler.saveToken(identity, userPrincipal.getModule(), getTokenBoundData(),
+    SeriesToken seriesToken = this.remMeTokenHandler.saveToken(identity, userPrincipal.getModule(), getClientData(),
         expiresInMs, issuedAt);
     return encodeSeriesToken(seriesToken);
   }
@@ -114,16 +114,16 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
 
     // RequestContext
     RequestContext requestContext = ServletUtils.getRequestContext(this.currentRequest);
-    String tokenBoundData = getTokenBoundData();
+    String clientData = getClientData();
 
     // RemMeToken
     Out<String> invalidCode = new Out<>();
     RemMeToken remMeToken = this.remMeTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(),
-        requestContext.getModule(), tokenBoundData, getExpiryLeewayMs(), invalidCode);
+        requestContext.getModule(), clientData, getExpiryLeewayMs(), invalidCode);
 
     if (invalidCode.value != null) {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
-        this.remMeTokenHandler.onTokenCompromised(remMeToken);
+        this.remMeTokenHandler.handleTokenCompromise(remMeToken);
       }
       return InvalidAuthResult.valueOf(invalidCode.value);
     }
@@ -144,7 +144,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
         : remMeToken.getExpiresAt() - curTimeMs;
 
     String clearToken = this.remMeTokenHandler.reissue(remMeToken.getSeries(), remMeToken.getIdentity(),
-        remMeToken.getModule(), tokenBoundData, expiresInMs, curTimeMs);
+        remMeToken.getModule(), clientData, expiresInMs, curTimeMs);
 
     // LoginToken
     String newLoginToken = encodeSeriesToken(new SeriesToken().setSeries(seriesToken.getSeries()).setToken(clearToken));
@@ -154,6 +154,8 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     // AuthUserPrincipal(rememberMe=true, re-authentication=false)
     AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), remMeToken.getModule(), true,
         false);
+
+    this.remMeTokenHandler.handleLoginSuccess(remMeToken.getIdentity(), remMeToken.getModule(), curTimeMs, clientData);
     return SecurityUtils.createIdentityStoreResult(principal, principalRoles.getRoles());
   }
 

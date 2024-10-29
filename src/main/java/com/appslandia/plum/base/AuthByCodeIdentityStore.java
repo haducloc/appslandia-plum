@@ -22,6 +22,7 @@ package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Out;
 import com.appslandia.common.utils.STR;
+import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -38,6 +39,8 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
 
   public static final String CONFIG_EXPIRY_LEEWAY_MS = AuthByCodeIdentityStore.class.getName() + ".expiry_leeway_ms";
 
+  public static final String CONFIG_TOKEN_BOUND_CLIENT_IP = AuthByCodeIdentityStore.class.getName()
+      + ".token_bound_client_ip";
   public static final String CONFIG_TOKEN_BOUND_USER_AGENT = AuthByCodeIdentityStore.class.getName()
       + ".token_bound_user_agent";
 
@@ -57,6 +60,10 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
     return this.appConfig.getInt(CONFIG_EXPIRY_LEEWAY_MS, 0);
   }
 
+  protected boolean getTokenBoundClientIp() {
+    return this.appConfig.getBool(CONFIG_TOKEN_BOUND_CLIENT_IP, true);
+  }
+
   protected boolean getTokenBoundUserAgent() {
     return this.appConfig.getBool(CONFIG_TOKEN_BOUND_USER_AGENT, true);
   }
@@ -66,15 +73,16 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
     return AuthByCodeCredential.class;
   }
 
-  protected String getTokenBoundData(String code) {
+  protected String getClientData() {
+    String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
     String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "false";
-    return STR.fmt("{}|{}", code, userAgent);
+    return STR.fmt("IP={}|UA={}", clientIp, userAgent);
   }
 
   @Override
   protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
     AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
-    String tokenBoundData = getTokenBoundData(authByCodeCredential.getCode());
+    String tokenBoundData = getTokenBoundData(getClientData(), authByCodeCredential.getCode());
 
     // Verify Token
     AuthToken authToken = this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(),
@@ -88,8 +96,12 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
 
   @Override
   public SeriesToken saveToken(String identity, String module, String code, long expiresInMs, long issuedAt) {
-    String tokenBoundData = getTokenBoundData(code);
+    String tokenBoundData = getTokenBoundData(getClientData(), code);
     var seriesToken = authTokenHandler.saveToken(identity, module, tokenBoundData, expiresInMs, issuedAt);
     return seriesToken;
+  }
+
+  protected String getTokenBoundData(String clientData, String code) {
+    return clientData + '|' + code;
   }
 }
