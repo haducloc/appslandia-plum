@@ -40,7 +40,7 @@ import jakarta.servlet.http.HttpServletResponseWrapper;
  */
 public class ContentResponseWrapper extends HttpServletResponseWrapper {
 
-  static final int MEMORY_BLOCK_SIZE = 4096;
+  static final int MEMORY_BLOCK_SIZE = 1024;
 
   final boolean allowSetHeaders;
   final MemoryStream content;
