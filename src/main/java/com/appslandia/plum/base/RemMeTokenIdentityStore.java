@@ -155,7 +155,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), remMeToken.getModule(), true,
         false);
 
-    this.remMeTokenHandler.handleLoginSuccess(remMeToken.getIdentity(), remMeToken.getModule(), curTimeMs, clientData);
+    this.remMeTokenHandler.handleLoginSuccess(remMeToken.getIdentity(), remMeToken.getModule(), clientData, curTimeMs);
     return SecurityUtils.createIdentityStoreResult(principal, principalRoles.getRoles());
   }
 

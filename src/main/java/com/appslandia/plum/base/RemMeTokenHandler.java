@@ -134,6 +134,6 @@ public abstract class RemMeTokenHandler {
     this.remMeTokenManager.removeAll(remMeToken.getIdentity());
   }
 
-  public void handleLoginSuccess(String identity, String module, long loginAt, String clientData) {
+  public void handleLoginSuccess(String identity, String module, String clientData, long loginAt) {
   }
 }
