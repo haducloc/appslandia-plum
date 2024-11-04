@@ -18,16 +18,11 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.defaults;
-
-import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.base.TokenGenerator;
-import com.appslandia.common.base.UUIDGenerator;
-import com.appslandia.common.crypto.PasswordDigester;
-import com.appslandia.common.crypto.TextDigester;
-import com.appslandia.plum.base.AuthTokenHandler;
+package com.appslandia.plum.base;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.servlet.http.HttpServletRequest;
 
 /**
  *
@@ -35,24 +30,20 @@ import jakarta.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class DefaultAuthTokenHandler extends AuthTokenHandler {
+public class LoginLogHandler {
 
-  final TextGenerator tokenGenerator = new TokenGenerator(64);
+  @Inject
+  protected RemMeTokenManager remMeTokenManager;
 
-  final PasswordDigester tokenDigester = new PasswordDigester();
-
-  @Override
-  protected TextGenerator getSeriesGenerator() {
-    return UUIDGenerator.INSTANCE;
+  public void onTokenCompromise(HttpServletRequest request, SeriesToken seriesToken, RemMeToken remMeToken) {
+    this.remMeTokenManager.removeAll(remMeToken.getIdentity());
   }
 
-  @Override
-  protected TextGenerator getTokenGenerator() {
-    return this.tokenGenerator;
-  }
-
-  @Override
-  protected TextDigester getTokenDigester() {
-    return this.tokenDigester;
+  /**
+   * @see LoginTypes
+   * 
+   */
+  public void onLoginSuccess(HttpServletRequest request, String identity, String module, String loginType,
+      long loginAt) {
   }
 }

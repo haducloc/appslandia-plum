@@ -18,41 +18,18 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.defaults;
-
-import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.base.TokenGenerator;
-import com.appslandia.common.base.UUIDGenerator;
-import com.appslandia.common.crypto.PasswordDigester;
-import com.appslandia.common.crypto.TextDigester;
-import com.appslandia.plum.base.AuthTokenHandler;
-
-import jakarta.enterprise.context.ApplicationScoped;
+package com.appslandia.plum.base;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class DefaultAuthTokenHandler extends AuthTokenHandler {
+public class LoginTypes {
 
-  final TextGenerator tokenGenerator = new TokenGenerator(64);
+  public static final String TYPE_LOGIN_FORM = "login_form";
 
-  final PasswordDigester tokenDigester = new PasswordDigester();
+  public static final String TYPE_REMEMBER_ME = "remember_me";
 
-  @Override
-  protected TextGenerator getSeriesGenerator() {
-    return UUIDGenerator.INSTANCE;
-  }
-
-  @Override
-  protected TextGenerator getTokenGenerator() {
-    return this.tokenGenerator;
-  }
-
-  @Override
-  protected TextDigester getTokenDigester() {
-    return this.tokenDigester;
-  }
+  public static final String TYPE_LOGIN_CODE = "login_code";
 }

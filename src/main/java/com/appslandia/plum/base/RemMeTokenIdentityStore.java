@@ -62,6 +62,9 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   protected RemMeTokenHandler remMeTokenHandler;
 
   @Inject
+  protected LoginLogHandler loginLogHandler;
+
+  @Inject
   @Json(Profile.COMPACT)
   protected JsonProcessor jsonProcessor;
 
@@ -123,7 +126,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
 
     if (invalidCode.value != null) {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
-        this.remMeTokenHandler.handleTokenCompromise(remMeToken);
+        this.loginLogHandler.onTokenCompromise(this.currentRequest, seriesToken, remMeToken);
       }
       return InvalidAuthResult.valueOf(invalidCode.value);
     }
@@ -151,7 +154,8 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     this.currentRequest.setAttribute(LoginToken.class.getName(),
         new LoginToken(newLoginToken, (int) (expiresInMs / 1000L), remMeToken.getIdentity(), remMeToken.getModule()));
 
-    this.remMeTokenHandler.handleLoginSuccess(remMeToken.getIdentity(), remMeToken.getModule(), clientData, curTimeMs);
+    this.loginLogHandler.onLoginSuccess(this.currentRequest, remMeToken.getIdentity(), remMeToken.getModule(),
+        LoginTypes.TYPE_REMEMBER_ME, curTimeMs);
 
     // AuthUserPrincipal(rememberMe=true, re-authentication=false)
     AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), remMeToken.getModule(), true,

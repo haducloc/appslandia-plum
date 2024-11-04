@@ -37,7 +37,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class DefaultRemMeTokenHandler extends RemMeTokenHandler {
 
-  final TextGenerator tokenGenerator = new TokenGenerator(32);
+  final TextGenerator tokenGenerator = new TokenGenerator(64);
 
   final PasswordDigester tokenDigester = new PasswordDigester();
 
