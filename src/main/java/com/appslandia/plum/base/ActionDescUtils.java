@@ -26,6 +26,8 @@ import java.lang.reflect.Modifier;
 
 import com.appslandia.common.base.Out;
 
+import jakarta.enterprise.util.AnnotationLiteral;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -65,49 +67,74 @@ public class ActionDescUtils {
   }
 
   public static CacheControl createCacheControl(String policy) {
-    return new CacheControl() {
-
-      boolean nocache = CacheControl.NO_CACHE_POLICY.equals(policy);
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return CacheControl.class;
-      }
-
-      @Override
-      public String value() {
-        return policy;
-      }
-
-      @Override
-      public boolean nocache() {
-        return this.nocache;
-      }
-    };
-  };
+    return new CacheControlLiteral(policy);
+  }
 
   public static EnableJsonError createEnableJsonError() {
-    return new EnableJsonError() {
-
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return EnableJsonError.class;
-      }
-    };
-  };
+    return new EnableJsonErrorLiteral();
+  }
 
   public static ConsumeType createConsumeType(String contentType) {
-    return new ConsumeType() {
+    return new ConsumeTypeLiteral(contentType);
+  }
 
-      @Override
-      public Class<? extends Annotation> annotationType() {
-        return ConsumeType.class;
-      }
+  @SuppressWarnings("all")
+  public static class CacheControlLiteral extends AnnotationLiteral<CacheControl> implements CacheControl {
+    private static final long serialVersionUID = 1L;
 
-      @Override
-      public String value() {
-        return contentType;
-      }
-    };
-  };
+    final String policy;
+
+    public CacheControlLiteral(String policy) {
+      this.policy = policy;
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+      return CacheControl.class;
+    }
+
+    @Override
+    public String value() {
+      return this.policy;
+    }
+
+    @Override
+    public boolean nocache() {
+      return CacheControl.NO_CACHE_POLICY.equals(policy);
+    }
+  }
+
+  @SuppressWarnings("all")
+  public static class EnableJsonErrorLiteral extends AnnotationLiteral<EnableJsonError> implements EnableJsonError {
+    private static final long serialVersionUID = 1L;
+
+    public EnableJsonErrorLiteral() {
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+      return EnableJsonError.class;
+    }
+  }
+
+  @SuppressWarnings("all")
+  public static class ConsumeTypeLiteral extends AnnotationLiteral<ConsumeType> implements ConsumeType {
+    private static final long serialVersionUID = 1L;
+
+    final String contentType;
+
+    public ConsumeTypeLiteral(String contentType) {
+      this.contentType = contentType;
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+      return ConsumeType.class;
+    }
+
+    @Override
+    public String value() {
+      return this.contentType;
+    }
+  }
 }
