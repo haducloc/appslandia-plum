@@ -21,7 +21,6 @@
 package com.appslandia.plum.base;
 
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
@@ -32,11 +31,12 @@ import jakarta.servlet.http.HttpServletRequest;
 @ApplicationScoped
 public class LoginLogHandler {
 
-  @Inject
-  protected RemMeTokenManager remMeTokenManager;
-
-  public void onTokenCompromise(HttpServletRequest request, SeriesToken seriesToken, RemMeToken remMeToken) {
-    this.remMeTokenManager.removeAll(remMeToken.getIdentity());
+  /**
+   * @see LoginTypes
+   * 
+   */
+  public void onLoginFailed(HttpServletRequest request, String identity, String module, String loginType,
+      long loginAt) {
   }
 
   /**

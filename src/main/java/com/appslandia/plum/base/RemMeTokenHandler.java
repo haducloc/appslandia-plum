@@ -130,10 +130,7 @@ public abstract class RemMeTokenHandler {
     this.remMeTokenManager.remove(series);
   }
 
-  public void handleTokenCompromise(RemMeToken remMeToken) {
-    this.remMeTokenManager.removeAll(remMeToken.getIdentity());
-  }
-
-  public void handleLoginSuccess(String identity, String module, String clientData, long loginAt) {
+  public void removeAll(String identity) {
+    this.remMeTokenManager.removeAll(identity);
   }
 }
