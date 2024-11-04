@@ -35,7 +35,7 @@ public class LoginLogHandler {
    * @see LoginTypes
    * 
    */
-  public void onLoginFailed(HttpServletRequest request, String identity, String module, String loginType,
+  public void onLoginFailure(HttpServletRequest request, String identity, String module, String loginType,
       long loginAt) {
   }
 
