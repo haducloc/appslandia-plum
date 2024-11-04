@@ -20,13 +20,10 @@
 
 package com.appslandia.plum.base;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 import com.appslandia.common.base.Out;
-
-import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  *
@@ -64,77 +61,5 @@ public class ActionDescUtils {
       return false;
     }
     return true;
-  }
-
-  public static CacheControl createCacheControl(String policy) {
-    return new CacheControlLiteral(policy);
-  }
-
-  public static EnableJsonError createEnableJsonError() {
-    return new EnableJsonErrorLiteral();
-  }
-
-  public static ConsumeType createConsumeType(String contentType) {
-    return new ConsumeTypeLiteral(contentType);
-  }
-
-  @SuppressWarnings("all")
-  public static class CacheControlLiteral extends AnnotationLiteral<CacheControl> implements CacheControl {
-    private static final long serialVersionUID = 1L;
-
-    final String policy;
-
-    public CacheControlLiteral(String policy) {
-      this.policy = policy;
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return CacheControl.class;
-    }
-
-    @Override
-    public String value() {
-      return this.policy;
-    }
-
-    @Override
-    public boolean nocache() {
-      return CacheControl.NO_CACHE_POLICY.equals(policy);
-    }
-  }
-
-  @SuppressWarnings("all")
-  public static class EnableJsonErrorLiteral extends AnnotationLiteral<EnableJsonError> implements EnableJsonError {
-    private static final long serialVersionUID = 1L;
-
-    public EnableJsonErrorLiteral() {
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return EnableJsonError.class;
-    }
-  }
-
-  @SuppressWarnings("all")
-  public static class ConsumeTypeLiteral extends AnnotationLiteral<ConsumeType> implements ConsumeType {
-    private static final long serialVersionUID = 1L;
-
-    final String contentType;
-
-    public ConsumeTypeLiteral(String contentType) {
-      this.contentType = contentType;
-    }
-
-    @Override
-    public Class<? extends Annotation> annotationType() {
-      return ConsumeType.class;
-    }
-
-    @Override
-    public String value() {
-      return this.contentType;
-    }
   }
 }

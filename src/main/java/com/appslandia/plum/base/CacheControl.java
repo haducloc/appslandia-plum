@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.lang.annotation.Annotation;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,6 +28,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.appslandia.common.utils.StringUtils;
+
+import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
  *
@@ -44,5 +47,31 @@ public @interface CacheControl {
 
   boolean nocache() default false;
 
-  public static final CacheControl NO_CACHE = ActionDescUtils.createCacheControl(NO_CACHE_POLICY);
+  public static final CacheControl NO_CACHE = new CacheControlLiteral(NO_CACHE_POLICY);
+
+  @SuppressWarnings("all")
+  public static class CacheControlLiteral extends AnnotationLiteral<CacheControl> implements CacheControl {
+    private static final long serialVersionUID = 1L;
+
+    final String policy;
+
+    public CacheControlLiteral(String policy) {
+      this.policy = policy;
+    }
+
+    @Override
+    public Class<? extends Annotation> annotationType() {
+      return CacheControl.class;
+    }
+
+    @Override
+    public String value() {
+      return this.policy;
+    }
+
+    @Override
+    public boolean nocache() {
+      return CacheControl.NO_CACHE_POLICY.equals(policy);
+    }
+  }
 }
