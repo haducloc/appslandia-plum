@@ -21,11 +21,11 @@
 package com.appslandia.plum.base;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.appslandia.common.models.EntityBase;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -38,51 +38,55 @@ import jakarta.validation.constraints.NotNull;
  *
  */
 @Entity
-public class AuthToken extends EntityBase {
+public class LoginEvent extends EntityBase {
   private static final long serialVersionUID = 1L;
+
+  public static final int LOGIN_TYPE_FORM = 1;
+  public static final int LOGIN_TYPE_REMEMBER_ME = 2;
+  public static final int LOGIN_TYPE_CODE = 3;
+
+  public static final int LOGIN_RESULT_SUCCESS = 0;
+  public static final int LOGIN_FAILURE_FORM = 1;
+  public static final int LOGIN_FAILURE_REMEMBER_ME_TOKEN_COMPROMISED = 2;
+  public static final int LOGIN_FAILURE_CODE = 3;
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID series;
+  private UUID loginEventId;
 
   @NotNull
-  @Column(updatable = false)
-  private String hashToken;
-
-  @Column(updatable = false)
   private String identity;
 
   @NotNull
-  @Column(updatable = false)
   private String module;
 
   @NotNull
-  @Column(updatable = false)
-  private Long expiresAt;
+  private Integer loginResult;
 
   @NotNull
-  @Column(updatable = false)
-  private Long issuedAt;
+  private Integer eventType;
+
+  @NotNull
+  private String clientIp;
+
+  private String userAgent;
+
+  private UUID series;
+
+  @NotNull
+  private LocalDateTime loginAtUtc;
 
   @Override
   public Serializable getPk() {
-    return this.series;
+    return this.loginEventId;
   }
 
-  public UUID getSeries() {
-    return this.series;
+  public UUID getLoginEventId() {
+    return this.loginEventId;
   }
 
-  public void setSeries(UUID series) {
-    this.series = series;
-  }
-
-  public String getHashToken() {
-    return this.hashToken;
-  }
-
-  public void setHashToken(String hashToken) {
-    this.hashToken = hashToken;
+  public void setLoginEventId(UUID loginEventId) {
+    this.loginEventId = loginEventId;
   }
 
   public String getIdentity() {
@@ -101,19 +105,51 @@ public class AuthToken extends EntityBase {
     this.module = module;
   }
 
-  public Long getExpiresAt() {
-    return this.expiresAt;
+  public Integer getLoginResult() {
+    return this.loginResult;
   }
 
-  public void setExpiresAt(Long expiresAt) {
-    this.expiresAt = expiresAt;
+  public void setLoginResult(Integer loginResult) {
+    this.loginResult = loginResult;
   }
 
-  public Long getIssuedAt() {
-    return this.issuedAt;
+  public Integer getEventType() {
+    return this.eventType;
   }
 
-  public void setIssuedAt(Long issuedAt) {
-    this.issuedAt = issuedAt;
+  public void setEventType(Integer eventType) {
+    this.eventType = eventType;
+  }
+
+  public String getClientIp() {
+    return this.clientIp;
+  }
+
+  public void setClientIp(String clientIp) {
+    this.clientIp = clientIp;
+  }
+
+  public String getUserAgent() {
+    return this.userAgent;
+  }
+
+  public void setUserAgent(String userAgent) {
+    this.userAgent = userAgent;
+  }
+
+  public UUID getSeries() {
+    return this.series;
+  }
+
+  public void setSeries(UUID series) {
+    this.series = series;
+  }
+
+  public LocalDateTime getLoginAtUtc() {
+    return this.loginAtUtc;
+  }
+
+  public void setLoginAtUtc(LocalDateTime loginAtUtc) {
+    this.loginAtUtc = loginAtUtc;
   }
 }

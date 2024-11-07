@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.UUID;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -29,11 +31,11 @@ public interface RemMeTokenManager {
 
   void save(RemMeToken remMeToken);
 
-  RemMeToken load(String series);
+  RemMeToken load(UUID series);
 
-  void reissue(String series, String hashToken, long expiresInMs, long issuedAt);
+  void update(UUID series, String hashToken, long expiresInMs, long issuedAt);
 
-  void remove(String series);
+  void remove(UUID series);
 
   void removeAll(String identity);
 }

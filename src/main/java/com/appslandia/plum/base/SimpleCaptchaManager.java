@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.UUID;
+
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -37,17 +39,19 @@ public abstract class SimpleCaptchaManager implements CaptchaManager {
   public static final String PARAM_CAPTCHA_WORDS = "captchaWords";
   public static final String REQUEST_ATTRIBUTE_CAPTCHA_DATA = "captchaData";
 
-  protected abstract TextGenerator getCaptchaIdGenerator();
-
   protected abstract TextGenerator getWordsGenerator();
 
   protected abstract Object saveCaptcha(HttpServletRequest request, String captchaId, String captchaWords);
 
   protected abstract Object parseCaptchaData(HttpServletRequest request, String captchaId);
 
+  protected String generateCaptchaId() {
+    return UUID.randomUUID().toString();
+  }
+
   @Override
   public void initCaptcha(HttpServletRequest request) {
-    String captchaId = getCaptchaIdGenerator().generate();
+    String captchaId = generateCaptchaId();
     String captchaWords = getWordsGenerator().generate();
 
     Object captchaData = saveCaptcha(request, captchaId, captchaWords);

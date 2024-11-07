@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.UUID;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -27,14 +29,14 @@ package com.appslandia.plum.base;
  */
 public class SeriesToken {
 
-  private String series;
+  private UUID series;
   private String token;
 
-  public String getSeries() {
+  public UUID getSeries() {
     return this.series;
   }
 
-  public SeriesToken setSeries(String series) {
+  public SeriesToken setSeries(UUID series) {
     this.series = series;
     return this;
   }

@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.UUID;
+
 import jakarta.security.enterprise.credential.Credential;
 
 /**
@@ -29,19 +31,19 @@ import jakarta.security.enterprise.credential.Credential;
  */
 public class AuthByCodeCredential implements Credential {
 
-  final String series;
+  final UUID series;
   final String token;
 
   final String code;
 
-  public AuthByCodeCredential(String series, String token, String code) {
+  public AuthByCodeCredential(UUID series, String token, String code) {
     this.series = series;
     this.token = token;
 
     this.code = code;
   }
 
-  public String getSeries() {
+  public UUID getSeries() {
     return this.series;
   }
 

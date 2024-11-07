@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.UUID;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -29,9 +31,9 @@ public interface LongTaskManager {
 
   void save(LongTask longTask);
 
-  LongTask load(String series);
+  LongTask load(UUID series);
 
-  void updateDone(String series, String status, String message, long doneAt);
+  void updateDone(UUID series, int status, String message, long doneAt);
 
-  void remove(String series);
+  void remove(UUID series);
 }

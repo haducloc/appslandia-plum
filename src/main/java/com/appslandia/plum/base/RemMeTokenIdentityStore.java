@@ -29,6 +29,7 @@ import com.appslandia.common.base.Out;
 import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
+import com.appslandia.common.utils.DateUtils;
 import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.SecurityUtils;
 import com.appslandia.plum.utils.ServletUtils;
@@ -62,7 +63,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   protected RemMeTokenHandler remMeTokenHandler;
 
   @Inject
-  protected LoginLogHandler loginLogHandler;
+  protected LoginEventManager loginEventManager;
 
   @Inject
   @Json(Profile.COMPACT)
@@ -88,7 +89,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
 
   protected String getClientData() {
     String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
-    String userAgent = getTokenBoundUserAgent() ? this.currentRequest.getHeader("User-Agent") : "false";
+    String userAgent = getTokenBoundUserAgent() ? ServletUtils.getUserAgent(this.currentRequest) : "false";
     return STR.fmt("IP={}|UA={}", clientIp, userAgent);
   }
 
@@ -128,8 +129,20 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
         this.remMeTokenHandler.removeAll(remMeToken.getIdentity());
 
-        this.loginLogHandler.onLoginFailure(this.currentRequest, remMeToken.getIdentity(), remMeToken.getModule(),
-            LoginTypes.TYPE_REMEMBER_ME, System.currentTimeMillis());
+        // LoginEvent
+        LoginEvent loginEvent = new LoginEvent();
+        loginEvent.setIdentity(remMeToken.getIdentity());
+        loginEvent.setModule(remMeToken.getModule());
+
+        loginEvent.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
+        loginEvent.setLoginResult(LoginEvent.LOGIN_FAILURE_REMEMBER_ME_TOKEN_COMPROMISED);
+
+        loginEvent.setSeries(remMeToken.getSeries());
+        loginEvent.setClientIp(ServletUtils.getClientIp(this.currentRequest));
+        loginEvent.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
+        loginEvent.setLoginAtUtc(DateUtils.nowAtUTC().toLocalDateTime());
+
+        this.loginEventManager.save(loginEvent);
       }
       return InvalidAuthResult.valueOf(invalidCode.value);
     }
@@ -147,7 +160,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
 
     long curTimeMs = System.currentTimeMillis();
     long expiresInMs = remMeCookieSliding ? getExpiresInMs(remMeToken.getExpiresAt(), curTimeMs, remMeCookieAge)
-        : remMeToken.getExpiresAt() - curTimeMs;
+        : (remMeToken.getExpiresAt() - curTimeMs);
 
     String clearToken = this.remMeTokenHandler.reissue(remMeToken.getSeries(), remMeToken.getIdentity(),
         remMeToken.getModule(), clientData, expiresInMs, curTimeMs);
@@ -157,8 +170,20 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     this.currentRequest.setAttribute(LoginToken.class.getName(),
         new LoginToken(newLoginToken, (int) (expiresInMs / 1000L), remMeToken.getIdentity(), remMeToken.getModule()));
 
-    this.loginLogHandler.onLoginSuccess(this.currentRequest, remMeToken.getIdentity(), remMeToken.getModule(),
-        LoginTypes.TYPE_REMEMBER_ME, curTimeMs);
+    // LoginEvent
+    LoginEvent loginEvent = new LoginEvent();
+    loginEvent.setIdentity(remMeToken.getIdentity());
+    loginEvent.setModule(remMeToken.getModule());
+
+    loginEvent.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
+    loginEvent.setLoginResult(LoginEvent.LOGIN_RESULT_SUCCESS);
+
+    loginEvent.setSeries(remMeToken.getSeries());
+    loginEvent.setClientIp(ServletUtils.getClientIp(this.currentRequest));
+    loginEvent.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
+    loginEvent.setLoginAtUtc(DateUtils.toLocalDateTimeUTC(curTimeMs));
+
+    this.loginEventManager.save(loginEvent);
 
     // AuthUserPrincipal(rememberMe=true, re-authentication=false)
     AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), remMeToken.getModule(), true,

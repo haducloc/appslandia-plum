@@ -20,7 +20,7 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.base.TextGenerator;
+import java.util.UUID;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +34,9 @@ public abstract class TempDataManager {
 
   public static final String PARAM_TEMP_DATA_ID = "tempDataId";
 
-  protected abstract TextGenerator getTempDataIdGenerator();
+  protected String generateTempDataId() {
+    return UUID.randomUUID().toString();
+  }
 
   protected abstract void doSaveTempData(HttpServletRequest request, HttpServletResponse response, String tempDataId,
       TempData tempData);
@@ -44,7 +46,7 @@ public abstract class TempDataManager {
     if ((tempData == null) || tempData.isEmpty()) {
       return null;
     }
-    String tempDataId = getTempDataIdGenerator().generate();
+    String tempDataId = generateTempDataId();
     doSaveTempData(request, response, tempDataId, tempData);
     return tempDataId;
   }

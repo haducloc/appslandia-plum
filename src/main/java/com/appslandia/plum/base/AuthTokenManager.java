@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.UUID;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -29,7 +31,7 @@ public interface AuthTokenManager {
 
   void save(AuthToken authToken);
 
-  AuthToken load(String series);
+  AuthToken load(UUID series);
 
-  void remove(String series);
+  void remove(UUID series);
 }

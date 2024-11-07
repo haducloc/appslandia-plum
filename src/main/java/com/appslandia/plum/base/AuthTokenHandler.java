@@ -21,6 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.util.Locale;
+import java.util.UUID;
 
 import com.appslandia.common.base.Out;
 import com.appslandia.common.base.TextGenerator;
@@ -40,8 +41,6 @@ public abstract class AuthTokenHandler {
   @Inject
   protected AuthTokenManager authTokenManager;
 
-  protected abstract TextGenerator getSeriesGenerator();
-
   protected abstract TextGenerator getTokenGenerator();
 
   protected abstract TextDigester getTokenDigester();
@@ -54,13 +53,10 @@ public abstract class AuthTokenHandler {
 
     // AuthToken
     AuthToken authToken = new AuthToken();
-    authToken.setSeries(getSeriesGenerator().generate());
-
     String clearToken = getTokenGenerator().generate();
     long expiresAt = issuedAt + expiresInMs;
 
-    String tokenData = getTokenData(authToken.getSeries(), clearToken, identity, module, tokenBoundData, expiresAt,
-        issuedAt);
+    String tokenData = getTokenData(clearToken, identity, module, tokenBoundData, expiresAt, issuedAt);
     authToken.setHashToken(getTokenDigester().digest(tokenData));
 
     authToken.setIdentity(identity);
@@ -74,7 +70,7 @@ public abstract class AuthTokenHandler {
     return new SeriesToken().setSeries(authToken.getSeries()).setToken(clearToken);
   }
 
-  public AuthToken verifyToken(String series, String token, String module, String tokenBoundData, int expiryLeewayMs,
+  public AuthToken verifyToken(UUID series, String token, String module, String tokenBoundData, int expiryLeewayMs,
       Out<String> invalidCode) {
     Asserts.notNull(series);
     Asserts.notNull(token);
@@ -88,8 +84,8 @@ public abstract class AuthTokenHandler {
     }
 
     // Verify Token
-    String tokenData = getTokenData(authToken.getSeries(), token, authToken.getIdentity(), authToken.getModule(),
-        tokenBoundData, authToken.getExpiresAt(), authToken.getIssuedAt());
+    String tokenData = getTokenData(token, authToken.getIdentity(), authToken.getModule(), tokenBoundData,
+        authToken.getExpiresAt(), authToken.getIssuedAt());
 
     if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
@@ -110,13 +106,12 @@ public abstract class AuthTokenHandler {
     return authToken;
   }
 
-  protected String getTokenData(String series, String token, String identity, String module, String tokenBoundData,
-      long expiresAt, long issuedAt) {
-    return String.join("|", series, token, identity, module, tokenBoundData, Long.toString(expiresAt),
-        Long.toString(issuedAt));
+  protected String getTokenData(String token, String identity, String module, String tokenBoundData, long expiresAt,
+      long issuedAt) {
+    return String.join("|", token, identity, module, tokenBoundData, Long.toString(expiresAt), Long.toString(issuedAt));
   }
 
-  public void remove(String series) {
+  public void remove(UUID series) {
     this.authTokenManager.remove(series);
   }
 }

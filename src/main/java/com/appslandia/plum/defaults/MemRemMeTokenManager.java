@@ -22,6 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import com.appslandia.common.base.LruMap;
 import com.appslandia.common.utils.Asserts;
@@ -38,15 +39,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MemRemMeTokenManager implements RemMeTokenManager {
 
-  final Map<String, RemMeToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
+  final Map<UUID, RemMeToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
 
   @Override
   public void save(RemMeToken remMeToken) {
+    remMeToken.setSeries(UUID.randomUUID());
     this.tokenMap.put(remMeToken.getSeries(), copy(remMeToken));
   }
 
   @Override
-  public RemMeToken load(String series) {
+  public RemMeToken load(UUID series) {
     RemMeToken remMeToken = this.tokenMap.get(series);
     if (remMeToken == null) {
       return null;
@@ -55,7 +57,7 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
   }
 
   @Override
-  public void reissue(String series, String hashToken, long expiresInMs, long issuedAt) {
+  public void update(UUID series, String hashToken, long expiresInMs, long issuedAt) {
     RemMeToken obj = this.tokenMap.get(series);
     Asserts.notNull(obj);
 
@@ -65,7 +67,7 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
   }
 
   @Override
-  public void remove(String series) {
+  public void remove(UUID series) {
     this.tokenMap.remove(series);
   }
 
@@ -75,14 +77,14 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
   }
 
   static RemMeToken copy(RemMeToken obj) {
-    RemMeToken copy = new RemMeToken();
-    copy.setSeries(obj.getSeries());
-    copy.setHashToken(obj.getHashToken());
-    copy.setIdentity(obj.getIdentity());
-    copy.setModule(obj.getModule());
+    RemMeToken token = new RemMeToken();
+    token.setSeries(obj.getSeries());
+    token.setHashToken(obj.getHashToken());
+    token.setIdentity(obj.getIdentity());
+    token.setModule(obj.getModule());
 
-    copy.setExpiresAt(obj.getExpiresAt());
-    copy.setIssuedAt(obj.getIssuedAt());
-    return copy;
+    token.setExpiresAt(obj.getExpiresAt());
+    token.setIssuedAt(obj.getIssuedAt());
+    return token;
   }
 }

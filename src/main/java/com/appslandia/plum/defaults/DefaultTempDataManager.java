@@ -20,8 +20,6 @@
 
 package com.appslandia.plum.defaults;
 
-import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.base.UUIDGenerator;
 import com.appslandia.plum.base.SessionTempDataManager;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -33,9 +31,4 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 @ApplicationScoped
 public class DefaultTempDataManager extends SessionTempDataManager {
-
-  @Override
-  protected TextGenerator getTempDataIdGenerator() {
-    return UUIDGenerator.INSTANCE;
-  }
 }

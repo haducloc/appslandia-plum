@@ -262,6 +262,10 @@ public class ServletUtils {
     return !value.isEmpty() ? value : request.getRemoteAddr();
   }
 
+  public static String getUserAgent(HttpServletRequest request) {
+    return request.getHeader("User-Agent");
+  }
+
   public static String getAppDir(ServletContext sc) {
     String appDir = sc.getRealPath("/");
     Asserts.notNull(appDir, "Couldn't determine appDir.");

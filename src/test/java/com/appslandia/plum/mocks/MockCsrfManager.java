@@ -20,8 +20,8 @@
 
 package com.appslandia.plum.mocks;
 
-import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.utils.Asserts;
+import java.util.UUID;
+
 import com.appslandia.plum.base.SessionCsrfManager;
 
 /**
@@ -31,24 +31,10 @@ import com.appslandia.plum.base.SessionCsrfManager;
  */
 public class MockCsrfManager extends SessionCsrfManager {
 
-  public static final String MOCK_CSRF_ID = "mockCsrfId";
-
-  final TextGenerator csrfIdGenerator = new TextGenerator() {
-
-    @Override
-    public String generate() {
-      return MOCK_CSRF_ID;
-    }
-
-    @Override
-    public boolean verify(String value) {
-      Asserts.notNull(value);
-      return value.equals(MOCK_CSRF_ID);
-    }
-  };
+  public static final String MOCK_CSRF_ID = UUID.randomUUID().toString();
 
   @Override
-  protected TextGenerator getCsrfIdGenerator() {
-    return this.csrfIdGenerator;
+  protected String generateCsrfId() {
+    return MOCK_CSRF_ID;
   }
 }

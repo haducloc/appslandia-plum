@@ -20,30 +20,16 @@
 
 package com.appslandia.plum.base;
 
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
  *
  */
-@ApplicationScoped
-public class LoginLogHandler {
+public interface LoginEventManager {
 
-  /**
-   * @see LoginTypes
-   * 
-   */
-  public void onLoginFailure(HttpServletRequest request, String identity, String module, String loginType,
-      long loginAt) {
-  }
+  void save(LoginEvent event);
 
-  /**
-   * @see LoginTypes
-   * 
-   */
-  public void onLoginSuccess(HttpServletRequest request, String identity, String module, String loginType,
-      long loginAt) {
-  }
+  LoginEvent load(UUID loginEventId);
 }

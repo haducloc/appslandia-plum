@@ -22,7 +22,6 @@ package com.appslandia.plum.defaults;
 
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.base.TokenGenerator;
-import com.appslandia.common.base.UUIDGenerator;
 import com.appslandia.common.crypto.PasswordDigester;
 import com.appslandia.common.crypto.TextDigester;
 import com.appslandia.plum.base.AuthTokenHandler;
@@ -40,11 +39,6 @@ public class DefaultAuthTokenHandler extends AuthTokenHandler {
   final TextGenerator tokenGenerator = new TokenGenerator(64);
 
   final PasswordDigester tokenDigester = new PasswordDigester();
-
-  @Override
-  protected TextGenerator getSeriesGenerator() {
-    return UUIDGenerator.INSTANCE;
-  }
 
   @Override
   protected TextGenerator getTokenGenerator() {

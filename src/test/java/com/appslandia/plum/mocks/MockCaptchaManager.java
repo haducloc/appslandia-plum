@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.mocks;
 
+import java.util.UUID;
+
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.SessionCaptchaManager;
@@ -31,22 +33,8 @@ import com.appslandia.plum.base.SessionCaptchaManager;
  */
 public class MockCaptchaManager extends SessionCaptchaManager {
 
-  public static final String MOCK_CAPTCHA_ID = "mockCaptchaId";
+  public static final String MOCK_CAPTCHA_ID = UUID.randomUUID().toString();
   public static final String MOCK_CAPTCHA_WORDS = "mockCaptchaWords";
-
-  final TextGenerator captchaIdGenerator = new TextGenerator() {
-
-    @Override
-    public String generate() {
-      return MOCK_CAPTCHA_ID;
-    }
-
-    @Override
-    public boolean verify(String value) {
-      Asserts.notNull(value);
-      return value.equals(MOCK_CAPTCHA_ID);
-    }
-  };
 
   final TextGenerator wordsGenerator = new TextGenerator() {
 
@@ -63,8 +51,8 @@ public class MockCaptchaManager extends SessionCaptchaManager {
   };
 
   @Override
-  protected TextGenerator getCaptchaIdGenerator() {
-    return this.captchaIdGenerator;
+  protected String generateCaptchaId() {
+    return MOCK_CAPTCHA_ID;
   }
 
   @Override

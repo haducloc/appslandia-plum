@@ -21,11 +21,14 @@
 package com.appslandia.plum.base;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import com.appslandia.common.models.EntityBase;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
@@ -39,7 +42,8 @@ public class RemMeToken extends EntityBase {
   private static final long serialVersionUID = 1L;
 
   @Id
-  private String series;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID series;
 
   @NotNull
   private String hashToken;
@@ -63,11 +67,11 @@ public class RemMeToken extends EntityBase {
     return this.series;
   }
 
-  public String getSeries() {
+  public UUID getSeries() {
     return this.series;
   }
 
-  public void setSeries(String series) {
+  public void setSeries(UUID series) {
     this.series = series;
   }
 

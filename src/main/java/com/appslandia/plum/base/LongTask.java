@@ -21,11 +21,14 @@
 package com.appslandia.plum.base;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import com.appslandia.common.models.EntityBase;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
@@ -38,18 +41,21 @@ import jakarta.validation.constraints.NotNull;
 public class LongTask extends EntityBase {
   private static final long serialVersionUID = 1L;
 
-  public static final String IN_PROGRESS = "in_progress";
-  public static final String DONE_SUCCESS = "done_success";
-  public static final String DONE_FAILURE = "done_failure";
+  public static final int STATUS_NOT_STARTED = 0;
+  public static final int STATUS_IN_PROGRESS = 1;
+  public static final int STATUS_COMPLETED_SUCCESS = 2;
+  public static final int STATUS_COMPLETED_FAILURE = 3;
 
   @Id
-  private String series;
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID series;
 
   @NotNull
+  @Column(updatable = false)
   private String title;
 
   @NotNull
-  private String status;
+  private Integer status;
 
   @NotNull
   private String message;
@@ -65,11 +71,11 @@ public class LongTask extends EntityBase {
     return this.series;
   }
 
-  public String getSeries() {
+  public UUID getSeries() {
     return this.series;
   }
 
-  public void setSeries(String series) {
+  public void setSeries(UUID series) {
     this.series = series;
   }
 
@@ -81,11 +87,11 @@ public class LongTask extends EntityBase {
     this.title = title;
   }
 
-  public String getStatus() {
+  public Integer getStatus() {
     return this.status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Integer status) {
     this.status = status;
   }
 

@@ -20,8 +20,8 @@
 
 package com.appslandia.plum.mocks;
 
-import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.utils.Asserts;
+import java.util.UUID;
+
 import com.appslandia.plum.base.SessionTempDataManager;
 
 /**
@@ -31,24 +31,10 @@ import com.appslandia.plum.base.SessionTempDataManager;
  */
 public class MockTempDataManager extends SessionTempDataManager {
 
-  public static final String MOCK_TEMP_DATA_ID = "mockTempDataId";
-
-  final TextGenerator tempDataIdGenerator = new TextGenerator() {
-
-    @Override
-    public String generate() {
-      return MOCK_TEMP_DATA_ID;
-    }
-
-    @Override
-    public boolean verify(String value) {
-      Asserts.notNull(value);
-      return value.equals(MOCK_TEMP_DATA_ID);
-    }
-  };
+  public static final String MOCK_TEMP_DATA_ID = UUID.randomUUID().toString();
 
   @Override
-  protected TextGenerator getTempDataIdGenerator() {
-    return this.tempDataIdGenerator;
+  protected String generateTempDataId() {
+    return MOCK_TEMP_DATA_ID;
   }
 }

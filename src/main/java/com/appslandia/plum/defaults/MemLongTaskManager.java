@@ -22,6 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import com.appslandia.common.base.LruMap;
 import com.appslandia.common.utils.Asserts;
@@ -38,21 +39,22 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MemLongTaskManager implements LongTaskManager {
 
-  final Map<String, LongTask> longTaskMap = Collections.synchronizedMap(new LruMap<>(100));
+  final Map<UUID, LongTask> longTaskMap = Collections.synchronizedMap(new LruMap<>(100));
 
   @Override
   public void save(LongTask longTask) {
+    longTask.setSeries(UUID.randomUUID());
     this.longTaskMap.put(longTask.getSeries(), copy(longTask));
   }
 
   @Override
-  public LongTask load(String series) {
+  public LongTask load(UUID series) {
     LongTask obj = this.longTaskMap.get(series);
     return (obj != null) ? copy(obj) : null;
   }
 
   @Override
-  public void updateDone(String series, String status, String message, long doneAt) {
+  public void updateDone(UUID series, int status, String message, long doneAt) {
     LongTask obj = this.longTaskMap.get(series);
     Asserts.notNull(obj);
 
@@ -62,18 +64,18 @@ public class MemLongTaskManager implements LongTaskManager {
   }
 
   @Override
-  public void remove(String series) {
+  public void remove(UUID series) {
     this.longTaskMap.remove(series);
   }
 
   static LongTask copy(LongTask obj) {
-    LongTask copy = new LongTask();
-    copy.setSeries(obj.getSeries());
-    copy.setStatus(obj.getStatus());
-    copy.setMessage(obj.getMessage());
+    LongTask task = new LongTask();
+    task.setSeries(obj.getSeries());
+    task.setStatus(obj.getStatus());
+    task.setMessage(obj.getMessage());
 
-    copy.setCreatedAt(obj.getCreatedAt());
-    copy.setDoneAt(obj.getDoneAt());
-    return copy;
+    task.setCreatedAt(obj.getCreatedAt());
+    task.setDoneAt(obj.getDoneAt());
+    return task;
   }
 }

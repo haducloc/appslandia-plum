@@ -20,9 +20,13 @@
 
 package com.appslandia.plum.defaults;
 
-import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.base.WordsGenerator;
-import com.appslandia.plum.base.SessionCaptchaManager;
+import java.util.Collections;
+import java.util.Map;
+import java.util.UUID;
+
+import com.appslandia.common.base.LruMap;
+import com.appslandia.plum.base.LoginEvent;
+import com.appslandia.plum.base.LoginEventManager;
 
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -32,12 +36,40 @@ import jakarta.enterprise.context.ApplicationScoped;
  *
  */
 @ApplicationScoped
-public class DefaultCaptchaManager extends SessionCaptchaManager {
+public class MemLoginEventManager implements LoginEventManager {
 
-  final TextGenerator wordsGenerator = new WordsGenerator().setLength(6);
+  final Map<UUID, LoginEvent> eventMap = Collections.synchronizedMap(new LruMap<>(100));
 
   @Override
-  protected TextGenerator getWordsGenerator() {
-    return this.wordsGenerator;
+  public void save(LoginEvent event) {
+    event.setLoginEventId(UUID.randomUUID());
+
+    this.eventMap.put(UUID.randomUUID(), event);
+  }
+
+  @Override
+  public LoginEvent load(UUID loginEventId) {
+    LoginEvent event = this.eventMap.get(loginEventId);
+    if (event == null) {
+      return null;
+    }
+    return copy(event);
+  }
+
+  static LoginEvent copy(LoginEvent obj) {
+    LoginEvent event = new LoginEvent();
+
+    event.setLoginEventId(obj.getLoginEventId());
+    event.setIdentity(obj.getIdentity());
+    event.setModule(obj.getModule());
+    event.setEventType(obj.getEventType());
+    event.setLoginResult(obj.getLoginResult());
+
+    event.setClientIp(obj.getClientIp());
+    event.setUserAgent(obj.getUserAgent());
+    event.setSeries(obj.getSeries());
+    event.setLoginAtUtc(obj.getLoginAtUtc());
+
+    return event;
   }
 }

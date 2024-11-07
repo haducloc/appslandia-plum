@@ -22,6 +22,7 @@ package com.appslandia.plum.defaults;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.UUID;
 
 import com.appslandia.common.base.LruMap;
 import com.appslandia.plum.base.AuthToken;
@@ -37,15 +38,16 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class MemAuthTokenManager implements AuthTokenManager {
 
-  final Map<String, AuthToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
+  final Map<UUID, AuthToken> tokenMap = Collections.synchronizedMap(new LruMap<>(100));
 
   @Override
   public void save(AuthToken authToken) {
+    authToken.setSeries(UUID.randomUUID());
     this.tokenMap.put(authToken.getSeries(), copy(authToken));
   }
 
   @Override
-  public AuthToken load(String series) {
+  public AuthToken load(UUID series) {
     AuthToken authToken = this.tokenMap.get(series);
     if (authToken == null) {
       return null;
@@ -54,19 +56,19 @@ public class MemAuthTokenManager implements AuthTokenManager {
   }
 
   @Override
-  public void remove(String series) {
+  public void remove(UUID series) {
     this.tokenMap.remove(series);
   }
 
   static AuthToken copy(AuthToken obj) {
-    AuthToken copy = new AuthToken();
-    copy.setSeries(obj.getSeries());
-    copy.setHashToken(obj.getHashToken());
-    copy.setIdentity(obj.getIdentity());
-    copy.setModule(obj.getModule());
+    AuthToken token = new AuthToken();
+    token.setSeries(obj.getSeries());
+    token.setHashToken(obj.getHashToken());
+    token.setIdentity(obj.getIdentity());
+    token.setModule(obj.getModule());
 
-    copy.setExpiresAt(obj.getExpiresAt());
-    copy.setIssuedAt(obj.getIssuedAt());
-    return copy;
+    token.setExpiresAt(obj.getExpiresAt());
+    token.setIssuedAt(obj.getIssuedAt());
+    return token;
   }
 }

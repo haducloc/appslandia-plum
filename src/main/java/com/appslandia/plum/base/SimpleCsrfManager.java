@@ -20,7 +20,8 @@
 
 package com.appslandia.plum.base;
 
-import com.appslandia.common.base.TextGenerator;
+import java.util.UUID;
+
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,7 +36,9 @@ public abstract class SimpleCsrfManager implements CsrfManager {
   public static final String PARAM_CSRF_ID = "csrfId";
   public static final String REQUEST_ATTRIBUTE_CSRF_DATA = "csrfData";
 
-  protected abstract TextGenerator getCsrfIdGenerator();
+  protected String generateCsrfId() {
+    return UUID.randomUUID().toString();
+  }
 
   protected abstract Object saveCsrf(HttpServletRequest request, String csrfId);
 
@@ -43,7 +46,7 @@ public abstract class SimpleCsrfManager implements CsrfManager {
 
   @Override
   public void initCsrf(HttpServletRequest request) {
-    String csrfId = getCsrfIdGenerator().generate();
+    String csrfId = generateCsrfId();
     Object csrfData = saveCsrf(request, csrfId);
     request.setAttribute(REQUEST_ATTRIBUTE_CSRF_DATA, csrfData);
   }
