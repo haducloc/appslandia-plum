@@ -52,7 +52,7 @@ public class LoginEvent extends EntityBase {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
-  private UUID loginEventId;
+  private UUID eventId;
 
   @NotNull
   private String identity;
@@ -78,15 +78,15 @@ public class LoginEvent extends EntityBase {
 
   @Override
   public Serializable getPk() {
-    return this.loginEventId;
+    return this.eventId;
   }
 
-  public UUID getLoginEventId() {
-    return this.loginEventId;
+  public UUID getEventId() {
+    return this.eventId;
   }
 
-  public void setLoginEventId(UUID loginEventId) {
-    this.loginEventId = loginEventId;
+  public void setEventId(UUID eventId) {
+    this.eventId = eventId;
   }
 
   public String getIdentity() {

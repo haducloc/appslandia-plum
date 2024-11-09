@@ -46,9 +46,8 @@ public class MemLoginEventManager implements LoginEventManager {
 
   @Override
   public void save(LoginEvent event) {
-    event.setLoginEventId(UUID.randomUUID());
-
-    this.eventMap.put(UUID.randomUUID(), event);
+    event.setEventId(UUID.randomUUID());
+    this.eventMap.put(event.getEventId(), event);
   }
 
   @Override
@@ -74,7 +73,7 @@ public class MemLoginEventManager implements LoginEventManager {
   static LoginEvent copy(LoginEvent obj) {
     LoginEvent event = new LoginEvent();
 
-    event.setLoginEventId(obj.getLoginEventId());
+    event.setEventId(obj.getEventId());
     event.setIdentity(obj.getIdentity());
     event.setModule(obj.getModule());
     event.setEventType(obj.getEventType());
