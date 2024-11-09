@@ -22,7 +22,10 @@ package com.appslandia.plum.base;
 
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Set;
+import java.util.UUID;
 
 import com.appslandia.common.base.BaseEncoder;
 import com.appslandia.common.base.Out;
@@ -30,7 +33,6 @@ import com.appslandia.common.cdi.Json;
 import com.appslandia.common.cdi.Json.Profile;
 import com.appslandia.common.json.JsonProcessor;
 import com.appslandia.common.utils.DateUtils;
-import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.SecurityUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -90,7 +92,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   protected String getClientData() {
     String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
     String userAgent = getTokenBoundUserAgent() ? ServletUtils.getUserAgent(this.currentRequest) : "false";
-    return STR.fmt("IP={}|UA={}", clientIp, userAgent);
+    return clientIp + "," + userAgent;
   }
 
   @Override
@@ -98,14 +100,24 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
     // UserPrincipal
     UserPrincipal userPrincipal = (UserPrincipal) callerPrincipal;
     String identity = this.identityHandler.getIdentity(userPrincipal);
-
-    long expiresInMs = this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE) * 1000L;
-    long issuedAt = System.currentTimeMillis();
+    int expiresInSec = this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE);
 
     // Save Token
     SeriesToken seriesToken = this.remMeTokenHandler.saveToken(identity, userPrincipal.getModule(), getClientData(),
-        expiresInMs, issuedAt);
+        expiresInSec);
     return encodeSeriesToken(seriesToken);
+  }
+
+  protected int newExpiresInSec(LocalDateTime curExpiresAtUtc, LocalDateTime curTimeAtUtc) {
+    int maxAge = this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE);
+    int remainingSec = (int) ChronoUnit.SECONDS.between(curTimeAtUtc, curExpiresAtUtc);
+    if (remainingSec < 0) {
+      remainingSec = 0;
+    }
+    if (!this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_SLIDING) || (remainingSec >= maxAge / 2)) {
+      return remainingSec;
+    }
+    return maxAge;
   }
 
   @Override
@@ -129,20 +141,8 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
         this.remMeTokenHandler.removeAll(remMeToken.getIdentity());
 
-        // LoginEvent
-        LoginEvent loginEvent = new LoginEvent();
-        loginEvent.setIdentity(remMeToken.getIdentity());
-        loginEvent.setModule(remMeToken.getModule());
-
-        loginEvent.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
-        loginEvent.setLoginResult(LoginEvent.LOGIN_FAILURE_REMEMBER_ME_TOKEN_COMPROMISED);
-
-        loginEvent.setSeries(remMeToken.getSeries());
-        loginEvent.setClientIp(ServletUtils.getClientIp(this.currentRequest));
-        loginEvent.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
-        loginEvent.setLoginAtUtc(DateUtils.nowAtUTC().toLocalDateTime());
-
-        this.loginEventManager.save(loginEvent);
+        saveLoginEvent(remMeToken, DateUtils.nowAtUtcF3().toLocalDateTime(),
+            LoginEvent.LOGIN_FAILURE_REMEMBER_ME_TOKEN_COMPROMISED);
       }
       return InvalidAuthResult.valueOf(invalidCode.value);
     }
@@ -154,36 +154,19 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
       return InvalidAuthResult.valueOf(invalidCode.get());
     }
 
-    // New Token
-    boolean remMeCookieSliding = this.appConfig.getBool(AppConfig.REMEMBER_ME_COOKIE_SLIDING);
-    int remMeCookieAge = this.appConfig.getInt(AppConfig.REMEMBER_ME_COOKIE_AGE);
-
-    long curTimeMs = System.currentTimeMillis();
-    long expiresInMs = remMeCookieSliding ? getExpiresInMs(remMeToken.getExpiresAt(), curTimeMs, remMeCookieAge)
-        : (remMeToken.getExpiresAt() - curTimeMs);
+    // Issue New Token
+    LocalDateTime curTimeAtUtc = DateUtils.nowAtUtcF3().toLocalDateTime();
+    int expiresInSec = newExpiresInSec(curTimeAtUtc, remMeToken.getExpiresAtUtc());
 
     String clearToken = this.remMeTokenHandler.reissue(remMeToken.getSeries(), remMeToken.getIdentity(),
-        remMeToken.getModule(), clientData, expiresInMs, curTimeMs);
+        remMeToken.getModule(), clientData, curTimeAtUtc, expiresInSec);
 
     // LoginToken
     String newLoginToken = encodeSeriesToken(new SeriesToken().setSeries(seriesToken.getSeries()).setToken(clearToken));
     this.currentRequest.setAttribute(LoginToken.class.getName(),
-        new LoginToken(newLoginToken, (int) (expiresInMs / 1000L), remMeToken.getIdentity(), remMeToken.getModule()));
+        new LoginToken(newLoginToken, (int) expiresInSec, remMeToken.getIdentity(), remMeToken.getModule()));
 
-    // LoginEvent
-    LoginEvent loginEvent = new LoginEvent();
-    loginEvent.setIdentity(remMeToken.getIdentity());
-    loginEvent.setModule(remMeToken.getModule());
-
-    loginEvent.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
-    loginEvent.setLoginResult(LoginEvent.LOGIN_RESULT_SUCCESS);
-
-    loginEvent.setSeries(remMeToken.getSeries());
-    loginEvent.setClientIp(ServletUtils.getClientIp(this.currentRequest));
-    loginEvent.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
-    loginEvent.setLoginAtUtc(DateUtils.toLocalDateTimeUTC(curTimeMs));
-
-    this.loginEventManager.save(loginEvent);
+    saveLoginEvent(remMeToken, curTimeAtUtc, LoginEvent.LOGIN_RESULT_SUCCESS);
 
     // AuthUserPrincipal(rememberMe=true, re-authentication=false)
     AuthUserPrincipal principal = new AuthUserPrincipal(principalRoles.getPrincipal(), remMeToken.getModule(), true,
@@ -200,25 +183,46 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   }
 
   protected String encodeSeriesToken(SeriesToken token) {
-    return BaseEncoder.BASE64_URL_NP.encode(this.jsonProcessor.toString(token).getBytes(StandardCharsets.UTF_8));
+    if (this.appConfig.isEnableDebug()) {
+      return token.getSeries() + ":" + token.getToken();
+    } else {
+      return BaseEncoder.BASE64_URL_NP.encode(this.jsonProcessor.toString(token).getBytes(StandardCharsets.UTF_8));
+    }
   }
 
   protected SeriesToken decodeSeriesToken(String token) {
-    try {
-      return this.jsonProcessor.read(
-          new StringReader(new String(BaseEncoder.BASE64_URL_NP.decode(token), StandardCharsets.UTF_8)),
-          SeriesToken.class);
-    } catch (Exception ex) {
-      return null;
+    if (this.appConfig.isEnableDebug()) {
+      try {
+        int idx = token.indexOf(':');
+        return new SeriesToken().setSeries(UUID.fromString(token.substring(0, idx))).setToken(token.substring(idx + 1));
+      } catch (Exception ex) {
+        return null;
+      }
+    } else {
+      try {
+        return this.jsonProcessor.read(
+            new StringReader(new String(BaseEncoder.BASE64_URL_NP.decode(token), StandardCharsets.UTF_8)),
+            SeriesToken.class);
+      } catch (Exception ex) {
+        return null;
+      }
     }
   }
 
-  static long getExpiresInMs(long curExpiresAt, long curTimeMs, int maxAge) {
-    long remainingMs = curExpiresAt - curTimeMs;
-    if (remainingMs >= maxAge * 500L) {
-      return remainingMs;
-    }
-    return maxAge * 1000L;
+  protected void saveLoginEvent(RemMeToken remMeToken, LocalDateTime loginAtUtc, int loginResult) {
+    LoginEvent loginEvent = new LoginEvent();
+    loginEvent.setIdentity(remMeToken.getIdentity());
+    loginEvent.setModule(remMeToken.getModule());
+
+    loginEvent.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
+    loginEvent.setLoginResult(loginResult);
+
+    loginEvent.setSeries(remMeToken.getSeries());
+    loginEvent.setClientIp(ServletUtils.getClientIp(this.currentRequest));
+    loginEvent.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
+    loginEvent.setLoginAtUtc(loginAtUtc);
+
+    this.loginEventManager.save(loginEvent);
   }
 
   static class LoginToken {

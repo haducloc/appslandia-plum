@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public abstract class AuthTokenHandler {
 
   protected abstract TextDigester getTokenDigester();
 
-  public SeriesToken saveToken(String identity, String module, String tokenBoundData, long expiresInMs, long issuedAt) {
+  public SeriesToken saveToken(String identity, String module, String tokenBoundData, int expiresInSec) {
     Asserts.notNull(module);
     if (identity != null) {
       identity = identity.toLowerCase(Locale.ENGLISH);
@@ -53,17 +54,18 @@ public abstract class AuthTokenHandler {
 
     // AuthToken
     AuthToken authToken = new AuthToken();
-    String clearToken = getTokenGenerator().generate();
-    long expiresAt = issuedAt + expiresInMs;
+    LocalDateTime issuedAtUtc = DateUtils.nowAtUtcF3().toLocalDateTime();
+    LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
 
-    String tokenData = getTokenData(clearToken, identity, module, tokenBoundData, expiresAt, issuedAt);
+    String clearToken = getTokenGenerator().generate();
+    String tokenData = getTokenData(clearToken, identity, module, tokenBoundData, issuedAtUtc, expiresAtUtc);
     authToken.setHashToken(getTokenDigester().digest(tokenData));
 
     authToken.setIdentity(identity);
     authToken.setModule(module);
 
-    authToken.setExpiresAt(expiresAt);
-    authToken.setIssuedAt(issuedAt);
+    authToken.setIssuedAtUtc(issuedAtUtc);
+    authToken.setExpiresAtUtc(expiresAtUtc);
 
     // Save Token
     this.authTokenManager.save(authToken);
@@ -85,15 +87,15 @@ public abstract class AuthTokenHandler {
 
     // Verify Token
     String tokenData = getTokenData(token, authToken.getIdentity(), authToken.getModule(), tokenBoundData,
-        authToken.getExpiresAt(), authToken.getIssuedAt());
+        authToken.getIssuedAtUtc(), authToken.getExpiresAtUtc());
 
     if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
       return authToken;
     }
 
-    // ExpiresAt
-    if (!DateUtils.isFutureTime(authToken.getExpiresAt(), expiryLeewayMs)) {
+    // ExpiresAtUtc
+    if (DateUtils.isExpired(authToken.getExpiresAtUtc(), expiryLeewayMs)) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
       return authToken;
     }
@@ -106,9 +108,9 @@ public abstract class AuthTokenHandler {
     return authToken;
   }
 
-  protected String getTokenData(String token, String identity, String module, String tokenBoundData, long expiresAt,
-      long issuedAt) {
-    return String.join("|", token, identity, module, tokenBoundData, Long.toString(expiresAt), Long.toString(issuedAt));
+  protected String getTokenData(String token, String identity, String module, String tokenBoundData,
+      LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc) {
+    return String.join("|", token, identity, module, tokenBoundData, issuedAtUtc.toString(), expiresAtUtc.toString());
   }
 
   public void remove(UUID series) {

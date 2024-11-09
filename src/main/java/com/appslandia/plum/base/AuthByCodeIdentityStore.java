@@ -21,7 +21,6 @@
 package com.appslandia.plum.base;
 
 import com.appslandia.common.base.Out;
-import com.appslandia.common.utils.STR;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -76,7 +75,7 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
   protected String getClientData() {
     String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
     String userAgent = getTokenBoundUserAgent() ? ServletUtils.getUserAgent(this.currentRequest) : "false";
-    return STR.fmt("IP={}|UA={}", clientIp, userAgent);
+    return clientIp + "," + userAgent;
   }
 
   @Override
@@ -95,13 +94,12 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
   }
 
   @Override
-  public SeriesToken saveToken(String identity, String module, String code, long expiresInMs, long issuedAt) {
+  public SeriesToken saveToken(String identity, String module, String code, int expiresInSec) {
     String tokenBoundData = getTokenBoundData(getClientData(), code);
-    var seriesToken = authTokenHandler.saveToken(identity, module, tokenBoundData, expiresInMs, issuedAt);
-    return seriesToken;
+    return this.authTokenHandler.saveToken(identity, module, tokenBoundData, expiresInSec);
   }
 
   protected String getTokenBoundData(String clientData, String code) {
-    return clientData + '|' + code;
+    return clientData + "," + code;
   }
 }

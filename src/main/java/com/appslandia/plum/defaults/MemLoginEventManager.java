@@ -20,7 +20,11 @@
 
 package com.appslandia.plum.defaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,6 +58,17 @@ public class MemLoginEventManager implements LoginEventManager {
       return null;
     }
     return copy(event);
+  }
+
+  @Override
+  public List<LoginEvent> query(LocalDate loginStart, LocalDate loginEnd) {
+    LocalDateTime loginStartUtc = (loginStart != null) ? loginStart.atTime(LocalTime.MIN) : null;
+    LocalDateTime loginEndUtc = (loginEnd != null) ? loginEnd.atTime(LocalTime.MAX) : null;
+
+    return this.eventMap.values().stream()
+        .filter(e -> ((loginStartUtc == null) || (e.getLoginAtUtc().compareTo(loginStartUtc) >= 0))
+            && ((loginEndUtc == null) || (e.getLoginAtUtc().compareTo(loginEndUtc) <= 0)))
+        .sorted((t1, t2) -> t2.getLoginAtUtc().compareTo(t1.getLoginAtUtc())).map(e -> copy(e)).toList();
   }
 
   static LoginEvent copy(LoginEvent obj) {

@@ -44,8 +44,7 @@ public class RemMeTokenHandlerTest extends MockTestBase {
   @Test
   public void test_verify() {
     try {
-      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3000,
-          System.currentTimeMillis());
+      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3);
       Out<String> invalidCode = new Out<>();
 
       RemMeToken remMeToken = remMeTokenHandler.verifyToken(seriesToken.getSeries(), seriesToken.getToken(), "module1",
@@ -60,8 +59,7 @@ public class RemMeTokenHandlerTest extends MockTestBase {
   @Test
   public void test_verify_expired() {
     try {
-      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3000,
-          System.currentTimeMillis());
+      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3);
       ThreadUtils.sleepInMs(3500);
       Out<String> invalidCode = new Out<>();
 
@@ -78,8 +76,7 @@ public class RemMeTokenHandlerTest extends MockTestBase {
   @Test
   public void test_verify_compromised() {
     try {
-      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3000,
-          System.currentTimeMillis());
+      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3);
       Out<String> invalidCode = new Out<>();
 
       String compromisedToken = "compromised_token";
@@ -96,8 +93,7 @@ public class RemMeTokenHandlerTest extends MockTestBase {
   @Test
   public void test_verify_leeways() {
     try {
-      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3000,
-          System.currentTimeMillis());
+      SeriesToken seriesToken = remMeTokenHandler.saveToken(MemUser.createEmail("user1"), "module1", null, 3);
       ThreadUtils.sleepInMs(2500);
       Out<String> invalidCode = new Out<>();
 

@@ -84,6 +84,7 @@ import com.appslandia.plum.base.ServletModuleParser;
 import com.appslandia.plum.base.TagCookieHandler;
 import com.appslandia.plum.base.TempDataManager;
 import com.appslandia.plum.captcha.CaptchaProducer;
+import com.appslandia.plum.defaults.DefaultAppCacheManager;
 import com.appslandia.plum.defaults.DefaultClientIdParser;
 import com.appslandia.plum.defaults.DefaultFormatProviderFactory;
 import com.appslandia.plum.defaults.DefaultHttpAuthenticationMechanism;
@@ -91,7 +92,6 @@ import com.appslandia.plum.defaults.DefaultIdentityHandler;
 import com.appslandia.plum.defaults.DefaultRemMeTokenHandler;
 import com.appslandia.plum.defaults.DefaultRemoteClientVerifier;
 import com.appslandia.plum.defaults.DefaultServletModuleParser;
-import com.appslandia.plum.defaults.MemAppCacheManager;
 import com.appslandia.plum.defaults.MemRemMeTokenManager;
 import com.appslandia.plum.pebble.PebbleExtensionProvider;
 import com.appslandia.plum.pebble.PebbleTemplateProvider;
@@ -273,7 +273,7 @@ public class MockContainer extends InitializeObject {
     factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.COMPACT });
     factory.register(JsonProcessor.class, GsonProcessor.class, null, new Annotation[] { JsonLiteral.PRETTY });
 
-    factory.register(AppCacheManager.class, MemAppCacheManager.class);
+    factory.register(AppCacheManager.class, DefaultAppCacheManager.class);
 
     factory.register(ActionParser.class, ActionParser.class);
     factory.register(ActionDescProvider.class, MockActionDescProvider.class);

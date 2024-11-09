@@ -20,7 +20,11 @@
 
 package com.appslandia.plum.defaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,18 +58,29 @@ public class MemLongTaskManager implements LongTaskManager {
   }
 
   @Override
-  public void updateDone(UUID series, int status, String message, long doneAt) {
+  public void updateDone(UUID series, int status, String message, LocalDateTime doneAtUtc) {
     LongTask obj = this.longTaskMap.get(series);
     Asserts.notNull(obj);
 
     obj.setStatus(status);
     obj.setMessage(message);
-    obj.setDoneAt(doneAt);
+    obj.setDoneAtUtc(doneAtUtc);
   }
 
   @Override
   public void remove(UUID series) {
     this.longTaskMap.remove(series);
+  }
+
+  @Override
+  public List<LongTask> query(LocalDate createdStart, LocalDate createdEnd) {
+    LocalDateTime createdStartUtc = (createdStart != null) ? createdStart.atTime(LocalTime.MIN) : null;
+    LocalDateTime createdEndUtc = (createdEnd != null) ? createdEnd.atTime(LocalTime.MAX) : null;
+
+    return this.longTaskMap.values().stream()
+        .filter(e -> ((createdStartUtc == null) || (e.getCreatedAtUtc().compareTo(createdStartUtc) >= 0))
+            && ((createdEndUtc == null) || (e.getCreatedAtUtc().compareTo(createdEndUtc) <= 0)))
+        .sorted((t1, t2) -> t2.getCreatedAtUtc().compareTo(t1.getCreatedAtUtc())).map(e -> copy(e)).toList();
   }
 
   static LongTask copy(LongTask obj) {
@@ -74,8 +89,8 @@ public class MemLongTaskManager implements LongTaskManager {
     task.setStatus(obj.getStatus());
     task.setMessage(obj.getMessage());
 
-    task.setCreatedAt(obj.getCreatedAt());
-    task.setDoneAt(obj.getDoneAt());
+    task.setCreatedAtUtc(obj.getCreatedAtUtc());
+    task.setDoneAtUtc(obj.getDoneAtUtc());
     return task;
   }
 }

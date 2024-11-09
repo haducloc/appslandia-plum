@@ -20,6 +20,9 @@
 
 package com.appslandia.plum.base;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,7 +36,9 @@ public interface LongTaskManager {
 
   LongTask load(UUID series);
 
-  void updateDone(UUID series, int status, String message, long doneAt);
+  void updateDone(UUID series, int status, String message, LocalDateTime doneAtUtc);
 
   void remove(UUID series);
+
+  List<LongTask> query(LocalDate createdStart, LocalDate createdEnd);
 }

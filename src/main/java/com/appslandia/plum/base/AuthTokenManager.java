@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -34,4 +36,6 @@ public interface AuthTokenManager {
   AuthToken load(UUID series);
 
   void remove(UUID series);
+
+  List<AuthToken> query(LocalDate issuedStart, LocalDate issuedEnd);
 }

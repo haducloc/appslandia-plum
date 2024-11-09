@@ -20,7 +20,11 @@
 
 package com.appslandia.plum.defaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -60,6 +64,17 @@ public class MemAuthTokenManager implements AuthTokenManager {
     this.tokenMap.remove(series);
   }
 
+  @Override
+  public List<AuthToken> query(LocalDate issuedStart, LocalDate issuedEnd) {
+    LocalDateTime issuedStartUtc = (issuedStart != null) ? issuedStart.atTime(LocalTime.MIN) : null;
+    LocalDateTime issuedEndUtc = (issuedEnd != null) ? issuedEnd.atTime(LocalTime.MAX) : null;
+
+    return this.tokenMap.values().stream()
+        .filter(e -> ((issuedStartUtc == null) || (e.getIssuedAtUtc().compareTo(issuedStartUtc) >= 0))
+            && ((issuedEndUtc == null) || (e.getIssuedAtUtc().compareTo(issuedEndUtc) <= 0)))
+        .sorted((t1, t2) -> t2.getIssuedAtUtc().compareTo(t1.getIssuedAtUtc())).map(e -> copy(e)).toList();
+  }
+
   static AuthToken copy(AuthToken obj) {
     AuthToken token = new AuthToken();
     token.setSeries(obj.getSeries());
@@ -67,8 +82,8 @@ public class MemAuthTokenManager implements AuthTokenManager {
     token.setIdentity(obj.getIdentity());
     token.setModule(obj.getModule());
 
-    token.setExpiresAt(obj.getExpiresAt());
-    token.setIssuedAt(obj.getIssuedAt());
+    token.setIssuedAtUtc(obj.getIssuedAtUtc());
+    token.setExpiresAtUtc(obj.getExpiresAtUtc());
     return token;
   }
 }

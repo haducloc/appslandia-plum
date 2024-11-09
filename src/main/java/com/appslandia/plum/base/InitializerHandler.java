@@ -242,7 +242,7 @@ public class InitializerHandler extends HttpFilter {
         }
 
         // Re-authenticate
-        if (authorize.reauth() && !isReauthenticated(principal)) {
+        if (authorize.reauth() && !isReauthSession(principal)) {
           this.authHandlerProvider.getAuthHandler(requestContext.getModule()).askReauthenticate(request, response,
               requestContext);
           return;
@@ -319,12 +319,12 @@ public class InitializerHandler extends HttpFilter {
     return false;
   }
 
-  protected boolean isReauthenticated(UserPrincipal principal) {
+  protected boolean isReauthSession(UserPrincipal principal) {
     if (principal.getReauthAt() == 0) {
       return false;
     }
     long reauthTimeoutMs = this.appConfig.getLong(AppConfig.CONFIG_REAUTH_TIMEOUT_MS);
-    return DateUtils.isFutureTime(principal.getReauthAt() + reauthTimeoutMs, 0);
+    return !DateUtils.isExpired(principal.getReauthAt() + reauthTimeoutMs, 0L);
   }
 
   protected void doOptions(HttpServletRequest request, HttpServletResponse response, RequestContext requestContext)

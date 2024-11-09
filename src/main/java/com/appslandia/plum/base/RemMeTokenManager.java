@@ -20,6 +20,9 @@
 
 package com.appslandia.plum.base;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -33,9 +36,11 @@ public interface RemMeTokenManager {
 
   RemMeToken load(UUID series);
 
-  void update(UUID series, String hashToken, long expiresInMs, long issuedAt);
+  void update(UUID series, String hashToken, LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc);
 
   void remove(UUID series);
 
   void removeAll(String identity);
+
+  List<RemMeToken> query(LocalDate issuedStart, LocalDate issuedEnd);
 }

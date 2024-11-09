@@ -20,7 +20,11 @@
 
 package com.appslandia.plum.defaults;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -57,13 +61,13 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
   }
 
   @Override
-  public void update(UUID series, String hashToken, long expiresInMs, long issuedAt) {
+  public void update(UUID series, String hashToken, LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc) {
     RemMeToken obj = this.tokenMap.get(series);
     Asserts.notNull(obj);
 
     obj.setHashToken(hashToken);
-    obj.setExpiresAt(issuedAt + expiresInMs);
-    obj.setIssuedAt(issuedAt);
+    obj.setIssuedAtUtc(issuedAtUtc);
+    obj.setExpiresAtUtc(expiresAtUtc);
   }
 
   @Override
@@ -76,6 +80,17 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
     this.tokenMap.entrySet().removeIf(e -> e.getValue().getIdentity().equals(identity));
   }
 
+  @Override
+  public List<RemMeToken> query(LocalDate issuedStart, LocalDate issuedEnd) {
+    LocalDateTime issuedStartUtc = (issuedStart != null) ? issuedStart.atTime(LocalTime.MIN) : null;
+    LocalDateTime issuedEndUtc = (issuedEnd != null) ? issuedEnd.atTime(LocalTime.MAX) : null;
+
+    return this.tokenMap.values().stream()
+        .filter(e -> ((issuedStartUtc == null) || (e.getIssuedAtUtc().compareTo(issuedStartUtc) >= 0))
+            && ((issuedEndUtc == null) || (e.getIssuedAtUtc().compareTo(issuedEndUtc) <= 0)))
+        .sorted((t1, t2) -> t2.getIssuedAtUtc().compareTo(t1.getIssuedAtUtc())).map(e -> copy(e)).toList();
+  }
+
   static RemMeToken copy(RemMeToken obj) {
     RemMeToken token = new RemMeToken();
     token.setSeries(obj.getSeries());
@@ -83,8 +98,8 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
     token.setIdentity(obj.getIdentity());
     token.setModule(obj.getModule());
 
-    token.setExpiresAt(obj.getExpiresAt());
-    token.setIssuedAt(obj.getIssuedAt());
+    token.setIssuedAtUtc(obj.getIssuedAtUtc());
+    token.setExpiresAtUtc(obj.getExpiresAtUtc());
     return token;
   }
 }

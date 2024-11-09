@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -45,25 +46,25 @@ public abstract class RemMeTokenHandler {
 
   protected abstract TextDigester getTokenDigester();
 
-  public SeriesToken saveToken(String identity, String module, String clientData, long expiresInMs, long issuedAt) {
+  public SeriesToken saveToken(String identity, String module, String clientData, int expiresInSec) {
     Asserts.notNull(identity);
     Asserts.notNull(module);
     identity = identity.toLowerCase(Locale.ENGLISH);
 
     // RemMeToken
     RemMeToken remMeToken = new RemMeToken();
+    LocalDateTime issuedAtUtc = DateUtils.nowAtUtcF3().toLocalDateTime();
+    LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
 
     String clearToken = getTokenGenerator().generate();
-    long expiresAt = issuedAt + expiresInMs;
-
-    String tokenData = getTokenData(clearToken, identity, module, clientData, expiresAt, issuedAt);
+    String tokenData = getTokenData(clearToken, identity, module, clientData, issuedAtUtc, expiresAtUtc);
     remMeToken.setHashToken(getTokenDigester().digest(tokenData));
 
     remMeToken.setIdentity(identity);
     remMeToken.setModule(module);
 
-    remMeToken.setExpiresAt(expiresAt);
-    remMeToken.setIssuedAt(issuedAt);
+    remMeToken.setIssuedAtUtc(issuedAtUtc);
+    remMeToken.setExpiresAtUtc(expiresAtUtc);
 
     // Save Token
     this.remMeTokenManager.save(remMeToken);
@@ -85,15 +86,15 @@ public abstract class RemMeTokenHandler {
 
     // Verify Token
     String tokenData = getTokenData(token, remMeToken.getIdentity(), remMeToken.getModule(), clientData,
-        remMeToken.getExpiresAt(), remMeToken.getIssuedAt());
+        remMeToken.getIssuedAtUtc(), remMeToken.getExpiresAtUtc());
 
     if (!getTokenDigester().verify(tokenData, remMeToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_COMPROMISED.getCode();
       return remMeToken;
     }
 
-    // ExpiresAt
-    if (!DateUtils.isFutureTime(remMeToken.getExpiresAt(), expiryLeewayMs)) {
+    // ExpiresAtUtc
+    if (DateUtils.isExpired(remMeToken.getExpiresAtUtc(), expiryLeewayMs)) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
       return remMeToken;
     }
@@ -106,20 +107,21 @@ public abstract class RemMeTokenHandler {
     return remMeToken;
   }
 
-  protected String getTokenData(String token, String identity, String module, String clientData, long expiresAt,
-      long issuedAt) {
-    return String.join("|", token, identity, module, clientData, Long.toString(expiresAt), Long.toString(issuedAt));
+  public String reissue(UUID series, String identity, String module, String clientData, LocalDateTime issuedAtUtc,
+      int expiresInSec) {
+    LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
+    String newToken = this.getTokenGenerator().generate();
+
+    String newTokenData = this.getTokenData(newToken, identity, module, clientData, issuedAtUtc, expiresAtUtc);
+    String newHashToken = this.getTokenDigester().digest(newTokenData);
+
+    this.remMeTokenManager.update(series, newHashToken, issuedAtUtc, expiresAtUtc);
+    return newToken;
   }
 
-  public String reissue(UUID series, String identity, String module, String clientData, long expiresInMs,
-      long issuedAt) {
-    String newToken = this.getTokenGenerator().generate();
-    long expiresAt = issuedAt + expiresInMs;
-    String newTokenData = this.getTokenData(newToken, identity, module, clientData, expiresAt, issuedAt);
-
-    String newHashToken = this.getTokenDigester().digest(newTokenData);
-    this.remMeTokenManager.update(series, newHashToken, expiresInMs, issuedAt);
-    return newToken;
+  protected String getTokenData(String token, String identity, String module, String clientData,
+      LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc) {
+    return String.join("|", token, identity, module, clientData, issuedAtUtc.toString(), expiresAtUtc.toString());
   }
 
   public void remove(UUID series) {

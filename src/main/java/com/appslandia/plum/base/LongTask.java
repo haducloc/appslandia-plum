@@ -21,6 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.appslandia.common.models.EntityBase;
@@ -62,9 +63,9 @@ public class LongTask extends EntityBase {
 
   @NotNull
   @Column(updatable = false)
-  private Long createdAt;
+  private LocalDateTime createdAtUtc;
 
-  private Long doneAt;
+  private LocalDateTime doneAtUtc;
 
   @Override
   public Serializable getPk() {
@@ -103,19 +104,19 @@ public class LongTask extends EntityBase {
     this.message = message;
   }
 
-  public Long getCreatedAt() {
-    return this.createdAt;
+  public LocalDateTime getCreatedAtUtc() {
+    return this.createdAtUtc;
   }
 
-  public void setCreatedAt(Long createdAt) {
-    this.createdAt = createdAt;
+  public void setCreatedAtUtc(LocalDateTime createdAtUtc) {
+    this.createdAtUtc = createdAtUtc;
   }
 
-  public Long getDoneAt() {
-    return this.doneAt;
+  public LocalDateTime getDoneAtUtc() {
+    return this.doneAtUtc;
   }
 
-  public void setDoneAt(Long doneAt) {
-    this.doneAt = doneAt;
+  public void setDoneAtUtc(LocalDateTime doneAtUtc) {
+    this.doneAtUtc = doneAtUtc;
   }
 }

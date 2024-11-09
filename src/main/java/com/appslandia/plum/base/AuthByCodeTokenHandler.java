@@ -27,5 +27,5 @@ package com.appslandia.plum.base;
  */
 public interface AuthByCodeTokenHandler {
 
-  SeriesToken saveToken(String identity, String module, String code, long expiresInMs, long issuedAt);
+  SeriesToken saveToken(String identity, String module, String code, int expiresInSec);
 }

@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -32,4 +34,6 @@ public interface LoginEventManager {
   void save(LoginEvent event);
 
   LoginEvent load(UUID loginEventId);
+
+  List<LoginEvent> query(LocalDate loginStart, LocalDate loginEnd);
 }

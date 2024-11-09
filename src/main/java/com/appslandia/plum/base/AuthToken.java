@@ -21,6 +21,7 @@
 package com.appslandia.plum.base;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import com.appslandia.common.models.EntityBase;
@@ -46,7 +47,6 @@ public class AuthToken extends EntityBase {
   private UUID series;
 
   @NotNull
-  @Column(updatable = false)
   private String hashToken;
 
   @Column(updatable = false)
@@ -57,12 +57,10 @@ public class AuthToken extends EntityBase {
   private String module;
 
   @NotNull
-  @Column(updatable = false)
-  private Long expiresAt;
+  private LocalDateTime expiresAtUtc;
 
   @NotNull
-  @Column(updatable = false)
-  private Long issuedAt;
+  private LocalDateTime issuedAtUtc;
 
   @Override
   public Serializable getPk() {
@@ -101,19 +99,19 @@ public class AuthToken extends EntityBase {
     this.module = module;
   }
 
-  public Long getExpiresAt() {
-    return this.expiresAt;
+  public LocalDateTime getExpiresAtUtc() {
+    return this.expiresAtUtc;
   }
 
-  public void setExpiresAt(Long expiresAt) {
-    this.expiresAt = expiresAt;
+  public void setExpiresAtUtc(LocalDateTime expiresAtUtc) {
+    this.expiresAtUtc = expiresAtUtc;
   }
 
-  public Long getIssuedAt() {
-    return this.issuedAt;
+  public LocalDateTime getIssuedAtUtc() {
+    return this.issuedAtUtc;
   }
 
-  public void setIssuedAt(Long issuedAt) {
-    this.issuedAt = issuedAt;
+  public void setIssuedAtUtc(LocalDateTime issuedAtUtc) {
+    this.issuedAtUtc = issuedAtUtc;
   }
 }
