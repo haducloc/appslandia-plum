@@ -54,7 +54,7 @@ public abstract class AuthTokenHandler {
 
     // AuthToken
     AuthToken authToken = new AuthToken();
-    LocalDateTime issuedAtUtc = DateUtils.nowAtUtcF3().toLocalDateTime();
+    LocalDateTime issuedAtUtc = DateUtils.timeAtUtcF3();
     LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
 
     String clearToken = getTokenGenerator().generate();

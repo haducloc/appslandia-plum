@@ -141,8 +141,7 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
       if (InvalidAuthResult.TOKEN_COMPROMISED.getCode().equals(invalidCode.value)) {
         this.remMeTokenHandler.removeAll(remMeToken.getIdentity());
 
-        saveLoginEvent(remMeToken, DateUtils.nowAtUtcF3().toLocalDateTime(),
-            LoginEvent.LOGIN_FAILURE_REMEMBER_ME_TOKEN_COMPROMISED);
+        saveLoginEvent(remMeToken, DateUtils.timeAtUtcF3(), LoginEvent.LOGIN_FAILURE_REMEMBER_ME_TOKEN_COMPROMISED);
       }
       return InvalidAuthResult.valueOf(invalidCode.value);
     }

@@ -53,7 +53,7 @@ public abstract class RemMeTokenHandler {
 
     // RemMeToken
     RemMeToken remMeToken = new RemMeToken();
-    LocalDateTime issuedAtUtc = DateUtils.nowAtUtcF3().toLocalDateTime();
+    LocalDateTime issuedAtUtc = DateUtils.timeAtUtcF3();
     LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
 
     String clearToken = getTokenGenerator().generate();
