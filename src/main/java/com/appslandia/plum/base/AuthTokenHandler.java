@@ -95,7 +95,7 @@ public abstract class AuthTokenHandler {
     }
 
     // ExpiresAtUtc
-    if (DateUtils.isExpired(authToken.getExpiresAtUtc(), expiryLeewayMs)) {
+    if (DateUtils.betweenMs(authToken.getExpiresAtUtc(), DateUtils.timeAtUtcF3()) > expiryLeewayMs) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
       return authToken;
     }

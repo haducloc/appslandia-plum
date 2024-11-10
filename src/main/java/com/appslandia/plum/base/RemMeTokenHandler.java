@@ -94,7 +94,7 @@ public abstract class RemMeTokenHandler {
     }
 
     // ExpiresAtUtc
-    if (DateUtils.isExpired(remMeToken.getExpiresAtUtc(), expiryLeewayMs)) {
+    if (DateUtils.betweenMs(remMeToken.getExpiresAtUtc(), DateUtils.timeAtUtcF3()) > expiryLeewayMs) {
       invalidCode.value = InvalidAuthResult.TOKEN_EXPIRED.getCode();
       return remMeToken;
     }
