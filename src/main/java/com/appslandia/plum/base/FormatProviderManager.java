@@ -20,12 +20,13 @@
 
 package com.appslandia.plum.base;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
-import com.appslandia.common.base.SimplePool;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -41,8 +42,7 @@ public class FormatProviderManager {
   public static final String CONFIG_POOL_SIZE = FormatProviderManager.class.getName() + ".pool_size";
   public static final String CONFIG_POOL_DISABLED = FormatProviderManager.class.getName() + ".pool_disabled";
 
-  final Map<Language, SimplePool<FormatProvider>> pools = new HashMap<>();
-  final Object mutex = new Object();
+  final ConcurrentMap<Language, BlockingQueue<FormatProviderHolder>> pools = new ConcurrentHashMap<>();
 
   @Inject
   protected AppConfig appConfig;
@@ -60,29 +60,50 @@ public class FormatProviderManager {
 
   public FormatProvider get(Language language) {
     if (this.getPoolDisabled()) {
-      this.formatProviderFactory.produce(language);
+      return this.formatProviderFactory.produce(language);
     }
-    FormatProvider formatProvider = getPool(language).get();
-    return (formatProvider != null) ? formatProvider : this.formatProviderFactory.produce(language);
+    BlockingQueue<FormatProviderHolder> pool = getPool(language);
+
+    // Non-blocking poll
+    FormatProviderHolder holder = pool.poll();
+
+    if (holder == null || holder.value == null) {
+      return this.formatProviderFactory.produce(language);
+    }
+    return holder.value;
   }
 
   public void put(Language language, FormatProvider formatProvider) {
     if (this.getPoolDisabled()) {
       return;
     }
-    getPool(language).put(formatProvider);
+    BlockingQueue<FormatProviderHolder> pool = getPool(language);
+
+    // Non-blocking offer
+    pool.offer(new FormatProviderHolder(formatProvider));
   }
 
-  protected SimplePool<FormatProvider> getPool(Language language) {
-    SimplePool<FormatProvider> pool = this.pools.get(language);
-    if (pool == null) {
-      synchronized (this.mutex) {
-        if ((pool = this.pools.get(language)) == null) {
-          pool = new SimplePool<>(getPoolSize());
-          this.pools.put(language, pool);
-        }
+  protected BlockingQueue<FormatProviderHolder> getPool(Language language) {
+    return this.pools.computeIfAbsent(language, lang -> {
+      int poolSize = getPoolSize();
+
+      BlockingQueue<FormatProviderHolder> pool = new ArrayBlockingQueue<>(poolSize);
+      for (int i = 0; i < poolSize; i++) {
+        pool.offer(new FormatProviderHolder());
       }
+      return pool;
+    });
+  }
+
+  static class FormatProviderHolder {
+    final FormatProvider value;
+
+    public FormatProviderHolder() {
+      this(null);
     }
-    return pool;
+
+    public FormatProviderHolder(FormatProvider value) {
+      this.value = value;
+    }
   }
 }
