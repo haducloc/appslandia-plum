@@ -57,7 +57,7 @@ public abstract class RemMeTokenHandler {
     LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
 
     String clearToken = getTokenGenerator().generate();
-    String tokenData = getTokenData(clearToken, identity, module, clientData, issuedAtUtc, expiresAtUtc);
+    String tokenData = getTokenData(clearToken, identity, module, issuedAtUtc, expiresAtUtc, clientData);
     remMeToken.setHashToken(getTokenDigester().digest(tokenData));
 
     remMeToken.setIdentity(identity);
@@ -85,8 +85,8 @@ public abstract class RemMeTokenHandler {
     }
 
     // Verify Token
-    String tokenData = getTokenData(token, remMeToken.getIdentity(), remMeToken.getModule(), clientData,
-        remMeToken.getIssuedAtUtc(), remMeToken.getExpiresAtUtc());
+    String tokenData = getTokenData(token, remMeToken.getIdentity(), remMeToken.getModule(),
+        remMeToken.getIssuedAtUtc(), remMeToken.getExpiresAtUtc(), clientData);
 
     if (!getTokenDigester().verify(tokenData, remMeToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_COMPROMISED.getCode();
@@ -112,16 +112,16 @@ public abstract class RemMeTokenHandler {
     LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
     String newToken = this.getTokenGenerator().generate();
 
-    String newTokenData = this.getTokenData(newToken, identity, module, clientData, issuedAtUtc, expiresAtUtc);
+    String newTokenData = this.getTokenData(newToken, identity, module, issuedAtUtc, expiresAtUtc, clientData);
     String newHashToken = this.getTokenDigester().digest(newTokenData);
 
     this.remMeTokenManager.update(series, newHashToken, issuedAtUtc, expiresAtUtc);
     return newToken;
   }
 
-  protected String getTokenData(String token, String identity, String module, String clientData,
-      LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc) {
-    return String.join("|", token, identity, module, clientData, issuedAtUtc.toString(), expiresAtUtc.toString());
+  protected String getTokenData(String token, String identity, String module, LocalDateTime issuedAtUtc,
+      LocalDateTime expiresAtUtc, String clientData) {
+    return String.join("|", token, identity, module, issuedAtUtc.toString(), expiresAtUtc.toString(), clientData);
   }
 
   public void remove(UUID series) {

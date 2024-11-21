@@ -83,7 +83,7 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
   @Override
   protected PrincipalRoles doValidate(String module, Credential credential, Out<String> invalidCode) {
     AuthByCodeCredential authByCodeCredential = (AuthByCodeCredential) credential;
-    String tokenBoundData = getTokenBoundData(getClientData(), authByCodeCredential.getCode());
+    String tokenBoundData = getTokenBoundData(authByCodeCredential.getCode(), getClientData());
 
     // Verify Token
     AuthToken authToken = this.authTokenHandler.verifyToken(authByCodeCredential.getSeries(),
@@ -97,11 +97,11 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
 
   @Override
   public SeriesToken saveToken(String identity, String module, String code, int expiresInSec) {
-    String tokenBoundData = getTokenBoundData(getClientData(), code);
+    String tokenBoundData = getTokenBoundData(code, getClientData());
     return this.authTokenHandler.saveToken(identity, module, tokenBoundData, expiresInSec);
   }
 
-  protected String getTokenBoundData(String clientData, String code) {
-    return clientData + "," + code.toLowerCase(Locale.ROOT);
+  protected String getTokenBoundData(String code, String clientData) {
+    return code.toLowerCase(Locale.ROOT) + "," + clientData;
   }
 }

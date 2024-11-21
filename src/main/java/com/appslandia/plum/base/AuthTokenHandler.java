@@ -58,7 +58,7 @@ public abstract class AuthTokenHandler {
     LocalDateTime expiresAtUtc = issuedAtUtc.plusSeconds(expiresInSec);
 
     String clearToken = getTokenGenerator().generate();
-    String tokenData = getTokenData(clearToken, identity, module, tokenBoundData, issuedAtUtc, expiresAtUtc);
+    String tokenData = getTokenData(clearToken, identity, module, issuedAtUtc, expiresAtUtc, tokenBoundData);
     authToken.setHashToken(getTokenDigester().digest(tokenData));
 
     authToken.setIdentity(identity);
@@ -86,8 +86,8 @@ public abstract class AuthTokenHandler {
     }
 
     // Verify Token
-    String tokenData = getTokenData(token, authToken.getIdentity(), authToken.getModule(), tokenBoundData,
-        authToken.getIssuedAtUtc(), authToken.getExpiresAtUtc());
+    String tokenData = getTokenData(token, authToken.getIdentity(), authToken.getModule(), authToken.getIssuedAtUtc(),
+        authToken.getExpiresAtUtc(), tokenBoundData);
 
     if (!getTokenDigester().verify(tokenData, authToken.getHashToken())) {
       invalidCode.value = InvalidAuthResult.TOKEN_INVALID.getCode();
@@ -108,9 +108,9 @@ public abstract class AuthTokenHandler {
     return authToken;
   }
 
-  protected String getTokenData(String token, String identity, String module, String tokenBoundData,
-      LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc) {
-    return String.join("|", token, identity, module, tokenBoundData, issuedAtUtc.toString(), expiresAtUtc.toString());
+  protected String getTokenData(String token, String identity, String module, LocalDateTime issuedAtUtc,
+      LocalDateTime expiresAtUtc, String tokenBoundData) {
+    return String.join("|", token, identity, module, issuedAtUtc.toString(), expiresAtUtc.toString(), tokenBoundData);
   }
 
   public void remove(UUID series) {
