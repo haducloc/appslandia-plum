@@ -75,8 +75,8 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
   }
 
   protected String getClientData() {
-    String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "false";
-    String userAgent = getTokenBoundUserAgent() ? ServletUtils.getUserAgent(this.currentRequest) : "false";
+    String clientIp = getTokenBoundClientIp() ? ServletUtils.getClientIp(this.currentRequest) : "IP";
+    String userAgent = getTokenBoundUserAgent() ? ServletUtils.getUserAgent(this.currentRequest) : "UA";
     return clientIp + "," + userAgent;
   }
 
