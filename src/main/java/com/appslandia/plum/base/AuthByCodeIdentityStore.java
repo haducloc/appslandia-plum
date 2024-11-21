@@ -20,6 +20,8 @@
 
 package com.appslandia.plum.base;
 
+import java.util.Locale;
+
 import com.appslandia.common.base.Out;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -100,6 +102,6 @@ public class AuthByCodeIdentityStore extends IdentityStoreBase implements AuthBy
   }
 
   protected String getTokenBoundData(String clientData, String code) {
-    return clientData + "," + code;
+    return clientData + "," + code.toLowerCase(Locale.ROOT);
   }
 }
