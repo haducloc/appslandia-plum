@@ -209,19 +209,19 @@ public class RemMeTokenIdentityStore implements RememberMeIdentityStore {
   }
 
   protected void saveLoginEvent(RemMeToken remMeToken, LocalDateTime loginAtUtc, int loginResult) {
-    LoginEvent loginEvent = new LoginEvent();
-    loginEvent.setIdentity(remMeToken.getIdentity());
-    loginEvent.setModule(remMeToken.getModule());
+    LoginEvent event = new LoginEvent();
+    event.setIdentity(remMeToken.getIdentity());
+    event.setModule(remMeToken.getModule());
 
-    loginEvent.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
-    loginEvent.setLoginResult(loginResult);
+    event.setEventType(LoginEvent.LOGIN_TYPE_REMEMBER_ME);
+    event.setLoginResult(loginResult);
 
-    loginEvent.setSeries(remMeToken.getSeries());
-    loginEvent.setClientIp(ServletUtils.getClientIp(this.currentRequest));
-    loginEvent.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
-    loginEvent.setLoginAtUtc(loginAtUtc);
+    event.setSeries(remMeToken.getSeries());
+    event.setClientIp(ServletUtils.getClientIp(this.currentRequest));
+    event.setUserAgent(ServletUtils.getUserAgent(this.currentRequest));
+    event.setLoginAtUtc(loginAtUtc);
 
-    this.loginEventManager.save(loginEvent);
+    this.loginEventManager.save(event);
   }
 
   static class LoginToken {
