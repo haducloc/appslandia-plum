@@ -75,8 +75,15 @@ public class PipeTest {
   @Test
   public void test_maskStart() {
     try {
-      Object v = Pipe.transform("0123456789", "maskStart:5");
-      Assertions.assertEquals("*****56789", v);
+      Object v = Pipe.transform("123456789", "maskStart:5");
+      Assertions.assertEquals("*****6789", v);
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+
+    try {
+      Object v = Pipe.transform("1234", "maskStart:5");
+      Assertions.assertEquals("*****", v);
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());
     }
@@ -85,8 +92,15 @@ public class PipeTest {
   @Test
   public void test_maskEnd() {
     try {
-      Object v = Pipe.transform("0123456789", "maskEnd:5");
-      Assertions.assertEquals("01234*****", v);
+      Object v = Pipe.transform("123456789", "maskEnd:5");
+      Assertions.assertEquals("1234*****", v);
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+
+    try {
+      Object v = Pipe.transform("1234", "maskEnd:5");
+      Assertions.assertEquals("*****", v);
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());
     }
