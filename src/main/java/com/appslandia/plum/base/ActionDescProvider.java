@@ -290,9 +290,8 @@ public abstract class ActionDescProvider extends InitializeObject {
       // @Model
       Model model = parameter.getDeclaredAnnotation(Model.class);
       if (model != null) {
-        paramDesc.setModel(model);
-
         Asserts.isNull(parameter.getDeclaredAnnotation(Valid.class), "@Valid is unsupported: parameter={}.", parameter);
+        paramDesc.setModel(model);
         continue;
       }
 
