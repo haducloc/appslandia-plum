@@ -108,7 +108,7 @@ public class ModelBinder {
       BindingNode bindNode = queue.poll();
 
       for (PropertyDescriptor property : Introspector.getBeanInfo(bindNode.model.getClass()).getPropertyDescriptors()) {
-        if (property.getWriteMethod() == null) {
+        if ((property.getWriteMethod() == null) || (property.getReadMethod() == null)) {
           continue;
         }
         // Field
@@ -283,7 +283,7 @@ public class ModelBinder {
 
         // Sub-Model
         if (hasSubProperties(request, propertyPath)) {
-          Object subModel = Asserts.notNull(property.getReadMethod()).invoke(bindNode.model);
+          Object subModel = property.getReadMethod().invoke(bindNode.model);
           if (subModel == null) {
             subModel = field.getType().getDeclaredConstructor().newInstance();
             property.getWriteMethod().invoke(bindNode.model, subModel);
