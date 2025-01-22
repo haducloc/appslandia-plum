@@ -171,9 +171,9 @@ public class ServletUtils {
     String httpPorts = appConfig.getString(AppConfig.CONFIG_X_FORWARDED_PORTS);
     if (httpPorts != null) {
 
-      Asserts.isTrue(X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches(),
-          STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
-
+      if (!X_FORWARDED_PORTS_PATTERN.matcher(httpPorts).matches()) {
+        throw new IllegalStateException(STR.fmt("X-Forwarded-Ports '{}' is invalid.", httpPorts));
+      }
       String[] ports = SplitUtils.splitByComma(httpPorts);
 
       String scheme = getScheme(request);
