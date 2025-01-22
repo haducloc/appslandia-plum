@@ -242,21 +242,21 @@ public abstract class ActionDescProvider extends InitializeObject {
       // ActionRoute
       ActionRoute actionRoute = new ActionRoute(controller, action);
       Asserts.isTrue(!this.actionDescMap.containsKey(actionRoute),
-          "controller/action is duplicated: controller={}, action={}.", controllerClass, actionMethod);
+          "controller/action is already registered: controller={}, action={}.", controllerClass, actionMethod);
 
       // Index
       if (action.equalsIgnoreCase(ServletUtils.ACTION_INDEX)) {
         // @Home
         if (controllerClass.getAnnotation(Home.class) != null) {
-          Asserts.isNull(this.homeController, "@Home is duplicated: controller={}.", controllerClass);
+          Asserts.isNull(this.homeController, "@Home is already registered: controller={}.", controllerClass);
           this.homeController = controller;
         }
       }
 
       // @FormLogin
       if (actionMethod.getDeclaredAnnotation(FormLogin.class) != null) {
-        Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()), "@FormLogin is duplicated: module={}",
-            actionDesc.getModule());
+        Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()),
+            "@FormLogin is already registered: module={}.", actionDesc.getModule());
         this.formLogins.put(actionDesc.getModule(), actionDesc);
       }
       this.actionDescMap.put(actionRoute, actionDesc);
