@@ -31,7 +31,6 @@ import java.util.regex.Pattern;
 import com.appslandia.common.base.CaseInsensitiveSet;
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.Arguments;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
 import com.appslandia.common.utils.PatternUtils;
 import com.appslandia.common.utils.SplitUtils;
@@ -65,7 +64,7 @@ public class CorsPolicy extends InitializeObject {
     Arguments.notNull(this.name);
 
     // allowOrigins
-    Asserts.isTrue(this.anyOrigin || (this.allowOrigins != null), "No allow origin configured.");
+    Arguments.isTrue(this.anyOrigin || (this.allowOrigins != null), "No allow origin configured.");
 
     if (this.allowOrigins != null) {
       this.allowOrigins = Collections.unmodifiableList(this.allowOrigins);

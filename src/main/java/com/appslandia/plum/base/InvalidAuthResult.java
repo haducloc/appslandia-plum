@@ -23,7 +23,6 @@ package com.appslandia.plum.base;
 import java.util.Set;
 
 import com.appslandia.common.utils.Arguments;
-import com.appslandia.common.utils.Asserts;
 
 import jakarta.security.enterprise.CallerPrincipal;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
@@ -46,8 +45,7 @@ public class InvalidAuthResult extends CredentialValidationResult {
 
   private InvalidAuthResult(String code) {
     super((String) null, INVALID_PRINCIPAL, null, null, null);
-
-    this.code = Asserts.notNull(code);
+    this.code = Arguments.notNull(code);
   }
 
   @Override

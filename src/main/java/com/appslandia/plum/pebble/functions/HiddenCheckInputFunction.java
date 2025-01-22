@@ -23,7 +23,7 @@ package com.appslandia.plum.pebble.functions;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
 import com.appslandia.plum.utils.HtmlUtils;
@@ -53,7 +53,7 @@ public abstract class HiddenCheckInputFunction extends DynPebbleFunction {
     boolean readonly = context.getBool("readonly");
 
     int nameIdx = path.indexOf('.');
-    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    Arguments.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
 
     String name = path.substring(nameIdx + 1);
     Object value = context.evaluate(path);

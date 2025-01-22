@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.appslandia.common.base.LruMap;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.plum.base.RemMeToken;
 import com.appslandia.plum.base.RemMeTokenManager;
 
@@ -63,7 +63,7 @@ public class MemRemMeTokenManager implements RemMeTokenManager {
   @Override
   public void update(UUID series, String hashToken, LocalDateTime issuedAtUtc, LocalDateTime expiresAtUtc) {
     RemMeToken obj = this.tokenMap.get(series);
-    Asserts.notNull(obj);
+    Arguments.notNull(obj);
 
     obj.setHashToken(hashToken);
     obj.setIssuedAtUtc(issuedAtUtc);

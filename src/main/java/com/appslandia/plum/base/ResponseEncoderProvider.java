@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.CaseInsensitiveMap;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -51,9 +51,8 @@ public class ResponseEncoderProvider extends InitializeObject {
 
   public ResponseEncoder getResponseEncoder(String encoding) {
     this.initialize();
-
     ResponseEncoder impl = this.responseEncoderMap.get(encoding);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 
   public ResponseEncoder getResponseEncoder(HttpServletRequest request) {

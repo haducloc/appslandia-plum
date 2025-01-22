@@ -23,7 +23,7 @@ package com.appslandia.plum.jsp;
 import java.io.IOException;
 import java.util.Objects;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.utils.HtmlUtils;
 
@@ -70,7 +70,7 @@ public abstract class ValueTagBase extends UITagBase {
   @Override
   protected void initTag() throws JspException, IOException {
     int nameIdx = this.path.indexOf('.');
-    Asserts.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
+    Arguments.isTrue(nameIdx > 0 && nameIdx < this.path.length() - 1, "path is invalid.");
     this._name = this.path.substring(nameIdx + 1);
 
     // id

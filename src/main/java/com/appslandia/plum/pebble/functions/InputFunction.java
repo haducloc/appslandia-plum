@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.util.Objects;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.XmlEscaper;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -57,11 +57,10 @@ public class InputFunction extends DynPebbleFunction {
     Object min = context.getArgument("min");
     Object max = context.getArgument("max");
     Object step = context.getArgument("step");
-
-    Asserts.isTrue(!"checkbox".equals(type) && !"radio".equals(type), "checkbox|radio type is unsupported.");
+    Arguments.isTrue(!"checkbox".equals(type) && !"radio".equals(type), "checkbox|radio type is unsupported.");
 
     int nameIdx = path.indexOf('.');
-    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    Arguments.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
     String name = path.substring(nameIdx + 1);
 
     if (id == null) {

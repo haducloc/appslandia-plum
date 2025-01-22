@@ -23,7 +23,6 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
 
 /**
@@ -70,7 +69,7 @@ public class EnableCsrfTest extends MockTestBase {
 
       // Removed
       boolean valid = csrfManager.verifyCsrf(getCurrentRequest(), true);
-      Asserts.isTrue(!valid);
+      Assertions.assertTrue(!valid);
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());

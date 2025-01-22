@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterException;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.ArrayUtils;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
@@ -156,7 +157,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   }
 
   public ZoneId getClientZoneId(ZoneId orZoneId) {
-    Asserts.notNull(orZoneId);
+    Arguments.notNull(orZoneId);
 
     ZoneId zoneId = ServletUtils.getClientZoneId(this);
     return (zoneId != null) ? zoneId : orZoneId;
@@ -196,7 +197,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   }
 
   public boolean isUserInRoles(String... roles) {
-    Asserts.hasElements(roles);
+    Arguments.hasElements(roles);
     return Arrays.stream(roles).anyMatch(role -> isUserInRole(role));
   }
 
@@ -268,7 +269,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   }
 
   public void assertInRoles(String[] roles) throws ForbiddenException {
-    Asserts.hasElements(roles);
+    Arguments.hasElements(roles);
 
     if (!isUserInRoles(roles)) {
       throw new ForbiddenException(res(Resources.ERROR_FORBIDDEN)).setTitleKey(Resources.ERROR_FORBIDDEN);

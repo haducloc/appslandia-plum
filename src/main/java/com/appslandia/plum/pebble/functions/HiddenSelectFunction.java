@@ -25,7 +25,7 @@ import java.io.StringWriter;
 import java.util.List;
 
 import com.appslandia.common.models.SelectItem;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.plum.pebble.DynPebbleFunction;
 import com.appslandia.plum.pebble.TemplateEvaluationContext;
@@ -54,7 +54,7 @@ public class HiddenSelectFunction extends DynPebbleFunction {
     List<SelectItem> items = context.getRequiredArgument("items");
 
     int nameIdx = path.indexOf('.');
-    Asserts.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
+    Arguments.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");
     String name = path.substring(nameIdx + 1);
 
     Object value = context.evaluate(path);

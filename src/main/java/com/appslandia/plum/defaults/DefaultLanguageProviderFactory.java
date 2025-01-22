@@ -59,7 +59,7 @@ public class DefaultLanguageProviderFactory implements CDIFactory<LanguageProvid
       }
     });
 
-    Asserts.isTrue(!impl.getLanguages().isEmpty(), "No LanguageSupplier implemented.");
+    Asserts.hasElements(impl.getLanguages(), "No LanguageSupplier implemented.");
     return impl;
   }
 

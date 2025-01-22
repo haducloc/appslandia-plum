@@ -26,7 +26,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -45,7 +45,7 @@ public class GroupFormatProvider extends InitializeObject {
   public GroupFormat getGroupFormat(String name) {
     this.initialize();
     GroupFormat impl = this.groupFormatMap.get(name);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 
   public void addGroupFormat(String name, GroupFormat impl) {

@@ -24,7 +24,7 @@ import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -42,7 +42,7 @@ public class ResKey implements Serializable {
   }
 
   public ResKey(String key, Map<String, Object> params) {
-    this.key = Asserts.notNull(key);
+    this.key = Arguments.notNull(key);
     this.params = params;
   }
 

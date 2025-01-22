@@ -118,15 +118,12 @@ public abstract class Pipe {
         if (value == null) {
           return null;
         }
-        if (value.getClass() != String.class) {
-          throw new IllegalArgumentException("maskStart: value must be a string.");
-        }
-        if (arg == null) {
-          throw new IllegalArgumentException("maskStart: maskLength is required.");
-        }
+        Arguments.isTrue(value.getClass() == String.class, "maskStart: value must be a string.");
+        Arguments.notNull(arg, "maskStart: maskLength is required.");
+
         int len = Integer.parseInt(arg);
         String s = (String) value;
-        Asserts.isTrue(s.length() > len);
+        Arguments.isTrue(s.length() > len);
 
         char[] maskChars = new char[len];
         Arrays.fill(maskChars, '*');
@@ -140,15 +137,12 @@ public abstract class Pipe {
         if (value == null) {
           return null;
         }
-        if (value.getClass() != String.class) {
-          throw new IllegalArgumentException("maskEnd: value must be a string.");
-        }
-        if (arg == null) {
-          throw new IllegalArgumentException("maskEnd: maskLength is required.");
-        }
+        Arguments.isTrue(value.getClass() == String.class, "maskEnd: value must be a string.");
+        Arguments.notNull(arg, "maskEnd: maskLength is required.");
+
         int len = Integer.parseInt(arg);
         String s = (String) value;
-        Asserts.isTrue(s.length() > len);
+        Arguments.isTrue(s.length() > len);
 
         char[] maskChars = new char[len];
         Arrays.fill(maskChars, '*');
@@ -222,7 +216,7 @@ public abstract class Pipe {
     return ObjectUtils.toStringOrNull(value);
   }
 
-  // pipe:param|another_pipe:param
+  // pipe1:param|pipe2:param
   static PipeNode[] parsePipes(String pipes) {
     int startIdx = 0;
     int endIdx;
@@ -242,7 +236,7 @@ public abstract class Pipe {
       }
     }
 
-    Asserts.hasElements(list, "No pipe provided.");
+    Arguments.hasElements(list, "No pipe provided.");
     return list.toArray(new PipeNode[list.size()]);
   }
 
@@ -260,7 +254,7 @@ public abstract class Pipe {
     final String arg;
 
     PipeNode(String name, String arg) {
-      this.name = Asserts.notNull(name);
+      this.name = Arguments.notNull(name);
       this.arg = arg;
     }
   }

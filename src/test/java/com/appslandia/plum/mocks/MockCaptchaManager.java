@@ -23,7 +23,7 @@ package com.appslandia.plum.mocks;
 import java.util.UUID;
 
 import com.appslandia.common.base.TextGenerator;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.plum.base.SessionCaptchaManager;
 
 /**
@@ -45,7 +45,7 @@ public class MockCaptchaManager extends SessionCaptchaManager {
 
     @Override
     public boolean verify(String value) {
-      Asserts.notNull(value);
+      Arguments.notNull(value);
       return value.equals(MOCK_CAPTCHA_WORDS);
     }
   };

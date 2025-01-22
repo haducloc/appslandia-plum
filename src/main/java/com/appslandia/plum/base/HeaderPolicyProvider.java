@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -51,7 +51,7 @@ public class HeaderPolicyProvider extends InitializeObject {
   public HeaderPolicy getHeaderPolicy(String name) {
     this.initialize();
     HeaderPolicy impl = this.headerPolicyMap.get(name);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 
   public void addHeaderPolicy(String name, HeaderPolicy impl) {

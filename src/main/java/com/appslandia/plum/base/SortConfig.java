@@ -26,7 +26,6 @@ import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.Arguments;
-import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -65,7 +64,7 @@ public class SortConfig extends InitializeObject {
   public SortConfig defBy(String fieldName) {
     assertNotInitialized();
 
-    Asserts.isTrue(this.fields.containsKey(fieldName));
+    Arguments.isTrue(this.fields.containsKey(fieldName));
     this.defBy = fieldName;
     return this;
   }

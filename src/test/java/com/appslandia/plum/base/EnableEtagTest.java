@@ -23,7 +23,6 @@ package com.appslandia.plum.base;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.mocks.MockHttpServletRequest;
 import com.appslandia.plum.mocks.MockHttpServletResponse;
 
@@ -39,12 +38,15 @@ public class EnableEtagTest extends MockTestBase {
     container.register(DocumentController.class, DocumentController.class);
   }
 
-  private String initEtag() throws Exception {
+  protected String initEtag() throws Exception {
     MockHttpServletRequest request = container.createRequest("GET",
         "http://localhost/app/documentController/document/1");
     MockHttpServletResponse response = container.createResponse();
     execute(request, response);
-    return Asserts.notNull(response.getHeader("ETag"));
+
+    String etag = response.getHeader("ETag");
+    Assertions.assertNotNull(etag);
+    return etag;
   }
 
   @Test

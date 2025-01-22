@@ -26,7 +26,6 @@ import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.utils.Arguments;
-import com.appslandia.common.utils.Asserts;
 
 /**
  *
@@ -45,7 +44,7 @@ public class AuthorizePolicyProvider extends InitializeObject {
   public AuthorizePolicy getAuthorizePolicy(String name) {
     this.initialize();
     AuthorizePolicy impl = this.authorizePolicyMap.get(name);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 
   public void addAuthorizePolicy(String name, AuthorizePolicy impl) {

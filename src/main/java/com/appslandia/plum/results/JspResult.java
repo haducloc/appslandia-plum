@@ -22,7 +22,6 @@ package com.appslandia.plum.results;
 
 import java.util.Map;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.utils.ServletUtils;
@@ -74,8 +73,7 @@ public class JspResult extends ViewResult {
         request.setAttribute(variable.getKey(), variable.getValue());
       }
     }
-    RequestDispatcher requestDispatcher = request.getRequestDispatcher(this.resolvedPath);
-    Asserts.notNull(requestDispatcher);
+    RequestDispatcher requestDispatcher = ServletUtils.getRequestDispatcher(request, this.resolvedPath);
 
     if (requestContext.getActionDesc().getChildAction() == null) {
       requestDispatcher.forward(request, response);

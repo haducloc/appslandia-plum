@@ -23,7 +23,7 @@ package com.appslandia.plum.mocks;
 import java.io.Serializable;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -40,8 +40,8 @@ public class MemUser extends InitializeObject implements Serializable {
 
   @Override
   protected void init() throws Exception {
-    Asserts.notNull(this.username);
-    Asserts.notNull(this.password);
+    Arguments.notNull(this.username);
+    Arguments.notNull(this.password);
 
     if (this.email == null) {
       this.email = createEmail(this.username);

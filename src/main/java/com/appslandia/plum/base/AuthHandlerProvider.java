@@ -25,7 +25,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.CaseInsensitiveMap;
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -48,8 +48,7 @@ public class AuthHandlerProvider extends InitializeObject {
 
   public AuthHandler getAuthHandler(String module) {
     this.initialize();
-
     AuthHandler impl = this.authHandlerMap.get(module);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 }

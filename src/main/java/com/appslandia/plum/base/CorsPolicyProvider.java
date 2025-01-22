@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -44,7 +44,7 @@ public class CorsPolicyProvider extends InitializeObject {
   public CorsPolicy getCorsPolicy(String name) {
     this.initialize();
     CorsPolicy impl = this.corsPolicyMap.get(name);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 
   public void addCorsPolicy(CorsPolicy impl) {

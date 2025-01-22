@@ -28,7 +28,6 @@ import com.appslandia.common.base.Out;
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.crypto.TextDigester;
 import com.appslandia.common.utils.Arguments;
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
 
 import jakarta.inject.Inject;
@@ -74,9 +73,9 @@ public abstract class RemMeTokenHandler {
 
   public RemMeToken verifyToken(UUID series, String token, String module, String clientData, int expiryLeewayMs,
       Out<String> invalidCode) {
-    Asserts.notNull(series);
-    Asserts.notNull(token);
-    Asserts.notNull(module);
+    Arguments.notNull(series);
+    Arguments.notNull(token);
+    Arguments.notNull(module);
 
     // RemMeToken
     RemMeToken remMeToken = this.remMeTokenManager.load(series);

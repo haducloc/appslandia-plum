@@ -29,7 +29,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.appslandia.common.base.LruMap;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.plum.base.LongTask;
 import com.appslandia.plum.base.LongTaskManager;
 
@@ -60,7 +60,7 @@ public class MemLongTaskManager implements LongTaskManager {
   @Override
   public void updateDone(UUID series, int status, String message, LocalDateTime doneAtUtc) {
     LongTask obj = this.longTaskMap.get(series);
-    Asserts.notNull(obj);
+    Arguments.notNull(obj);
 
     obj.setStatus(status);
     obj.setMessage(message);
