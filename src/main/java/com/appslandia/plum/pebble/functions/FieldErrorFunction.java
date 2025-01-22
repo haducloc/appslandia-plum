@@ -46,9 +46,9 @@ public class FieldErrorFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String fieldName = context.getRequiredArgument("fieldName");
-    String form = context.getArgument("form");
-    String errorClass = context.getArgument("errorClass", "l-field-error");
+    String fieldName = context.getArgReq("fieldName");
+    String form = context.getArg("form");
+    String errorClass = context.getArg("errorClass", "l-field-error");
 
     boolean isValid = !Objects.equals(form, context.getModelState().getForm())
         || context.getModelState().isValid(fieldName);
@@ -57,7 +57,7 @@ public class FieldErrorFunction extends DynPebbleFunction {
       Message error = context.getModelState().getFieldErrors(fieldName).get(0);
       StringWriter out = new StringWriter(128);
 
-      String clazz = context.getArgument("class");
+      String clazz = context.getArg("class");
       clazz = (clazz == null) ? errorClass : (clazz + " " + errorClass);
 
       out.append("<div");

@@ -47,11 +47,11 @@ public class HiddenSelectFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String path = context.getRequiredArgument("path");
-    String converter = context.getArgument("converter");
+    String path = context.getArgReq("path");
+    String converter = context.getArg("converter");
     boolean readonly = context.getBool("readonly");
 
-    List<SelectItem> items = context.getRequiredArgument("items");
+    List<SelectItem> items = context.getArgReq("items");
 
     int nameIdx = path.indexOf('.');
     Arguments.isTrue(nameIdx > 0 && nameIdx < path.length() - 1, "path is invalid.");

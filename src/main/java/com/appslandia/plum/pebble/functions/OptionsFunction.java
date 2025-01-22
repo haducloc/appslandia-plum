@@ -47,10 +47,10 @@ public class OptionsFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    Object value = context.getArgument("selectedValue");
-    String converter = context.getArgument("converter");
+    Object value = context.getArg("selectedValue");
+    String converter = context.getArg("converter");
     boolean readonly = context.getBool("readonly", false);
-    List<SelectItem> items = context.getRequiredArgument("items");
+    List<SelectItem> items = context.getArgReq("items");
 
     String fmtValue = context.getRequestContext().format(value, converter, false);
     StringWriter out = new StringWriter(items.size() * 80);

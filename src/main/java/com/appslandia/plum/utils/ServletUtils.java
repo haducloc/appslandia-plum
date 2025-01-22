@@ -545,7 +545,7 @@ public class ServletUtils {
     return etag.equals(ifMatch);
   }
 
-  public static UserPrincipal getUserPrincipal(HttpServletRequest request) {
+  public static UserPrincipal getPrincipal(HttpServletRequest request) {
     Principal principal = request.getUserPrincipal();
     if (principal == null) {
       return null;
@@ -556,8 +556,8 @@ public class ServletUtils {
     return (UserPrincipal) principal;
   }
 
-  public static UserPrincipal getRequiredPrincipal(HttpServletRequest request) {
-    return Asserts.notNull(getUserPrincipal(request), "request.getUserPrincipal() is required.");
+  public static UserPrincipal getPrincipalReq(HttpServletRequest request) {
+    return Asserts.notNull(getPrincipal(request), "request.getUserPrincipal() is required.");
   }
 
   public static void setWWWAuthenticate(HttpServletResponse response, String authType, String realmName) {

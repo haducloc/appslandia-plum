@@ -45,8 +45,8 @@ public class SelectFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String path = context.getRequiredArgument("path");
-    String id = context.getArgument("id");
+    String path = context.getArgReq("path");
+    String id = context.getArg("id");
     boolean readonly = context.getBool("readonly", false);
 
     int nameIdx = path.indexOf('.');

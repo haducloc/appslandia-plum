@@ -43,9 +43,9 @@ public class LabelClassFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String fieldName = context.getRequiredArgument("fieldName");
-    String form = context.getArgument("form");
-    String errorClass = context.getArgument("errorClass", "l-error-label");
+    String fieldName = context.getArgReq("fieldName");
+    String form = context.getArg("form");
+    String errorClass = context.getArg("errorClass", "l-error-label");
 
     boolean isValid = !Objects.equals(form, context.getModelState().getForm())
         || context.getModelState().isValid(fieldName);

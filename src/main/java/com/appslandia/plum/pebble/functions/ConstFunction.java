@@ -39,7 +39,7 @@ public class ConstFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    Object value = context.getArgument("value");
+    Object value = context.getArg("value");
     if (value == null) {
       return null;
     }
@@ -47,7 +47,7 @@ public class ConstFunction extends DynPebbleFunction {
     ConstDescProvider constDescProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(),
         ConstDescProvider.class);
 
-    String group = context.getRequiredArgument("group");
+    String group = context.getArgReq("group");
     String descKey = constDescProvider.getDescKey(group, value);
 
     if (descKey != null) {

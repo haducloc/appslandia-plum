@@ -61,7 +61,7 @@ public class CacheResultInterceptor implements Serializable {
     String cacheKey = CacheUtils.toKey(cacheResult.key(), context.getParameters());
 
     // AppCache
-    AppCache<String, Object> cache = this.appCacheManager.getRequiredCache(cacheResult.cacheName());
+    AppCache<String, Object> cache = this.appCacheManager.getCache(cacheResult.cacheName());
 
     // Get value
     Object value = cache.get(cacheKey);

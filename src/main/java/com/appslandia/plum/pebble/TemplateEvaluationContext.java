@@ -23,8 +23,8 @@ package com.appslandia.plum.pebble;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ParseUtils;
+import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.jsp.TagUtils;
@@ -65,19 +65,19 @@ public class TemplateEvaluationContext {
   }
 
   public HttpServletRequest getRequest() {
-    return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST);
+    return getVarReq(PebbleUtils.VARIABLE_REQUEST);
   }
 
   public HttpServletResponse getResponse() {
-    return getRequiredVariable(PebbleUtils.VARIABLE_RESPONSE);
+    return getVarReq(PebbleUtils.VARIABLE_RESPONSE);
   }
 
   public RequestContext getRequestContext() {
-    return getRequiredVariable(PebbleUtils.VARIABLE_REQUEST_CONTEXT);
+    return getVarReq(PebbleUtils.VARIABLE_REQUEST_CONTEXT);
   }
 
   public ELProcessor getELProcessor() {
-    return getRequiredVariable(PebbleUtils.VARIABLE_EL_PROCESSOR);
+    return getVarReq(PebbleUtils.VARIABLE_EL_PROCESSOR);
   }
 
   public ModelState getModelState() {
@@ -96,26 +96,33 @@ public class TemplateEvaluationContext {
     return this.evaluationContext;
   }
 
-  public <T> T getArgument(String name) {
+  public <T> T getArg(String name) {
     return (T) this.arguments.get(name);
   }
 
-  public <T> T getArgument(String name, T defaultValue) {
+  public <T> T getArg(String name, T defaultValue) {
     T value = (T) this.arguments.get(name);
     return (value != null) ? value : defaultValue;
   }
 
-  public <T> T getRequiredArgument(String name) {
+  public <T> T getArgReq(String name) {
     T value = (T) this.arguments.get(name);
-    return Asserts.notNull(value, "The argument '{}' is required.", name);
+    if (value == null) {
+      throw new IllegalStateException(STR.fmt("The argument '{}' is required.", name));
+    }
+    return value;
   }
 
-  public <T> T getVariable(String name) {
+  public <T> T getVar(String name) {
     return (T) this.evaluationContext.getVariable(name);
   }
 
-  public <T> T getRequiredVariable(String name) {
-    return Asserts.notNull((T) this.evaluationContext.getVariable(name));
+  public <T> T getVarReq(String name) {
+    T value = (T) this.evaluationContext.getVariable(name);
+    if (value == null) {
+      throw new IllegalStateException(STR.fmt("The variable '{}' is required.", name));
+    }
+    return value;
   }
 
   // Boolean
@@ -127,17 +134,17 @@ public class TemplateEvaluationContext {
   }
 
   public boolean getBool(String name) {
-    Object value = getRequiredArgument(name);
+    Object value = getArgReq(name);
     return toBool(value);
   }
 
   public boolean getBool(String name, boolean defaultValue) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toBool(value) : defaultValue;
   }
 
   public Boolean getBoolObj(String name) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toBool(value) : null;
   }
 
@@ -150,17 +157,17 @@ public class TemplateEvaluationContext {
   }
 
   public int getInt(String name) {
-    Object value = getRequiredArgument(name);
+    Object value = getArgReq(name);
     return toInt(value);
   }
 
   public int getInt(String name, int defaultValue) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toInt(value) : defaultValue;
   }
 
   public Integer getIntObj(String name) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toInt(value) : null;
   }
 
@@ -173,17 +180,17 @@ public class TemplateEvaluationContext {
   }
 
   public long getLong(String name) {
-    Object value = getRequiredArgument(name);
+    Object value = getArgReq(name);
     return toLong(value);
   }
 
   public long getLong(String name, long defaultValue) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toLong(value) : defaultValue;
   }
 
   public Long getLongObj(String name) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toLong(value) : null;
   }
 
@@ -196,17 +203,17 @@ public class TemplateEvaluationContext {
   }
 
   public double getDouble(String name) {
-    Object value = getRequiredArgument(name);
+    Object value = getArgReq(name);
     return toDouble(value);
   }
 
   public double getDouble(String name, double defaultValue) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toDouble(value) : defaultValue;
   }
 
   public Double getDoubleObj(String name) {
-    Object value = getArgument(name);
+    Object value = getArg(name);
     return (value != null) ? toDouble(value) : null;
   }
 }

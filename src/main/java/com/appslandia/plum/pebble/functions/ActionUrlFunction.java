@@ -44,8 +44,8 @@ public class ActionUrlFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) {
-    String action = context.getRequiredArgument("action");
-    String controller = context.getArgument("controller");
+    String action = context.getArgReq("action");
+    String controller = context.getArg("controller");
 
     boolean absUrl = context.getBool("absUrl", false);
     boolean escXml = context.getBool("escXml", true);

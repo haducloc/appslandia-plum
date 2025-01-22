@@ -43,7 +43,7 @@ public class IfClassFunction extends DynPebbleFunction {
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
     boolean test = context.getBool("test");
-    String clazz = context.getRequiredArgument("value");
+    String clazz = context.getArgReq("value");
 
     if (test) {
       return new SafeString(clazz);

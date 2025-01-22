@@ -178,7 +178,7 @@ public class RequestContextParser {
       return module;
     }
 
-    UserPrincipal principal = ServletUtils.getUserPrincipal(request);
+    UserPrincipal principal = ServletUtils.getPrincipal(request);
     if (principal != null) {
       return principal.getModule();
     }

@@ -63,7 +63,7 @@ public abstract class UserPrincipal extends CallerPrincipal {
     return this.attributes.get(attributeName);
   }
 
-  public Object getRequired(String attributeName) {
+  public Object getReq(String attributeName) {
     Object obj = this.attributes.get(attributeName);
     return Asserts.notNull(obj);
   }

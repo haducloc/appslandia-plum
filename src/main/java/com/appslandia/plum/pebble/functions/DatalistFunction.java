@@ -44,8 +44,8 @@ public class DatalistFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    List<Object> items = context.getRequiredArgument("items");
-    String converter = context.getArgument("converter");
+    List<Object> items = context.getArgReq("items");
+    String converter = context.getArg("converter");
 
     StringWriter out = new StringWriter(items.size() * 80);
 

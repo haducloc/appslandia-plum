@@ -48,7 +48,7 @@ public class CacheChangeListener {
   }
 
   void clearCache(CacheChange event) {
-    AppCache<Object, Object> cache = this.appCacheManager.getRequiredCache(event.getCacheName());
+    AppCache<Object, Object> cache = this.appCacheManager.getCache(event.getCacheName());
 
     if (event.getKeys().isEmpty()) {
       cache.clear();

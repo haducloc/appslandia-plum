@@ -51,10 +51,10 @@ public class MessagesFunction extends DynPebbleFunction {
       return null;
     }
 
-    String type = context.getRequiredArgument("type");
-    String divClass = context.getRequiredArgument("divClass");
-    String listClass = context.getArgument("listClass");
-    String itemClass = context.getArgument("itemClass");
+    String type = context.getArgReq("type");
+    String divClass = context.getArgReq("divClass");
+    String listClass = context.getArg("listClass");
+    String itemClass = context.getArg("itemClass");
 
     int typeId = Message.parseType(type);
 

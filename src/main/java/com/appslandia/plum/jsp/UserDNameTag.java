@@ -47,7 +47,7 @@ public class UserDNameTag extends TagBase {
       this.module = config.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
-    UserPrincipal principal = ServletUtils.getRequiredPrincipal(getRequest());
+    UserPrincipal principal = ServletUtils.getPrincipalReq(getRequest());
     if (principal.isForModule(this.module)) {
 
       XmlEscaper.escapeXml(this.pageContext.getOut(), principal.getDisplayName());

@@ -63,7 +63,7 @@ public class AuthorizeInterceptor implements Serializable {
     }
 
     // UserPrincipal
-    UserPrincipal principal = this.authContext.getUserPrincipal();
+    UserPrincipal principal = this.authContext.getPrincipal();
     if (principal == null) {
       throw new UnauthorizedException();
     }

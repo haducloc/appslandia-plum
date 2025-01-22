@@ -46,17 +46,17 @@ public class InputFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String path = context.getRequiredArgument("path");
-    String type = context.getArgument("type");
+    String path = context.getArgReq("path");
+    String type = context.getArg("type");
     boolean readonly = context.getBool("readonly", false);
 
-    String id = context.getArgument("id");
-    String converter = context.getArgument("converter");
-    String form = context.getArgument("form");
+    String id = context.getArg("id");
+    String converter = context.getArg("converter");
+    String form = context.getArg("form");
 
-    Object min = context.getArgument("min");
-    Object max = context.getArgument("max");
-    Object step = context.getArgument("step");
+    Object min = context.getArg("min");
+    Object max = context.getArg("max");
+    Object step = context.getArg("step");
     Arguments.isTrue(!"checkbox".equals(type) && !"radio".equals(type), "checkbox|radio type is unsupported.");
 
     int nameIdx = path.indexOf('.');

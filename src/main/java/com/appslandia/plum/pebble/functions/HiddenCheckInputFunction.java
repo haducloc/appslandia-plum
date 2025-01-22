@@ -46,10 +46,10 @@ public abstract class HiddenCheckInputFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String path = context.getRequiredArgument("path");
-    Object codeValue = context.getRequiredArgument("codeValue");
+    String path = context.getArgReq("path");
+    Object codeValue = context.getArgReq("codeValue");
 
-    String converter = context.getArgument("converter");
+    String converter = context.getArg("converter");
     boolean readonly = context.getBool("readonly");
 
     int nameIdx = path.indexOf('.');

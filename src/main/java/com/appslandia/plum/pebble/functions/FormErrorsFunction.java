@@ -54,13 +54,13 @@ public class FormErrorsFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String fieldOrders = context.getArgument("fieldOrders");
+    String fieldOrders = context.getArg("fieldOrders");
     boolean includeFields = context.getBool("includeFields", true);
-    String form = context.getArgument("form");
+    String form = context.getArg("form");
 
-    String divClass = context.getRequiredArgument("divClass");
-    String listClass = context.getArgument("listClass");
-    String itemClass = context.getArgument("itemClass");
+    String divClass = context.getArgReq("divClass");
+    String listClass = context.getArg("listClass");
+    String itemClass = context.getArg("itemClass");
 
     boolean hasErrors = false;
     if (includeFields) {

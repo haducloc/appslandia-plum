@@ -57,8 +57,8 @@ public class AuthUserPrincipal extends UserPrincipal {
   }
 
   @Override
-  public Object getRequired(String attributeName) {
-    return this.principal.getRequired(attributeName);
+  public Object getReq(String attributeName) {
+    return this.principal.getReq(attributeName);
   }
 
   @Override

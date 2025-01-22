@@ -44,8 +44,8 @@ public class LabelFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String fieldName = context.getRequiredArgument("fieldName");
-    String _for = context.getArgument("for");
+    String fieldName = context.getArgReq("fieldName");
+    String _for = context.getArg("for");
 
     if (_for == null) {
       _for = HtmlUtils.toValueTagId(fieldName);

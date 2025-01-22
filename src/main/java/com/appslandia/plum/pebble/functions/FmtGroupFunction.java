@@ -40,14 +40,14 @@ public class FmtGroupFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
-    String value = context.getArgument("value");
+    String value = context.getArg("value");
     if (value == null) {
       return null;
     }
 
     GroupFormatProvider groupFormatProvider = ServletUtils.getAppScoped(context.getRequest().getServletContext(),
         GroupFormatProvider.class);
-    String name = context.getRequiredArgument("name");
+    String name = context.getArgReq("name");
     GroupFormat groupFormat = groupFormatProvider.getGroupFormat(name);
 
     return new SafeString(XmlEscaper.escapeXml(groupFormat.format(value)));

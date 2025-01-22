@@ -190,10 +190,10 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
   @Override
   public UserPrincipal getUserPrincipal() {
-    return ServletUtils.getUserPrincipal((HttpServletRequest) super.getRequest());
+    return ServletUtils.getPrincipal((HttpServletRequest) super.getRequest());
   }
 
-  public UserPrincipal getRequiredPrincipal() {
+  public UserPrincipal getPrincipalReq() {
     return Asserts.notNull(getUserPrincipal(), "getUserPrincipal() is required.");
   }
 

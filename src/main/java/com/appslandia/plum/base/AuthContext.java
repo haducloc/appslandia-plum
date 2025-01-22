@@ -87,7 +87,6 @@ public class AuthContext {
         return false;
       }
 
-      // reauthentication
       reauthentication = principal.isForModule(request.getRequestContext().getModule())
           && principal.getName().equalsIgnoreCase(validationResult.getCallerPrincipal().getName());
 
@@ -128,7 +127,7 @@ public class AuthContext {
     return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
   }
 
-  public UserPrincipal getUserPrincipal() {
+  public UserPrincipal getPrincipal() {
     Principal principal = this.securityContext.getCallerPrincipal();
     if (principal == null) {
       return null;
@@ -139,7 +138,7 @@ public class AuthContext {
     return (UserPrincipal) principal;
   }
 
-  public UserPrincipal getRequiredPrincipal() {
-    return Asserts.notNull(getUserPrincipal(), "securityContext.getCallerPrincipal() is required.");
+  public UserPrincipal getPrincipalReq() {
+    return Asserts.notNull(getPrincipal(), "securityContext.getCallerPrincipal() is required.");
   }
 }

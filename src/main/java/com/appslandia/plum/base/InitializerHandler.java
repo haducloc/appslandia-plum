@@ -214,7 +214,7 @@ public class InitializerHandler extends HttpFilter {
       // Authorize
       Authorize authorize = actionDesc.getAuthorize();
       if (authorize != null) {
-        UserPrincipal principal = ServletUtils.getUserPrincipal(request);
+        UserPrincipal principal = ServletUtils.getPrincipal(request);
 
         // Authenticate
         if (principal == null) {

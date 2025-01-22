@@ -46,14 +46,14 @@ public class UserDNameFunction extends DynPebbleFunction {
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws IOException {
     // module
-    String module = context.getArgument("module");
+    String module = context.getArg("module");
 
     if (module == null) {
       AppConfig config = ServletUtils.getAppScoped(context.getRequest().getServletContext(), AppConfig.class);
       module = config.getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
-    UserPrincipal principal = ServletUtils.getRequiredPrincipal(context.getRequest());
+    UserPrincipal principal = ServletUtils.getPrincipalReq(context.getRequest());
     if (principal.isForModule(module)) {
 
       return new SafeString(XmlEscaper.escapeXml(principal.getDisplayName()));

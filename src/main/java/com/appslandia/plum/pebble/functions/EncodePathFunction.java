@@ -37,7 +37,7 @@ public class EncodePathFunction extends DynPebbleFunction {
 
   @Override
   protected Object doExecute(TemplateEvaluationContext context, int lineNumber) throws PebbleException, IOException {
-    Object value = context.getArgument("value");
+    Object value = context.getArg("value");
     if (value == null) {
       return null;
     }
