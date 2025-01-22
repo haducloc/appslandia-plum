@@ -268,7 +268,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
     }
   }
 
-  public void assertInRoles(String[] roles) throws ForbiddenException {
+  public void assertInRoles(String... roles) throws ForbiddenException {
     Arguments.hasElements(roles);
 
     if (!isUserInRoles(roles)) {

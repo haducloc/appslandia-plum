@@ -118,16 +118,22 @@ public abstract class Pipe {
         if (value == null) {
           return null;
         }
-        Arguments.isTrue(value.getClass() == String.class, "maskStart: value must be a string.");
-        Arguments.notNull(arg, "maskStart: maskLength is required.");
-
+        if (value.getClass() != String.class) {
+          throw new IllegalArgumentException("maskStart: value must be a string.");
+        }
+        if (arg == null) {
+          throw new IllegalArgumentException("maskStart: maskLength is required.");
+        }
         int len = Integer.parseInt(arg);
-        String s = (String) value;
-        Arguments.isTrue(s.length() > len);
-
         char[] maskChars = new char[len];
         Arrays.fill(maskChars, '*');
-        return new String(maskChars) + s.substring(len, s.length());
+
+        String s = (String) value;
+        if (s.length() <= len) {
+          return new String(maskChars);
+        } else {
+          return new String(maskChars) + s.substring(len, s.length());
+        }
       }
     });
     pipes.put("maskEnd", new Pipe() {
@@ -137,16 +143,22 @@ public abstract class Pipe {
         if (value == null) {
           return null;
         }
-        Arguments.isTrue(value.getClass() == String.class, "maskEnd: value must be a string.");
-        Arguments.notNull(arg, "maskEnd: maskLength is required.");
-
+        if (value.getClass() != String.class) {
+          throw new IllegalArgumentException("maskEnd: value must be a string.");
+        }
+        if (arg == null) {
+          throw new IllegalArgumentException("maskEnd: maskLength is required.");
+        }
         int len = Integer.parseInt(arg);
-        String s = (String) value;
-        Arguments.isTrue(s.length() > len);
-
         char[] maskChars = new char[len];
         Arrays.fill(maskChars, '*');
-        return s.substring(0, s.length() - len) + new String(maskChars);
+
+        String s = (String) value;
+        if (s.length() <= len) {
+          return new String(maskChars);
+        } else {
+          return s.substring(0, s.length() - len) + new String(maskChars);
+        }
       }
     });
     pipes.put("toString", new Pipe() {
