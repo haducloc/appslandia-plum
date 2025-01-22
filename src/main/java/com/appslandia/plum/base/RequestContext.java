@@ -26,7 +26,7 @@ import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.Language;
 import com.appslandia.common.converters.Converter;
 import com.appslandia.common.converters.ConverterProvider;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.XmlEscaper;
 
 /**
@@ -55,7 +55,7 @@ public class RequestContext {
   private PrefCookie prefCookie;
 
   public RequestContext createRequestContext(ActionDesc actionDesc) {
-    Asserts.isTrue(this.module.equals(actionDesc.getModule()));
+    Arguments.isTrue(this.module.equals(actionDesc.getModule()));
 
     RequestContext context = new RequestContext();
     context.pathLanguage = this.pathLanguage;

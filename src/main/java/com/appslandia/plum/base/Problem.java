@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.appslandia.common.json.JsonIgnore;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -62,7 +62,7 @@ public class Problem implements Serializable {
   }
 
   public Problem setStatus(Integer status) {
-    Asserts.isTrue((status == null) || ((400 <= status) && (status < 600))); // 4XX, 5XX
+    Arguments.isTrue((status == null) || ((400 <= status) && (status < 600))); // 4XX, 5XX
     this.status = status;
     return this;
   }
@@ -139,7 +139,7 @@ public class Problem implements Serializable {
   }
 
   public Problem addExtension(String key, Object value) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     if (this.extensions == null) {
       this.extensions = new LinkedHashMap<>();

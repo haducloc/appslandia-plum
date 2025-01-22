@@ -28,7 +28,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.Language;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -45,7 +45,7 @@ public class LanguageProvider extends InitializeObject {
 
   @Override
   protected void init() throws Exception {
-    Asserts.isTrue(!this.languageMap.isEmpty(), "No language provided.");
+    Arguments.hasEntries(this.languageMap, "No language provided.");
 
     if (this.defaultLanguage == null) {
       this.defaultLanguage = this.languageMap.values().iterator().next();
@@ -90,7 +90,7 @@ public class LanguageProvider extends InitializeObject {
   }
 
   public LanguageProvider addDefault(Language impl) {
-    Asserts.isNull(this.defaultLanguage);
+    Arguments.isNull(this.defaultLanguage);
     this.defaultLanguage = impl;
     return addLanguage(impl);
   }

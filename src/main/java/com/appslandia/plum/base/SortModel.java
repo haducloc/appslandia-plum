@@ -20,6 +20,7 @@
 
 package com.appslandia.plum.base;
 
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 
 /**
@@ -57,12 +58,12 @@ public class SortModel {
   }
 
   public Boolean getNext(String fieldName) {
-    Asserts.isTrue(this.config.getFields().containsKey(fieldName));
+    Arguments.isTrue(this.config.getFields().containsKey(fieldName));
     return this.getSortBy().equals(fieldName) ? !this.getSortAsc() : null;
   }
 
   public String getState(String fieldName) {
-    Asserts.isTrue(this.config.getFields().containsKey(fieldName));
+    Arguments.isTrue(this.config.getFields().containsKey(fieldName));
 
     if (this.getSortBy().equals(fieldName)) {
       return getSortAsc() ? "sort-asc" : "sort-desc";

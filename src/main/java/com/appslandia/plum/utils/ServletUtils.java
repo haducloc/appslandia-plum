@@ -41,6 +41,7 @@ import com.appslandia.common.base.FormatProvider;
 import com.appslandia.common.base.SimpleConfig;
 import com.appslandia.common.cdi.BeanInstance;
 import com.appslandia.common.crypto.DigesterImpl;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.HexUtils;
 import com.appslandia.common.utils.IOUtils;
@@ -370,7 +371,7 @@ public class ServletUtils {
 
   public static RequestDispatcher getRequestDispatcher(HttpServletRequest request, String path) {
     RequestDispatcher dispatcher = request.getRequestDispatcher(path);
-    return Asserts.notNull(dispatcher, () -> STR.fmt("Couldn't obtain a dispatcher for the path '{}'.", path));
+    return Arguments.notNull(dispatcher, "Couldn't obtain a dispatcher for the path '{}'.", path);
   }
 
   public static void forward(HttpServletRequest request, HttpServletResponse response, String path)

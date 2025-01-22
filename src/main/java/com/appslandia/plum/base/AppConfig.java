@@ -30,7 +30,7 @@ import com.appslandia.common.base.BoolFormatException;
 import com.appslandia.common.base.Config;
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.SimpleConfig;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.SplittingBehavior;
 
 /**
@@ -97,7 +97,7 @@ public class AppConfig extends InitializeObject implements Config {
 
   @Override
   protected void init() throws Exception {
-    Asserts.notNull(this.config, "config is required.");
+    Arguments.notNull(this.config, "config is required.");
 
     this.config.putIfAbsent(CONFIG_DEFAULT_MODULE, Modules.DEFAULT);
     this.config.putIfAbsent(CONFIG_ENABLE_DEBUG, String.valueOf(false));

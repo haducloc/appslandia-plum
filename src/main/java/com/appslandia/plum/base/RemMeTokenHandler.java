@@ -27,6 +27,7 @@ import java.util.UUID;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.crypto.TextDigester;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
 
@@ -47,8 +48,8 @@ public abstract class RemMeTokenHandler {
   protected abstract TextDigester getTokenDigester();
 
   public SeriesToken saveToken(String identity, String module, String clientData, int expiresInSec) {
-    Asserts.notNull(identity);
-    Asserts.notNull(module);
+    Arguments.notNull(identity);
+    Arguments.notNull(module);
     identity = identity.toLowerCase(Locale.ENGLISH);
 
     // RemMeToken

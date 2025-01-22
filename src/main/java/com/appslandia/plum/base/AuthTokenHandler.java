@@ -27,6 +27,7 @@ import java.util.UUID;
 import com.appslandia.common.base.Out;
 import com.appslandia.common.base.TextGenerator;
 import com.appslandia.common.crypto.TextDigester;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.DateUtils;
 
@@ -47,7 +48,7 @@ public abstract class AuthTokenHandler {
   protected abstract TextDigester getTokenDigester();
 
   public SeriesToken saveToken(String identity, String module, String tokenBoundData, int expiresInSec) {
-    Asserts.notNull(module);
+    Arguments.notNull(module);
     if (identity != null) {
       identity = identity.toLowerCase(Locale.ENGLISH);
     }

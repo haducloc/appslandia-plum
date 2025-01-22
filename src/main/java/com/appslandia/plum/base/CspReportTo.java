@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.ValueUtils;
 
 /**
@@ -40,9 +40,9 @@ public class CspReportTo extends InitializeObject {
 
   @Override
   protected void init() throws Exception {
-    Asserts.notNull(this.group);
-    Asserts.notNull(this.max_age);
-    Asserts.hasElements(this.endpoints);
+    Arguments.notNull(this.group);
+    Arguments.notNull(this.max_age);
+    Arguments.hasElements(this.endpoints);
   }
 
   public String getGroup() {

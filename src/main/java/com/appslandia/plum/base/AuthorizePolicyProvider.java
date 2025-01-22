@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 
 /**
@@ -54,9 +55,8 @@ public class AuthorizePolicyProvider extends InitializeObject {
 
   public boolean authorize(UserPrincipal principal, String... policies) {
     this.initialize();
-
-    Asserts.notNull(principal);
-    Asserts.hasElements(policies);
+    Arguments.notNull(principal);
+    Arguments.hasElements(policies);
 
     for (String policy : policies) {
       if (getAuthorizePolicy(policy).authorize(principal)) {

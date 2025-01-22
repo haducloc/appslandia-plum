@@ -22,7 +22,7 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 import jakarta.servlet.jsp.JspException;
 
@@ -38,7 +38,7 @@ public class DataItemTag extends TagBase {
 
   @Override
   public void doTag() throws JspException, IOException {
-    Asserts.notNull(this.parent);
+    Arguments.notNull(this.parent);
     ((DataListTag) this.parent).addItem(this.value);
   }
 

@@ -22,7 +22,7 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 import jakarta.servlet.jsp.JspException;
 
@@ -38,8 +38,8 @@ public class TemplateTag extends TagBase {
 
   @Override
   public void doTag() throws JspException, IOException {
-    Asserts.notNull(this.parent);
-    Asserts.notNull(this.body);
+    Arguments.notNull(this.parent);
+    Arguments.notNull(this.body);
 
     ((TemplateSupport) this.parent).setTemplate(this.type, this.body);
   }

@@ -23,7 +23,7 @@ package com.appslandia.plum.base;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.ValueUtils;
 
 /**
@@ -46,10 +46,10 @@ public class PagerModel {
   }
 
   public PagerModel(int pageIndex, int recordCount, int pageSize, PagerSize pagerSize) {
-    Asserts.isTrue(pageIndex >= 1);
-    Asserts.isTrue(recordCount >= 0);
-    Asserts.isTrue(pageSize > 0);
-    Asserts.notNull(pagerSize);
+    Arguments.isTrue(pageIndex >= 1);
+    Arguments.isTrue(recordCount >= 0);
+    Arguments.isTrue(pageSize > 0);
+    Arguments.notNull(pagerSize);
 
     this.pageIndex = pageIndex;
     this.recordCount = recordCount;

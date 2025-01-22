@@ -139,7 +139,6 @@ public class ModelBinder {
 
             if (multiValues != null) {
               Asserts.isTrue(field.getType() == String.class);
-              MultiValues.MultiValuesValidator.validate(multiValues);
 
               elementType = TypeUtils.wrap(multiValues.type());
             } else {

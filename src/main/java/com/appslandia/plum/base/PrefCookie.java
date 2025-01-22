@@ -28,7 +28,7 @@ import java.util.Map;
 
 import com.appslandia.common.base.Config;
 import com.appslandia.common.base.MapWrapper;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -61,44 +61,44 @@ public class PrefCookie extends MapWrapper<String, String> implements Config, Cl
   }
 
   public PrefCookie set(String key, String value) {
-    Asserts.notNull(key);
-    Asserts.notNull(value);
+    Arguments.notNull(key);
+    Arguments.notNull(value);
 
     this.map.put(key, value.strip());
     return this;
   }
 
   public PrefCookie set(String key, boolean value) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     this.map.put(key, Boolean.toString(value));
     return this;
   }
 
   public PrefCookie set(String key, int value) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     this.map.put(key, Integer.toString(value));
     return this;
   }
 
   public PrefCookie set(String key, long value) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     this.map.put(key, Long.toString(value));
     return this;
   }
 
   public PrefCookie set(String key, double value) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     this.map.put(key, Double.toString(value));
     return this;
   }
 
   public PrefCookie set(String key, BigDecimal value) {
-    Asserts.notNull(key);
-    Asserts.notNull(value);
+    Arguments.notNull(key);
+    Arguments.notNull(value);
 
     this.map.put(key, value.toPlainString());
     return this;

@@ -23,7 +23,7 @@ package com.appslandia.plum.caching;
 import java.io.Serializable;
 import java.util.Set;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.CollectionUtils;
 
 /**
@@ -38,8 +38,8 @@ public class CacheChange implements Serializable {
   final Set<String> keys;
 
   public CacheChange(String cacheName, String[] keys) {
-    Asserts.notNull(cacheName);
-    Asserts.notNull(keys);
+    Arguments.notNull(cacheName);
+    Arguments.notNull(keys);
 
     this.cacheName = cacheName;
     this.keys = CollectionUtils.unmodifiableSet(keys);

@@ -32,6 +32,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.appslandia.common.base.GroupFormat;
 import com.appslandia.common.base.ToStringBuilder;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
@@ -208,7 +209,7 @@ public abstract class Pipe {
 
   @Function(name = "pipe")
   public static String transform(Object value, String pipes) {
-    Asserts.notNull(pipes);
+    Arguments.notNull(pipes);
 
     PipeNode[] nodes = PIPE_CACHE.computeIfAbsent(pipes, (c) -> parsePipes(c));
     for (PipeNode pipe : nodes) {

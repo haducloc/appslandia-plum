@@ -22,6 +22,7 @@ package com.appslandia.plum.base;
 
 import java.util.Set;
 
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 
 import jakarta.security.enterprise.CallerPrincipal;
@@ -98,7 +99,7 @@ public class InvalidAuthResult extends CredentialValidationResult {
   public static final InvalidAuthResult ID_STORE_EXCEPTION = new InvalidAuthResult("id_store_exception");
 
   public static InvalidAuthResult valueOf(String code) {
-    Asserts.notNull(code);
+    Arguments.notNull(code);
 
     if (CREDENTIAL_INVALID.getCode().equalsIgnoreCase(code)) {
       return CREDENTIAL_INVALID;

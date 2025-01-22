@@ -25,8 +25,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import com.appslandia.common.base.StringWriter;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
-import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.URLEncoding;
 import com.appslandia.common.utils.URLUtils;
 import com.appslandia.common.utils.XmlEscaper;
@@ -102,8 +102,9 @@ public class ActionParser {
 
   public String toActionUrl(HttpServletRequest request, String controller, String action,
       Map<String, Object> parameters, boolean absoluteUrl) throws IllegalArgumentException {
+
     ActionDesc actionDesc = this.actionDescProvider.getActionDesc(controller, action);
-    Asserts.notNull(actionDesc);
+    Arguments.notNull(actionDesc);
     Asserts.isNull(actionDesc.getChildAction());
 
     RequestContext requestContext = ServletUtils.getRequestContext(request);
@@ -189,7 +190,7 @@ public class ActionParser {
       if (pathParam.getParamName() != null) {
 
         Object value = parameters.get(pathParam.getParamName());
-        Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", pathParam.getParamName()));
+        Asserts.notNull(value, "Path parameter '{}' is required.", pathParam.getParamName());
 
         url.append('/').append(URLEncoding.encodePath(value.toString()));
         continue;
@@ -199,7 +200,7 @@ public class ActionParser {
       for (PathParam subParam : pathParam.getSubParams()) {
 
         Object value = parameters.get(subParam.getParamName());
-        Asserts.notNull(value, () -> STR.fmt("Path parameter '{}' is required.", subParam.getParamName()));
+        Asserts.notNull(value, "Path parameter '{}' is required.", subParam.getParamName());
 
         if (isFirstSub) {
           url.append('/').append(URLEncoding.encodePath(value.toString()));

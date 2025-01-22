@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializeObject;
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -44,7 +44,7 @@ public class ActionFilterProvider extends InitializeObject {
   public ActionFilter getActionFilter(String name) {
     this.initialize();
     ActionFilter impl = this.actionFilterMap.get(name);
-    return Asserts.notNull(impl);
+    return Arguments.notNull(impl);
   }
 
   public void addActionFilter(String name, ActionFilter impl) {

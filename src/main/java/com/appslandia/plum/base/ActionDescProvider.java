@@ -40,9 +40,9 @@ import com.appslandia.common.base.Bind;
 import com.appslandia.common.base.CaseInsensitiveMap;
 import com.appslandia.common.base.InitializeObject;
 import com.appslandia.common.base.Out;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.CollectionUtils;
-import com.appslandia.common.utils.STR;
 import com.appslandia.common.utils.SplitUtils;
 import com.appslandia.common.utils.SplittingBehavior;
 import com.appslandia.common.utils.StringUtils;
@@ -242,21 +242,21 @@ public abstract class ActionDescProvider extends InitializeObject {
       // ActionRoute
       ActionRoute actionRoute = new ActionRoute(controller, action);
       Asserts.isTrue(!this.actionDescMap.containsKey(actionRoute),
-          () -> STR.fmt("controller/action is duplicated: controller={}, action={}.", controllerClass, actionMethod));
+          "controller/action is duplicated: controller={}, action={}.", controllerClass, actionMethod);
 
       // Index
       if (action.equalsIgnoreCase(ServletUtils.ACTION_INDEX)) {
         // @Home
         if (controllerClass.getAnnotation(Home.class) != null) {
-          Asserts.isNull(this.homeController, () -> STR.fmt("@Home is duplicated: controller={}.", controllerClass));
+          Asserts.isNull(this.homeController, "@Home is duplicated: controller={}.", controllerClass);
           this.homeController = controller;
         }
       }
 
       // @FormLogin
       if (actionMethod.getDeclaredAnnotation(FormLogin.class) != null) {
-        Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()),
-            () -> STR.fmt("@FormLogin is duplicated: module=", actionDesc.getModule()));
+        Asserts.isTrue(!this.formLogins.containsKey(actionDesc.getModule()), "@FormLogin is duplicated: module={}",
+            actionDesc.getModule());
         this.formLogins.put(actionDesc.getModule(), actionDesc);
       }
       this.actionDescMap.put(actionRoute, actionDesc);
@@ -292,8 +292,7 @@ public abstract class ActionDescProvider extends InitializeObject {
       if (model != null) {
         paramDesc.setModel(model);
 
-        Asserts.isNull(parameter.getDeclaredAnnotation(Valid.class),
-            () -> STR.fmt("@Valid is unsupported at this location: {}.", parameter));
+        Asserts.isNull(parameter.getDeclaredAnnotation(Valid.class), "@Valid is unsupported: parameter={}.", parameter);
         continue;
       }
 
@@ -346,41 +345,41 @@ public abstract class ActionDescProvider extends InitializeObject {
   private static final Pattern PATH_PARAMS_PATTERN = Pattern
       .compile(String.format("(/%s(-%s)*)+", PARAM_FORMAT, PARAM_FORMAT), Pattern.CASE_INSENSITIVE);
 
-  // value: (/{parameter}(-{parameter})*)+
-  public static List<PathParam> parsePathParams(String value) {
-    Asserts.notNull(value);
-    Asserts.isTrue(PATH_PARAMS_PATTERN.matcher(value).matches(), () -> STR.fmt("pathParams '{}' is invalid.", value));
+  // pathParams: (/{parameter}(-{parameter})*)+
+  public static List<PathParam> parsePathParams(String pathParams) {
+    Arguments.notNull(pathParams);
+    Arguments.isTrue(PATH_PARAMS_PATTERN.matcher(pathParams).matches(), "pathParams '{}' is invalid.", pathParams);
 
-    List<PathParam> pathParams = new ArrayList<>();
-    String[] parts = SplitUtils.split(value, '/', SplittingBehavior.ORIGINAL);
+    List<PathParam> pars = new ArrayList<>();
+    String[] params = SplitUtils.split(pathParams, '/', SplittingBehavior.ORIGINAL);
 
-    for (String pathItem : parts) {
-      if (pathItem.isEmpty()) {
+    for (String param : params) {
+      if (param.isEmpty()) {
         continue;
       }
-      // pathItem: {parameter}
-      if (PARAM_PATTERN.matcher(pathItem).matches()) {
-        pathParams.add(new PathParam(pathItem.substring(1, pathItem.length() - 1)));
+      // param: {parameter}
+      if (PARAM_PATTERN.matcher(param).matches()) {
+        pars.add(new PathParam(param.substring(1, param.length() - 1)));
       } else {
-        // pathItem: {parameter}(-{parameter})+
-        List<PathParam> parsedSubParams = parseSubParams(pathItem);
-        pathParams.add(new PathParam(Collections.unmodifiableList(parsedSubParams)));
+        // param: {parameter}(-{parameter})+
+        List<PathParam> parsedSubParams = parseSubParams(param);
+        pars.add(new PathParam(Collections.unmodifiableList(parsedSubParams)));
       }
     }
-    return pathParams;
+    return pars;
   }
 
-  // value: {parameter}(-{parameter})+
-  public static List<PathParam> parseSubParams(String value) {
-    List<PathParam> subParams = new ArrayList<>();
-    String[] parts = SplitUtils.split(value, '-', SplittingBehavior.ORIGINAL);
+  // subParams: {parameter}(-{parameter})+
+  public static List<PathParam> parseSubParams(String subParams) {
+    List<PathParam> pars = new ArrayList<>();
+    String[] params = SplitUtils.split(subParams, '-', SplittingBehavior.ORIGINAL);
 
-    for (String subParam : parts) {
+    for (String subParam : params) {
 
       // subParam: {parameter}
-      subParams.add(new PathParam(subParam.substring(1, subParam.length() - 1)));
+      pars.add(new PathParam(subParam.substring(1, subParam.length() - 1)));
     }
-    return subParams;
+    return pars;
   }
 
   public static int getPathParamCount(List<PathParam> pathParams) {
@@ -408,21 +407,20 @@ public abstract class ActionDescProvider extends InitializeObject {
       return actionMethod.getName();
     }
     String route = StringUtils.trimToNull(action.value());
-    Asserts.notNull(route, () -> STR.fmt("Couldn't determime action route: action={}.", actionMethod));
+    Asserts.notNull(route, "Couldn't determime action route: action={}.", actionMethod);
     return StringUtils.firstLowerCase(route, Locale.ENGLISH);
   }
 
   public static String getController(Class<?> clazz) {
     Controller controller = clazz.getDeclaredAnnotation(Controller.class);
-    Asserts.notNull(controller, () -> STR.fmt("@Controller is required: controller={}.", clazz));
+    Asserts.notNull(controller, "@Controller is required: controller={}.", clazz);
 
     String route = StringUtils.trimToNull(controller.value());
     if (route == null) {
       Asserts.isTrue(StringUtils.endsWith(clazz.getSimpleName(), "Controller"),
-          () -> STR.fmt("Couldn't determime controller route: controller={}.", clazz));
+          "Couldn't determime controller route: controller={}.", clazz);
 
       route = clazz.getSimpleName().substring(0, clazz.getSimpleName().length() - 10);
-      Asserts.isTrue(!route.isEmpty(), () -> STR.fmt("Controller is invalid: controller={}.", clazz));
     }
     return StringUtils.firstLowerCase(route, Locale.ENGLISH);
   }

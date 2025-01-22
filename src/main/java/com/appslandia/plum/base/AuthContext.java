@@ -23,9 +23,9 @@ package com.appslandia.plum.base;
 import java.security.Principal;
 import java.util.Arrays;
 
-import com.appslandia.common.base.AssertException;
 import com.appslandia.common.base.InitializeException;
 import com.appslandia.common.base.Out;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 
 import jakarta.annotation.PostConstruct;
@@ -124,7 +124,7 @@ public class AuthContext {
   }
 
   public boolean isCallerInRoles(String... roles) {
-    Asserts.hasElements(roles);
+    Arguments.hasElements(roles);
     return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
   }
 
@@ -134,7 +134,7 @@ public class AuthContext {
       return null;
     }
     if (!(principal instanceof UserPrincipal)) {
-      throw new AssertException("securityContext.getCallerPrincipal() must be UserPrincipal.");
+      throw new IllegalStateException("securityContext.getCallerPrincipal() must be UserPrincipal.");
     }
     return (UserPrincipal) principal;
   }

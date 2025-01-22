@@ -25,7 +25,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.common.utils.StringUtils;
 import com.appslandia.common.utils.URLUtils;
@@ -75,7 +75,7 @@ public class PrefCookieHandler {
   }
 
   public void savePrefCookie(HttpServletRequest request, HttpServletResponse response, PrefCookie prefCookie) {
-    Asserts.notNull(prefCookie);
+    Arguments.notNull(prefCookie);
     String cookieValue = encode(prefCookie);
 
     if (StringUtils.isNullOrEmpty(cookieValue)) {

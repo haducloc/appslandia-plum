@@ -22,6 +22,7 @@ package com.appslandia.plum.jsp;
 
 import java.io.IOException;
 
+import com.appslandia.common.utils.Arguments;
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.PagerItem;
@@ -72,8 +73,8 @@ public class PagerTag extends UITagBase implements TemplateSupport {
 
   @Override
   protected void initTag() throws JspException, IOException {
-    Asserts.notNull(this.tag);
-    Asserts.notNull(this.model);
+    Arguments.notNull(this.tag);
+    Arguments.notNull(this.model);
 
     this.body.invoke(null);
 

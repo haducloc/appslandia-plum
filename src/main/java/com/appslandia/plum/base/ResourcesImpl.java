@@ -24,7 +24,7 @@ import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import com.appslandia.common.utils.Asserts;
+import com.appslandia.common.utils.Arguments;
 
 /**
  *
@@ -45,14 +45,14 @@ public class ResourcesImpl implements Resources {
 
   @Override
   public String get(Object key) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     return this.bundle.getString((String) key);
   }
 
   @Override
   public String get(String key, Object... params) {
-    Asserts.notNull(key);
+    Arguments.notNull(key);
 
     String format = this.bundle.getString(key);
     MessageFormat mf = new MessageFormat(format, this.bundle.getLocale());

@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 import com.appslandia.common.utils.Asserts;
 import com.appslandia.common.utils.ParseUtils;
-import com.appslandia.common.utils.STR;
 import com.appslandia.plum.base.ModelState;
 import com.appslandia.plum.base.RequestContext;
 import com.appslandia.plum.jsp.TagUtils;
@@ -107,7 +106,8 @@ public class TemplateEvaluationContext {
   }
 
   public <T> T getRequiredArgument(String name) {
-    return Asserts.notNull((T) this.arguments.get(name), () -> STR.fmt("The argument {} is required.", name));
+    T value = (T) this.arguments.get(name);
+    return Asserts.notNull(value, "The argument '{}' is required.", name);
   }
 
   public <T> T getVariable(String name) {
