@@ -74,7 +74,7 @@ public class AuthorizeInterceptor implements Serializable {
       return context.proceed();
     }
     if (roles.length > 0) {
-      if (this.authContext.isCallerInRoles(roles)) {
+      if (this.authContext.isUserInRoles(roles)) {
         return context.proceed();
       }
     }

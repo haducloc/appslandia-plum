@@ -122,7 +122,7 @@ public class AuthContext {
     }
   }
 
-  public boolean isCallerInRoles(String... roles) {
+  public boolean isUserInRoles(String... roles) {
     Arguments.hasElements(roles);
     return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
   }
