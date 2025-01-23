@@ -23,6 +23,7 @@ package com.appslandia.plum.base;
 import java.io.Serializable;
 
 import com.appslandia.common.utils.Arguments;
+import com.appslandia.common.utils.STR;
 
 /**
  *
@@ -66,6 +67,11 @@ public class Message implements Serializable {
     return this.escXml;
   }
 
+  @Override
+  public String toString() {
+    return STR.fmt("type={}, text={}, escXml={}", toTypeName(this.type), this.text, this.escXml);
+  }
+
   public static int parseType(String type) {
     Arguments.notNull(type);
 
@@ -82,11 +88,30 @@ public class Message implements Serializable {
       return TYPE_ERROR;
     }
     if ("fatal".equalsIgnoreCase(type)) {
-      return TYPE_ERROR;
+      return TYPE_FATAL;
     }
     if ("success".equalsIgnoreCase(type)) {
       return TYPE_SUCCESS;
     }
     throw new IllegalArgumentException("type is invalid.");
+  }
+
+  public static String toTypeName(int type) {
+    switch (type) {
+    case TYPE_INFO:
+      return "info";
+    case TYPE_NOTICE:
+      return "notice";
+    case TYPE_WARN:
+      return "warn";
+    case TYPE_ERROR:
+      return "error";
+    case TYPE_FATAL:
+      return "fatal";
+    case TYPE_SUCCESS:
+      return "success";
+    default:
+      throw new IllegalArgumentException("type is invalid.");
+    }
   }
 }

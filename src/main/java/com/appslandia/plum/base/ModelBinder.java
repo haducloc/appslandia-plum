@@ -108,9 +108,7 @@ public class ModelBinder {
       BindingNode bindNode = queue.poll();
 
       for (PropertyDescriptor property : Introspector.getBeanInfo(bindNode.model.getClass()).getPropertyDescriptors()) {
-        if ((property.getWriteMethod() == null) || (property.getReadMethod() == null)) {
-          continue;
-        }
+
         // Field
         Field field = ReflectionUtils.findField(bindNode.model.getClass(), property.getName());
         if ((field == null) || (field.getDeclaredAnnotation(NotBind.class) != null)) {
@@ -129,6 +127,8 @@ public class ModelBinder {
 
         // Handle Binding?
         if (request.getParameterMap().containsKey(propertyPath) || (fieldDesc.getDefaultValue() != null)) {
+          Asserts.notNull(property.getReadMethod());
+          Asserts.notNull(property.getWriteMethod());
 
           // @MultiValues
           MultiValues multiValues = field.getDeclaredAnnotation(MultiValues.class);
@@ -152,7 +152,7 @@ public class ModelBinder {
 
             // paramValues
             String[] paramValues = request.getParameterValues(propertyPath);
-            if (paramValues == null) {
+            if ((paramValues == null) && (fieldDesc.getDefaultValue() != null)) {
               paramValues = SplitUtils.splitByComma(fieldDesc.getDefaultValue());
             }
 
@@ -221,8 +221,14 @@ public class ModelBinder {
           }
 
           // List<SubModel>
-          List<Object> subModel = (field.getType() == List.class) ? new ArrayList<>(subIndexes)
-              : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
+          Asserts.notNull(property.getReadMethod());
+          List<Object> subModel = ObjectUtils.cast(property.getReadMethod().invoke(bindNode.model));
+
+          boolean subModelNull = (subModel == null);
+          if (subModelNull) {
+            subModel = (field.getType() == List.class) ? new ArrayList<>(subIndexes)
+                : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
+          }
 
           int idx = 0;
           int count = 0;
@@ -241,7 +247,10 @@ public class ModelBinder {
             }
             idx++;
           }
-          property.getWriteMethod().invoke(bindNode.model, subModel);
+          if (subModelNull) {
+            Asserts.notNull(property.getWriteMethod());
+            property.getWriteMethod().invoke(bindNode.model, subModel);
+          }
           continue;
         }
 
@@ -259,8 +268,14 @@ public class ModelBinder {
           }
 
           // Map<String, SubModel>
-          Map<String, Object> subModel = (field.getType() == Map.class) ? new HashMap<String, Object>()
-              : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
+          Asserts.notNull(property.getReadMethod());
+          Map<String, Object> subModel = ObjectUtils.cast(property.getReadMethod().invoke(bindNode.model));
+
+          boolean subModelNull = (subModel == null);
+          if (subModelNull) {
+            subModel = (field.getType() == Map.class) ? new HashMap<String, Object>()
+                : ObjectUtils.cast(field.getType().getDeclaredConstructor().newInstance());
+          }
 
           for (String subKey : subKeys) {
             String subKeyProp = propertyPath + "[" + subKey + "]";
@@ -272,7 +287,11 @@ public class ModelBinder {
               queue.add(new BindingNode(valueModel, subKeyProp));
             }
           }
-          property.getWriteMethod().invoke(bindNode.model, subModel);
+
+          if (subModelNull) {
+            Asserts.notNull(property.getWriteMethod());
+            property.getWriteMethod().invoke(bindNode.model, subModel);
+          }
           continue;
         }
 
@@ -283,9 +302,14 @@ public class ModelBinder {
 
         // Sub-Model
         if (hasSubProperties(request, propertyPath)) {
+
+          Asserts.notNull(property.getReadMethod());
           Object subModel = property.getReadMethod().invoke(bindNode.model);
+
           if (subModel == null) {
             subModel = field.getType().getDeclaredConstructor().newInstance();
+
+            Asserts.notNull(property.getWriteMethod());
             property.getWriteMethod().invoke(bindNode.model, subModel);
           }
           queue.add(new BindingNode(subModel, propertyPath));
