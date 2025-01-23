@@ -65,7 +65,7 @@ public class AuthorizeInterceptor implements Serializable {
     // UserPrincipal
     UserPrincipal principal = this.authContext.getPrincipal();
     if (principal == null) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(context.getMethod().toString());
     }
     String[] roles = authorize.roles();
     String[] policies = authorize.policies();
@@ -83,6 +83,6 @@ public class AuthorizeInterceptor implements Serializable {
         return context.proceed();
       }
     }
-    throw new ForbiddenException();
+    throw new ForbiddenException(context.getMethod().toString());
   }
 }
