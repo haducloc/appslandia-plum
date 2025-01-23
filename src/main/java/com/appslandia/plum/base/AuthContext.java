@@ -34,10 +34,12 @@ import jakarta.enterprise.inject.Instance;
 import jakarta.inject.Inject;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.SecurityContext;
+import jakarta.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
 import jakarta.security.enterprise.identitystore.IdentityStoreHandler;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -67,6 +69,19 @@ public class AuthContext {
     }
   }
 
+  /**
+   * Internally uses
+   * {@link jakarta.security.enterprise.SecurityContext#authenticate(HttpServletRequest, HttpServletResponse, AuthenticationParameters)
+   * SecurityContext.authenticate()}
+   * 
+   * @param request
+   * @param response
+   * @param credential
+   * @param rememberMe
+   * @param invalidCode
+   * @return
+   * @throws ServletException
+   */
   public boolean authenticate(RequestWrapper request, HttpServletResponse response, Credential credential,
       boolean rememberMe, Out<String> invalidCode) throws ServletException {
 
@@ -122,11 +137,26 @@ public class AuthContext {
     }
   }
 
+  /**
+   * Internally uses
+   * {@link jakarta.security.enterprise.SecurityContext#isCallerInRole(String...)
+   * SecurityContext.isCallerInRole()}
+   * 
+   * @param roles
+   * @return
+   */
   public boolean isUserInRoles(String... roles) {
     Arguments.hasElements(roles);
     return Arrays.stream(roles).anyMatch(role -> this.securityContext.isCallerInRole(role));
   }
 
+  /**
+   * Internally uses
+   * {@link jakarta.security.enterprise.SecurityContext#getCallerPrincipal()
+   * SecurityContext.getCallerPrincipal()}
+   * 
+   * @return
+   */
   public UserPrincipal getPrincipal() {
     Principal principal = this.securityContext.getCallerPrincipal();
     if (principal == null) {
