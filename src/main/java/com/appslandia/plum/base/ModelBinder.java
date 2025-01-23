@@ -106,7 +106,6 @@ public class ModelBinder {
 
     while (!queue.isEmpty()) {
       BindingNode bindNode = queue.poll();
-
       for (PropertyDescriptor property : Introspector.getBeanInfo(bindNode.model.getClass()).getPropertyDescriptors()) {
 
         // Field
@@ -125,7 +124,7 @@ public class ModelBinder {
           continue;
         }
 
-        // Handle Binding?
+        // If propertyPath matched
         if (request.getParameterMap().containsKey(propertyPath) || (fieldDesc.getDefaultValue() != null)) {
           Asserts.notNull(property.getReadMethod());
           Asserts.notNull(property.getWriteMethod());
