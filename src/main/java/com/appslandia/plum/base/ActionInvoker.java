@@ -131,10 +131,12 @@ public class ActionInvoker {
       actionArgs[index] = (paramDesc.getParameter().getType() != Out.class) ? parsedValue
           : new Out<Object>(parsedValue);
 
+      // Handle error
       if (msgKey.value != null) {
         Object[] msgParams = getMsgParams(paramDesc, requestContext.getResources());
         ServletUtils.addError(request, paramDesc.getParamName(), msgKey.value, msgParams);
       }
+
       if (paramDesc.isPathParam()) {
         if ((parsedValue == null) || (msgKey.value != null)) {
           throw new NotFoundException(requestContext.res(Resources.ERROR_NOT_FOUND))
