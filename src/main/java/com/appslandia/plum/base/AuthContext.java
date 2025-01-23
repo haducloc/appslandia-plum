@@ -71,8 +71,7 @@ public class AuthContext {
 
   /**
    * Internally uses
-   * {@link jakarta.security.enterprise.SecurityContext#authenticate(HttpServletRequest, HttpServletResponse, AuthenticationParameters)
-   * SecurityContext.authenticate()}
+   * {@link jakarta.security.enterprise.SecurityContext#authenticate(HttpServletRequest, HttpServletResponse, AuthenticationParameters)}
    * 
    * @param request
    * @param response
@@ -139,8 +138,7 @@ public class AuthContext {
 
   /**
    * Internally uses
-   * {@link jakarta.security.enterprise.SecurityContext#isCallerInRole(String...)
-   * SecurityContext.isCallerInRole()}
+   * {@link jakarta.security.enterprise.SecurityContext#isCallerInRole(String...)}
    * 
    * @param roles
    * @return
@@ -152,8 +150,7 @@ public class AuthContext {
 
   /**
    * Internally uses
-   * {@link jakarta.security.enterprise.SecurityContext#getCallerPrincipal()
-   * SecurityContext.getCallerPrincipal()}
+   * {@link jakarta.security.enterprise.SecurityContext#getCallerPrincipal()}
    * 
    * @return
    */
