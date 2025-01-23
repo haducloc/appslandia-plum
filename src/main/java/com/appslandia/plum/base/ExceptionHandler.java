@@ -201,11 +201,14 @@ public class ExceptionHandler {
     case TooManyRequestsException.SC_TOO_MANY_REQUESTS:
       return Resources.ERROR_TOO_MANY_REQUESTS;
 
+    case HttpServletResponse.SC_INTERNAL_SERVER_ERROR:
+      return Resources.ERROR_INTERNAL_SERVER_ERROR;
+
     case HttpServletResponse.SC_SERVICE_UNAVAILABLE:
       return Resources.ERROR_SERVICE_UNAVAILABLE;
 
     default:
-      return Resources.ERROR_INTERNAL_SERVER_ERROR;
+      return Resources.ERROR_REQUEST_HANDLING_ERROR;
     }
   }
 }

@@ -41,6 +41,8 @@ public interface Resources extends MapAccessor<String, String> {
   public static final String ERROR_FORBIDDEN_CORS = "errors.forbidden_cors";
 
   public static final String ERROR_INTERNAL_SERVER_ERROR = "errors.internal_server_error";
+  public static final String ERROR_REQUEST_HANDLING_ERROR = "errors.request_handling_error";
+
   public static final String ERROR_PRECONDITION_FAILED = "errors.precondition_failed";
   public static final String ERROR_TOO_MANY_REQUESTS = "errors.too_many_requests";
 
