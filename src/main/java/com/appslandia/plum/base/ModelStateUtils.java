@@ -77,7 +77,7 @@ public class ModelStateUtils {
           Object element = list.get(idx);
           String elementPath = propPath + "[" + idx + "]";
           String elementPathLocal = null;
-          
+
           if (element instanceof LocalIdSupport) {
             elementPathLocal = propPathLocal + "[" + ((LocalIdSupport) element).getLocalId() + "]";
           } else {
@@ -111,5 +111,4 @@ public class ModelStateUtils {
   public interface PropertyVisitor {
     void visit(String path, String pathLocal);
   }
-
 }
