@@ -121,8 +121,19 @@ public class ModelState implements Serializable {
         Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().get(0).getText(), (v1, v2) -> v1, TreeMap::new));
   }
 
-  public Integer getErrorChildIndex(int childrenCount, Function<Integer, String> childPathBuilder) {
-    var errIdx = IntStream.range(0, childrenCount).filter(idx -> this.errors.containsKey(childPathBuilder.apply(idx)))
+  public Map<String, String> toErrorMapLocal(Object model) throws Exception {
+    final Map<String, String> map = toErrorMap();
+    ModelStateUtils.traverse(model, "", "", (path, pathLocal) -> {
+
+      if (map.containsKey(path)) {
+        map.put(pathLocal, map.remove(path));
+      }
+    });
+    return map;
+  }
+
+  public Integer getErrorChildIndex(int childCount, Function<Integer, String> childPath) {
+    var errIdx = IntStream.range(0, childCount).filter(idx -> this.errors.containsKey(childPath.apply(idx)))
         .findFirst();
     return errIdx.isPresent() ? errIdx.getAsInt() : null;
   }

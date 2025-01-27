@@ -106,7 +106,11 @@ public class ModelBinder {
 
     while (!queue.isEmpty()) {
       BindingNode bindNode = queue.poll();
+
       for (PropertyDescriptor property : Introspector.getBeanInfo(bindNode.model.getClass()).getPropertyDescriptors()) {
+        if ("class".equals(property.getName())) {
+          continue;
+        }
 
         // Field
         Field field = ReflectionUtils.findField(bindNode.model.getClass(), property.getName());
