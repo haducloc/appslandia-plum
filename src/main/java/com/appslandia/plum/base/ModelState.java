@@ -125,7 +125,7 @@ public class ModelState implements Serializable {
     final Map<String, String> map = toErrorMap();
     ModelStateUtils.traverse(model, "", "", (path, pathLocal) -> {
 
-      if (map.containsKey(path)) {
+      if (!path.equals(pathLocal) && map.containsKey(path)) {
         map.put(pathLocal, map.remove(path));
       }
     });
