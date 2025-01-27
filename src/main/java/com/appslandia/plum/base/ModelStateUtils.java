@@ -27,7 +27,7 @@ import java.time.temporal.Temporal;
 import java.util.List;
 import java.util.UUID;
 
-import com.appslandia.common.models.LocalSupport;
+import com.appslandia.common.models.LocalIdSupport;
 
 /**
  *
@@ -74,11 +74,12 @@ public class ModelStateUtils {
 
         for (int idx = 0; idx < list.size(); idx++) {
 
+          Object element = list.get(idx);
           String elementPath = propPath + "[" + idx + "]";
           String elementPathLocal = null;
-
-          if (list.get(idx) instanceof LocalSupport) {
-            elementPathLocal = propPathLocal + "[" + ((LocalSupport) list.get(idx)).getLocalId() + "]";
+          
+          if (element instanceof LocalIdSupport) {
+            elementPathLocal = propPathLocal + "[" + ((LocalIdSupport) element).getLocalId() + "]";
           } else {
             elementPathLocal = (propPath == propPathLocal) ? elementPath : (propPathLocal + "[" + idx + "]");
           }
