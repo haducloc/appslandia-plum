@@ -133,23 +133,23 @@ public class UserController {
 
 ### Module-Specific Implementation (Each module has its own authentication scheme):
 
-- All modules must use the same types of authentication schemes (e.g., FORM, JWT, etc.).
-- Implementation of `UserPrincipal`
-- Implementation of `Credential` (`UsernamePasswordCredential`, etc.)
-- Implementation of `IdentityStoreBase` (`UsernamePasswordIdentityStore`, etc.)
-- Implementation of `AuthHandler` (`FormAuthHandler`, etc.) with `@MappedID(module)`
+- All modules in the app must use the same types of authentication schemes (e.g., FORM, JWT, etc.).
+- Impl of `UserPrincipal`
+- Impl of `Credential` (`UsernamePasswordCredential`, etc.)
+- Impl of `IdentityStoreBase` (`UsernamePasswordIdentityStore`, etc.)
+- Impl of `AuthHandler` (`FormAuthHandler`, etc.) with `@MappedID(module)`
 
 ### Shared Beans
 
-- Implementation of `IdentityHandler`
-- Implementation of `HttpAuthenticationMechanismBase` with `@Alternative` and `@Priority(APPLICATION)`
-- Implementation of `DynHandlersRegister` with `@StartupConfig`
-- Implementation of `ErrorServlet`
-- Implementation of `LanguageSupplier` with `@Alternative` and `@Priority(APPLICATION)` (default: `en-US` locale)
-- Implementation of `AuthTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
-- Implementation of `RemMeTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
-- Implementation of `LoginEventManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
-- Implementation of `EntityManagerFacade` with `@Dependent` (if JPA is used)
+- Impl of `IdentityHandler`
+- Impl of `HttpAuthenticationMechanismBase` with `@Alternative` and `@Priority(APPLICATION)`
+- Impl of `DynHandlersRegister` with `@StartupConfig`
+- Impl of `ErrorServlet`
+- Impl of `LanguageSupplier` with `@Alternative` and `@Priority(APPLICATION)` (default: `en-US` locale)
+- Impl of `AuthTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
+- Impl of `RemMeTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
+- Impl of `LoginEventManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
+- Impl of `EntityManagerFacade` with `@Dependent` (if JPA is used)
 
 ## License
 This code is distributed under the terms and conditions of the [MIT license](LICENSE).
