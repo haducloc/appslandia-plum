@@ -134,10 +134,10 @@ public class UserController {
 ### Module-Specific Implementation (Each module has its own authentication scheme):
 
 - All modules must use the same types of authentication schemes (e.g., FORM, JWT, etc.).
-- Implementation of `UsernamePasswordCredential.UserPrincipal`
-- Implementation of `UsernamePasswordCredential`
-- Implementation of `UsernamePasswordIdentityStore` that supports the implementation of `UsernamePasswordCredential`
-- Implementation of `AuthHandler` (e.g., `FormAuthHandler`) with `@MappedID(module)`
+- Implementation of `UserPrincipal`
+- Implementation of `Credential` (`UsernamePasswordCredential`, etc.)
+- Implementation of `IdentityStoreBase` (`UsernamePasswordIdentityStore`, etc.)
+- Implementation of `AuthHandler` (`FormAuthHandler`, etc.) with `@MappedID(module)`
 
 ### Shared Beans
 
