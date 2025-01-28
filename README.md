@@ -129,5 +129,27 @@ public class UserController {
 }
 ```
 
+## Developer Guide
+
+### Module-Specific Implementation (Each module has its own authentication scheme):
+
+- All modules must use the same types of authentication schemes (e.g., FORM, JWT, etc.).
+- Implementation of `UsernamePasswordCredential.UserPrincipal`
+- Implementation of `UsernamePasswordCredential`
+- Implementation of `UsernamePasswordIdentityStore` that supports the implementation of `UsernamePasswordCredential`
+- Implementation of `AuthHandler` (e.g., `FormAuthHandler`) with `@MappedID(module)`
+
+### Shared Beans
+
+- Implementation of `IdentityHandler`
+- Implementation of `HttpAuthenticationMechanismBase` with `@Alternative` and `@Priority(APPLICATION)`
+- Implementation of `DynHandlersRegister` with `@StartupConfig`
+- Implementation of `ErrorServlet`
+- Implementation of `LanguageSupplier` with `@Alternative` and `@Priority(APPLICATION)` (default: `en-US` locale)
+- Implementation of `AuthTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
+- Implementation of `RemMeTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
+- Implementation of `LoginEventManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
+- Implementation of `EntityManagerFacade` with `@Dependent` (if JPA is used)
+
 ## License
 This code is distributed under the terms and conditions of the [MIT license](LICENSE).
