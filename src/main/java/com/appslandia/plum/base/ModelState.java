@@ -32,6 +32,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.appslandia.common.models.LocalIdSupport;
+
 /**
  *
  * @author <a href="mailto:haducloc13@gmail.com">Loc Ha</a>
@@ -132,9 +134,14 @@ public class ModelState implements Serializable {
     return map;
   }
 
-  public Integer getErrorChildIndex(int childCount, Function<Integer, String> childPath) {
-    var errIdx = IntStream.range(0, childCount).filter(idx -> this.errors.containsKey(childPath.apply(idx)))
-        .findFirst();
-    return errIdx.isPresent() ? errIdx.getAsInt() : null;
+  public Integer getErrorIndex(List<?> subModelList, String listFieldName) {
+    var idx = IntStream.range(0, subModelList.size())
+        .filter(i -> this.errors.containsKey(listFieldName + "[" + i + "].")).findFirst();
+    return idx.isPresent() ? idx.getAsInt() : null;
+  }
+
+  public Integer getErrorLocalId(List<LocalIdSupport> subModelList, String listFieldName) {
+    var idx = getErrorIndex(subModelList, listFieldName);
+    return (idx != null) ? subModelList.get(idx).getLocalId() : null;
   }
 }
