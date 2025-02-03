@@ -71,6 +71,7 @@ public class LoginEvent extends EntityBase {
 
   private String userAgent;
 
+  // RemMeToken.series
   private UUID series;
 
   @NotNull
