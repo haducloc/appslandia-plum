@@ -44,6 +44,7 @@ public class GzipResponseWrapper extends HttpServletResponseWrapper {
 
   public GzipResponseWrapper(HttpServletResponse response) {
     super(response);
+    response.setHeader("Content-Encoding", "gzip");
   }
 
   public void finishWrapper() throws IOException {
@@ -63,9 +64,6 @@ public class GzipResponseWrapper extends HttpServletResponseWrapper {
     if (this.outStream == null) {
       this.outStream = new GZIPServletOutputStream(super.getOutputStream());
       this.usedWriter = Boolean.FALSE;
-
-      this.setHeader("Content-Encoding", "gzip");
-      // this.setHeader("Transfer-Encoding", "chunked");
     }
     return this.outStream;
   }
@@ -80,9 +78,6 @@ public class GzipResponseWrapper extends HttpServletResponseWrapper {
       this.outWriter = new PrintWriter(
           new BufferedWriter(new OutputStreamWriter(this.outStream, this.getCharacterEncoding())));
       this.usedWriter = Boolean.TRUE;
-
-      this.setHeader("Content-Encoding", "gzip");
-      // this.setHeader("Transfer-Encoding", "chunked");
     }
     return this.outWriter;
   }
@@ -130,7 +125,7 @@ public class GzipResponseWrapper extends HttpServletResponseWrapper {
     final GZIPOutputStream gos;
 
     public GZIPServletOutputStream(ServletOutputStream os) throws IOException {
-      this.gos = new GZIPOutputStream(os);
+      this.gos = new GZIPOutputStream(os, true);
     }
 
     @Override
