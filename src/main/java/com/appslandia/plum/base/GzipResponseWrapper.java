@@ -120,12 +120,14 @@ public class GzipResponseWrapper extends HttpServletResponseWrapper {
     // Ignore
   }
 
+  static final int GZIP_BUFFER_SIZE = 4096;
+
   private static class GZIPServletOutputStream extends ServletOutputStream {
 
     final GZIPOutputStream gos;
 
     public GZIPServletOutputStream(ServletOutputStream os) throws IOException {
-      this.gos = new GZIPOutputStream(os, true);
+      this.gos = new GZIPOutputStream(os, GZIP_BUFFER_SIZE, false);
     }
 
     @Override
