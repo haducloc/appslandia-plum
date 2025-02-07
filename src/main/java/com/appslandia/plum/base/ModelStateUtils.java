@@ -42,6 +42,11 @@ public class ModelStateUtils {
       return;
     }
 
+    // Notes:
+    // Compare two paths using ==, not the String.equals method in the traverse
+    // context
+    // For other context, use String.equals
+
     BeanInfo beanInfo = Introspector.getBeanInfo(model.getClass());
     PropertyDescriptor[] propertyDescriptors = beanInfo.getPropertyDescriptors();
 
