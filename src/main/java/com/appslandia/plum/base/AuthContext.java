@@ -138,7 +138,7 @@ public class AuthContext {
 
   /**
    * Internally uses
-   * {@link jakarta.security.enterprise.SecurityContext#isCallerInRole(String...)}
+   * {@link jakarta.security.enterprise.SecurityContext#isCallerInRole(String)}
    * 
    * @param roles
    * @return
