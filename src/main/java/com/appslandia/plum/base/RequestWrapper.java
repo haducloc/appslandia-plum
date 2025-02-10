@@ -114,8 +114,6 @@ public class RequestWrapper extends HttpServletRequestWrapper {
 
   public <T> T getParamOrNull(String name, Class<T> targetType) {
     Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
-    Arguments.notNull(converter);
-
     try {
       String value = getParamOrNull(name);
       return converter.parse(value, getRequestContext().getFormatProvider());
@@ -129,10 +127,7 @@ public class RequestWrapper extends HttpServletRequestWrapper {
   }
 
   public <T> T getCookieOrNull(String name, Class<T> targetType) {
-
     Converter<T> converter = getRequestContext().getConverterProvider().getConverter(targetType);
-    Arguments.notNull(converter);
-
     try {
       String value = getCookieOrNull(name);
       return converter.parse(value, getRequestContext().getFormatProvider());
