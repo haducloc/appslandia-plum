@@ -34,6 +34,6 @@ import jakarta.interceptor.Interceptor;
  */
 @ApplicationScoped
 @Alternative
-@Priority(Interceptor.Priority.LIBRARY_BEFORE + 150)
+@Priority(Interceptor.Priority.LIBRARY_BEFORE + 140)
 public class DefaultHttpAuthenticationMechanism extends HttpAuthenticationMechanismBase {
 }
