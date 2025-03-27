@@ -59,69 +59,69 @@ dependencies {
 @Controller
 public class UserController {
 
-	// GET /user/index
-	@HttpGet
-	public ActionResult index() {
-		return (request, response, requestContext) -> {
-			response.getWriter().print("Hello, UserController!");
-		};
-	}
+  // GET /user/index
+  @HttpGet
+  public ActionResult index() {
+    return (request, response, requestContext) -> {
+      response.getWriter().print("Hello, UserController!");
+    };
+  }
 
-	// GET /user/test
-	@HttpGet
-	@Action("test")
-	public void testAction(RequestWrapper request, HttpServletResponse response) throws Exception {
-		response.getWriter().print("test");
-	}
+  // GET /user/test
+  @HttpGet
+  @Action("test")
+  public void testAction(RequestWrapper request, HttpServletResponse response) throws Exception {
+    response.getWriter().print("test");
+  }
 
-	// GET|POST /user/edit
-	@HttpGetPost
-	public ActionResult edit(RequestWrapper request, HttpServletResponse response) throws Exception {
-		// GET
-		if (request.isGetOrHead()) {
-			// /user/edit.jsp
-			return JspResult.DEFAULT;
-		}
-		// POST
-		// Create Or Update User
-		return new RedirectResult("index");
-	}
+  // GET|POST /user/edit
+  @HttpGetPost
+  public ActionResult edit(RequestWrapper request, HttpServletResponse response) throws Exception {
+    // GET
+    if (request.isGetOrHead()) {
+      // /user/edit.jsp or /user/edit.xhtml, etc.
+      return ViewResult.DEFAULT;
+    }
+    // POST
+    // Create Or Update User
+    return new RedirectResult("index");
+  }
 
-	// GET /user/get/{userId}
-	@HttpGet
-	@PathParams("/{userId}")
-	public User get(int userId) {
-		if (userId <= 0) {
-			throw new NotFoundException();
-		}
-		User u = loadUser(userId);
-		return u;
-	}
+  // GET /user/get/{userId}
+  @HttpGet
+  @PathParams("/{userId}")
+  public User get(int userId) {
+    if (userId <= 0) {
+      throw new NotFoundException();
+    }
+    User u = loadUser(userId);
+    return u;
+  }
 
-	// PUT /user/register
-	@HttpPut
-	public Result<String> register(@Model(Source.JSON_BODY) user, ModelState modelState) {
-		if (!modelState.isValid()) {
-			throw new BadRequestException();
-		}
-		// Add user
-		return new Result<String>().setMessage("Registered user successfully.");
-	}
+  // PUT /user/register
+  @HttpPut
+  public Result<String> register(@Model(Source.JSON_BODY) user, ModelState modelState) {
+    if (!modelState.isValid()) {
+      throw new BadRequestException();
+    }
+    // Add user
+    return new Result<String>().setMessage("Registered user successfully.");
+  }
 
-	// POST /user/testAuthorize
-	@HttpPost
-	@Authorize(roles="admin")
-	public void testAuthorize() {
-		// ...
-	}
-		
-	// Other Annotations:
-	// @EnableCsrf, @EnableEtag, @EnableEncoding, @EnableParts, @EnableAsync, etc.
-	
-	// @ConsumeType
-	
-	// @CacheControl("cacheControl1")
-	// ...
+  // POST /user/testAuthorize
+  @HttpPost
+  @Authorize(roles = "admin")
+  public void testAuthorize() {
+    // ...
+  }
+
+  // Other Annotations:
+  // @EnableCsrf, @EnableEtag, @EnableEncoding, @EnableParts, @EnableAsync, etc.
+
+  // @ConsumeType
+
+  // @CacheControl("cacheControl1")
+  // ...
 }
 ```
 
