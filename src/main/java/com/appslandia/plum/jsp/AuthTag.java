@@ -1,0 +1,79 @@
+// The MIT License (MIT)
+// Copyright © 2015 Loc Ha
+
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+package com.appslandia.plum.jsp;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.utils.SecurityUtils;
+import com.appslandia.plum.utils.ServletUtils;
+
+import jakarta.servlet.jsp.JspException;
+
+/**
+ *
+ * @author Loc Ha
+ *
+ */
+@Tag(name = "auth", dynamicAttributes = false, bodyContent = "scriptless")
+public class AuthTag extends TagBase {
+
+  protected String module;
+  protected String roles;
+
+  @Override
+  public void doTag() throws JspException, IOException {
+    if (!this.rendered) {
+      return;
+    }
+    if (this.module == null) {
+      this.module = getAppConfig().getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
+    }
+    final var request = getRequest();
+
+    // UserPrincipal
+    var principal = ServletUtils.getPrincipal(request);
+    if ((principal == null) || !this.module.equals(principal.getModule())) {
+      return;
+    }
+
+    if (this.roles != null) {
+      var userRoles = SecurityUtils.parseUserRoles(this.roles);
+      if (!Arrays.stream(userRoles).anyMatch(role -> request.isUserInRole(role))) {
+        return;
+      }
+    }
+    if (this.body != null) {
+      this.body.invoke(null);
+    }
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setModule(String module) {
+    this.module = module;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setRoles(String roles) {
+    this.roles = roles;
+  }
+}

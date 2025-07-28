@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="https://jakarta.ee/xml/ns/jakartaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-jsptaglibrary_3_1.xsd"
+	version="3.1">
+
+	<description>JSTL Functions</description>
+	<tlib-version>1.0</tlib-version>
+
+	<short-name>functions</short-name>
+	<uri>http://www.appslandia.com/jstl/functions</uri>
+
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.esc(java.lang.Object);description=</description>
+		<name>esc</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String esc(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.escAttr(java.lang.Object);description=</description>
+		<name>escattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String escAttr(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtCur(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<name>fmtcur</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtCur(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtCurAttr(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<name>fmtcurattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtCurAttr(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtDays(com.appslandia.plum.base.RequestContext,java.lang.Object,java.lang.Object);description=</description>
+		<name>fmtdays</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtDays(com.appslandia.plum.base.RequestContext, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtDaysAttr(com.appslandia.plum.base.RequestContext,java.lang.Object,java.lang.Object);description=</description>
+		<name>fmtdaysattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtDaysAttr(com.appslandia.plum.base.RequestContext, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtDt(com.appslandia.plum.base.RequestContext,java.time.temporal.Temporal);description=</description>
+		<name>fmtdt</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtDt(com.appslandia.plum.base.RequestContext, java.time.temporal.Temporal)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtDtAttr(com.appslandia.plum.base.RequestContext,java.time.temporal.Temporal);description=</description>
+		<name>fmtdtattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtDtAttr(com.appslandia.plum.base.RequestContext, java.time.temporal.Temporal)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtInt(com.appslandia.plum.base.RequestContext,java.lang.Number);description=</description>
+		<name>fmtint</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtInt(com.appslandia.plum.base.RequestContext, java.lang.Number)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtIntAttr(com.appslandia.plum.base.RequestContext,java.lang.Number);description=</description>
+		<name>fmtintattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtIntAttr(com.appslandia.plum.base.RequestContext, java.lang.Number)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtNum(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<name>fmtnum</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtNum(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtNumAttr(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<name>fmtnumattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtNumAttr(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtPer(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<name>fmtper</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtPer(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.fmtPerAttr(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<name>fmtperattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String fmtPerAttr(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.ifAttr(boolean,java.lang.Object);description=</description>
+		<name>ifattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String ifAttr(boolean, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.ifCls(boolean,java.lang.String);description=</description>
+		<name>ifcls</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String ifCls(boolean, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.if_(boolean,java.lang.Object);description=</description>
+		<name>if</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String if_(boolean, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.iif(boolean,java.lang.Object,java.lang.Object);description=</description>
+		<name>iif</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String iif(boolean, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.iifAttr(boolean,java.lang.Object,java.lang.Object);description=</description>
+		<name>iifattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String iifAttr(boolean, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.lower(java.lang.Object);description=</description>
+		<name>lower</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String lower(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.lowerAttr(java.lang.Object);description=</description>
+		<name>lowerattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String lowerAttr(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.mask(java.lang.Object,int);description=</description>
+		<name>mask</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String mask(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.maskAttr(java.lang.Object,int);description=</description>
+		<name>maskattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String maskAttr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.maske(java.lang.Object,int);description=</description>
+		<name>maske</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String maske(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.maskeAttr(java.lang.Object,int);description=</description>
+		<name>maskeattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String maskeAttr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=long com.appslandia.plum.jsp.Functions.nowMs();description=</description>
+		<name>nowms</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>long nowMs()</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.res(com.appslandia.plum.base.RequestContext,java.lang.String);description=</description>
+		<name>res</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String res(com.appslandia.plum.base.RequestContext, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.resAttr(com.appslandia.plum.base.RequestContext,java.lang.String);description=</description>
+		<name>resattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String resAttr(com.appslandia.plum.base.RequestContext, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.toStr(java.lang.Object,int);description=</description>
+		<name>tostr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String toStr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.toStrAttr(java.lang.Object,int);description=</description>
+		<name>tostrattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String toStrAttr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.trunc(java.lang.Object,int);description=</description>
+		<name>trunc</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String trunc(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.truncAttr(java.lang.Object,int);description=</description>
+		<name>truncattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String truncAttr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.upper(java.lang.Object);description=</description>
+		<name>upper</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String upper(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.jsp.Functions.upperAttr(java.lang.Object);description=</description>
+		<name>upperattr</name>
+		<function-class>com.appslandia.plum.jsp.Functions</function-class>
+		<function-signature>java.lang.String upperAttr(java.lang.Object)</function-signature>
+	</function>
+
+</taglib>
