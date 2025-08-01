@@ -287,7 +287,7 @@ public class PebbleUtils {
         if (request.getCookies() == null) {
           return false;
         }
-        return Arrays.stream(request.getCookies()).anyMatch(c -> c.getName().equals((String) key));
+        return Arrays.stream(request.getCookies()).anyMatch(c -> c.getName().equals(key));
       }
 
       @Override
@@ -295,8 +295,7 @@ public class PebbleUtils {
         if (request.getCookies() == null) {
           return null;
         }
-        return Arrays.stream(request.getCookies()).filter(c -> c.getName().equals((String) key)).findFirst()
-            .orElse(null);
+        return Arrays.stream(request.getCookies()).filter(c -> c.getName().equals(key)).findFirst().orElse(null);
       }
     });
   }

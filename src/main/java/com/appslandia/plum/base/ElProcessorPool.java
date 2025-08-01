@@ -47,7 +47,7 @@ public class ElProcessorPool {
   @PostConstruct
   protected void initialize() {
     var poolSize = this.appConfig.getInt(CONFIG_POOL_SIZE, 32);
-    this.elPool = new BlockingQueuePool<ELProcessor>(() -> initELProcessor(), poolSize);
+    this.elPool = new BlockingQueuePool<>(() -> initELProcessor(), poolSize);
   }
 
   public <R> R execute(FunctionBlock<ELProcessor, R> fxBlock) throws Exception {
