@@ -37,15 +37,15 @@ import jakarta.faces.view.facelets.TagConfig;
  *
  */
 // @formatter:off
-@Tag(name = "auth", bodyContent = true, dynamicAttributes = false, attributes = {
+@Tag(name = "ifAuth", bodyContent = true, dynamicAttributes = false, attributes = {
   @Attribute(name="module", type=String.class),
   @Attribute(name="roles", type=String.class),
   @Attribute(name="rendered", type=Boolean.class)
 })
 // @formatter:on
-public class AuthTag extends FlTagHandler {
+public class IfAuthTag extends FlTagHandler {
 
-  public AuthTag(TagConfig config) {
+  public IfAuthTag(TagConfig config) {
     super(config);
   }
 

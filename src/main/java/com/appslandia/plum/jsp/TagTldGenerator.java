@@ -86,8 +86,8 @@ public class TagTldGenerator {
     generateTag(CheckMarkTag.class, sb, dynClasses, notDynClasses, warnings);
 
     generateTag(MessagesTag.class, sb, dynClasses, notDynClasses, warnings);
-    generateTag(AuthTag.class, sb, dynClasses, notDynClasses, warnings);
-    generateTag(UnauthTag.class, sb, dynClasses, notDynClasses, warnings);
+    generateTag(IfAuthTag.class, sb, dynClasses, notDynClasses, warnings);
+    generateTag(IfUnauthTag.class, sb, dynClasses, notDynClasses, warnings);
     generateTag(UserNameTag.class, sb, dynClasses, notDynClasses, warnings);
 
     generateTag(FmtGroupTag.class, sb, dynClasses, notDynClasses, warnings);

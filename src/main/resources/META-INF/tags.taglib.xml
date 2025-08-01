@@ -2023,9 +2023,9 @@
 		</attribute>
 	</tag>
 	<tag>
-		<description>tag-handler;dynamicAttributes;bodyContent;type=com.appslandia.plum.facelet.AuthTag;description=auth</description>
-		<tag-name>auth</tag-name>
-		<handler-class>com.appslandia.plum.facelet.AuthTag</handler-class>
+		<description>tag-handler;dynamicAttributes;bodyContent;type=com.appslandia.plum.facelet.IfAuthTag;description=ifAuth</description>
+		<tag-name>ifAuth</tag-name>
+		<handler-class>com.appslandia.plum.facelet.IfAuthTag</handler-class>
 		<attribute>
 			<description>required=false;type=java.lang.String;description=module</description>
 			<name>module</name>
@@ -2046,9 +2046,9 @@
 		</attribute>
 	</tag>
 	<tag>
-		<description>tag-handler;dynamicAttributes;bodyContent;type=com.appslandia.plum.facelet.UnauthTag;description=unauth</description>
-		<tag-name>unauth</tag-name>
-		<handler-class>com.appslandia.plum.facelet.UnauthTag</handler-class>
+		<description>tag-handler;dynamicAttributes;bodyContent;type=com.appslandia.plum.facelet.IfUnauthTag;description=ifUnauth</description>
+		<tag-name>ifUnauth</tag-name>
+		<handler-class>com.appslandia.plum.facelet.IfUnauthTag</handler-class>
 		<attribute>
 			<description>required=false;type=java.lang.String;description=module</description>
 			<name>module</name>

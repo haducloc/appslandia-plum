@@ -18,46 +18,49 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.jsp;
+package com.appslandia.plum.facelet;
 
 import java.io.IOException;
 
 import com.appslandia.plum.base.AppConfig;
 import com.appslandia.plum.utils.ServletUtils;
 
-import jakarta.servlet.jsp.JspException;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.view.facelets.FaceletContext;
+import jakarta.faces.view.facelets.TagConfig;
 
 /**
  *
  * @author Loc Ha
  *
  */
-@Tag(name = "unauth", dynamicAttributes = false, bodyContent = "scriptless")
-public class UnauthTag extends TagBase {
+// @formatter:off
+@Tag(name = "ifUnauth", bodyContent = true, dynamicAttributes = false, attributes = {
+  @Attribute(name="module", type=String.class),
+  @Attribute(name="rendered", type=Boolean.class)
+})
+// @formatter:on
+public class IfUnauthTag extends FlTagHandler {
 
-  protected String module;
+  public IfUnauthTag(TagConfig config) {
+    super(config);
+  }
 
   @Override
-  public void doTag() throws JspException, IOException {
-    if (!this.rendered) {
+  public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
+    if (!isRendered(ctx)) {
       return;
     }
-    if (this.module == null) {
-      this.module = getAppConfig().getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
+    var module = getString(ctx, "module");
+    if (module == null) {
+      module = getAppConfig(ctx).getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
 
     // UserPrincipal
-    var principal = ServletUtils.getPrincipal(getRequest());
-    if ((principal != null) && this.module.equals(principal.getModule())) {
+    var principal = ServletUtils.getPrincipal(getRequest(ctx));
+    if ((principal != null) && module.equals(principal.getModule())) {
       return;
     }
-    if (this.body != null) {
-      this.body.invoke(null);
-    }
-  }
-
-  @Attribute(rtexprvalue = true, required = false)
-  public void setModule(String module) {
-    this.module = module;
+    this.nextHandler.apply(ctx, parent);
   }
 }

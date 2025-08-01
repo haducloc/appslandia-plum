@@ -18,49 +18,62 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-package com.appslandia.plum.facelet;
+package com.appslandia.plum.jsp;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import com.appslandia.plum.base.AppConfig;
+import com.appslandia.plum.utils.SecurityUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
-import jakarta.faces.component.UIComponent;
-import jakarta.faces.view.facelets.FaceletContext;
-import jakarta.faces.view.facelets.TagConfig;
+import jakarta.servlet.jsp.JspException;
 
 /**
  *
  * @author Loc Ha
  *
  */
-// @formatter:off
-@Tag(name = "unauth", bodyContent = true, dynamicAttributes = false, attributes = {
-  @Attribute(name="module", type=String.class),
-  @Attribute(name="rendered", type=Boolean.class)
-})
-// @formatter:on
-public class UnauthTag extends FlTagHandler {
+@Tag(name = "ifAuth", dynamicAttributes = false, bodyContent = "scriptless")
+public class IfAuthTag extends TagBase {
 
-  public UnauthTag(TagConfig config) {
-    super(config);
-  }
+  protected String module;
+  protected String roles;
 
   @Override
-  public void apply(FaceletContext ctx, UIComponent parent) throws IOException {
-    if (!isRendered(ctx)) {
+  public void doTag() throws JspException, IOException {
+    if (!this.rendered) {
       return;
     }
-    var module = getString(ctx, "module");
-    if (module == null) {
-      module = getAppConfig(ctx).getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
+    if (this.module == null) {
+      this.module = getAppConfig().getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
+    final var request = getRequest();
 
     // UserPrincipal
-    var principal = ServletUtils.getPrincipal(getRequest(ctx));
-    if ((principal != null) && module.equals(principal.getModule())) {
+    var principal = ServletUtils.getPrincipal(request);
+    if ((principal == null) || !this.module.equals(principal.getModule())) {
       return;
     }
-    this.nextHandler.apply(ctx, parent);
+
+    if (this.roles != null) {
+      var userRoles = SecurityUtils.parseUserRoles(this.roles);
+      if (!Arrays.stream(userRoles).anyMatch(role -> request.isUserInRole(role))) {
+        return;
+      }
+    }
+    if (this.body != null) {
+      this.body.invoke(null);
+    }
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setModule(String module) {
+    this.module = module;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setRoles(String roles) {
+    this.roles = roles;
   }
 }

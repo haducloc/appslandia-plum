@@ -2314,9 +2314,9 @@
 		<dynamic-attributes>true</dynamic-attributes>
 	</tag>
 	<tag>
-		<description>dynamicAttributes=false;body=scriptless;type=com.appslandia.plum.jsp.AuthTag;description=auth</description>
-		<name>auth</name>
-		<tag-class>com.appslandia.plum.jsp.AuthTag</tag-class>
+		<description>dynamicAttributes=false;body=scriptless;type=com.appslandia.plum.jsp.IfAuthTag;description=ifAuth</description>
+		<name>ifAuth</name>
+		<tag-class>com.appslandia.plum.jsp.IfAuthTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>required=false;type=java.lang.String;rtexprvalue;description=module</description>
@@ -2342,9 +2342,9 @@
 		<dynamic-attributes>false</dynamic-attributes>
 	</tag>
 	<tag>
-		<description>dynamicAttributes=false;body=scriptless;type=com.appslandia.plum.jsp.UnauthTag;description=unauth</description>
-		<name>unauth</name>
-		<tag-class>com.appslandia.plum.jsp.UnauthTag</tag-class>
+		<description>dynamicAttributes=false;body=scriptless;type=com.appslandia.plum.jsp.IfUnauthTag;description=ifUnauth</description>
+		<name>ifUnauth</name>
+		<tag-class>com.appslandia.plum.jsp.IfUnauthTag</tag-class>
 		<body-content>scriptless</body-content>
 		<attribute>
 			<description>required=false;type=java.lang.String;rtexprvalue;description=module</description>

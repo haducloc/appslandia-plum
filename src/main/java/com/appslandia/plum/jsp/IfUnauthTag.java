@@ -21,10 +21,8 @@
 package com.appslandia.plum.jsp;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 import com.appslandia.plum.base.AppConfig;
-import com.appslandia.plum.utils.SecurityUtils;
 import com.appslandia.plum.utils.ServletUtils;
 
 import jakarta.servlet.jsp.JspException;
@@ -34,11 +32,10 @@ import jakarta.servlet.jsp.JspException;
  * @author Loc Ha
  *
  */
-@Tag(name = "auth", dynamicAttributes = false, bodyContent = "scriptless")
-public class AuthTag extends TagBase {
+@Tag(name = "ifUnauth", dynamicAttributes = false, bodyContent = "scriptless")
+public class IfUnauthTag extends TagBase {
 
   protected String module;
-  protected String roles;
 
   @Override
   public void doTag() throws JspException, IOException {
@@ -48,19 +45,11 @@ public class AuthTag extends TagBase {
     if (this.module == null) {
       this.module = getAppConfig().getStringReq(AppConfig.CONFIG_DEFAULT_MODULE);
     }
-    final var request = getRequest();
 
     // UserPrincipal
-    var principal = ServletUtils.getPrincipal(request);
-    if ((principal == null) || !this.module.equals(principal.getModule())) {
+    var principal = ServletUtils.getPrincipal(getRequest());
+    if ((principal != null) && this.module.equals(principal.getModule())) {
       return;
-    }
-
-    if (this.roles != null) {
-      var userRoles = SecurityUtils.parseUserRoles(this.roles);
-      if (!Arrays.stream(userRoles).anyMatch(role -> request.isUserInRole(role))) {
-        return;
-      }
     }
     if (this.body != null) {
       this.body.invoke(null);
@@ -70,10 +59,5 @@ public class AuthTag extends TagBase {
   @Attribute(rtexprvalue = true, required = false)
   public void setModule(String module) {
     this.module = module;
-  }
-
-  @Attribute(rtexprvalue = true, required = false)
-  public void setRoles(String roles) {
-    this.roles = roles;
   }
 }
