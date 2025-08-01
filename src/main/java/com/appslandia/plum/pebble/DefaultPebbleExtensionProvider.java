@@ -43,6 +43,8 @@ public class DefaultPebbleExtensionProvider extends PebbleExtensionProvider {
   public Map<String, Function> getFunctions() {
     Map<String, Function> impls = new HashMap<>();
     impls.put("actionUrl", new ActionUrlFunction());
+    impls.put("const", new ConstFunction());
+    impls.put("fmtGroup", new FmtGroupFunction());
 
     registerStaticFunctions(impls);
     return impls;
