@@ -39,7 +39,7 @@ public class ConstTag extends TagBase {
 
   protected String group;
   protected Object value;
-  protected boolean esc = true;
+  protected boolean esc = false;
 
   @Override
   public void doTag() throws JspException, IOException {

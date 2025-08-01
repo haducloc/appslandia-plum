@@ -65,7 +65,8 @@ public class ConstTag extends FlTagHandler {
     var descKey = provider.getDescKey(group, value);
 
     var desc = (descKey != null) ? getRequestContext(ctx).res(descKey) : value.toString();
-    var esc = getBool(ctx, "esc", true);
+    var esc = getBool(ctx, "esc", false);
+
     var rawValue = esc ? XmlEscaper.escapeAttribute(desc) : desc;
     parent.getChildren().add(toHtmlOuputText(rawValue));
   }
