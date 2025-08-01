@@ -62,10 +62,6 @@ public class FmtGroupFunction extends PebbleFunction {
     var content = groupFormat.format(value);
 
     var esc = context.getBool("esc", false);
-    if (esc) {
-      return new SafeString(XmlEscaper.escapeAttribute(content));
-    } else {
-      return content;
-    }
+    return new SafeString(esc ? XmlEscaper.escapeAttribute(content) : content);
   }
 }

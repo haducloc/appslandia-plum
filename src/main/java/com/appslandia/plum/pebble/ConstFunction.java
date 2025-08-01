@@ -62,10 +62,6 @@ public class ConstFunction extends PebbleFunction {
     var content = (descKey != null) ? context.getRequestContext().res(descKey) : value.toString();
 
     var esc = context.getBool("esc", false);
-    if (esc) {
-      return new SafeString(XmlEscaper.escapeAttribute(content));
-    } else {
-      return content;
-    }
+    return new SafeString(esc ? XmlEscaper.escapeAttribute(content) : content);
   }
 }
