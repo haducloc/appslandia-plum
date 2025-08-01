@@ -2096,6 +2096,12 @@
 			<type>java.lang.String</type>
 		</attribute>
 		<attribute>
+			<description>required=false;type=java.lang.Boolean;description=esc</description>
+			<name>esc</name>
+			<required>false</required>
+			<type>java.lang.Boolean</type>
+		</attribute>
+		<attribute>
 			<description>required=false;type=java.lang.Boolean;description=rendered</description>
 			<name>rendered</name>
 			<required>false</required>

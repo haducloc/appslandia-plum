@@ -39,6 +39,7 @@ import jakarta.faces.view.facelets.TagConfig;
 @Tag(name = "fmtGroup", dynamicAttributes = false, attributes = {
   @Attribute(name = "name", type = String.class, required = true),
   @Attribute(name = "value", type = String.class, required = true),
+  @Attribute(name="esc", type=Boolean.class),
   @Attribute(name = "rendered", type = Boolean.class)
 })
 // @formatter:on
@@ -64,7 +65,9 @@ public class FmtGroupTag extends FlTagHandler {
     var groupFormat = groupFormatProvider.getGroupFormat(name);
 
     var formattedValue = groupFormat.format(value);
-    var rawValue = XmlEscaper.escapeAttribute(formattedValue);
+    var esc = getBool(ctx, "esc", false);
+
+    var rawValue = esc ? XmlEscaper.escapeAttribute(formattedValue) : formattedValue;
     parent.getChildren().add(toHtmlOuputText(rawValue));
   }
 }

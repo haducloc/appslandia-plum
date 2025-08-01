@@ -38,18 +38,22 @@ public class FmtGroupTag extends TagBase {
 
   protected String name;
   protected String value;
+  protected boolean esc = false;
 
   @Override
   public void doTag() throws JspException, IOException {
     if (!this.rendered || this.value == null) {
       return;
     }
-    var groupFormatProvider = ServletUtils.getAppScoped(this.pageContext.getServletContext(),
-        GroupFormatProvider.class);
-    var groupFormat = groupFormatProvider.getGroupFormat(this.name);
-
+    var provider = ServletUtils.getAppScoped(this.pageContext.getServletContext(), GroupFormatProvider.class);
+    var groupFormat = provider.getGroupFormat(this.name);
     var formattedValue = groupFormat.format(this.value);
-    XmlEscaper.escapeAttribute(this.pageContext.getOut(), formattedValue);
+
+    if (this.esc) {
+      XmlEscaper.escapeAttribute(this.pageContext.getOut(), formattedValue);
+    } else {
+      this.pageContext.getOut().write(formattedValue);
+    }
   }
 
   @Attribute(rtexprvalue = true, required = true)
@@ -60,5 +64,10 @@ public class FmtGroupTag extends TagBase {
   @Attribute(rtexprvalue = true, required = true)
   public void setValue(String value) {
     this.value = value;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setEsc(boolean esc) {
+    this.esc = esc;
   }
 }
