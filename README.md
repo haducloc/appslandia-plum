@@ -24,21 +24,21 @@
 <dependency>
   <groupId>com.appslandia</groupId>
   <artifactId>appslandia-plum</artifactId>
-  <version>19.21.0</version>
+  <version>19.22.0</version>
 </dependency>
 
 <dependency>
   <groupId>com.appslandia</groupId>
   <artifactId>appslandia-common</artifactId>
-  <version>19.41.0</version>
+  <version>19.42.0</version>
 </dependency>
 ```
 
 ### Gradle
 ```groovy
 dependencies {
-  compile 'com.appslandia:appslandia-plum:19.21.0'
-  compile 'com.appslandia:appslandia-common:19.41.0'
+  compile 'com.appslandia:appslandia-plum:19.22.0'
+  compile 'com.appslandia:appslandia-common:19.42.0'
 }
 ```
 

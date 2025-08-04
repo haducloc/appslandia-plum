@@ -55,7 +55,7 @@ public class ConstDescProvider extends InitializeObject {
   public void addConstClass(Class<?> constClass) {
     this.assertNotInitialized();
     try {
-      var defConstGroup = parseConstGroup(constClass);
+      var defConstGroup = StringUtils.firstLowerCase(constClass.getSimpleName(), Locale.ENGLISH);
 
       for (Field field : constClass.getDeclaredFields()) {
         if (!ReflectionUtils.isPublicConst(field.getModifiers())
@@ -67,7 +67,9 @@ public class ConstDescProvider extends InitializeObject {
 
         // descKey: constGroup.constName
         var descKey = constGroup + "." + field.getName().toLowerCase(Locale.ENGLISH);
-        this.constKeyMap.put(new ConstValue(constGroup, field.get(null)), descKey);
+        var value = field.get(null);
+
+        this.constKeyMap.put(new ConstValue(constGroup, value), descKey);
       }
     } catch (Exception ex) {
       throw new InitializeException(ex);
@@ -76,14 +78,6 @@ public class ConstDescProvider extends InitializeObject {
 
   public void addConst(String constGroup, Object value, String descKey) {
     this.constKeyMap.put(new ConstValue(constGroup, value), descKey);
-  }
-
-  private static String parseConstGroup(Class<?> constClass) {
-    var constDesc = constClass.getDeclaredAnnotation(ConstDesc.class);
-    if ((constDesc != null) && !constDesc.value().isEmpty()) {
-      return constDesc.value();
-    }
-    return StringUtils.firstLowerCase(constClass.getSimpleName(), Locale.ENGLISH);
   }
 
   private static class ConstValue {

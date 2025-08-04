@@ -54,7 +54,7 @@ public class ConstTagTest extends MockTestBase {
   }
 
   @Test
-  public void test() {
+  public void test_ACTIVE() {
     try {
       // Register Actives.class
       constDescProvider.addConstClass(Actives.class);
@@ -73,15 +73,37 @@ public class ConstTagTest extends MockTestBase {
   }
 
   @Test
-  public void test_unregistered() {
+  public void test_INACTIVE() {
     try {
+      // Register Actives.class
+      constDescProvider.addConstClass(Actives.class);
+
       tag.setGroup("actives");
       tag.setValue(Actives.INACTIVE);
 
       tag.doTag();
       var html = tag.getPageContext().getOut().toString().strip();
 
-      Assertions.assertEquals(Integer.toString(Actives.INACTIVE), html);
+      Assertions.assertEquals("en:actives.inactive", html);
+
+    } catch (Exception ex) {
+      Assertions.fail(ex.getMessage());
+    }
+  }
+
+  @Test
+  public void test_fallback() {
+    try {
+      // constDescProvider.addConstClass(Actives.class);
+
+      tag.setGroup("actives");
+      tag.setValue(Actives.ACTIVE);
+
+      tag.doTag();
+      var html = tag.getPageContext().getOut().toString().strip();
+
+      // html = Actives.ACTIVE
+      Assertions.assertEquals(Integer.toString(Actives.ACTIVE), html);
 
     } catch (Exception ex) {
       Assertions.fail(ex.getMessage());

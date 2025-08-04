@@ -59,7 +59,6 @@ public class ConstDescProviderTest {
     public static final int INACTIVE = 0;
   }
 
-  @ConstDesc
   public static final class UserTypes {
 
     @ConstDesc
