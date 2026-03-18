@@ -107,8 +107,8 @@ public class UserController extends ControllerBase {
 ### Module-Specific Implementations
 - Impl of `UserPrincipal`
 - Impl of `IdentityValidator`
-- Impl of `IdentityStoreBase` (extends `UserPassIdentityStore`, or `JwtIdentityStore`, etc.)
-- Impl of `HttpAuthMechanismBase` (extends `FormHttpAuthMechanism`, `BasicHttpAuthMechanism`, or `BearerHttpAuthMechanism`, etc.)
+- Impl of `IdentityStoreBase` (or extends `UserPassIdentityStore`, `JwtIdentityStore`, etc.)
+- Impl of `HttpAuthMechanismBase` (or extends `FormHttpAuthMechanism`, `BasicHttpAuthMechanism`, or `BearerHttpAuthMechanism`, etc.)
 
 ### Module Shared-Beans
 - Impl of `ErrorServlet`
