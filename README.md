@@ -113,6 +113,7 @@ public class UserController extends ControllerBase {
 ### Module Shared-Beans
 - Impl of `ErrorServlet`
 - Impl of `LanguageConfig`
+- Impl of `AppPolicyProvider` for policies based on an Ant-style path matcher
 - Impl of `AuthTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
 - Impl of `RemMeTokenManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
 - Impl of `LoginEventManager` with `@Alternative` and `@Priority(APPLICATION)` (default: in-memory version)
