@@ -26,7 +26,9 @@ import java.util.Map;
 import java.util.Set;
 
 import com.appslandia.common.base.InitializingObject;
+import com.appslandia.common.base.TextBuilder;
 import com.appslandia.common.utils.Arguments;
+import com.appslandia.common.utils.ObjectUtils;
 import com.appslandia.plum.pebble.PebbleViewHandler;
 import com.appslandia.plum.utils.ServletUtils;
 
@@ -71,6 +73,22 @@ public class ViewHandlerProvider extends InitializingObject {
     initialize();
     return viewHandlerMap.keySet();
   }
+
+  //@formatter:off
+  @Override
+  public String toString() {
+    var desc = new TextBuilder(512);
+    desc.append(ObjectUtils.toIdHash(this)).append("[").appendln();
+    
+    for (var handler : viewHandlerMap.entrySet()) {
+      desc.appendsp(2).append(ObjectUtils.toIdHash(handler.getValue())).append("(").appendln()
+          .appendsp(4).append("viewSuffix: ").append(handler.getKey()).appendln()
+          .appendsp(2).appendln(")");
+    }
+    desc.append("]").appendln();
+    return desc.toString();
+  }
+  // @formatter:on
 
   static class ForwardViewHandler implements ViewHandler {
 

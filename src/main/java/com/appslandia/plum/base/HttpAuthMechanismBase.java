@@ -37,7 +37,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- *
+ * The implementation must be exposed as a CDI bean with @ApplicationScoped and annotated with @MappedID using the using
+ * the target module name.
+ * 
  * @author Loc Ha
  *
  */
@@ -52,7 +54,7 @@ public abstract class HttpAuthMechanismBase implements HttpAuthenticationMechani
   @Inject
   protected RequestContextParser requestContextParser;
 
-  protected abstract AuthMethod getAuthMethod();
+  public abstract AuthMethod getAuthMethod();
 
   protected abstract Credential getCredential(HttpServletRequest request, HttpMessageContext httpMessageContext);
 

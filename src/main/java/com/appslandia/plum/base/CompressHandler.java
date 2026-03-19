@@ -27,7 +27,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- *
+ * The implementation must be exposed as a CDI bean with @ApplicationScoped and annotated with @MappedID using the
+ * target compression type name (e.g., gzip).
+ * 
  * @author Loc Ha
  *
  */

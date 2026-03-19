@@ -23,7 +23,9 @@ package com.appslandia.plum.base;
 import jakarta.security.enterprise.credential.Credential;
 
 /**
- *
+ * The implementation must be exposed as a CDI bean with @ApplicationScoped and annotated with @MappedID using the using
+ * the target module name.
+ * 
  * @author Loc Ha
  *
  */

@@ -26,9 +26,12 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.appslandia.common.base.InitializingObject;
+import com.appslandia.common.base.TextBuilder;
 import com.appslandia.common.utils.CollectionUtils;
+import com.appslandia.common.utils.ObjectUtils;
 
 import jakarta.security.enterprise.credential.Credential;
 import jakarta.security.enterprise.identitystore.CredentialValidationResult;
@@ -126,4 +129,26 @@ public abstract class IdentityStoreHandlerBase extends InitializingObject implem
     var principal = new AuthUserPrincipal((UserPrincipal) result.getCallerPrincipal(), authCredential);
     return new CredentialValidationResult(principal, groups);
   }
+
+  // @formatter:off
+  @Override
+  public String toString() {
+    var desc = new TextBuilder(512);
+    desc.append(ObjectUtils.toIdHash(this)).append("[").appendln();
+    
+    for (var store : identityStores) {
+      desc.appendsp(2).append(ObjectUtils.toIdHash(store)).append("(").appendln()
+          .appendsp(4).append("storeId: ").append(store.storeId()).appendln()
+          .appendsp(4).append("modules: ").append(String.join(", ", store.validationModules())).appendln()
+          .appendsp(4).append("validationTypes: ")
+          .append(store.validationTypes().stream()
+              .map(Enum::name)
+              .collect(Collectors.joining(", ")))
+          .appendln()
+          .appendsp(2).appendln(")");
+    }
+    desc.append("]").appendln();
+    return desc.toString();
+  }
+  // @formatter:on
 }

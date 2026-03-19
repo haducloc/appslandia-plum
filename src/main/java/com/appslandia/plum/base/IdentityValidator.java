@@ -23,12 +23,18 @@ package com.appslandia.plum.base;
 import com.appslandia.common.base.Out;
 
 /**
- *
+ * The implementation must be exposed as a CDI bean with @ApplicationScoped and annotated with @MappedID using the using
+ * the target module name.
+ * 
  * @author Loc Ha
  *
  */
 public interface IdentityValidator {
 
+  /**
+   * This method is used for general validation of the username and password.
+   * 
+   */
   RolesPrincipal validateCredentials(String username, String password, Out<String> invalidCode);
 
   /**

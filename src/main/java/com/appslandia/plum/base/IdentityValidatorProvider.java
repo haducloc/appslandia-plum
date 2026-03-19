@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializingObject;
+import com.appslandia.common.base.TextBuilder;
 import com.appslandia.common.utils.Arguments;
+import com.appslandia.common.utils.ObjectUtils;
 
 /**
  *
@@ -51,4 +53,20 @@ public class IdentityValidatorProvider extends InitializingObject {
     var impl = validatorMap.get(module);
     return Arguments.notNull(impl, "No IdentityValidator is registered for module '{}'.", module);
   }
+
+  //@formatter:off
+  @Override
+  public String toString() {
+    var desc = new TextBuilder(512);
+    desc.append(ObjectUtils.toIdHash(this)).append("[").appendln();
+    
+    for (var validator : validatorMap.entrySet()) {
+      desc.appendsp(2).append(ObjectUtils.toIdHash(validator.getValue())).append("(").appendln()
+          .appendsp(4).append("module: ").append(validator.getKey()).appendln()
+          .appendsp(2).appendln(")");
+    }
+    desc.append("]").appendln();
+    return desc.toString();
+  }
+  // @formatter:on  
 }

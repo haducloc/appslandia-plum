@@ -25,7 +25,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.appslandia.common.base.InitializingObject;
+import com.appslandia.common.base.TextBuilder;
 import com.appslandia.common.utils.Arguments;
+import com.appslandia.common.utils.ObjectUtils;
 
 /**
  *
@@ -51,4 +53,21 @@ public class HttpAuthMechanismProvider extends InitializingObject {
     var impl = authMechanismMap.get(module);
     return Arguments.notNull(impl, "No HttpAuthMechanismBase is registered for module '{}'.", module);
   }
+
+  //@formatter:off
+  @Override
+  public String toString() {
+    var desc = new TextBuilder(512);
+    desc.append(ObjectUtils.toIdHash(this)).append("[").appendln();
+    
+    for (var auth : authMechanismMap.entrySet()) {
+      desc.appendsp(2).append(ObjectUtils.toIdHash(auth.getValue())).append("(").appendln()
+          .appendsp(4).append("module: ").append(auth.getKey()).appendln()
+          .appendsp(4).append("authMethod: ").append(auth.getValue().getAuthMethod()).appendln()
+          .appendsp(2).appendln(")");
+    }
+    desc.append("]").appendln();
+    return desc.toString();
+  }
+  // @formatter:on
 }

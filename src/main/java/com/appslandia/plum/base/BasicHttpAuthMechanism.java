@@ -30,14 +30,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- *
+ * The implementation must be exposed as a CDI bean with @ApplicationScoped and annotated with @MappedID using the using
+ * the target module name.
+ * 
  * @author Loc Ha
  *
  */
 public abstract class BasicHttpAuthMechanism extends AuthorizationMechanismBase {
 
   @Override
-  protected AuthMethod getAuthMethod() {
+  public AuthMethod getAuthMethod() {
     return AuthMethod.BASIC;
   }
 

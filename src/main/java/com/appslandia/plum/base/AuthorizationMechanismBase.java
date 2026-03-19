@@ -27,7 +27,9 @@ import jakarta.security.enterprise.credential.Credential;
 import jakarta.servlet.http.HttpServletRequest;
 
 /**
- *
+ * The implementation must be exposed as a CDI bean with @ApplicationScoped and annotated with @MappedID using the using
+ * the target module name.
+ * 
  * @author Loc Ha
  *
  */
