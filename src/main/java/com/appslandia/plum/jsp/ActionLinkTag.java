@@ -1,0 +1,150 @@
+// Licensed under the MIT License.
+// See LICENSE file in the project root for details.
+
+package com.appslandia.plum.jsp;
+
+import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import com.appslandia.common.utils.Arguments;
+import com.appslandia.common.utils.XmlEscaper;
+import com.appslandia.plum.tags.TagUtils;
+import com.appslandia.plum.utils.HtmlUtils;
+
+import jakarta.servlet.jsp.JspException;
+import jakarta.servlet.jsp.JspWriter;
+
+/**
+ *
+ * @author Loc Ha
+ *
+ */
+@Tag(name = "actionLink", bodyContent = "scriptless")
+public class ActionLinkTag extends UITagBase {
+
+  protected String labelKey;
+  protected String target;
+  protected String rel;
+
+  protected String controller;
+  protected String action;
+  protected boolean absUrl;
+
+  protected String _url;
+  protected Map<String, Object> _parameters;
+
+  protected Map<String, Object> getParams() {
+    if (_parameters == null) {
+      return _parameters = new LinkedHashMap<>();
+    }
+    return _parameters;
+  }
+
+  @Override
+  public void setDynamicAttribute(String uri, String name, Object value) throws JspException {
+    if (TagUtils.isDynamicParameter(name)) {
+      getParams().put(TagUtils.getDynParamName(name), value);
+    } else {
+      super.setDynamicAttribute(uri, name, value);
+    }
+  }
+
+  @Override
+  protected String getTagName() {
+    return "a";
+  }
+
+  @Override
+  protected void initTag() throws JspException, IOException {
+    Arguments.notNull(action);
+
+    if (controller == null) {
+      controller = getRequestContext().getActionDesc().getController();
+    }
+
+    // URL
+    var url = getActionParser().toActionUrl(getRequest(), controller, action, _parameters, absUrl);
+    _url = getResponse().encodeURL(url);
+  }
+
+  @Override
+  protected void writeAttributes(JspWriter out) throws JspException, IOException {
+    if (id != null) {
+      HtmlUtils.escAttribute(out, "id", id);
+    }
+    HtmlUtils.escAttribute(out, "href", _url);
+
+    if (target != null) {
+      HtmlUtils.escAttribute(out, "target", target);
+    }
+
+    if (rel != null) {
+      HtmlUtils.escAttribute(out, "rel", rel);
+    }
+
+    if (hidden) {
+      HtmlUtils.hidden(out);
+    }
+
+    if (datatag != null) {
+      HtmlUtils.escAttribute(out, "data-tag", datatag.toString());
+    }
+    if (clazz != null) {
+      HtmlUtils.escAttribute(out, "class", clazz);
+    }
+    if (style != null) {
+      HtmlUtils.escAttribute(out, "style", style);
+    }
+    if (title != null) {
+      HtmlUtils.escAttribute(out, "title", title);
+    }
+  }
+
+  @Override
+  protected boolean hasClosing() {
+    return true;
+  }
+
+  @Override
+  protected void writeBody(JspWriter out) throws JspException, IOException {
+    if (labelKey != null) {
+      var label = getRequestContext().res(labelKey);
+      XmlEscaper.escapeContent(out, label);
+    } else if (body != null) {
+      body.invoke(out);
+    } else {
+      throw new JspException("Couldn't determine the link label.");
+    }
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setLabelKey(String labelKey) {
+    this.labelKey = labelKey;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setTarget(String target) {
+    this.target = target;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setRel(String rel) {
+    this.rel = rel;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setController(String controller) {
+    this.controller = controller;
+  }
+
+  @Attribute(rtexprvalue = true, required = true)
+  public void setAction(String action) {
+    this.action = action;
+  }
+
+  @Attribute(rtexprvalue = true, required = false)
+  public void setAbsUrl(boolean absUrl) {
+    this.absUrl = absUrl;
+  }
+}

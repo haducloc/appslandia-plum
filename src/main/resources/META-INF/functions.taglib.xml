@@ -1,0 +1,221 @@
+<facelet-taglib
+	xmlns="https://jakarta.ee/xml/ns/jakartaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-facelettaglibrary_4_1.xsd"
+	version="4.1">
+
+	<description>Facelet Functions</description>
+	<namespace>http://www.appslandia.com/facelet/functions</namespace>
+
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__fmtCur(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=JSF tag attribute</description>
+		<function-name>__fmtCur</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __fmtCur(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__fmtDays(com.appslandia.plum.base.RequestContext,java.lang.Object,java.lang.Object);description=JSF tag attribute</description>
+		<function-name>__fmtDays</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __fmtDays(com.appslandia.plum.base.RequestContext, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__fmtDt(com.appslandia.plum.base.RequestContext,java.time.temporal.Temporal);description=JSF tag attribute</description>
+		<function-name>__fmtDt</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __fmtDt(com.appslandia.plum.base.RequestContext, java.time.temporal.Temporal)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__fmtInt(com.appslandia.plum.base.RequestContext,java.lang.Number);description=JSF tag attribute</description>
+		<function-name>__fmtInt</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __fmtInt(com.appslandia.plum.base.RequestContext, java.lang.Number)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__fmtNum(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=JSF tag attribute</description>
+		<function-name>__fmtNum</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __fmtNum(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__fmtPer(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=JSF tag attribute</description>
+		<function-name>__fmtPer</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __fmtPer(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__id(java.lang.String);description=JSF tag attribute</description>
+		<function-name>__id</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __id(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__if(boolean,java.lang.Object);description=JSF tag attribute</description>
+		<function-name>__if</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __if(boolean, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__iif(boolean,java.lang.Object,java.lang.Object);description=JSF tag attribute</description>
+		<function-name>__iif</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __iif(boolean, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__lower(java.lang.Object);description=JSF tag attribute</description>
+		<function-name>__lower</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __lower(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__mask(java.lang.Object,int);description=JSF tag attribute</description>
+		<function-name>__mask</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __mask(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__maskEnd(java.lang.Object,int);description=JSF tag attribute</description>
+		<function-name>__maskEnd</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __maskEnd(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=long com.appslandia.plum.facelet.Functions.__nowMs();description=JSF tag attribute</description>
+		<function-name>__nowMs</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>long __nowMs()</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__res(com.appslandia.plum.base.RequestContext,java.lang.String);description=JSF tag attribute</description>
+		<function-name>__res</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __res(com.appslandia.plum.base.RequestContext, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__toStr(java.lang.Object,int);description=JSF tag attribute</description>
+		<function-name>__toStr</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __toStr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__trunc(java.lang.Object,int);description=JSF tag attribute</description>
+		<function-name>__trunc</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __trunc(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.__upper(java.lang.Object);description=JSF tag attribute</description>
+		<function-name>__upper</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String __upper(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.esc(java.lang.Object);description=</description>
+		<function-name>esc</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String esc(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.fmtCur(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<function-name>fmtCur</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String fmtCur(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.fmtDays(com.appslandia.plum.base.RequestContext,java.lang.Object,java.lang.Object);description=</description>
+		<function-name>fmtDays</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String fmtDays(com.appslandia.plum.base.RequestContext, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.fmtDt(com.appslandia.plum.base.RequestContext,java.time.temporal.Temporal);description=</description>
+		<function-name>fmtDt</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String fmtDt(com.appslandia.plum.base.RequestContext, java.time.temporal.Temporal)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.fmtInt(com.appslandia.plum.base.RequestContext,java.lang.Number);description=</description>
+		<function-name>fmtInt</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String fmtInt(com.appslandia.plum.base.RequestContext, java.lang.Number)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.fmtNum(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<function-name>fmtNum</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String fmtNum(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.fmtPer(com.appslandia.plum.base.RequestContext,java.lang.Number,int);description=</description>
+		<function-name>fmtPer</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String fmtPer(com.appslandia.plum.base.RequestContext, java.lang.Number, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.id(java.lang.String);description=</description>
+		<function-name>id</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String id(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.if_(boolean,java.lang.Object);description=</description>
+		<function-name>if</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String if_(boolean, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.iif(boolean,java.lang.Object,java.lang.Object);description=</description>
+		<function-name>iif</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String iif(boolean, java.lang.Object, java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.lower(java.lang.Object);description=</description>
+		<function-name>lower</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String lower(java.lang.Object)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.mask(java.lang.Object,int);description=</description>
+		<function-name>mask</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String mask(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.maskEnd(java.lang.Object,int);description=</description>
+		<function-name>maskEnd</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String maskEnd(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=long com.appslandia.plum.facelet.Functions.nowMs();description=</description>
+		<function-name>nowMs</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>long nowMs()</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.res(com.appslandia.plum.base.RequestContext,java.lang.String);description=</description>
+		<function-name>res</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String res(com.appslandia.plum.base.RequestContext, java.lang.String)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.toStr(java.lang.Object,int);description=</description>
+		<function-name>toStr</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String toStr(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.trunc(java.lang.Object,int);description=</description>
+		<function-name>trunc</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String trunc(java.lang.Object, int)</function-signature>
+	</function>
+	<function>
+		<description>method=java.lang.String com.appslandia.plum.facelet.Functions.upper(java.lang.Object);description=</description>
+		<function-name>upper</function-name>
+		<function-class>com.appslandia.plum.facelet.Functions</function-class>
+		<function-signature>java.lang.String upper(java.lang.Object)</function-signature>
+	</function>
+
+</facelet-taglib>
